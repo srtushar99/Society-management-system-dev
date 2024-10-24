@@ -159,20 +159,11 @@ exports.resetPassword = async (req, res) => {
 exports.editProfile = async (req, res) => {
   try {
     const userId = req.params.id;
-    const updateData = {
-      First_Name: req.body.First_Name,
-      Last_Name: req.body.Last_Name,
-      Email_Address: req.body.Email_Address,
-      Phone_Number: req.body.Phone_Number,
-      Country: req.body.Country,
-      State: req.body.State,
-      City: req.body.City,
-    };
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { $set: updateData },
-      { new: true, runValidators: true }
+      { $set: req.body },
+      { new: true, runValidators: true } 
     );
 
     if (!updatedUser) {
@@ -184,6 +175,7 @@ exports.editProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
 
 // Find user by ID 
 
