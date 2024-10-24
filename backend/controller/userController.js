@@ -2,6 +2,8 @@ const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 const { generateTokenAndSetCookie } = require("../config/auth");
 
+// Registration page
+
 exports.Registration = async (req, res) => {
   try {
     const { First_Name, Last_Name, Email_Address, Phone_Number, Country, State, City, Password, Confirm_password } = req.body;
@@ -64,21 +66,20 @@ exports.Registration = async (req, res) => {
   }
 };
 
+// Login Page
+
 exports.login = async (req, res) => {
   try {
     const { emailOrPhone, password } = req.body;
 
-    // Check if both fields are provided
     if (!emailOrPhone || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    // Validate email or phone format
     if (!/^\d+$/.test(emailOrPhone) && !/\S+@\S+\.\S+/.test(emailOrPhone)) {
       return res.status(400).json({ success: false, message: "Invalid email or phone format" });
     }
 
-    // Find user by either email or phone number
     const user = await User.findOne({
       $or: [
         { Email_Address: emailOrPhone },
@@ -86,22 +87,16 @@ exports.login = async (req, res) => {
       ]
     });
 
-    console.log("Incoming login attempt:", emailOrPhone); // Debug log
-    console.log("User found:", user); // Debug log
-
     if (!user) {
       return res.status(404).json({ success: false, message: "Invalid credentials" });
     }
 
-    // Check if the password matches
     const isPasswordCorrect = await bcryptjs.compare(password, user.Password);
-    console.log("Password correct:", isPasswordCorrect); // Debug log
-
+   
     if (!isPasswordCorrect) {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
 
-    // Proceed with token generation and response
     generateTokenAndSetCookie(user._id, res);
     res.status(200).json({
       success: true,
@@ -113,7 +108,7 @@ exports.login = async (req, res) => {
   }
 };
 
-
+// Logout page 
 
 exports.logout = async (req, res) => {
   try {
@@ -125,36 +120,30 @@ exports.logout = async (req, res) => {
   }
 };
 
+// Reset-password 
 
 exports.resetPassword = async (req, res) => {
   try {
-    const { userId } = req.params; // Get user ID from request parameters
-    const { newPassword, confirmPassword } = req.body; // Get new password and confirm password from request body
+    const { userId } = req.params; 
+    const { newPassword, confirmPassword } = req.body; 
 
-    // Check if both fields are provided
     if (!newPassword || !confirmPassword) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    // Validate that newPassword and confirmPassword match
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ success: false, message: "Passwords do not match" });
     }
 
-    // Optionally, you can add a password strength validation here
-
-    // Hash the new password
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(newPassword, salt);
 
-    // Find the user by ID and update the password
     const user = await User.findByIdAndUpdate(userId, { Password: hashedPassword }, { new: true });
 
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Return success response
     return res.status(200).json({
       success: true,
       message: "Password reset successfully",
@@ -162,5 +151,53 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.log("Error in reset password controller:", error.message);
     return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Edit profile 
+
+exports.editProfile = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updateData = {
+      First_Name: req.body.First_Name,
+      Last_Name: req.body.Last_Name,
+      Email_Address: req.body.Email_Address,
+      Phone_Number: req.body.Phone_Number,
+      Country: req.body.Country,
+      State: req.body.State,
+      City: req.body.City,
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Profile updated successfully', data: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Find user by ID 
+
+exports.findUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User found', data: user });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
