@@ -99,7 +99,6 @@
 
 }
 
-/* General styles for responsiveness */
 .container-fluid {
   padding: 0;
 }
@@ -111,26 +110,26 @@
 
 @media (max-width: 768px) {
   .col-md-6 {
-    flex: 0 0 100%; /* Stack columns on smaller screens */
+    flex: 0 0 100%; 
     max-width: 100%;
   }
 
   .text-center p {
-    font-size: 1.2rem; /* Adjust font size for smaller screens */
+    font-size: 1.2rem; 
   }
 
   img {
-    max-height: 25%; /* Adjust image size for smaller screens */
+    max-height: 25%; 
   }
 }
 
 @media (max-width: 576px) {
   .form-group label {
-    font-size: 12px; /* Adjust label size */
+    font-size: 12px; 
   }
 
   .form-check-label {
-    font-size: 12px; /* Adjust checkbox label size */
+    font-size: 12px; 
   }
 }
 
