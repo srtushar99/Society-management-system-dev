@@ -45,31 +45,27 @@ const LoginPage = () => {
         email,
         password,
       });
-      console.log(response.data); 
+
       if (response.data.token) {
         setErrorMessage('');
-        navigate('/dashboard'); 
+        if (rememberMe) {
+          localStorage.setItem('savedEmail', email);
+        }
+        navigate('/dashboard');
       } else {
         setErrorMessage('Login failed. Please try again.');
       }
     } catch (error) {
-      console.error('Error:', error);
       if (error.response) {
-        // Server responded with a status other than 2xx
-        console.error('Response data:', error.response.data);
         setErrorMessage(error.response.data.message || 'Failed to log in. Please try again.');
       } else if (error.request) {
-        // Request was made but no response was received
-        console.error('Request data:', error.request);
         setErrorMessage('No response from server. Please check your connection.');
       } else {
-        // Something else happened
         setErrorMessage('Failed to log in. Please try again.');
       }
     }
   };
 
-  // Determine button style based on validations
   const isEmailValid = validateEmail(email);
   const isPasswordValid = validatePassword(password);
   const buttonStyle = isEmailValid && isPasswordValid

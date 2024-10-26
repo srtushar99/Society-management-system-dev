@@ -39,7 +39,8 @@ const ResetPassword = () => {
 
   // Check if both passwords are filled and valid
   const isFormValid = newPassword && confirmPassword;
-  const isPasswordValid = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(newPassword);
+  const isPasswordValid = newPassword.length >= 8;
+  const doPasswordsMatch = newPassword === confirmPassword;
 
   return (
     <div className="container-fluid vh-100 d-flex flex-column flex-md-row">
@@ -91,11 +92,11 @@ const ResetPassword = () => {
               type="submit" 
               className="btn w-100" 
               style={{ 
-                background: isPasswordValid ? 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)' : '#F6F8FB', 
-                color: isPasswordValid ? '#fff' : '#A7A7A7', 
+                background: isPasswordValid && doPasswordsMatch ? 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)' : '#F6F8FB', 
+                color: isPasswordValid && doPasswordsMatch ? '#fff' : '#A7A7A7', 
                 fontWeight: "600" 
               }} 
-              disabled={!isFormValid || !isPasswordValid}
+              disabled={!isFormValid || !isPasswordValid || !doPasswordsMatch}
             >
               Reset Password
             </button>
