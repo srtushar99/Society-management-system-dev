@@ -30,6 +30,12 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  select_society:{
+    type: mongoose.Schema.Types.ObjectId, 
+    required: true, 
+    ref: 'Society' 
+
+  },
   Password:{
     type: String,
     required: true,

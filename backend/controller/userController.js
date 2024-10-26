@@ -9,9 +9,9 @@ const senData = require("../config/nodemailer"); // Adjust the path accordingly
 
 exports.Registration = async (req, res) => {
   try {
-    const { First_Name, Last_Name, Email_Address, Phone_Number, Country, State, City, Password, Confirm_password } = req.body;
+    const { First_Name, Last_Name, Email_Address, Phone_Number, Country, State, City,select_society, Password, Confirm_password } = req.body;
 
-    if (!First_Name || !Last_Name || !Email_Address || !Phone_Number || !Country || !State || !City || !Password || !Confirm_password) {
+    if (!First_Name || !Last_Name || !Email_Address || !Phone_Number || !Country || !State || !City || !select_society || !Password || !Confirm_password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
@@ -40,6 +40,7 @@ exports.Registration = async (req, res) => {
       Country,
       State,
       City,
+      select_society,
       Password: hashedPassword,  
       Confirm_password: hashedPassword,  
     });
@@ -60,6 +61,7 @@ exports.Registration = async (req, res) => {
         Country: newUser.Country,
         State: newUser.State,
         City: newUser.City,
+        select_society: newUser.select_society
       },
     });
 
