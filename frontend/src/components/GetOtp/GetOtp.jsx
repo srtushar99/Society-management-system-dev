@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import Group1000005849 from '../assets/Group 1000005849.png';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 import LeftSection2 from '../Leftside/LeftSection2';
 
 const GetOtp = () => {

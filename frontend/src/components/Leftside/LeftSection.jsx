@@ -1,7 +1,7 @@
 import React from 'react';
 import Group1000005870 from '../assets/Group 1000005870.png';
 import Frame1000004995 from '../assets/Frame 1000004995.png';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const LeftSection = () => {
   return (

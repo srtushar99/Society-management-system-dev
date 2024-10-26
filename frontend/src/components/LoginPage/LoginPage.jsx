@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Group1000005849 from '../assets/Group 1000005849.png';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 import LeftSection from '../Leftside/LeftSection';
 import './LoginPage.css';
-import axios from "axios";
+// import axios from "axios";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
