@@ -21,6 +21,7 @@
     "mongoose": "^8.7.2",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
+    "society-management": "file:",
     "twilio": "^5.3.5"
   }
 }
