@@ -74,76 +74,43 @@ const LoginPage = () => {
 
   return (
     <div className="container-fluid vh-100 d-flex flex-column flex-md-row">
+      {/* Left Section */}
       <LeftSection />
       <div className="col-md-6 d-flex justify-content-center align-items-center position-relative">
-        <img 
-          src={Group1000005849} 
-          alt="Background" 
-          className="img-fluid" 
-          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }} 
-        />
+        <img src={Group1000005849} alt="Background" className="img-fluid" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }} />
+        {/* Login */}
         <div className="card p-4 border-0 rounded shadow" style={{ width: '90%', maxWidth: '400px', zIndex: 1 }}>
           <h2 className="mb-4 poppins-semibold text-center">Login</h2>
           <form className='m-3' onSubmit={handleLogin}>
+            {/* Email */}
             <div className="form-group mb-3">
               <label style={{ color: "#202224" }}>Email<span style={{ color: "#FE512E" }}>*</span></label>
-              <input 
-                type="text" 
-                className="form-control" 
-                placeholder="Enter your email" 
-                style={{ fontSize: "14px" }}  
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-              />
-            </div>
-
+              <input type="text" className="form-control" placeholder="Enter your email" style={{ fontSize: "14px" }}  value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+            {/* Password */}
             <div className="form-group mb-1 position-relative">
               <label style={{ color: "#202224" }}>Password<span style={{ color: "#FE512E" }}>*</span></label>
-              <input 
-                type={showPassword ? 'text' : 'password'} 
-                className="form-control" 
-                placeholder="Enter your password"  
-                style={{ fontSize: "14px" }}  
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
-              />
-              <span 
-                className="position-absolute" 
-                style={{ right: '10px', top: '30px', cursor: 'pointer' }} 
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+              <input type={showPassword ? 'text' : 'password'} className="form-control" placeholder="Enter your password"  style={{ fontSize: "14px" }}  value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <span className="position-absolute" style={{ right: '10px', top: '30px', cursor: 'pointer' }} onClick={() => setShowPassword(!showPassword)}><i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
               </span>
             </div>
-
+              {/* Error Message */}
             {errorMessage && <div className="mb-1" style={{ color: "#E74C3C", fontSize: '14px' }}>{errorMessage}</div>}
-            
+            {/* Remember Me */}
             <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
               <div className="form-check mb-0">
-                <input 
-                  className="form-check-input" 
-                  type="checkbox" 
-                  id="rememberMe" 
-                  checked={rememberMe} 
-                  onChange={() => setRememberMe(!rememberMe)} 
-                />
+                <input className="form-check-input" type="checkbox" id="rememberMe" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
                 <label className="form-check-label" style={{ color: "#A7A7A7" }} htmlFor="rememberMe">Remember me</label>
               </div>
+              {/* Forget Password */}
               <Link to='/forgetpassword' style={{ color: "#FE512E", fontSize: "14px", textDecoration: "none" }}>Forgot Password?</Link>
             </div>
             
-            <button 
-              type="submit" 
-              className="btn w-100" 
-              style={{ ...buttonStyle, fontWeight: "600" }} 
-              disabled={!isEmailValid || !isPasswordValid}
-            >
-              Sign In
-            </button>
-          </form>
-          
+            {/* Sign In Button */}
+            <button type="submit" className="btn w-100" style={{ ...buttonStyle, fontWeight: "600" }} disabled={!isEmailValid || !isPasswordValid}>Sign In</button>
+          </form> 
+
+          {/* Register Button */}
           <div className="text-center mt-3">
             <p>Don’t have an account?{' '}<Link style={{ color: "#FE512E", textDecoration: "none" }} to="/register">Registration</Link></p>
           </div>

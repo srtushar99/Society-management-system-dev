@@ -8,18 +8,7 @@ const LeftSection2 = () => {
       <h1 className='nunito-sans' style={{ position: 'absolute', top: '60px', left: '60px', fontSize: "40px", color: "rgba(254, 81, 46, 1)" }}>
         Dash<span style={{ color: "#202224" }}>Stack</span>
       </h1>
-      <img 
-        src={ForgotPasswordImage} 
-        alt="Forgot Password Illustration" 
-        className="img-fluid" 
-        style={{ 
-          maxWidth: '350px', 
-          height: 'auto',   
-          position: 'relative', 
-          marginTop: '50px',
-          objectFit: 'contain' 
-        }} 
-      />
+      <img src={ForgotPasswordImage} alt="Forgot Password Illustration" className="img-fluid" style={{ maxWidth: '350px', height: 'auto',   position: 'relative', marginTop: '50px',objectFit: 'contain' }} />
     </div>
   );
 }
