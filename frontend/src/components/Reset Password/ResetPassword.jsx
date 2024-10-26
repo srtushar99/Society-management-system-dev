@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LeftSection2 from '../Leftside/LeftSection2';
 import Group1000005849 from '../assets/Group 1000005849.png';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
