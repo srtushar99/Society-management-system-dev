@@ -1,6 +1,9 @@
 const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 const { generateTokenAndSetCookie } = require("../config/auth");
+const otpGenerator = require('otp-generator');
+const senData = require("../config/nodemailer"); // Adjust the path accordingly
+
 
 // Registration page
 
@@ -191,5 +194,103 @@ exports.findUserById = async (req, res) => {
     res.status(200).json({ message: 'User found', data: user });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+exports.SendOtp = async (req, res) => {
+  try {
+      const { EmailOrPhone } = req.body;
+      const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
+      const cdate = new Date();
+
+      let user;
+      if (EmailOrPhone.includes('@')) {
+          // Find user by Email_Address instead of Email
+          user = await User.findOne({ Email_Address: EmailOrPhone });
+          if (!user) {
+              return res.status(404).json({
+                  success: false,
+                  message: "Email not registered"
+              });
+          }
+
+          await User.findOneAndUpdate(
+              { Email_Address: EmailOrPhone },
+              { otp, otpExpiration: new Date(cdate.getTime()) },
+              { upsert: true, new: true, setDefaultsOnInsert: true }
+          );
+
+          // Send OTP via email
+          senData(user.Email_Address, "Forgot your password", otp);
+
+          return res.status(200).json({
+              success: true,
+              message: "OTP sent successfully to email"
+          });
+
+      } else {
+          // For phone number handling (to be added later)
+      }
+
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+          success: false,
+          message: "Internal server error"
+      });
+  }
+};
+
+
+exports.verifyOtp = async (req, res) => {
+  try {
+      const { EmailOrPhone, otp } = req.body;
+
+      let user;
+
+      if (EmailOrPhone.includes('@')) {
+          user = await User.findOne({ Email_Address: EmailOrPhone });
+      } else {
+          user = await User.findOne({ Phone: EmailOrPhone });
+      }
+      
+
+      if (!user) {
+          return res.status(404).json({
+              success: false,
+              message: "User not found"
+          });
+      }
+
+      // Check if OTP matches
+      if (user.otp !== otp) {
+          return res.status(400).json({
+              success: false,
+              message: "Invalid OTP"
+          });
+      }
+
+      // const currentDate = new Date();
+      // if (currentDate > user.otpExpiration) {
+      //     return res.status(400).json({
+      //         success: false,
+      //         message: "OTP has expired"
+      //     });
+      // }
+
+      // Clear OTP after successful verification
+      await User.findByIdAndUpdate(user._id, { otp: null, otpExpiration: null });
+
+      return res.status(200).json({
+          success: true,
+          message: "OTP verified successfully"
+      });
+
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+          success: false,
+          message: "Internal server error"
+      });
   }
 };

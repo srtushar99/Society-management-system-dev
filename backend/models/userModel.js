@@ -33,7 +33,17 @@ const userSchema = mongoose.Schema({
   Password:{
     type: String,
     required: true,
-  }
+  },
+  otp:{
+    type:String,
+},
+otpExpiration:{
+    type:Date,
+    default:Date.now,
+    get:(otpExpiration)=>otpExpiration.getTime(),
+    set:(otpExpiration)=>new Date(otpExpiration)
+}
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
