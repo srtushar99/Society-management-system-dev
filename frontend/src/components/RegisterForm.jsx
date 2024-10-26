@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import { Carousel } from 'react-bootstrap';
@@ -18,7 +18,17 @@ const RegisterForm = () => {
         confirmPassword: '',
         agree: false,
     });
-
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('savedEmail');
+        if (savedEmail) setEmail(savedEmail);
+      }, []);
+    
+      const validateEmail = (email) => email.endsWith('@gmail.com');
+      
+    const [email, setEmail] = useState('');
+  
+  
+    const [ setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -45,7 +55,14 @@ const RegisterForm = () => {
         const newErrors = {};
         if (!formData.firstName) newErrors.firstName = 'First Name is required';
         if (!formData.lastName) newErrors.lastName = 'Last Name is required';
-        if (!formData.email) newErrors.email = 'Email is required';
+        if (!formData.email) {
+            setErrorMessage('Please enter a valid email and password.');
+            return;
+          }
+          if (!validateEmail(email)) {
+            setErrorMessage('');
+            return;
+          }
         if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
         if (!formData.country) newErrors.country = 'Country is required';
         if (!formData.state) newErrors.state = 'State is required';
@@ -95,7 +112,7 @@ const RegisterForm = () => {
                     <Carousel interval={1500} className="w-100">
                         <Carousel.Item>
                             <img className="d-block w-100" src="/public/Group 1000005856.png" alt="First slide" style={{ maxHeight: '55vh', objectFit: 'cover', zIndex: "-9999" }} />
-                            <div style={{ position: "absolute", bottom: "-10px", zIndex: "7788777", width: "100%" }}>
+                            <div style={{ position: "absolute", bottom: "-10px", width: "100%" }}>
                                 <h3 style={{ color: "black" }}>Connect, Collaborate, and Control- <span style={{ color: "rgba(254, 81, 46, 1)" }}>Society</span></h3>
                                 <p style={{ color: "rgba(254, 81, 46, 1)" }}>Management<span style={{ color: "black" }}> Simplified</span></p>
                             </div>
@@ -103,7 +120,7 @@ const RegisterForm = () => {
                         <Carousel.Item>
                             <img className="d-block w-100" src="/public/Group 1000005870.png" alt="Second slide" style={{ maxHeight: '60vh', objectFit: 'cover' }} />
                             <Carousel.Caption>
-                                <div style={{ position: "absolute", bottom: "-10px", zIndex: "7788777", width: "100%" }}>
+                                <div style={{ position: "absolute", bottom: "-10px", width: "100%" }}>
                                     <h3 style={{ color: "black" }}>Your Space, Your Place: Society Management</h3>
                                     <p style={{ color: "black" }}>Made Simple</p>
                                 </div>
@@ -156,7 +173,7 @@ const RegisterForm = () => {
                                 {errors.city && <small className="text-danger">{errors.city}</small>}
                             </div>
                         </div>
-                        <div className="mb-3 ">
+                        <div className="mb-3 mx-3">
                             <label>Select Society <span className="text-danger">*</span></label>
                             <select name="society" value={formData.society} onChange={handleChange} className="form-control" required>
                                 <option value="">Select Society...</option>
@@ -168,31 +185,31 @@ const RegisterForm = () => {
                                 <option value="society6">Ridhi-Shidhi Society</option>
                             </select>
                             {errors.society && <small className="text-danger">{errors.society}</small>}
-                            <button type="button" onClick={() => setShowModal(true)} className="btn mt-2" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Create Society</button>
+                            <button type="button " onClick={() => setShowModal(true)} className="btn mt-2 " style={{ backgroundColor: "rgba(240, 150, 25, 1)", }}>Create Society</button>
                         </div>
-                        <div className="mb-3" style={{ position: "relative" }}>
+                        <div className="mb-3 mx-3" style={{ position: "relative" }}>
                             <label>Password <span className="text-danger">*</span></label>
                             <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} placeholder='Enter Password' onChange={handleChange} className="form-control" />
                             {errors.password && <small className="text-danger">{errors.password}</small>}
-                            <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "45%" }}>
+                            <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "37%" ,height:"37px"}}>
                                 <i className={`fas ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </span>
                         </div>
-                        <div className="mb-3" style={{ position: "relative" }}>
+                        <div className="mb-3 mx-3" style={{ position: "relative" }}>
                             <label>Confirm Password <span className="text-danger">*</span></label>
                             <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} placeholder='Confirm Password' onChange={handleChange} className="form-control" />
                             {errors.confirmPassword && <small className="text-danger">{errors.confirmPassword}</small>}
-                            <span className="input-group-text" onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "45%" }}>
+                            <span className="input-group-text" onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "37%" ,height:"37px"}}>
                                 <i className={`fas ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </span>
                         </div>
-                        <div className="form-check mb-3">
+                        <div className="form-check mb-3 mx-3">
                             <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} className="form-check-input" required />
                             <label className="form-check-label">I agree to the terms and conditions</label>
                             {errors.agree && <small className="text-danger">{errors.agree}</small>}
                         </div>
-                        <button type="submit" className="btn w-100" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Register</button>
-                        <p className="my-2">Already have an account? <Link to="/login" className="text-primary">Log in</Link></p>
+                        <button type="submit" className="btn  mx-3" style={{ backgroundColor: "rgba(240, 150, 25, 1)" ,width:"96%"}}>Register</button>
+                        <p className="my-2 mx-3">Already have an account? <Link to="/login" className="text-primary">Log in</Link></p>
                     </form>
 
                     {showModal && (
@@ -201,19 +218,19 @@ const RegisterForm = () => {
                                 <div className="modal-content">
                                     <div className="modal-header">
                                         <h5 className="modal-title">Create New Society</h5>
-                                        <button type="button" className="close" onClick={() => setShowModal(false)}>&times;</button>
+                                        
                                     </div>
                                     <div className="modal-body">
-                                        <div className="mb-3">
+                                        <div className="mb-3 ms-2 ">
                                             <label>Society Name <span className="text-danger">*</span></label>
                                             <input type="text" value={newSocietyData.name} onChange={(e) => setNewSocietyData({ ...newSocietyData, name: e.target.value })} className="form-control" required />
                                         </div>
-                                        <div className="mb-3">
+                                        <div className="mb-3 ms-2">
                                             <label>Address <span className="text-danger">*</span></label>
                                             <input type="text" value={newSocietyData.address} onChange={(e) => setNewSocietyData({ ...newSocietyData, address: e.target.value })} className="form-control" required />
                                         </div>
                                         <div className="row">
-                                            <div className="col-6 mb-3">
+                                            <div className="col-6 mb-3 ">
                                                 <label>Country <span className="text-danger">*</span></label>
                                                 <input type="text" value={newSocietyData.country} onChange={(e) => setNewSocietyData({ ...newSocietyData, country: e.target.value })} className="form-control" required />
                                             </div>
