@@ -1,72 +1,38 @@
-import React from 'react';
-import { Container, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
-import { FaSearch, FaBell } from 'react-icons/fa';
+import { Search } from 'lucide-react';
+import NotificationIcon from '../assets/notification-bing.png';
+import AvatarImage from '../assets/Avatar.png';
 
 const Header = () => {
-  const headerStyle = {
-    width: '1640px',
-    padding: '10px 25px',
-    background: '#FFFFFF',
-    position: 'fixed',
-    left: '280px',
-    top: '0',
-    zIndex: 1000,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  };
-
-  const userNameStyle = {
-    marginLeft: '10px', // Space between icon and name
-    fontWeight: 'bold',
-    color: '#202224',
-  };
-
-  const notificationIconStyle = {
-    width: '26px',
-    height: '26px',
-    color: '#202224', // Font color
-  };
-
-  const notificationWrapperStyle = {
-    width: '42px',
-    height: '42px',
-    padding: '8px 0 0 0',
-    borderRadius: '10px',
-    border: '1px solid #D3D3D3', // Border color
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
   return (
-    <Container fluid style={headerStyle}>
-      <Row style={{ width: '60%', alignItems: 'center' }}>
-        <Col md={6} xs={12}>
-          <InputGroup style={{ background: "#F6F8FB", borderRadius: '10px' }}>
-            <InputGroup.Text style={{ background: "#F6F8FB", border: 'none', borderRadius: '10px 0 0 10px' }}>
-              <FaSearch />
-            </InputGroup.Text>
-            <FormControl
-              style={{
-                background: "#F6F8FB",
-                width: "335px",
-                border: 'none',
-                borderRadius: '0 10px 10px 0',
-              }}
-              placeholder="Search Here"
-              aria-label="Search"
-            />
-          </InputGroup>
-        </Col>
-        <Col md={6} xs={12} className="d-flex justify-content-end align-items-center">
-          <div style={notificationWrapperStyle}>
-            <FaBell size={24} style={notificationIconStyle} />
+    <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
+      <div className="relative" style={{ marginLeft: "350px" }}>
+        <Search className="absolute left-3 rounded  top-1/2 transform -translate-y-1/2  h-5 w-5" />
+        <input
+          type="text"
+          placeholder="Search Here"
+          className="pl-10 pr-4 py-2 w-64 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div className="flex items-center space-x-4">
+        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
+          <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
+         
+        </button>
+        <div className="flex items-center space-x-3">
+          <img
+            src={AvatarImage}
+            alt="Moni Roy"
+            width="40"
+            height="40"
+            className="rounded-full"
+          />
+          <div className="flex flex-col items-start">
+            <span className="font-medium text-sm">Moni Roy</span>
+            <span className="text-xs text-gray-500">Admin</span>
           </div>
-          <span style={userNameStyle}>Moni Roy</span>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </header>
   );
 };
 

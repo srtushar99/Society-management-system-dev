@@ -1,27 +1,18 @@
 import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import 'font-awesome/css/font-awesome.min.css'; 
-import DashboardIcon from './icons/dashboardIcon.svg';
+import DashboardIcon from './icons/Widget 5.png';
 import FinacialIcon from './icons/Finacial.svg';
 import FacilitiesIcon from './icons/domain.svg';
-import ComplaintsTrackingIcon from './icons/sms-tracking.png'; // Adjust the path accordingly
+import ComplaintsTrackingIcon from './icons/sms-tracking.png';
+import SecurityIcon from './icons/encrypted.svg';
+import SecurityGuardIcon from './icons/security-user.png';
+import AnnouncementIcon from './icons/Announcement.png';
 
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState('dashboard');
 
-  const sidebarStyle = {
-    width: '265px',
-    height: '100vh',
-    background: '#F8F9FA',
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    padding: '20px',
-    boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
+ 
   const navLinkStyle = {
     color: '#4F4F4F',
     textDecoration: 'none',
@@ -33,6 +24,7 @@ const Sidebar = () => {
     borderRadius: '5px',
     marginBottom: '10px',
     transition: 'background 0.3s, color 0.3s',
+    width: '90%',
   };
 
   const getLinkStyle = (link) => ({
@@ -41,16 +33,9 @@ const Sidebar = () => {
     color: activeLink === link ? '#FFFFFF' : '#4F4F4F',
   });
 
-  const getDashboardStyle = () => ({
-    ...getLinkStyle('dashboard'),
-    fontWeight: 'bold',
-    fontSize: '18px',
-  });
-
   const getIndicatorStyle = (link) => ({
-    marginRight: "10px",
     position: 'absolute',
-    left: '0',
+    left: '-15px', 
     width: '7px',
     height: '52px',
     borderRadius: '0 5px 5px 0',
@@ -61,80 +46,39 @@ const Sidebar = () => {
     setActiveLink(link);
   };
 
+  const getIconStyle = (link) => ({
+    marginRight: '10px',
+    width: '20px',
+    height: '20px',
+    filter: activeLink === link ? 'brightness(0) invert(1)' : 'none',
+  });
+
   return (
-    <div style={sidebarStyle}>
-      <div style={{ marginBottom: '20px' }}>
-        <p style={{ color: '#4F4F4F', fontSize: '24px', fontWeight: 'bold' }}>DashStack</p>
+    <div style={{ width: '320px',height: '100vh',background: '#F8F9FA',position: 'fixed',padding: '20px',boxShadow: '2px 0 5px rgba(0,0,0,0.1)',display: 'flex',flexDirection: 'column',}}><div style={{ marginBottom: '20px' }}>
+        <h1 className='nunito-sans' style={{ textAlign: "center", fontWeight: "bold", fontSize: "30px", color: "rgba(254, 81, 46, 1)" }}>
+          Dash<span style={{ color: "#202224" }}>Stack</span>
+        </h1>
       </div>
       <Nav className="flex-column">
-        <Nav.Link 
-          href="" 
-          style={getDashboardStyle()} 
-          onClick={() => handleLinkClick('dashboard')}
-        >
-          <img src={DashboardIcon} alt="Dashboard" style={{ marginRight: '10px', width: '24px', height: '24px' }} />
-          Dashboard
-        </Nav.Link>
-        
-        <Nav.Link 
-          href="" 
-          style={getLinkStyle('residents')} 
-          onClick={() => handleLinkClick('residents')}
-        >
-          <div style={getIndicatorStyle('residents')}></div>
-          <i className="fa-solid fa-money-bill" style={{ marginRight: '10px' }}></i> 
-          Residents
-        </Nav.Link>
-
-        <Nav.Link 
-          href="" 
-          style={getLinkStyle('financial-management')} 
-          onClick={() => handleLinkClick('financial-management')}
-        >
-          <div style={getIndicatorStyle('financial-management')}></div>
-          <img src={FinacialIcon} alt="Financial Management" style={{ marginRight: '10px', width: '24px', height: '24px' }} />
-          Financial Management
-        </Nav.Link>
-
-        <Nav.Link 
-          href="" 
-          style={getLinkStyle('facilities')} 
-          onClick={() => handleLinkClick('facilities')}
-        >
-          <div style={getIndicatorStyle('facilities')}></div>
-          <img src={FacilitiesIcon} alt="Facilities" style={{ marginRight: '10px', width: '24px', height: '24px' }} />
-          Facilities
-        </Nav.Link>
-
-        <Nav.Link 
-          href="" 
-          style={getLinkStyle('complaints')} 
-          onClick={() => handleLinkClick('complaints')}
-        >
-          <div style={getIndicatorStyle('complaints')}></div>
-          <img src={ComplaintsTrackingIcon} alt="Complaints Tracking" style={{ marginRight: '10px', width: '24px', height: '24px' }} />
-          Complaints Tracking
-        </Nav.Link>
-
-        {['security', 'announcements'].map((link) => (
-          <Nav.Link 
-            key={link} 
-            href={`/${link}`} 
-            style={getLinkStyle(link)} 
-            onClick={() => handleLinkClick(link)}
-          >
+        {['dashboard', 'Resident-Manegement', 'Financial-Management', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map(link => (
+          <div key={link} style={{ position: 'relative' }}>
             <div style={getIndicatorStyle(link)}></div>
-            {link.charAt(0).toUpperCase() + link.slice(1).replace(/_/g, ' ')}
-          </Nav.Link>
+            <Nav.Link href="" style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
+              {link === 'dashboard' && <img src={DashboardIcon} style={getIconStyle(link)} alt="Dashboard" />}
+              {link === 'Resident-Manegement' && <i className="fa-solid fa-money-bill" style={{ marginRight:'10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>}
+              {link === 'Financial-Management' && <img src={FinacialIcon} style={getIconStyle(link)} alt="Financial Management" />}
+              {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities  " />}
+              {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
+              {link === 'security-Management' && <img src={SecurityIcon} style={getIconStyle(link)} alt="Security Management" />}
+              {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
+              {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
+              {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
+            </Nav.Link>
+          </div>
         ))}
       </Nav>
       <div style={{ marginTop: 'auto' }}>
-        <Nav.Link 
-          href="/logout" 
-          style={{ color: "#E74C3C", padding: '0 10px', height: '52px' }} 
-          onClick={() => handleLinkClick('logout')}
-        >
-          <i className="fa fa-sign-out" style={{ marginRight: '8px' }}></i> Logout
+        <Nav.Link href="" style={{ color: "#E74C3C", padding: '0 10px', height: '52px' }} onClick={() => handleLinkClick('logout')}><i className="fa fa-sign-out" style={{ marginRight: '8px', color: '#E74C3C' }}></i> Logout
         </Nav.Link>
       </div>
     </div>
