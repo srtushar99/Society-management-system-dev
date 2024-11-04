@@ -192,7 +192,7 @@ const RegisterForm = () => {
                             {errors.agree && <small className="text-danger">{errors.agree}</small>}
                         </div>
                         <button type="submit" className="btn w-100" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Register</button>
-                        <p className="my-2">Already have an account? <Link to="/login" className="text-primary">Log in</Link></p>
+                        <p className="my-2">Already have an account? <Link to="/" className="text-primary">Log in</Link></p>
                     </form>
 
                     {showModal && (

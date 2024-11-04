@@ -112,7 +112,7 @@ const LoginPage = () => {
 
           {/* Register Button */}
           <div className="text-center mt-3">
-            <p>Don’t have an account?{' '}<Link style={{ color: "#FE512E", textDecoration: "none" }} to="/register">Registration</Link></p>
+            <p>Don’t have an account?{' '}<Link style={{ color: "#FE512E", textDecoration: "none" }} to="/registerForm">Registration</Link></p>
           </div>
         </div>
       </div>

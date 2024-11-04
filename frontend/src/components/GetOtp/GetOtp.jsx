@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import Group1000005849 from '../assets/Group 1000005849.png';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
 import LeftSection2 from '../Leftside/LeftSection2';
 
 const GetOtp = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { emailOrPhone } = location.state || {};
   const [otp, setOtp] = useState(Array(6).fill(''));
   const [errorMessage, setErrorMessage] = useState('');
@@ -58,12 +57,12 @@ const GetOtp = () => {
   const handleVerifyOtp = () => {
     const enteredOtp = otp.join('');
     
-    // Replace this condition with actual verification logic
-    const isValidOtp = enteredOtp === '123456'; // Example valid OTP for testing
+    const isValidOtp = enteredOtp === '123456'; 
 
     if (isValidOtp) {
       console.log('Verifying OTP:', enteredOtp);
-      // Proceed with the successful verification logic
+      // Redirect to reset password page upon successful verification
+      navigate('/resetpassword');
     } else {
       setIsOtpWrong(true);
       setErrorMessage('Wrong OTP entered.');
@@ -89,7 +88,15 @@ const GetOtp = () => {
           {/* OTP Inputs */}
           <div className="d-flex justify-content-between mb-2 flex-wrap">
             {otp.map((value, index) => (
-              <input key={index} id={`otp-input-${index}`} type="text" value={value} onChange={(e) => handleChangeOtp(index, e.target.value)} style={{ width: '40px', height: '40px', textAlign: 'center', fontSize: '15px', border: `1px solid ${isOtpWrong ? '#E11D29' : value ? '#202224' : '#D3D3D3'}`, borderRadius: "5px", backgroundColor: '#FFF', color: isOtpWrong ? '#E11D29' : '#000'}} maxLength="1" />
+              <input 
+                key={index} 
+                id={`otp-input-${index}`} 
+                type="text" 
+                value={value} 
+                onChange={(e) => handleChangeOtp(index, e.target.value)} 
+                style={{ width: '40px', height: '40px', textAlign: 'center', fontSize: '15px', border: `1px solid ${isOtpWrong ? '#E11D29' : value ? '#202224' : '#D3D3D3'}`, borderRadius: "5px", backgroundColor: '#FFF', color: isOtpWrong ? '#E11D29' : '#000'}} 
+                maxLength="1" 
+              />
             ))}
           </div>
           {errorMessage && <div className="mb-1 text-danger" style={{ fontSize: '14px' }}>{errorMessage}</div>}
@@ -107,9 +114,14 @@ const GetOtp = () => {
             </Link>
           </div>
           
-          
           {/* Verify Button */}
-          <button onClick={handleVerifyOtp} className="btn w-100" style={{ background: isOtpFilled ? 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)' : '#F6F8FB', color: isOtpFilled ? '#FFFFFF' : '#A7A7A7', }} disabled={!isOtpFilled} > Verify
+          <button 
+            onClick={handleVerifyOtp} 
+            className="btn w-100" 
+            style={{ background: isOtpFilled ? 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)' : '#F6F8FB', color: isOtpFilled ? '#FFFFFF' : '#A7A7A7' }} 
+            disabled={!isOtpFilled}
+          >
+            Verify
           </button>
         </div>
       </div>
