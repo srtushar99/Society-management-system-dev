@@ -21,14 +21,14 @@ const RegisterForm = () => {
     useEffect(() => {
         const savedEmail = localStorage.getItem('savedEmail');
         if (savedEmail) setEmail(savedEmail);
-      }, []);
-    
-      const validateEmail = (email) => email.endsWith('@gmail.com');
-      
+    }, []);
+
+    const validateEmail = (email) => email.endsWith('@gmail.com');
+
     const [email, setEmail] = useState('');
-  
-  
-    const [ setErrorMessage] = useState('');
+
+
+    const [setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -58,11 +58,11 @@ const RegisterForm = () => {
         if (!formData.email) {
             setErrorMessage('Please enter a valid email and password.');
             return;
-          }
-          if (!validateEmail(email)) {
+        }
+        if (!validateEmail(email)) {
             setErrorMessage('');
             return;
-          }
+        }
         if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
         if (!formData.country) newErrors.country = 'Country is required';
         if (!formData.state) newErrors.state = 'State is required';
@@ -127,8 +127,9 @@ const RegisterForm = () => {
                             </Carousel.Caption>
                         </Carousel.Item>
                     </Carousel>
+                 
                 </div>
-
+                
                 <div className="col-md-6">
                     <h2 className="mt-4">Registration</h2>
                     <form onSubmit={handleSubmit} className="p-3 border rounded shadow">
@@ -191,7 +192,7 @@ const RegisterForm = () => {
                             <label>Password <span className="text-danger">*</span></label>
                             <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} placeholder='Enter Password' onChange={handleChange} className="form-control" />
                             {errors.password && <small className="text-danger">{errors.password}</small>}
-                            <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "37%" ,height:"37px"}}>
+                            <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "37%", height: "37px" }}>
                                 <i className={`fas ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </span>
                         </div>
@@ -199,58 +200,62 @@ const RegisterForm = () => {
                             <label>Confirm Password <span className="text-danger">*</span></label>
                             <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} placeholder='Confirm Password' onChange={handleChange} className="form-control" />
                             {errors.confirmPassword && <small className="text-danger">{errors.confirmPassword}</small>}
-                            <span className="input-group-text" onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "37%" ,height:"37px"}}>
+                            <span className="input-group-text" onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "37%", height: "37px" }}>
                                 <i className={`fas ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </span>
                         </div>
-                        <div className="form-check mb-3 mx-3">
+                        <div className="form-check mb-3 mx-3 fc-bt">
                             <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} className="form-check-input" required />
                             <label className="form-check-label">I agree to the terms and conditions</label>
                             {errors.agree && <small className="text-danger">{errors.agree}</small>}
                         </div>
-                        <button type="submit" className="btn  mx-3" style={{ backgroundColor: "rgba(240, 150, 25, 1)" ,width:"96%"}}>Register</button>
-                        <p className="my-2 mx-3">Already have an account? <Link to="/login" className="text-primary">Log in</Link></p>
+                        <button type="submit" className="btn  mx-3" style={{ backgroundColor: "rgba(240, 150, 25, 1)", width: "96%" }}>Register</button>
+                        <p className="my-2 mx-3">Already have an account? <Link to="/" className="text-primary">Log in</Link></p>
                     </form>
 
                     {showModal && (
-                        <div className="modal show" style={{ display: 'block' }}>
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className="modal-title">Create New Society</h5>
-                                        
-                                    </div>
-                                    <div className="modal-body">
-                                        <div className="mb-3 ms-2 ">
-                                            <label>Society Name <span className="text-danger">*</span></label>
-                                            <input type="text" value={newSocietyData.name} onChange={(e) => setNewSocietyData({ ...newSocietyData, name: e.target.value })} className="form-control" required />
+
+                        <div className='modal-overlay'>
+
+                            <div className="modal show" style={{ display: 'block' }}>
+                                <div className="modal-dialog">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">Create New Society</h5>
+
                                         </div>
-                                        <div className="mb-3 ms-2">
-                                            <label>Address <span className="text-danger">*</span></label>
-                                            <input type="text" value={newSocietyData.address} onChange={(e) => setNewSocietyData({ ...newSocietyData, address: e.target.value })} className="form-control" required />
+                                        <div className="modal-body">
+                                            <div className="mb-3  " >
+                                                <label style={{ marginLeft: "10px" }}>Society Name <span className="text-danger">*</span></label>
+                                                <input type="text" value={newSocietyData.name} onChange={(e) => setNewSocietyData({ ...newSocietyData, name: e.target.value })} className="form-control " style={{ width: "94%", padding: "6px 18px", marginLeft: "10px " }} required />
+                                            </div>
+                                            <div className="mb-3  ">
+                                                <label style={{ marginLeft: "10px" }}>Address <span className="text-danger">*</span></label>
+                                                <input type="text" value={newSocietyData.address} onChange={(e) => setNewSocietyData({ ...newSocietyData, address: e.target.value })} className="form-control" style={{ width: "94%", padding: "6px 18px ", marginLeft: "10px" }} required />
+                                            </div>
+                                            <div className="row ">
+                                                <div className="col-6 mb-3 ">
+                                                    <label>Country <span className="text-danger">*</span></label>
+                                                    <input type="text" value={newSocietyData.country} onChange={(e) => setNewSocietyData({ ...newSocietyData, country: e.target.value })} className="form-control" required />
+                                                </div>
+                                                <div className="col-6 mb-3">
+                                                    <label>State <span className="text-danger">*</span></label>
+                                                    <input type="text" value={newSocietyData.state} onChange={(e) => setNewSocietyData({ ...newSocietyData, state: e.target.value })} className="form-control" required />
+                                                </div>
+                                                <div className="col-6 mb-3">
+                                                    <label>City <span className="text-danger">*</span></label>
+                                                    <input type="text" value={newSocietyData.city} onChange={(e) => setNewSocietyData({ ...newSocietyData, city: e.target.value })} className="form-control" required />
+                                                </div>
+                                                <div className="col-6 mb-3">
+                                                    <label>Zip Code <span className="text-danger">*</span></label>
+                                                    <input type="text" value={newSocietyData.zipCode} onChange={(e) => setNewSocietyData({ ...newSocietyData, zipCode: e.target.value })} className="form-control" required />
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="row">
-                                            <div className="col-6 mb-3 ">
-                                                <label>Country <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.country} onChange={(e) => setNewSocietyData({ ...newSocietyData, country: e.target.value })} className="form-control" required />
-                                            </div>
-                                            <div className="col-6 mb-3">
-                                                <label>State <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.state} onChange={(e) => setNewSocietyData({ ...newSocietyData, state: e.target.value })} className="form-control" required />
-                                            </div>
-                                            <div className="col-6 mb-3">
-                                                <label>City <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.city} onChange={(e) => setNewSocietyData({ ...newSocietyData, city: e.target.value })} className="form-control" required />
-                                            </div>
-                                            <div className="col-6 mb-3">
-                                                <label>Zip Code <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.zipCode} onChange={(e) => setNewSocietyData({ ...newSocietyData, zipCode: e.target.value })} className="form-control" required />
-                                            </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn border" onClick={() => setShowModal(false)}>Cancel</button>
+                                            <button onClick={handleAddSociety} className="btn border">Save</button>
                                         </div>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn border" onClick={() => setShowModal(false)}>Cancel</button>
-                                        <button onClick={handleAddSociety} className="btn border">Save</button>
                                     </div>
                                 </div>
                             </div>

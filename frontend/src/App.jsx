@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
 import RegisterForm from './components/RegisterForm';
-import React from 'react';
 import LoginPage from './components/LoginPage/LoginPage'; 
 import ForgetPasswordPage from './components/Forget Password/ForgotPasswordPage'; 
 import GetOtp from './components/GetOtp/GetOtp';

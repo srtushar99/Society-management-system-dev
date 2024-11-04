@@ -56,7 +56,7 @@ const LoginPage = () => {
   const buttonStyle = email && password 
     ? { background: 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)', color: '#fff' } 
     : { backgroundColor: '#F4F4F4', color: '#A7A7A7' };
-
+   
   return (
     <div className="container-fluid vh-100 d-flex flex-column flex-md-row">
       {/* Left Section */}
@@ -99,7 +99,7 @@ const LoginPage = () => {
           </form>
             {/* Register */}
           <div className="text-center mt-3">
-             <p>Don’t have an account?{' '}<Link style={{ color: "#FE512E",textDecoration:"none" }} href="/register">Registration</Link></p>
+             <p>Don’t have an account?{' '}<Link style={{ color: "#FE512E", }} to="/registerForm">Registration</Link></p>
           </div>
         </div>
       </div>

@@ -86,6 +86,7 @@ const ForgotPasswordPage = () => {
                 style={{ ...buttonStyle, fontWeight: "600" }} 
                 disabled={!isInputValid}
               >
+                <Link to="getotp"></Link>
                 Get OTP
               </button>
             </form>
