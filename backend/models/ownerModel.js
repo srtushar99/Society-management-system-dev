@@ -1,41 +1,86 @@
-const { default: mongoose } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const OwnerSchema = new mongoose.Schema({
-    Full_Name: {
-        type: String,
-        required: true,
+const Ownerschema= new Schema({
+    Owner_image:{
+        type:String,
+         required:true
     },
-    Phone_Number: {
-        type: Number,
-        required: true,
+    Full_name:{
+        type:String,
+        required:true
     },
-    Email_Address: {
-        type: String,
-        required: true, 
+    Phone_number:{
+        type:String,
+        required:true
+    },
+    Email_address:{
+        type:String,
+        required:true
     },
     Age:{
-        type: Number,
-        required:true,
+        type:Number,
+        required:true
     },
     Gender:{
-        type: String,
+        type:String,
         required:true,
+        enum: ['Male', 'Female', 'Other']
     },
     Wing:{
-        type: String,
-        required:true,
+        type:String,
+        required:true
     },
     Unit:{
-        type: String,
+        type:Number,
         required:true,
     },
     Relation:{
-        type: String,
-        required:true,
+        type:String,
+        required:true
     },
+    Adhar_front:{
+        type:String,
+        required:true
+    },
+    Adhar_back:{
+        type:String,
+        required:true
+    },
+    Address_proof:{
+        type:String,
+        required:true
+    },
+    Rent_Agreement:{
+        type:String,
+        required:true
+    },
+    Member_Counting: [{
+        Full_name: { type: String, required: true },
+        Phone_number: { type: String, required: true },
+        Email_address: { type: String, required: true },
+        Age: { type: Number, required: true },
+        Gender: { type: String, required: true },
+        Relation: { type: String, required: true }
+    }],
+    Vehicle_Counting: [{
+        vehicle_type: { type: String, required: true },
+        vehicle_name: { type: String, required: true },
+        vehicle_number: { type: String, required: true }
+    }],
+    // cloudinary_id: {
+    //     type: String,
+    //   },
+    role: {
+        type: String,
+        enum: ['admin', 'resident', 'security'], 
+        default: 'resident' 
+    },
+   password: {  // Add this field to store the hashed password
+        type: String,
+        required: true
+    },
+},{timestamps:true})
 
-}, 
-    { timestamps: true });  
 
-const Owner = mongoose.model('Owner', OwnerSchema);
-module.exports = Owner;
+const Owner = model("Owner",Ownerschema);
+module.exports=Owner;

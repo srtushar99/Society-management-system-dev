@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import * as React from "react";
+import { useState, useEffect  } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import { Carousel } from 'react-bootstrap';
+import axiosInstance from './Common/axiosInstance';
 import './styles.css' // Make sure to create this file for styles
 import axios from 'axios';
+import { Button, Dropdown } from 'react-bootstrap';
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -20,6 +23,36 @@ const RegisterForm = () => {
         Confirm_password: '',
         // agree: false,
     });
+
+    const [selectedSociety, setSelectedSociety] = useState(null);
+    const [societies, setSocieties] = useState([]);
+
+    // const societies = [
+    //     'Shantigram residency',
+    //     'Russett House Park',
+    //     'Saunya residency',
+    //     'Shamruddh Avenyu',
+    //     'Utsav society',
+    //     'Murlidhar',
+    //     'Shree Sharanam',
+    //     'Vasantnagar township'
+    // ];
+    // const societies = [
+    //     { id: 1, name: 'Shantigram residency' },
+    //     { id: 2, name: 'Russett House Park' },
+    //     { id: 3, name: 'Saunya residency' },
+    //     { id: 4, name: 'Shamruddh Avenyu' },
+    //     { id: 5, name: 'Utsav society' },
+    //     { id: 6, name: 'Murlidhar' },
+    //     { id: 7, name: 'Shree Sharanam' },
+    //     { id: 8, name: 'Vasantnagar township' },
+    // ];
+
+    const handleSelect = (society) => {
+        const societyID = society._id;
+        const societyName = society.Society_name;
+        setSelectedSociety({id: societyID, name: societyName});
+    };
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -53,6 +86,8 @@ const RegisterForm = () => {
         if (!formData.State) newErrors.State = 'State is required';
         if (!formData.City) newErrors.City = 'City is required';
         if (!formData.select_society) newErrors.select_society = 'Society is required';
+      //  if (!formData.select_society) newErrors.select_society = 'Society is required';
+      if (!selectedSociety) newErrors.selectedSociety = 'Society is required';
         if (!formData.Password) newErrors.Password = 'Password is required';
         if (!formData.Confirm_password) newErrors.Confirm_password = 'Confirm Password is required';
         if (formData.Password !== formData.Confirm_password) newErrors.Confirm_password = 'Passwords do not match';
@@ -75,9 +110,16 @@ const RegisterForm = () => {
         e.preventDefault();
         if (validateForm()) {
             try {
+                // Merge the objects
+                const mergedData = {
+                    ...formData,                   
+                    select_society: selectedSociety.id   
+                };
+
                 // Make the API call
-                const { agree, ...dataToSend } = formData; 
-                 const response = await axios.post('http://localhost:5000/api/v1/Registration', dataToSend );
+                const { agree, ...dataToSend } = mergedData; 
+                console.log(selectedSociety);
+                const response = await axiosInstance.post('/v1/Registration', dataToSend );
                 console.log('Form submitted:', response.data);
                 alert('Registration successful!');
             } catch (error) {
@@ -101,6 +143,23 @@ const RegisterForm = () => {
             alert('Please fill in all society details.');
         }
     };
+
+     // Fetch societies from the API
+    const fetchSocieties = async () => {
+        try {
+            const response = await axiosInstance.get('/societies/');
+            console.log('Societies:', response.data);
+            setSocieties(response.data.data); 
+        } catch (error) {
+            console.error('Error fetching societies:', error);
+            alert('Failed to load societies');
+        }
+    };
+
+   
+    useEffect(() => {
+        fetchSocieties();
+    }, []);
 
 
     return (
@@ -175,9 +234,10 @@ const RegisterForm = () => {
                                 {errors.City && <small className="text-danger">{errors.City}</small>}
                             </div>
                         </div>
-                        <div className="mb-3 ">
+                        {/* <div className="mb-3 ">
                             <label>Select Society <span className="text-danger">*</span></label>
                             <select name="select_society" value={formData.select_society} onChange={handleChange} className="form-control">
+                            <select name="select_society" value={formData.select_society} onChange={handleChange} className="form-control" required>
                                 <option value="">Select Society...</option>
                                 <option value="67196b876b61776c49dc8a19">Shantigram Society</option>
                                 <option value="society2">Shivpark Society</option>
@@ -185,10 +245,40 @@ const RegisterForm = () => {
                                 <option value="society4">Gokuldham Society</option>
                                 <option value="society5">Anandhara Society</option>
                                 <option value="society6">Ridhi-Shidhi Society</option>
+                                <option><button type="submit" className="btn w-100" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Register</button></option>
                             </select>
                             {errors.select_society && <small className="text-danger">{errors.select_society}</small>}
                             <button type="button" onClick={() => setShowModal(true)} className="btn mt-2" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Create Society</button>
+                        </div> */}
+
+                        <div className="mb-3 ">
+                        <label>Select Society <span className="text-danger">*</span></label>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="outline-secondary" className="w-100 text-left">
+                                {selectedSociety ? selectedSociety.name : 'Select Society'}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu className="w-100">
+                                {societies.map((society) => (
+                                    <Dropdown.Item
+                                        key={society._id}
+                                        eventKey={society._id}
+                                        onClick={() => handleSelect(society)}
+                                    >
+                                        {society.Society_name}
+                                    </Dropdown.Item>
+                                ))}
+                                <div className="d-flex justify-content-center p-2">
+                                <Button onClick={() => setShowModal(true)} className="btn mt-2" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>
+                                        Create Society
+                                    </Button>
+                                </div>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        {errors.selectedSociety && <small className="text-danger">{errors.selectedSociety}</small>}
                         </div>
+
+        
                         <div className="mb-3" style={{ position: "relative" }}>
                             <label>Password <span className="text-danger">*</span></label>
                             <input type={showPassword ? 'text' : 'Password'} name="Password" value={formData.Password} placeholder='Enter Password' onChange={handleChange} className="form-control" />

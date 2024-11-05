@@ -84,6 +84,7 @@ const LoginPage = () => {
       <LeftSection />
       <div className="col-md-6 d-flex justify-content-center align-items-center position-relative">
         <img src={Group1000005849} alt="Background" className="img-fluid" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }} />
+        {/* Login */}
         <div className="card p-4 border-0 rounded shadow" style={{ width: '90%', maxWidth: '400px', zIndex: 1 }}>
           <h2 className="mb-4 poppins-semibold text-center">Login</h2>
           <form className='m-3' onSubmit={handleLogin}>
