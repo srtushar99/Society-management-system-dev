@@ -7,4 +7,4 @@ cloudinary.config({
 });
 console.log('Cloudinary Config:', process.env.CLOUD_NAME, process.env.api_key);
 
-module.exports= cloudinary;
+module.exports= cloudinary; 
