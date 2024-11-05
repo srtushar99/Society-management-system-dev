@@ -251,7 +251,7 @@ const RegisterForm = () => {
                             <button type="button" onClick={() => setShowModal(true)} className="btn mt-2" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Create Society</button>
                         </div> */}
 
-                        <div className="mb-3 ">
+                        <div className="mb-3  " style={{width:"97%",marginLeft:"11px",paddingRight:"2px"}}>
                         <label>Select Society <span className="text-danger">*</span></label>
                         <Dropdown>
                             <Dropdown.Toggle variant="outline-secondary" className="w-100 text-left">
