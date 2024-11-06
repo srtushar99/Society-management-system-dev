@@ -53,7 +53,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
+    <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm h-[70px]">
       <div className="relative" style={{ marginLeft: "350px" }}>
         <Search className="absolute left-3 rounded top-1/2 transform -translate-y-1/2 h-5 w-5" />
         <input

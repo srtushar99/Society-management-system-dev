@@ -44,7 +44,7 @@ const ContactsPage = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 ml-5" style={{ width: "400px", height: "436px", marginTop: "8px" }}>
+    <div className="bg-white rounded-lg shadow-md p-4 ml-9" style={{ width: "350px", height: "400px" }}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Important Numbers</h2>
         <button

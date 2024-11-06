@@ -54,7 +54,7 @@ const Sidebar = () => {
   });
 
   return (
-    <div style={{ width: '320px',height: '100vh',background: '#F8F9FA',position: 'fixed',padding: '20px',boxShadow: '2px 0 5px rgba(0,0,0,0.1)',display: 'flex',flexDirection: 'column',}}><div style={{ marginBottom: '20px' }}>
+    <div style={{ width: '290px',height: '100vh',background: '#F8F9FA',position: 'fixed',padding: '20px',boxShadow: '2px 0 5px rgba(0,0,0,0.1)',display: 'flex',flexDirection: 'column',}}><div style={{ marginBottom: '20px' }}>
         <h1 className='nunito-sans' style={{ textAlign: "center", fontWeight: "bold", fontSize: "30px", color: "rgba(254, 81, 46, 1)" }}>
           Dash<span style={{ color: "#202224" }}>Stack</span>
         </h1>

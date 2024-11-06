@@ -27,7 +27,7 @@ const CardContent = ({ children }) => {
 };
 
 const CardHeader = ({ children }) => {
-  return <div className="flex justify-between items-center mb-2">{children}</div>;
+  return <div className="flex justify-between items-center">{children}</div>;
 };
 
 const CardTitle = ({ children }) => {
@@ -51,7 +51,7 @@ const Select = ({ children, defaultValue, onChange }) => {
 const CustomOption = ({ value, gradient, label }) => (
   <option value={value} className="flex items-center">
     <span
-      className="inline-block w-4 h-4 rounded-full mr-2 border border-white"
+      className="inline-block w-4 mt-2  h-4 rounded-full mr-2 border border-white"
       style={{ background: `linear-gradient(90deg, ${gradient})` }}
     ></span>
     {label}
@@ -85,7 +85,7 @@ const Chart = () => {
   };
 
   return (
-    <div className='p-2' style={{ width: '700px', marginLeft: '370px', height: '300px' }}>
+    <div className='h-[240px]' style={{ width: '740px', marginLeft: '320px' }}>
       <Card>
         <CardHeader>
           <CardTitle>Total Balance</CardTitle>
@@ -97,7 +97,7 @@ const Chart = () => {
           </Select>
         </CardHeader>
         <CardContent>
-          <ChartContainer className="h-[300px]">
+          <ChartContainer className="h-[270px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 30, right: 40, bottom: 20, left: 10 }}>
                 <CartesianGrid vertical={false} horizontal={true} strokeDasharray="3 4" />

@@ -7,7 +7,7 @@ import buildingIcon from '../../assets/building-4.png'; // Update with actual pa
 
 const Card = ({ title, amount, icon, color }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg h-28 p-6 m-4 w-80 flex">
+    <div className="bg-white shadow-lg rounded-lg h-[100px] p-6 ms-5  mb-1 mt-2 w-[350px] flex">
       <div
         style={{
           width: '8px',

@@ -1,5 +1,5 @@
 import React from "react";
-import Ellipse1091 from '../../assets/Ellipse 1091.png'; // Ensure correct import with extension
+import Ellipse1091 from '../../assets/Ellipse 1091.png';
 import Ellipse1093 from '../../assets/Ellipse 1093.png';
 import Ellipse1094 from '../../assets/Ellipse 1094.png';
 import Ellipse1095 from '../../assets/Ellipse 1095.png';
@@ -47,42 +47,42 @@ const maintenanceItems = [
   {
     id: 1,
     name: "Roger Lubin",
-    avatar: Ellipse1091,  // Imported image directly
+    avatar: Ellipse1091,  
     pendingDuration: "2 Month Pending",
     amount: 5000,
   },
   {
     id: 2,
     name: "Roger Lubin",
-    avatar: Ellipse1093,  // Imported image directly
+    avatar: Ellipse1093,  
     pendingDuration: "1 Month Pending",
     amount: 3000,
   },
   {
     id: 3,
     name: "Roger Lubin",
-    avatar: Ellipse1094,  // Imported image directly
+    avatar: Ellipse1094,  
     pendingDuration: "3 Weeks Pending",
     amount: 4500,
   },
   {
     id: 4,
     name: "Roger Lubin",
-    avatar: Ellipse1095,  // Imported image directly
+    avatar: Ellipse1095,  
     pendingDuration: "1 Month Pending",
     amount: 6000,
   },
   {
     id: 5,
     name: "Roger Lubin",
-    avatar: Ellipse1096,  // Imported image directly
+    avatar: Ellipse1096,  
     pendingDuration: "2 Month Pending",
     amount: 5500,
   },
   {
     id: 6,
     name: "Roger Lubin",
-    avatar: Ellipse1091,  // Imported image directly
+    avatar: Ellipse1091,  
     pendingDuration: "2 Month Pending",
     amount: 5500,
   },
@@ -90,7 +90,10 @@ const maintenanceItems = [
 
 const PendingMaintenance = () => {
   return (
-    <Card className="w-96 ml-4">
+    <Card 
+      className="ml-7 w-[350px] h-[400px]"  
+      style={{ position: 'absolute', top: '255px', left: '1510px' }} // Absolute position
+    >
       <CardHeader>
         <CardTitle>Pending Maintenances</CardTitle>
         <button 
@@ -100,7 +103,7 @@ const PendingMaintenance = () => {
           View all
         </button>
       </CardHeader>
-      <CardContent className="h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md">
+      <CardContent className="h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md">
         {maintenanceItems.map((item) => (
           <div key={item.id} className="flex items-center justify-between py-2">
             <div className="flex items-center gap-3">
