@@ -1,0 +1,20 @@
+.text-danger {
+    color: red !important; /* Ensures error messages are red */
+  }
+  
+  .container-fluid {
+    padding: 15px;
+  }
+  
+  .row {
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .col-md-6 {
+        width: 100%; /* Make columns full-width on smaller screens */
+    }
+  }
+  body{
+    background-color: #F8F9FA;
+  }
