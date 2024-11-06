@@ -50,6 +50,10 @@ const LoginPage = () => {
         password: password,
       });
 
+      if(response.data.success){
+        navigate('/dashboard');
+      }
+      
       if (response.data.token) {
         console.log('Token received:', response.data.token);
         localStorage.setItem('authToken', response.data.token);

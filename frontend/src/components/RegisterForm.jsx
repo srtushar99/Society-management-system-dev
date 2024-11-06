@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { Carousel } from 'react-bootstrap';
 import axiosInstance from './Common/axiosInstance';
 import './styles.css' // Make sure to create this file for styles
-import axios from 'axios';
 import { Button, Dropdown } from 'react-bootstrap';
 
 const RegisterForm = () => {
@@ -16,7 +15,6 @@ const RegisterForm = () => {
         Phone_Number: '',
         Country: '',
         State: '',
-
         City: '',
         select_society: '',
         Password: '',
@@ -85,7 +83,7 @@ const RegisterForm = () => {
         if (!formData.Country) newErrors.Country = 'Country is required';
         if (!formData.State) newErrors.State = 'State is required';
         if (!formData.City) newErrors.City = 'City is required';
-        if (!formData.select_society) newErrors.select_society = 'Society is required';
+       // if (!formData.select_society) newErrors.select_society = 'Society is required';
       //  if (!formData.select_society) newErrors.select_society = 'Society is required';
       if (!selectedSociety) newErrors.selectedSociety = 'Society is required';
         if (!formData.Password) newErrors.Password = 'Password is required';
