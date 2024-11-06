@@ -2,10 +2,13 @@ import * as React from "react";
 import { useState, useEffect  } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
-import { Carousel } from 'react-bootstrap';
+
 import axiosInstance from './Common/axiosInstance';
 import './styles.css' // Make sure to create this file for styles
 import { Button, Dropdown } from 'react-bootstrap';
+import './RegisterForm.css'
+import Lefts from "./Left/LeftSe";
+
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -25,26 +28,7 @@ const RegisterForm = () => {
     const [selectedSociety, setSelectedSociety] = useState(null);
     const [societies, setSocieties] = useState([]);
 
-    // const societies = [
-    //     'Shantigram residency',
-    //     'Russett House Park',
-    //     'Saunya residency',
-    //     'Shamruddh Avenyu',
-    //     'Utsav society',
-    //     'Murlidhar',
-    //     'Shree Sharanam',
-    //     'Vasantnagar township'
-    // ];
-    // const societies = [
-    //     { id: 1, name: 'Shantigram residency' },
-    //     { id: 2, name: 'Russett House Park' },
-    //     { id: 3, name: 'Saunya residency' },
-    //     { id: 4, name: 'Shamruddh Avenyu' },
-    //     { id: 5, name: 'Utsav society' },
-    //     { id: 6, name: 'Murlidhar' },
-    //     { id: 7, name: 'Shree Sharanam' },
-    //     { id: 8, name: 'Vasantnagar township' },
-    // ];
+    
 
     const handleSelect = (society) => {
         const societyID = society._id;
@@ -95,14 +79,7 @@ const RegisterForm = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     if (validateForm()) {
-    //         console.log('Form submitted:', formData);
-    //         // Registration success logic (e.g., API call)
-    //         alert('Registration successful!');
-    //     }
-    // };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -130,15 +107,28 @@ const RegisterForm = () => {
     const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
     const toggleConfirmPasswordVisibility = () => setShowConfirmPassword((prev) => !prev);
 
+    const [modalErrors, setModalErrors] = useState({}); // For modal errors
+
+    const validateModalForm = () => {
+        const newModalErrors = {};
+        if (!newSocietyData.name) newModalErrors.name = 'Society Name is required';
+        if (!newSocietyData.address) newModalErrors.address = 'Address is required';
+        if (!newSocietyData.Country) newModalErrors.Country = 'Country is required';
+        if (!newSocietyData.State) newModalErrors.State = 'State is required';
+        if (!newSocietyData.City) newModalErrors.City = 'City is required';
+        if (!newSocietyData.zipCode) newModalErrors.zipCode = 'Zip Code is required';
+
+        setModalErrors(newModalErrors);
+        return Object.keys(newModalErrors).length === 0;
+    };
+
     const handleAddSociety = () => {
-        const { name, address, Country, State, City, zipCode } = newSocietyData;
-        if (name.trim() && address.trim() && Country.trim() && State.trim() && City.trim() && zipCode.trim()) {
-            setFormData((prevData) => ({ ...prevData, select_society: name }));
-            alert(`Society "${name}" added successfully!`);
+        if (validateModalForm()) {
+            setFormData((prevData) => ({ ...prevData, select_society: newSocietyData.name }));
+            alert(`Society "${newSocietyData.name}" added successfully!`);
             setShowModal(false);
             setNewSocietyData({ name: '', address: '', Country: '', State: '', City: '', zipCode: '' });
-        } else {
-            alert('Please fill in all society details.');
+            setModalErrors({});
         }
     };
 
@@ -153,44 +143,30 @@ const RegisterForm = () => {
             alert('Failed to load societies');
         }
     };
-
+    
    
     useEffect(() => {
         fetchSocieties();
     }, []);
 
-
+    useEffect(() => {
+        if (showModal) {
+            document.body.classList.add("modal-open");
+        } else {
+            document.body.classList.remove("modal-open");
+        }
+    }, [showModal]);
+    
+    
     return (
-        <div className="container-fluid p-5">
-            <div className="row">
-                <div className="col-md-6 d-flex flex-column justify-content-center align-items-center bg-light position-relative">
-                    <h1 className='nunito-sans' style={{ fontSize: "40px", color: "rgba(254, 81, 46, 1)", left: "40px", top: "40px", position: "absolute", zIndex: "999" }}>
-                        Dash<span style={{ color: "#202224" }}>Stack</span>
-                    </h1>
-
-                    <Carousel interval={1500} className="w-100">
-                        <Carousel.Item>
-                            <img className="d-block w-100" src="/public/Group 1000005856.png" alt="First slide" style={{ maxHeight: '55vh', objectFit: 'cover', zIndex: "-9999" }} />
-                            <div style={{ position: "absolute", bottom: "-10px", zIndex: "7788777", width: "100%" }}>
-                                <h3 style={{ color: "black" }}>Connect, Collaborate, and Control- <span style={{ color: "rgba(254, 81, 46, 1)" }}>Society</span></h3>
-                                <p style={{ color: "rgba(254, 81, 46, 1)" }}>Management<span style={{ color: "black" }}> Simplified</span></p>
-                            </div>
-                        </Carousel.Item>
-                        <Carousel.Item>
-                            <img className="d-block w-100" src="/public/Group 1000005870.png" alt="Second slide" style={{ maxHeight: '60vh', objectFit: 'cover' }} />
-                            <Carousel.Caption>
-                                <div style={{ position: "absolute", bottom: "-10px", zIndex: "7788777", width: "100%" }}>
-                                    <h3 style={{ color: "black" }}>Your Space, Your Place: Society Management</h3>
-                                    <p style={{ color: "black" }}>Made Simple</p>
-                                </div>
-                            </Carousel.Caption>
-                        </Carousel.Item>
-                    </Carousel>
-                </div>
-
-                <div className="col-md-6">
-                    <h2 className="mt-4">Registration</h2>
-                    <form onSubmit={handleSubmit} className="p-3 border rounded shadow">
+        <div className="container-fluid  my-5  ">
+            <div className="row ms-5 ">
+                
+                <Lefts/>
+                <div className="col-md-6 ">
+               
+                    <h2 className="mt-4 py-3" style={{margin:"0 90px"}}>Registration</h2>
+                    <form onSubmit={handleSubmit} className="p-4 py-5 border rounded shadow " style={{width:"630px",margin:"0 90px"}}>
                         <div className="row mb-3">
                             <div className="col-md-6">
                                 <label>First Name <span className="text-danger">*</span></label>
@@ -232,27 +208,12 @@ const RegisterForm = () => {
                                 {errors.City && <small className="text-danger">{errors.City}</small>}
                             </div>
                         </div>
-                        {/* <div className="mb-3 ">
-                            <label>Select Society <span className="text-danger">*</span></label>
-                            <select name="select_society" value={formData.select_society} onChange={handleChange} className="form-control">
-                            <select name="select_society" value={formData.select_society} onChange={handleChange} className="form-control" required>
-                                <option value="">Select Society...</option>
-                                <option value="67196b876b61776c49dc8a19">Shantigram Society</option>
-                                <option value="society2">Shivpark Society</option>
-                                <option value="society3">Harekrushna Society</option>
-                                <option value="society4">Gokuldham Society</option>
-                                <option value="society5">Anandhara Society</option>
-                                <option value="society6">Ridhi-Shidhi Society</option>
-                                <option><button type="submit" className="btn w-100" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Register</button></option>
-                            </select>
-                            {errors.select_society && <small className="text-danger">{errors.select_society}</small>}
-                            <button type="button" onClick={() => setShowModal(true)} className="btn mt-2" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Create Society</button>
-                        </div> */}
+                        
 
-                        <div className="mb-3  " style={{width:"97%",marginLeft:"11px",paddingRight:"2px"}}>
+                        <div className="mb-3 mx-3" >
                         <label>Select Society <span className="text-danger">*</span></label>
-                        <Dropdown>
-                            <Dropdown.Toggle variant="outline-secondary" className="w-100 text-left">
+                        <Dropdown >
+                            <Dropdown.Toggle variant="white" className="w-100  border" >
                                 {selectedSociety ? selectedSociety.name : 'Select Society'}
                             </Dropdown.Toggle>
 
@@ -267,7 +228,7 @@ const RegisterForm = () => {
                                     </Dropdown.Item>
                                 ))}
                                 <div className="d-flex justify-content-center p-2">
-                                <Button onClick={() => setShowModal(true)} className="btn mt-2" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>
+                                <Button onClick={() => setShowModal(true)} className="btn mt-2 bt w-100" >
                                         Create Society
                                     </Button>
                                 </div>
@@ -277,74 +238,84 @@ const RegisterForm = () => {
                         </div>
 
         
-                        <div className="mb-3" style={{ position: "relative" }}>
+                        <div className="mb-3 mx-3" style={{ position: "relative" }}>
                             <label>Password <span className="text-danger">*</span></label>
                             <input type={showPassword ? 'text' : 'Password'} name="Password" value={formData.Password} placeholder='Enter Password' onChange={handleChange} className="form-control" />
                             {errors.Password && <small className="text-danger">{errors.Password}</small>}
-                            <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "45%" }}>
+                            <span className="input-group-text py-2" onClick={togglePasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "39%" }}>
                                 <i className={`fas ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </span>
                         </div>
-                        <div className="mb-3" style={{ position: "relative" }}>
+                        <div className="mb-3 mx-3" style={{ position: "relative" }}>
                             <label>Confirm Password <span className="text-danger">*</span></label>
                             <input type={showConfirmPassword ? 'text' : 'Password'} name="Confirm_password" value={formData.Confirm_password} placeholder='Confirm Password' onChange={handleChange} className="form-control" />
                             {errors.Confirm_password && <small className="text-danger">{errors.Confirm_password}</small>}
-                            <span className="input-group-text" onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "45%" }}>
+                            <span className="input-group-text py-2" onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer', position: "absolute", right: "0", top: "39%" }}>
                                 <i className={`fas ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </span>
                         </div>
-                        <div className="form-check mb-3">
+                        <div className="form-check mb-3 mx-3">
                             <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} className="form-check-input"  />
                             <label className="form-check-label">I agree to the terms and conditions</label>
                             {errors.agree && <small className="text-danger">{errors.agree}</small>}
                         </div>
-                        <button type="submit" className="btn w-100" style={{ backgroundColor: "rgba(240, 150, 25, 1)" }}>Register</button>
-                        <p className="my-2">Already have an account? <Link to="/" className="text-primary">Log in</Link></p>
+                        <button type="submit" className="btn mx-3 bt" style={{ backgroundColor: "rgba(240, 150, 25, 1)",width:"96%", }}>Register</button>
+                        <p className="my-2 mx-3">Already have an account? <Link to="/login" className="text-primary">Log in</Link></p>
                     </form>
 
                     {showModal && (
-                        <div className="modal show" style={{ display: 'block' }}>
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className="modal-title">Create New Society</h5>
-                                        <button type="button" className="close" onClick={() => setShowModal(false)}>&times;</button>
-                                    </div>
-                                    <div className="modal-body">
-                                        <div className="mb-3">
-                                            <label>Society Name <span className="text-danger">*</span></label>
-                                            <input type="text" value={newSocietyData.name} onChange={(e) => setNewSocietyData({ ...newSocietyData, name: e.target.value })} className="form-control" required />
-                                        </div>
-                                        <div className="mb-3">
-                                            <label>Address <span className="text-danger">*</span></label>
-                                            <input type="text" value={newSocietyData.address} onChange={(e) => setNewSocietyData({ ...newSocietyData, address: e.target.value })} className="form-control" required />
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-6 mb-3">
-                                                <label>Country <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.Country} onChange={(e) => setNewSocietyData({ ...newSocietyData, Country: e.target.value })} className="form-control" required />
-                                            </div>
-                                            <div className="col-6 mb-3">
-                                                <label>State <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.State} onChange={(e) => setNewSocietyData({ ...newSocietyData, State: e.target.value })} className="form-control" required />
-                                            </div>
-                                            <div className="col-6 mb-3">
-                                                <label>City <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.City} onChange={(e) => setNewSocietyData({ ...newSocietyData, City: e.target.value })} className="form-control" required />
-                                            </div>
-                                            <div className="col-6 mb-3">
-                                                <label>Zip Code <span className="text-danger">*</span></label>
-                                                <input type="text" value={newSocietyData.zipCode} onChange={(e) => setNewSocietyData({ ...newSocietyData, zipCode: e.target.value })} className="form-control" required />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn border" onClick={() => setShowModal(false)}>Cancel</button>
-                                        <button onClick={handleAddSociety} className="btn border">Save</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       <div className="container-fluid my-5">
+                       {/* Form components remain unchanged */}
+                       {showModal && (
+                           <div className="modal show modal-overlay " style={{ display: 'block', zIndex: 9999, }}>
+                               <div className="modal-dialog">
+                                   <div className="modal-content">
+                                       <div className="modal-header">
+                                           <h5 className="modal-title">Create New Society</h5>
+                                       </div>
+                                       <div className="modal-body">
+                                           <div className="mb-3 p-0">
+                                               <label>Society Name <span className="text-danger">*</span></label>
+                                               <input type="text" value={newSocietyData.name} onChange={(e) => setNewSocietyData({ ...newSocietyData, name: e.target.value })} className="form-control" />
+                                               {modalErrors.name && <small className="text-danger">{modalErrors.name}</small>}
+                                           </div>
+                                           <div className="mb-3 p-0">
+                                               <label>Address <span className="text-danger">*</span></label>
+                                               <input type="text" value={newSocietyData.address} onChange={(e) => setNewSocietyData({ ...newSocietyData, address: e.target.value })} className="form-control" />
+                                               {modalErrors.address && <small className="text-danger">{modalErrors.address}</small>}
+                                           </div>
+                                           <div className="row">
+                                               <div className="col-6 mb-3 p-0 pe-2" >
+                                                   <label>Country <span className="text-danger">*</span></label>
+                                                   <input type="text"  value={newSocietyData.Country} onChange={(e) => setNewSocietyData({ ...newSocietyData, Country: e.target.value })} className="form-control" />
+                                                   {modalErrors.Country && <small className="text-danger">{modalErrors.Country}</small>}
+                                               </div>
+                                               <div className="col-6 mb-3 p-0">
+                                                   <label>State <span className="text-danger">*</span></label>
+                                                   <input type="text" value={newSocietyData.State} onChange={(e) => setNewSocietyData({ ...newSocietyData, State: e.target.value })} className="form-control" />
+                                                   {modalErrors.State && <small className="text-danger">{modalErrors.State}</small>}
+                                               </div>
+                                               <div className="col-6 mb-3 p-0 pe-2">
+                                                   <label>City <span className="text-danger">*</span></label>
+                                                   <input type="text" value={newSocietyData.City} onChange={(e) => setNewSocietyData({ ...newSocietyData, City: e.target.value })} className="form-control" />
+                                                   {modalErrors.City && <small className="text-danger">{modalErrors.City}</small>}
+                                               </div>
+                                               <div className="col-6 mb-3 p-0">
+                                                   <label>Zip Code <span className="text-danger">*</span></label>
+                                                   <input type="text" value={newSocietyData.zipCode} onChange={(e) => setNewSocietyData({ ...newSocietyData, zipCode: e.target.value })} className="form-control" />
+                                                   {modalErrors.zipCode && <small className="text-danger">{modalErrors.zipCode}</small>}
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div className="modal-footer mx-auto ">
+                                           <button type="button" className="btn btn-white border px-3"  onClick={() => setShowModal(false)}>Cancel</button>
+                                           <button onClick={handleAddSociety} className="btn bt px-3">Save</button>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       )}
+                   </div>
                     )}
                 </div>
             </div>
