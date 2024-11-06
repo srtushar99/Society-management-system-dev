@@ -126,6 +126,8 @@ const LoginPage = () => {
             {errorMessage && <div className="mb-1" style={{ color: "#E74C3C", fontSize: '14px' }}>{errorMessage}</div>}
             <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
               <div className="form-check mb-0">
+
+                
                 <input
                   className="form-check-input"
                   type="checkbox"
