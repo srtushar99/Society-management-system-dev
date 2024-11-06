@@ -18,6 +18,7 @@ function App() {
             <Route path="/getotp" element={<GetOtp />} />
             <Route path="/resetpassword" element={<ResetPassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
+          
 
         </Routes>
     );

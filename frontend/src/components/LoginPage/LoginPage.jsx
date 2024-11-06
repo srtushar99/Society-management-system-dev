@@ -140,9 +140,7 @@ const LoginPage = () => {
             <button type="submit" className="btn w-100" style={{ ...buttonStyle, fontWeight: "600" }} disabled={!isEmailValid || !isPasswordValid}>Sign In</button>
           </form>
           <div className="text-center mt-3">
-            <p>Don’t have an account?{' '}
-              <Link style={{ color: "#FE512E", textDecoration: "none" }} to="/register">Registration</Link>
-            </p>
+            <p>Don’t have an account?{' '}<Link style={{ color: "#FE512E", textDecoration: "none" }} to="/registerForm">Registration</Link></p>
           </div>
         </div>
       </div>
