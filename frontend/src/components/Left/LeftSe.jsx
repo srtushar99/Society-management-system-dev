@@ -13,7 +13,7 @@ const Lefts= () => {
         Dash<span style={{ color: "#202224" }}>Stack</span>
     </h1>
 
-    <Carousel interval={1500} className="w-100 " >
+    <Carousel interval={1500} className="w-100  " >
         <Carousel.Item >
             <img className="d-block  " src="/public/Group 1000005856.png" style={{ maxHeight: '50vh', objectFit: 'cover', zIndex: "-9999",width:"80%" }} />
             <div style={{ position: "absolute", bottom: "-10px", zIndex: "7788777", width: "100%" }}>
