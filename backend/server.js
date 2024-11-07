@@ -21,8 +21,9 @@ app.use(cookieParser());
 const userRoutes = require("./routes/userRoutes");
 const societyRoutes = require("./routes/societyRoutes");
 const importantNumberRoutes = require("./routes/importantNumberRoutes");
-const ownerRoute = require("./routes/OwnerRoute")
-const tenantRoute = require("./routes/TenantRoute")
+const ownerRoute = require("./routes/ownerRoute")
+const tenantRoute = require("./routes/tenantRoute")
+const expensesRoute = require("./routes/expensesRoutes")
 
 //user registration and login schema
 app.use("/api/v1",userRoutes);
@@ -36,6 +37,9 @@ app.use('/api/v2/important-numbers', importantNumberRoutes);
 //resident apis
 app.use('/api/v2/Owner', ownerRoute);
 app.use('/api/v2/tenant', tenantRoute);
+
+
+app.use('/api/v2/expenses', expensesRoute);
 
 
   
