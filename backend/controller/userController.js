@@ -114,7 +114,6 @@ exports.login = async (req, res) => {
 };
 
 // Logout page 
-
 exports.logout = async (req, res) => {
   try {
     res.clearCookie("Society-Management");
