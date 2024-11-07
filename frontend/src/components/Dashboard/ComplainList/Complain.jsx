@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import Edit from '../../assets/edit.png';
-import Delete from '../../assets/trash.png';
-import View from '../../assets/eye.png';
 import AvatarImage from '../../assets/Avatar.png';
 import DeleteComplain from './DeleteComplain'; // Import DeleteComplain component
 import EditComplain from './EditComplain'; // Import EditComplain modal
@@ -181,29 +178,25 @@ const Complain = () => {
                     {complaint.status}
                   </Badge>
                 </td>
-                <td className="p-2  ">
-                  <div className="flex flex-wrap  sm:space-x-1 space-y-2 sm:space-y-0">
+                <td className="p-2 ">
+                  <div className="flex flex-wrap sm:flex-nowrap sm:space-x-2 space-y-2 sm:space-y-0">
                     <button
                       className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"
                       onClick={() => openEditModal(complaint)} // Open Edit modal
                     >
-                     <i class="fa-solid fa-pen-to-square "></i>
-                      {/* <span className="sr-only">Edit</span> */}
+                      <i className="fa-solid fa-pen-to-square"></i>
                     </button>
                     <button
                       className="bg-blue-50 text-[#5678E9] rounded-2 p-2 sm:w-10 sm:h-10"
                       onClick={() => openComplaintModal(complaint)} // Open View modal
                     >
-                      <i class="fa-solid fa-eye w-2"></i>
-                      {/* <span className="sr-only">View</span> */}
+                      <i className="fa-solid fa-eye w-2"></i>
                     </button>
                     <button
                       className="bg-blue-50 text-red-600 rounded-2 p-2 sm:w-10 sm:h-10"
                       onClick={() => openDeleteModal(complaint)} // Open Delete modal
                     >
-                  
-                      <i className="fa-solid fa-trash "></i>
-                      {/* <span className="sr-only">Delete</span> */}
+                      <i className="fa-solid fa-trash"></i>
                     </button>
                   </div>
                 </td>

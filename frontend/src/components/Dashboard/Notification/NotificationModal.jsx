@@ -34,15 +34,15 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
   }
 
   return (
-    <div className="lg:fixed sm:w-full inset-0 flex item-center  justify-center  sm:justify-start z-50">
+    <div className="lg:fixed sm:w-[] inset-0 flex sm:ml-5 item-end  justify-end  sm:justify-start z-50 sm:mt-3">
       <div
-        className="bg-white rounded-[15px_0_0_0] shadow-lg p-4 w-full sm:w-[90%] md:w-[540px] max-h-[90vh] sm:top-[50%] md:top-[79px] md:left-[1177px] sm:left-[0]"
+        className="bg-white rounded-[15px_0_0_0] shadow-lg p-10 sm:ml-10 w-full sm:w-[90%] md:w-[540px] max-h-[90vh] ml-10 sm:top-[100px] md:top-[79px]  md:left-[1177px] "
         style={{
           position: 'absolute',
         }}
       >
         {/* Modal Header */}
-        <div className="flex justify-between items-center mb-2 sm:mb-3">
+        <div className="flex justify-between items-center ml-3  mb-2 sm:mb-3">
           <h2 className="text-xl sm:text-lg md:text-xl font-semibold">Notifications</h2>
           <button
             className="text-[#5678E9] text-sm font-semibold"

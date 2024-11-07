@@ -19,6 +19,11 @@ const Sidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const closeSidebar = () => {
+    // Close sidebar when an item is clicked
+    setSidebarOpen(false);
+  };
+
   const navLinkStyle = {
     color: '#4F4F4F',
     textDecoration: 'none',
@@ -50,6 +55,7 @@ const Sidebar = () => {
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
+    closeSidebar();  // Close the sidebar when a link is clicked
   };
 
   const getIconStyle = (link) => ({
@@ -63,7 +69,7 @@ const Sidebar = () => {
     <div>
       {/* Hamburger menu button for small screens */}
       <div 
-        className="sidebar-toggle-btn  block lg:hidden md:hidden" 
+        className="sidebar-toggle-btn block lg:hidden md:hidden" 
         onClick={toggleSidebar}
       >
         <div className="line"></div>
@@ -83,7 +89,6 @@ const Sidebar = () => {
           display: 'flex', 
           flexDirection: 'column', 
           width: '290px', 
-          
         }}
       >
         <div style={{ marginBottom: '20px' }}>
@@ -95,6 +100,7 @@ const Sidebar = () => {
               fontSize: "30px", 
               color: "rgba(254, 81, 46, 1)"
             }}
+            onClick={() => closeSidebar()}  // Close sidebar when clicking on DashStack
           >
             Dash<span style={{ color: "#202224" }}>Stack</span>
           </h1>

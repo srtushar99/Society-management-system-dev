@@ -57,7 +57,7 @@ const AddNumber = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50  z-50 p-4">
       <div className="bg-white w-full max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">

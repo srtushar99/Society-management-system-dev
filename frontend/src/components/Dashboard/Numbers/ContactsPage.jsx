@@ -54,8 +54,8 @@ const ContactsPage = () => {
 
   return (
     <div
-      className="mt-1 ml-2  rounded-lg shadow-md p-4 lg:ml-6 bg-white lg:w-[350px]"
-      style={{ width: "360px", height: "400px" }}
+      className="mt-1 rounded-lg shadow-md p-4 lg:ml-8  sm:w-[390px]  bg-white lg:w-[360px]"
+      style={{  height: "400px" }}
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Important Numbers</h2>
@@ -90,7 +90,7 @@ const ContactsPage = () => {
                 className="text-green-600 hover:text-green-800 p-2 rounded"
               >
                 
-                <i class="fa-solid fa-pen-to-square h-6 w-6 lg:h-5 lg:w-5"></i>
+                <i className="fa-solid fa-pen-to-square h-6 w-6 lg:h-5 lg:w-5"></i>
               </button>
             </div>
           </div>
