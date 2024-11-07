@@ -22,7 +22,12 @@ const expensesSchema = new mongoose.Schema({
     Upload_Bill:{
         type: String,
         required:true
-    }
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'resident', 'security'], 
+        default: 'resident' 
+    },
 }, {
     timestamps: true 
 });

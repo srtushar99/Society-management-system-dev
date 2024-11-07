@@ -13,7 +13,12 @@ const importantNumberSchema = mongoose.Schema({
       work: {
         type: String,
         required: true, 
-      }
+      },
+      role: {
+          type: String,
+          enum: ['admin', 'resident', 'security'], 
+          default: 'resident' 
+      },
 }, { timestamps: true }); 
 
 module.exports = mongoose.model('ImportantNumber', importantNumberSchema);

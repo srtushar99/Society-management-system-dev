@@ -22,7 +22,12 @@ const OtherIncomeSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true,
-    }
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'resident', 'security'], 
+        default: 'resident' 
+    },
 }, {
     timestamps: true 
 });
