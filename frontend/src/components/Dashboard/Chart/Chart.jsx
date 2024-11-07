@@ -85,7 +85,7 @@ const Chart = () => {
   };
 
   return (
-    <div className='h-[240px]' style={{ width: '740px', marginLeft: '320px' }}>
+    <div className="h-[240px] sm:h-[240px] w-full sm:w-[760px] sm:ml-[320px]">
       <Card>
         <CardHeader>
           <CardTitle>Total Balance</CardTitle>
@@ -101,28 +101,25 @@ const Chart = () => {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 30, right: 40, bottom: 20, left: 10 }}>
                 <CartesianGrid vertical={false} horizontal={true} strokeDasharray="3 4" />
-                <XAxis 
-                  dataKey="month" 
-                  className="text-sm mr-4" 
-                  tickLine={false} 
-                  axisLine={true} 
-                  tick={<CustomXAxisTick />} // Use custom tick for X-axis
+                <XAxis
+                  dataKey="month"
+                  className="text-sm mr-4"
+                  tickLine={false}
+                  axisLine={true}
+                  tick={<CustomXAxisTick />}
                 />
-                <YAxis 
-                  className="text-sm w-52" 
-                  tickLine={false} 
-                  axisLine={true} 
-                  tickFormatter={(value) => `${value / 1000}k`} 
-                  domain={[0, 50000]} // Setting domain to allow tick at 50k
-                  ticks={[0, 10000, 20000, 30000, 40000, 50000]} // Custom ticks
+                <YAxis
+                  className="text-sm w-52"
+                  tickLine={false}
+                  axisLine={true}
+                  tickFormatter={(value) => `₹${value}`}
                 />
                 <Line
-                  type="monotone"
                   dataKey="balance"
-                  stroke="#9CABFF"
-                  strokeWidth={4}
-                  dot={{ r: 4, strokeWidth: 2 }}
-                  activeDot={{ r: 6, strokeWidth: 2 }}
+                  type="monotone"
+                  stroke="#00B5D9"
+                  activeDot={{ r: 8 }}
+                  strokeWidth={2}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -131,6 +128,7 @@ const Chart = () => {
       </Card>
     </div>
   );
-}
+};
+
 
 export default Chart;
