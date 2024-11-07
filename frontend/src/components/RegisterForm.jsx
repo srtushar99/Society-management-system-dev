@@ -159,11 +159,11 @@ const RegisterForm = () => {
     
     
     return (
-        <div className="container-fluid  my-5  ">
+        <div className="container-fluid  my-5">
             <div className="row ms-5 ">
                 
                 <Lefts/>
-                <div className="col-md-6 ">
+                <div className="col-md-6">
                
                     <h2 className="mt-4 py-3" style={{margin:"0 90px"}}>Registration</h2>
                     <form onSubmit={handleSubmit} className="p-4 py-5 border rounded shadow " style={{width:"630px",margin:"0 90px"}}>
@@ -259,7 +259,7 @@ const RegisterForm = () => {
                             <label className="form-check-label">I agree to the terms and conditions</label>
                             {errors.agree && <small className="text-danger">{errors.agree}</small>}
                         </div>
-                        <button type="submit" className="btn mx-3 bt" style={{ backgroundColor: "rgba(240, 150, 25, 1)",width:"96%", }}>Register</button>
+                        <button type="submit" className="btn mx-3 bt" style={{width:"96%"}}>Register</button>
                         <p className="my-2 mx-3">Already have an account? <Link to="/" className="text-primary">Log in</Link></p>
                     </form>
 
@@ -307,7 +307,7 @@ const RegisterForm = () => {
                                                </div>
                                            </div>
                                        </div>
-                                       <div className="modal-footer mx-auto ">
+                                       <div className="modal-footer mx-auto">
                                            <button type="button" className="btn btn-white border px-3"  onClick={() => setShowModal(false)}>Cancel</button>
                                            <button onClick={handleAddSociety} className="btn bt px-3">Save</button>
                                        </div>
