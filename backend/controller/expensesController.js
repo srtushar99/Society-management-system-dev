@@ -141,6 +141,26 @@ exports.GetExpenseById = async (req, res) => {
 };
 
 // Update Expense
+const uploadAndDeleteLocal = async (fileArray) => {
+    if (fileArray && fileArray[0]) {
+        const filePath = fileArray[0].path;
+        try {
+            // Upload to Cloudinary
+            const result = await cloudinary.uploader.upload(filePath);
+            // Delete from local server
+            fs.unlink(filePath, (err) => {
+                if (err) console.error("Error deleting file from server:", err);
+                else console.log("File deleted from server:", filePath);
+            });
+            return result.secure_url;
+        } catch (error) {
+            console.error("Error uploading to Cloudinary:", error);
+            throw error;
+        }
+    }
+    return '';
+};
+
 exports.UpdateExpense = async (req, res) => {
     try {
         const { Title, Description, Date, Amount, role } = req.body;
