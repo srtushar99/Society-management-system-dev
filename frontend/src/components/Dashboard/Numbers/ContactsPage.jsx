@@ -81,13 +81,16 @@ const ContactsPage = () => {
                 onClick={() => handleDeleteContact(contact)} // Trigger delete modal
                 className="text-red-600 hover:text-red-800 bg-[#F6F8FB] p-2 rounded"
               >
-                <img src={Delete} alt="Delete" className="h-6 w-6 lg:h-5 lg:w-5" />
+            
+                <i className="fa-solid fa-trash h-6 w-6 lg:h-5 lg:w-5"></i>
+
               </button>
               <button
                 onClick={() => handleEditContact(contact)} // Trigger edit modal
                 className="text-green-600 hover:text-green-800 p-2 rounded"
               >
-                <img src={Edit} alt="Edit" className="h-6 w-6 lg:h-5 lg:w-5" />
+                
+                <i class="fa-solid fa-pen-to-square h-6 w-6 lg:h-5 lg:w-5"></i>
               </button>
             </div>
           </div>
