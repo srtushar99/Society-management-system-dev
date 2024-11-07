@@ -161,14 +161,14 @@ const RegisterForm = () => {
     
     
     return (
-        <div className="container-fluid  my-5  ">
-            <div className="row ms-5 ">
+        <div className="container-fluid  my-5 vh-100 d-flex flex-column flex-md-row  ">
+            
                 
                 <Lefts/>
-                <div className="col-md-6 ">
+                <div className="col-md-4 ">
                
                     <h2 className="mt-4 py-3" style={{margin:"0 90px"}}>Registration</h2>
-                    <form onSubmit={handleSubmit} className="p-4 py-5 border rounded shadow " style={{width:"630px",margin:"0 90px"}}>
+                    <form onSubmit={handleSubmit} className="p-4 py-5 border rounded shadow " style={{width:"630px",margin:"0 70px"}}>
                         <div className="row mb-3">
                             <div className="col-md-6">
                                 <label>First Name <span className="text-danger">*</span></label>
@@ -261,7 +261,7 @@ const RegisterForm = () => {
                             <label className="form-check-label">I agree to the terms and conditions</label>
                             {errors.agree && <small className="text-danger">{errors.agree}</small>}
                         </div>
-                        <button type="submit" className="btn mx-3 bt" style={{ backgroundColor: "rgba(240, 150, 25, 1)",width:"96%", }}>Register</button>
+                        <button type="submit" className="btn mx-3 bt" style={{ width:"96%", }}>Register</button>
                         <p className="my-2 mx-3">Already have an account? <Link to="/login" className="text-primary">Log in</Link></p>
                     </form>
 
@@ -309,9 +309,12 @@ const RegisterForm = () => {
                                                </div>
                                            </div>
                                        </div>
-                                       <div className="modal-footer mx-auto ">
-                                           <button type="button" className="btn btn-white border px-3"  onClick={() => setShowModal(false)}>Cancel</button>
-                                           <button onClick={handleAddSociety} className="btn bt px-3">Save</button>
+                                       <div className="modal-footer mx-auto col-12 ">
+                                        <div className="col-12 d-flex ">
+                                            <button type="button" className="btn btn-white border px-3 w-50 me-1 "  onClick={() => setShowModal(false)}>Cancel</button>
+                                       
+                                           <button onClick={handleAddSociety} className="btn bt px-3 w-50 ">Save</button>
+                                       </div>
                                        </div>
                                    </div>
                                </div>
@@ -320,7 +323,7 @@ const RegisterForm = () => {
                    </div>
                     )}
                 </div>
-            </div>
+            
         </div>
     );
 };

@@ -1,12 +1,13 @@
+// GetOtp.js
 
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import Group1000005849 from '../assets/Group 1000005849.png';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
 import LeftSection2 from '../Leftside/LeftSection2';
 
 const GetOtp = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { emailOrPhone } = location.state || {};
   const [otp, setOtp] = useState(Array(6).fill(''));
   const [errorMessage, setErrorMessage] = useState('');
@@ -49,24 +50,39 @@ const GetOtp = () => {
         document.getElementById(`otp-input-${index - 1}`).focus();
       }
       
-      // Reset wrong OTP state when user types
       setIsOtpWrong(false);
       setErrorMessage('');
     }
   };
 
-  const handleVerifyOtp = () => {
+  const handleVerifyOtp = async () => {
     const enteredOtp = otp.join('');
-    
-    // Replace this condition with actual verification logic
-    const isValidOtp = enteredOtp === '123456'; // Example valid OTP for testing
 
-    if (isValidOtp) {
-      console.log('Verifying OTP:', enteredOtp);
-      // Proceed with the successful verification logic
-    } else {
+    if (!emailOrPhone || !enteredOtp) {
+      setErrorMessage('Missing email or OTP.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ EmailOrPhone: emailOrPhone, otp: enteredOtp }),
+      });
+
+      if (response.ok) {
+        console.log('OTP verified successfully');
+        navigate('/resetpassword'); // Navigate to reset password page
+      } else {
+        const errorData = await response.json();
+        setIsOtpWrong(true);
+        setErrorMessage(errorData.message || 'Invalid OTP.');
+      }
+    } catch (error) {
       setIsOtpWrong(true);
-      setErrorMessage('Wrong OTP entered.');
+      setErrorMessage('Error verifying OTP: ' + error.message);
     }
   };
 
@@ -78,12 +94,12 @@ const GetOtp = () => {
       <LeftSection2 />
       
       {/* Right Section */}
-      <div className="col-md-6 d-flex justify-content-center align-items-center p-4" style={{backgroundImage: `url(${Group1000005849})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative'}}>
+      <div className="col-md-6 d-flex justify-content-center align-items-center p-4" style={{ backgroundImage: `url(${Group1000005849})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
         <div className="card p-4 border-0 rounded" style={{ width: '100%', maxWidth: '400px', backgroundColor: 'rgba(255, 255, 255, 0.8)' }}>
           {/* Enter OTP */}
           <h2 className="mb-4 poppins-semibold text-center">Enter OTP</h2>
-          <p className='poppins-regular' style={{ height: "21px", fontSize: "11px", lineHeight: "15px" }}>
-            Please enter the 6-digit code sent to your phone number.
+          <p className="poppins-regular" style={{ height: "21px", fontSize: "11px", lineHeight: "15px" }}>
+            Please enter the 6-digit code sent to your email.
           </p>
           
           {/* OTP Inputs */}
@@ -107,9 +123,9 @@ const GetOtp = () => {
             </Link>
           </div>
           
-          
           {/* Verify Button */}
-          <button onClick={handleVerifyOtp} className="btn w-100" style={{ background: isOtpFilled ? 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)' : '#F6F8FB', color: isOtpFilled ? '#FFFFFF' : '#A7A7A7', }} disabled={!isOtpFilled} > Verify
+          <button onClick={handleVerifyOtp} className="btn w-100" style={{ background: isOtpFilled ? 'linear-gradient(90deg, #FE512E 0%, #F09619 100%)' : '#F6F8FB', color: isOtpFilled ? '#FFFFFF' : '#A7A7A7' }} disabled={!isOtpFilled}>
+            Verify
           </button>
         </div>
       </div>
