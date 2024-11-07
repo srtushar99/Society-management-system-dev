@@ -13,13 +13,7 @@ const Avatar = ({ children, className }) => (
 );
 
 const AvatarImage = ({ src, alt }) => (
-  <img src={src || '/fallback-avatar.png'} alt={alt} className="h-full w-full object-cover" />
-);
-
-const AvatarFallback = ({ children }) => (
-  <div className="flex items-center justify-center h-full w-full bg-gray-200">
-    {children}
-  </div>
+  <img src={src || '/fallback-avatar.png'} alt={alt} className="h-full  w-full object-cover" />
 );
 
 // Placeholder Card components
@@ -47,42 +41,42 @@ const maintenanceItems = [
   {
     id: 1,
     name: "Roger Lubin",
-    avatar: Ellipse1091,  
+    avatar: Ellipse1091,
     pendingDuration: "2 Month Pending",
     amount: 5000,
   },
   {
     id: 2,
     name: "Roger Lubin",
-    avatar: Ellipse1093,  
+    avatar: Ellipse1093,
     pendingDuration: "1 Month Pending",
     amount: 3000,
   },
   {
     id: 3,
     name: "Roger Lubin",
-    avatar: Ellipse1094,  
+    avatar: Ellipse1094,
     pendingDuration: "3 Weeks Pending",
     amount: 4500,
   },
   {
     id: 4,
     name: "Roger Lubin",
-    avatar: Ellipse1095,  
+    avatar: Ellipse1095,
     pendingDuration: "1 Month Pending",
     amount: 6000,
   },
   {
     id: 5,
     name: "Roger Lubin",
-    avatar: Ellipse1096,  
+    avatar: Ellipse1096,
     pendingDuration: "2 Month Pending",
     amount: 5500,
   },
   {
     id: 6,
     name: "Roger Lubin",
-    avatar: Ellipse1091,  
+    avatar: Ellipse1091,
     pendingDuration: "2 Month Pending",
     amount: 5500,
   },
@@ -90,39 +84,37 @@ const maintenanceItems = [
 
 const PendingMaintenance = () => {
   return (
-    <Card 
-      className="ml-7 w-[350px] h-[400px]"  
-      style={{ position: 'absolute', top: '255px', left: '1510px' }} // Absolute position
-    >
-      <CardHeader>
-        <CardTitle>Pending Maintenances</CardTitle>
-        <button 
-          onClick={() => window.location.href = '/all-maintenance'} 
-          className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
-        >
-          View all
-        </button>
-      </CardHeader>
-      <CardContent className="h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md">
-        {maintenanceItems.map((item) => (
-          <div key={item.id} className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={item.avatar} alt={item.name} />
-                <AvatarFallback>{item.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="font-medium">{item.name}</span>
-                <span className="text-sm text-gray-600">{item.pendingDuration}</span>
+    <div className=" sm:w-full bg-white rounded lg:h-[405px]  lg:w-[360px]  sm:ml-4 ">
+      <Card className="w-full h-full">
+        <CardHeader>
+          <CardTitle className="text-base sm:text-lg">Pending Maintenances</CardTitle>
+          <button
+            onClick={() => window.location.href = '/all-maintenance'}
+            className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            View all
+          </button>
+        </CardHeader>
+        <CardContent className="h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md">
+          {maintenanceItems.map((item) => (
+            <div key={item.id} className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-30 w-10 lg:w-10 ">
+                  <AvatarImage  className="sm:h-28" src={item.avatar} alt={item.name} />
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm sm:text-base">{item.name}</span>
+                  <span className="text-xs sm:text-sm text-gray-600">{item.pendingDuration}</span>
+                </div>
               </div>
+              <span className="font-medium text-red-500 text-sm sm:text-base">
+                ₹ {item.amount.toLocaleString()}
+              </span>
             </div>
-            <span className="font-medium text-red-500">
-              ₹ {item.amount.toLocaleString()}
-            </span>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

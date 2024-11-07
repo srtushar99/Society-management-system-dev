@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import React from "react";
 
 const Activity = () => {
   const activities = [
@@ -44,14 +44,44 @@ const Activity = () => {
     },
   ];
 
+  // Select components
+const Select = ({ children, defaultValue, onChange }) => {
   return (
-    <div className="border border-gray-300 rounded-lg ms-[570px] w-[350px] h-[290px] p-3 mt-1">
+    <select
+      defaultValue={defaultValue}
+      onChange={onChange}
+      className="border rounded-md p-2"
+    >
+      {children}
+    </select>
+  );
+};
+
+// Custom Option Component with Circle
+const CustomOption = ({ value, gradient, label }) => (
+  <option value={value} className="flex items-center">
+    <span
+      className="inline-block w-4 mt-2  h-4 rounded-full mr-2 border border-white"
+      style={{ background: `linear-gradient(90deg, ${gradient})` }}
+    ></span>
+    {label}
+  </option>
+);
+
+const handleRangeChange = (event) => {
+  const selectedRange = event.target.value;
+  console.log(selectedRange);
+}
+  return (
+    <div className="border bg-white border-gray-300 rounded-lg sm:mt-5  h-[300px] p-3 mt-2  lg:w-[360px]  sm:ml-7 ">
       <div className="flex justify-between items-center mb-3">
         <h5 className="text-xl font-semibold text-gray-900">Upcoming Activity</h5>
-        <button className="px-4 py-2 bg-white border border-gray-200 rounded-md flex items-center gap-2 text-sm text-gray-600">
-          Month
-          <ChevronDown className="w-4 h-4" />
-        </button>
+        <Select defaultValue="month" onChange={handleRangeChange}>
+            <CustomOption value="last-week" gradient="#FF9F00, #FF3D00" label="Last Week" />
+            <CustomOption value="last-month" gradient="#F09619, #FE512E" label="Last Month" />
+            <CustomOption value="last-year" gradient="#007BFF, #00C853" label="Last Year" />
+            <CustomOption value="month" gradient="#007BFF, #00C853" label="Month" />
+          </Select>
       </div>
 
       <div className="overflow-y-auto h-[200px]">

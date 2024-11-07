@@ -8,11 +8,22 @@ import ComplaintsTrackingIcon from './icons/sms-tracking.png';
 import SecurityIcon from './icons/encrypted.svg';
 import SecurityGuardIcon from './icons/security-user.png';
 import AnnouncementIcon from './icons/Announcement.png';
+import './sidebar.css';
 
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
 
- 
+  // Toggle sidebar visibility on small screens
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    // Close sidebar when an item is clicked
+    setSidebarOpen(false);
+  };
+
   const navLinkStyle = {
     color: '#4F4F4F',
     textDecoration: 'none',
@@ -44,6 +55,7 @@ const Sidebar = () => {
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
+    closeSidebar();  // Close the sidebar when a link is clicked
   };
 
   const getIconStyle = (link) => ({
@@ -54,32 +66,70 @@ const Sidebar = () => {
   });
 
   return (
-    <div style={{ width: '290px',height: '100vh',background: '#F8F9FA',position: 'fixed',padding: '20px',boxShadow: '2px 0 5px rgba(0,0,0,0.1)',display: 'flex',flexDirection: 'column',}}><div style={{ marginBottom: '20px' }}>
-        <h1 className='nunito-sans' style={{ textAlign: "center", fontWeight: "bold", fontSize: "30px", color: "rgba(254, 81, 46, 1)" }}>
-          Dash<span style={{ color: "#202224" }}>Stack</span>
-        </h1>
+    <div>
+      {/* Hamburger menu button for small screens */}
+      <div 
+        className="sidebar-toggle-btn block lg:hidden md:hidden" 
+        onClick={toggleSidebar}
+      >
+        <div className="line"></div>
+        <div className="line"></div>
+        <div className="line"></div>
       </div>
-      <Nav className="flex-column">
-        {['dashboard', 'Resident-Manegement', 'Financial-Management', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map(link => (
-          <div key={link} style={{ position: 'relative' }}>
-            <div style={getIndicatorStyle(link)}></div>
-            <Nav.Link href="" style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
-              {link === 'dashboard' && <img src={DashboardIcon} style={getIconStyle(link)} alt="Dashboard" />}
-              {link === 'Resident-Manegement' && <i className="fa-solid fa-money-bill" style={{ marginRight:'10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>}
-              {link === 'Financial-Management' && <img src={FinacialIcon} style={getIconStyle(link)} alt="Financial Management" />}
-              {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities  " />}
-              {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
-              {link === 'security-Management' && <img src={SecurityIcon} style={getIconStyle(link)} alt="Security Management" />}
-              {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
-              {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
-              {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
-            </Nav.Link>
-          </div>
-        ))}
-      </Nav>
-      <div style={{ marginTop: 'auto' }}>
-        <Nav.Link href="" style={{ color: "#E74C3C", padding: '0 10px', height: '52px' }} onClick={() => handleLinkClick('logout')}><i className="fa fa-sign-out" style={{ marginRight: '8px', color: '#E74C3C' }}></i> Logout
-        </Nav.Link>
+
+      {/* Sidebar */}
+      <div 
+        className={`sidebar ${sidebarOpen ? 'open' : ''}`} 
+        style={{
+          position: 'fixed', 
+          height: '100vh', 
+          background: '#F8F9FA', 
+          padding: '20px', 
+          boxShadow: '2px 0 5px rgba(0,0,0,0.1)', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          width: '290px', 
+        }}
+      >
+        <div style={{ marginBottom: '20px' }}>
+          <h1 
+            className="nunito-sans" 
+            style={{
+              textAlign: "center", 
+              fontWeight: "bold", 
+              fontSize: "30px", 
+              color: "rgba(254, 81, 46, 1)"
+            }}
+            onClick={() => closeSidebar()}  // Close sidebar when clicking on DashStack
+          >
+            Dash<span style={{ color: "#202224" }}>Stack</span>
+          </h1>
+        </div>
+
+        <Nav className="flex-column">
+          {['dashboard', 'Resident-Manegement', 'Financial-Management', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map(link => (
+            <div key={link} style={{ position: 'relative' }}>
+              <div style={getIndicatorStyle(link)}></div>
+              <Nav.Link href="" style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
+                {link === 'dashboard' && <img src={DashboardIcon} style={getIconStyle(link)} alt="Dashboard" />}
+                {link === 'Resident-Manegement' && <i className="fa-solid fa-money-bill" style={{ marginRight: '10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>}
+                {link === 'Financial-Management' && <img src={FinacialIcon} style={getIconStyle(link)} alt="Financial Management" />}
+                {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities" />}
+                {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
+                {link === 'security-Management' && <img src={SecurityIcon} style={getIconStyle(link)} alt="Security Management" />}
+                {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
+                {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
+                {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
+              </Nav.Link>
+            </div>
+          ))}
+        </Nav>
+
+        <div style={{ marginTop: 'auto' }}>
+          <Nav.Link href="" style={{ color: "#E74C3C", padding: '0 10px', height: '52px' }} onClick={() => handleLinkClick('logout')}>
+            <i className="fa fa-sign-out" style={{ marginRight: '8px', color: '#E74C3C' }}></i> Logout
+          </Nav.Link>
+        </div>
       </div>
     </div>
   );
