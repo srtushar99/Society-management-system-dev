@@ -35,7 +35,8 @@ const ForgotPasswordPage = () => {
       if (response.ok) {
         console.log('OTP sent successfully to', email);
         setErrorMessage('');
-        navigate('/getotp', { state: { email } });
+        // navigate('/getotp', { state: { email } });
+         navigate('/getotp', { state: { emailOrPhone: email } });
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Failed to send OTP.');
