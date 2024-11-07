@@ -24,6 +24,7 @@ const importantNumberRoutes = require("./routes/importantNumberRoutes");
 const ownerRoute = require("./routes/ownerRoute")
 const tenantRoute = require("./routes/tenantRoute")
 const expensesRoute = require("./routes/expensesRoutes")
+const noteRoute = require("./routes/noteRoutes")
 
 //user registration and login schema
 app.use("/api/v1",userRoutes);
@@ -40,6 +41,7 @@ app.use('/api/v2/tenant', tenantRoute);
 
 
 app.use('/api/v2/expenses', expensesRoute);
+app.use('/api/v2/note', noteRoute);
 
 
   
