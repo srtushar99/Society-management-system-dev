@@ -114,7 +114,6 @@ exports.login = async (req, res) => {
 };
 
 // Logout page 
-
 exports.logout = async (req, res) => {
   try {
     res.clearCookie("Society-Management");
@@ -125,29 +124,33 @@ exports.logout = async (req, res) => {
   }
 };
 
-// Reset-password 
-
+// Reset Password
 exports.resetPassword = async (req, res) => {
   try {
-    const { userId } = req.params; 
-    const { newPassword, confirmPassword } = req.body; 
+    const { email, newPassword, confirmPassword } = req.body;
+    const id = req.params.id;
 
     if (!newPassword || !confirmPassword) {
       return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    // Find user by email
+    const finddata = await User.findOne({ Email_Address: email });
+    if (!finddata) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ success: false, message: "Passwords do not match" });
     }
 
+    // Hash the new password
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(newPassword, salt);
 
-    const user = await User.findByIdAndUpdate(userId, { Password: hashedPassword }, { new: true });
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
+    // Update user's password
+    finddata.Password = hashedPassword;
+    await finddata.save();
 
     return res.status(200).json({
       success: true,
