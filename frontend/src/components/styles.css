@@ -15,6 +15,9 @@
         width: 100%; /* Make columns full-width on smaller screens */
     }
   }
+  body{
+    background-color: #F8F9FA;
+  }
 
   
   

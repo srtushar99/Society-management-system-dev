@@ -30,10 +30,31 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  select_society:{
+    type: mongoose.Schema.Types.ObjectId, 
+    required: true, 
+    ref: 'Society' 
+
+  },
   Password:{
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'resident', 'security'], 
+    default: 'admin' 
+  },
+  otp:{
+    type:String,
+  },
+  otpExpiration:{
+    type:Date,
+    default:Date.now,
+    get:(otpExpiration)=>otpExpiration.getTime(),
+    set:(otpExpiration)=>new Date(otpExpiration)
   }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

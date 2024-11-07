@@ -1,6 +1,6 @@
 import React from 'react';
 import Group1000005870 from '../assets/Group 1000005870.png';
-import Frame1000004995 from '../assets/Frame 1000004995.png';
+// import Frame1000004995 from '../assets/Frame 1000004995.png';
 // import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const LeftSection = () => {
@@ -17,7 +17,7 @@ const LeftSection = () => {
           Your Space, Your Place: <span style={{ color: "#F09619" }}> Society Management</span>
         </p>
         <p className='h4 nunito-sans'>Made Simple.</p>
-        <img src={Frame1000004995} alt="Made Simple Illustration" style={{ maxWidth: '70%', height: 'auto' }} />
+        {/* <img src={Frame1000004995} alt="Made Simple Illustration" style={{ maxWidth: '70%', height: 'auto' }} /> */}
       </div>
     </div>
   );

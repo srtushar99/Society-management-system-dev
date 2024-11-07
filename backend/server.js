@@ -1,13 +1,18 @@
 const express = require("express");
+const cors = require('cors');
+
 const app = express();
+app.use(cors());
 
 const PORT = process.env.PORT || 5000;
+const bodyParser = require("body-parser")
 
 require("./config/db");
 require("dotenv").config();
 
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const cookieParser = require('cookie-parser');
 
@@ -16,10 +21,19 @@ app.use(cookieParser());
 const userRoutes = require("./routes/userRoutes");
 const societyRoutes = require("./routes/societyRoutes");
 const importantNumberRoutes = require("./routes/importantNumberRoutes");
+const ResidentRoute = require("./routes/ResidentRoute")
 
-app.use('/api/societies', societyRoutes);
+//user registration and login schema
 app.use("/api/v1",userRoutes);
-app.use('/api/important-numbers', importantNumberRoutes);
+
+//create society api
+app.use('/api/societies', societyRoutes);
+
+//create Important Number
+app.use('/api/v2/important-numbers', importantNumberRoutes);
+
+//resident apis
+app.use('/api/v2/resident', ResidentRoute);
 
 
   
