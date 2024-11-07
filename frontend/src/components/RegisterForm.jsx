@@ -40,12 +40,12 @@ const RegisterForm = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [newSocietyData, setNewSocietyData] = useState({
-        name: '',
-        address: '',
+        Society_name: '',
+        Society_address: '',
         Country: '',
         State: '',
         City: '',
-        zipCode: '',
+        ZipCode: '',
     });
     const [errors, setErrors] = useState({});
 
@@ -111,24 +111,46 @@ const RegisterForm = () => {
 
     const validateModalForm = () => {
         const newModalErrors = {};
-        if (!newSocietyData.name) newModalErrors.name = 'Society Name is required';
-        if (!newSocietyData.address) newModalErrors.address = 'Address is required';
+        if (!newSocietyData.Society_name) newModalErrors.Society_name = 'Society Name is required';
+        if (!newSocietyData.Society_address) newModalErrors.Society_address = 'Address is required';
         if (!newSocietyData.Country) newModalErrors.Country = 'Country is required';
         if (!newSocietyData.State) newModalErrors.State = 'State is required';
         if (!newSocietyData.City) newModalErrors.City = 'City is required';
-        if (!newSocietyData.zipCode) newModalErrors.zipCode = 'Zip Code is required';
+        if (!newSocietyData.ZipCode) newModalErrors.ZipCode = 'Zip Code is required';
 
         setModalErrors(newModalErrors);
         return Object.keys(newModalErrors).length === 0;
     };
 
-    const handleAddSociety = () => {
+    const handleAddSociety = async () => {
+        // if (validateModalForm()) {
+        //     setFormData((prevData) => ({ ...prevData, select_society: newSocietyData.name }));
+        //     alert(`Society "${newSocietyData.name}" added successfully!`);
+        //     setShowModal(false);
+        //     setNewSocietyData({ name: '', address: '', Country: '', State: '', City: '', zipCode: '' });
+        //     setModalErrors({});
+        // }
         if (validateModalForm()) {
-            setFormData((prevData) => ({ ...prevData, select_society: newSocietyData.name }));
-            alert(`Society "${newSocietyData.name}" added successfully!`);
-            setShowModal(false);
-            setNewSocietyData({ name: '', address: '', Country: '', State: '', City: '', zipCode: '' });
-            setModalErrors({});
+            try {
+                // Sending the new society data to the backend API
+                const response = await axiosInstance.post('/societies/create', newSocietyData);
+    
+                if (response.data && response.data.success) {
+                    setFormData((prevData) => ({
+                        ...prevData,
+                        select_society: newSocietyData.Society_name,
+                    }));
+                    setShowModal(false);  // Close the modal after success
+                    setNewSocietyData({ Society_name: '', Society_address: '', Country: '', State: '', City: '', ZipCode: '' });
+                    setModalErrors({});
+                    fetchSocieties();  // Refresh the list of societies after a new one is added
+                } else {
+                    alert('Failed to create society. Please try again!');
+                }
+            } catch (error) {
+                console.error('Error creating society:', error);
+                alert('There was an error creating the society. Please try again later.');
+            }
         }
     };
 
@@ -276,13 +298,13 @@ const RegisterForm = () => {
                                        <div className="modal-body">
                                            <div className="mb-3 p-0">
                                                <label>Society Name <span className="text-danger">*</span></label>
-                                               <input type="text" value={newSocietyData.name} onChange={(e) => setNewSocietyData({ ...newSocietyData, name: e.target.value })} className="form-control" />
-                                               {modalErrors.name && <small className="text-danger">{modalErrors.name}</small>}
+                                               <input type="text" value={newSocietyData.Society_name} onChange={(e) => setNewSocietyData({ ...newSocietyData, Society_name: e.target.value })} className="form-control" />
+                                               {modalErrors.Society_name && <small className="text-danger">{modalErrors.Society_name}</small>}
                                            </div>
                                            <div className="mb-3 p-0">
                                                <label>Address <span className="text-danger">*</span></label>
-                                               <input type="text" value={newSocietyData.address} onChange={(e) => setNewSocietyData({ ...newSocietyData, address: e.target.value })} className="form-control" />
-                                               {modalErrors.address && <small className="text-danger">{modalErrors.address}</small>}
+                                               <input type="text" value={newSocietyData.Society_address} onChange={(e) => setNewSocietyData({ ...newSocietyData, Society_address: e.target.value })} className="form-control" />
+                                               {modalErrors.Society_address && <small className="text-danger">{modalErrors.Society_address}</small>}
                                            </div>
                                            <div className="row">
                                                <div className="col-6 mb-3 p-0 pe-2" >
@@ -302,8 +324,8 @@ const RegisterForm = () => {
                                                </div>
                                                <div className="col-6 mb-3 p-0">
                                                    <label>Zip Code <span className="text-danger">*</span></label>
-                                                   <input type="text" value={newSocietyData.zipCode} onChange={(e) => setNewSocietyData({ ...newSocietyData, zipCode: e.target.value })} className="form-control" />
-                                                   {modalErrors.zipCode && <small className="text-danger">{modalErrors.zipCode}</small>}
+                                                   <input type="text" value={newSocietyData.ZipCode} onChange={(e) => setNewSocietyData({ ...newSocietyData, ZipCode: e.target.value })} className="form-control" />
+                                                   {modalErrors.ZipCode && <small className="text-danger">{modalErrors.ZipCode}</small>}
                                                </div>
                                            </div>
                                        </div>
