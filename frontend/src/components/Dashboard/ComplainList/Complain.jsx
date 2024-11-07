@@ -117,7 +117,7 @@ const Complain = () => {
   };
 
   return (
-    <div className="w-full md:w-[1150px] lg:ms-[310px] h-[300px] bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="lg:w-[1160px] md:w-[1150px] lg:ms-[320px] h-[305px] bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-3 flex justify-between items-center border-b">
         <h2 className="text-2xl font-bold text-gray-800">Complaint List</h2>
         <Select defaultValue="month" onChange={handleRangeChange}>

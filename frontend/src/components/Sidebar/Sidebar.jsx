@@ -63,7 +63,7 @@ const Sidebar = () => {
     <div>
       {/* Hamburger menu button for small screens */}
       <div 
-        className="sidebar-toggle-btn block lg:hidden md:hidden" 
+        className="sidebar-toggle-btn  block lg:hidden md:hidden" 
         onClick={toggleSidebar}
       >
         <div className="line"></div>
@@ -83,7 +83,7 @@ const Sidebar = () => {
           display: 'flex', 
           flexDirection: 'column', 
           width: '290px', 
-          zIndex: 999
+          
         }}
       >
         <div style={{ marginBottom: '20px' }}>

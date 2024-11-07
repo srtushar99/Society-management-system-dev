@@ -73,7 +73,7 @@ const handleRangeChange = (event) => {
   console.log(selectedRange);
 }
   return (
-    <div className="border border-gray-300 rounded-lg ms-[60px] w-[350px] h-[300px] p-3 ">
+    <div className="border bg-white border-gray-300 rounded-lg sm:mt-5  h-[300px] p-3 mt-2  lg:w-[360px]  sm:ml-7 ">
       <div className="flex justify-between items-center mb-3">
         <h5 className="text-xl font-semibold text-gray-900">Upcoming Activity</h5>
         <Select defaultValue="month" onChange={handleRangeChange}>

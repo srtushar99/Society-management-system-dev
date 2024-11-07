@@ -7,7 +7,7 @@ import buildingIcon from '../../assets/building-4.png'; // Update with actual pa
 
 const Card = ({ title, amount, icon, color }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg h-[100px] sm:-2 sm:p-4 sm:ms-10 mb-1 mt-2 w-full sm:w-[360px] flex">
+    <div className="bg-white shadow-lg rounded-lg h-[100px] sm:-2 sm:p-4 sm:ms-10  mb-1 mt-2 w-full sm:w-[360px] flex">
       <div
         style={{
           width: '8px',
@@ -16,7 +16,7 @@ const Card = ({ title, amount, icon, color }) => {
           marginTop: "30px",
           opacity: 0.7, // Adjust opacity here
         }}
-        className="rounded-r-lg s lg:mt- "
+        className="rounded-r-lg s lg:mt-3 pl-2 ms-2 "
       ></div>
       <div className="flex-1 flex justify-between items-center pl-4">
         <div>
@@ -24,7 +24,7 @@ const Card = ({ title, amount, icon, color }) => {
           <p className="text-xl font-bold text-gray-700">{amount}</p>
         </div>
         {/* Icon with background */}
-        <div className="bg-gray-100 p-1 rounded">
+        <div className="bg-gray-100 mr-3 rounded">
           <img src={icon} alt={title} className="w-8 h-8" />
         </div>
       </div>

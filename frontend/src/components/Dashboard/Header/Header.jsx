@@ -58,12 +58,12 @@ const Header = () => {
   const isNoNotifications = notifications.length === 0;
 
   return (
-    <header className="flex items-center justify-between px-6 py-2 bg-white shadow-sm  sm:ms-[50px] h-[70px] flex-wrap md:flex-nowrap">
+    <header className="flex items-center justify-between px-6 py-2 bg-white sm:ms-[50px] h-[70px] flex-wrap md:flex-nowrap">
       {/* Search Bar Section */}
-      <div className="relative flex-1  md:flex-none md:ml-[350px]">
+      <div className="relative flex-1 md:flex-none md:ml-[290px] md:mr-4">
         {/* Search input visible on larger screens */}
         <div className="hidden md:block ">
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 " />
+          <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 h-5 w-5 " />
           <input
             type="text"
             placeholder="Search Here"
@@ -72,7 +72,7 @@ const Header = () => {
         </div>
 
         {/* Search Icon only visible on smaller screens */}
-        <div className="block md:hidden">
+        <div className=" md:hidden flex justify-end sm:mr-5 ">
           <button className="p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
             <Search className="h-6 w-6" />
           </button>
@@ -87,9 +87,6 @@ const Header = () => {
           onClick={() => setIsModalOpen(true)} // Open the modal
         >
           <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-          {notifications.length > 0 && (
-            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-          )}
         </button>
 
         {/* Profile Section */}
@@ -104,9 +101,9 @@ const Header = () => {
           />
           
           {/* Profile Text visible only on larger screens */}
-          <div className="hidden sm:block  flex-col items-start">
-            <span className="font-medium text-sm">Moni Roy</span>
-            <span className="text-xs text-gray-500">Admin</span>
+          <div className="hidden sm:block flex-col items-start mt-2">
+            <span className="font-medium text-sm ">Moni Roy</span>
+            <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>
       </div>

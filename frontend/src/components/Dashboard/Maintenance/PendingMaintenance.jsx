@@ -13,7 +13,7 @@ const Avatar = ({ children, className }) => (
 );
 
 const AvatarImage = ({ src, alt }) => (
-  <img src={src || '/fallback-avatar.png'} alt={alt} className="h-full w-full object-cover" />
+  <img src={src || '/fallback-avatar.png'} alt={alt} className="h-full  w-full object-cover" />
 );
 
 // Placeholder Card components
@@ -84,7 +84,7 @@ const maintenanceItems = [
 
 const PendingMaintenance = () => {
   return (
-    <div className=" sm:w-full lg:h-[400px] md:w-96 lg:w-[350px] xl:w-[350px] sm:ml-4 md:ml-10 ml-12 xl:ml-18 mt2">
+    <div className=" sm:w-full bg-white rounded lg:h-[405px]  lg:w-[360px]  sm:ml-4 ">
       <Card className="w-full h-full">
         <CardHeader>
           <CardTitle className="text-base sm:text-lg">Pending Maintenances</CardTitle>
@@ -99,8 +99,8 @@ const PendingMaintenance = () => {
           {maintenanceItems.map((item) => (
             <div key={item.id} className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={item.avatar} alt={item.name} />
+                <Avatar className="h-30 w-10 lg:w-10 ">
+                  <AvatarImage  className="sm:h-28" src={item.avatar} alt={item.name} />
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="font-medium text-sm sm:text-base">{item.name}</span>

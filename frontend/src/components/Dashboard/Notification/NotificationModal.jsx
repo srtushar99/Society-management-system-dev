@@ -20,7 +20,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
   };
 
   const handleClearAll = () => {
-    // If there are no notifications, navigate to the "NoNotification" page
+   
     if (notifications.length === 0) {
       setIsNoNotificationOpen(true); // Optional: set state to show NoNotification modal if needed
       navigate('/no-notifications'); // Redirect to the NoNotification page
@@ -34,18 +34,16 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
   }
 
   return (
-    <div className="fixed inset-0 flex items-start justify-end bg-black bg-opacity-50 z-50">
+    <div className="lg:fixed sm:w-full inset-0 flex item-center  justify-center  sm:justify-start z-50">
       <div
-        className="bg-white rounded-[15px_0_0_0] shadow-lg p-4 w-[540px] max-h-[90vh]"
+        className="bg-white rounded-[15px_0_0_0] shadow-lg p-4 w-full sm:w-[90%] md:w-[540px] max-h-[90vh] sm:top-[50%] md:top-[79px] md:left-[1177px] sm:left-[0]"
         style={{
           position: 'absolute',
-          top: '79px',
-          left: '1177px',
         }}
       >
         {/* Modal Header */}
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-xl font-semibold">Notifications</h2>
+        <div className="flex justify-between items-center mb-2 sm:mb-3">
+          <h2 className="text-xl sm:text-lg md:text-xl font-semibold">Notifications</h2>
           <button
             className="text-[#5678E9] text-sm font-semibold"
             onClick={handleClearAll} // Clear all notifications and close the modal
@@ -57,25 +55,25 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
         {/* Modal Content */}
         <div className="flex flex-col">
           {notifications.map((notification, index) => (
-            <div key={index} className="border-b py-2 flex items-start">
+            <div key={index} className="border-b py-2 sm:py-3 flex items-start">
               {index === 0 && (
-                <div className="h-10 w-10 rounded-full flex items-center justify-center mr-3">
-                  <img src={NotificationImage} alt="Notification" className="h-10 w-10" />
+                <div className="h-15 w-15 sm:h-8 sm:w-10 rounded-full flex items-center justify-center mr-3">
+                  <img src={NotificationImage} alt="Notification" className="h-10 w-10 sm:h-8 sm:w-8" />
                 </div>
               )}
               {index === 2 && (
-                <div className="h-10 w-10 rounded-full flex items-center justify-center mr-3">
-                  <i className="fa-solid fa-g text-[#5678E9] h-7 w-7"></i>
+                <div className="h-15 w-10 sm:h-8 sm:w-8 rounded-full flex items-center justify-center mr-3">
+                  <i className="fa-solid fa-g text-[#5678E9] h-7 w-7 sm:h-6 sm:w-6"></i>
                 </div>
               )}
               {(index === 1 || index === 3) && (
-                <div className="h-10 w-10 rounded-full flex items-center justify-center mr-3">
-                  <img src={MoneysImage} alt="Maintenance" className="h-7 w-7" />
+                <div className="h-15 w-10 sm:h-8 sm:w-8 rounded-full flex items-center justify-center mr-3">
+                  <img src={MoneysImage} alt="Maintenance" className="h-7 w-7 sm:h-6 sm:w-6" />
                 </div>
               )}
               <div className="flex-1">
-                <p className="font-medium">{notification.title}</p>
-                <span className="text-[#A7A7A7]" style={{ fontSize: '12px' }}>
+                <p className="font-medium sm:text-sm md:text-base">{notification.title}</p>
+                <span className="text-[#A7A7A7] sm:text-xs md:text-sm" style={{ fontSize: '12px' }}>
                   {notification.timing}
                 </span>
                 {index === 3 ? (
@@ -90,28 +88,23 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-600">{notification.message}</p>
+                  <p className="text-gray-600 sm:text-xs md:text-sm">{notification.message}</p>
                 )}
                 <div className="flex justify-between items-center mt-2">
                   <div className="flex space-x-2">
-                   
-                      <>
-                        <button
-                          className="px-3 py-1 rounded-md border border-[#D3D3D3] text-[#202224] text-sm"
-                          onClick={() => handleStatusChange(index, 'Accepted')}
-                        >
-                          Accept
-                        </button>
-                        <button
-                          className="text-white px-3 py-1 rounded-md text-sm"
-                          style={{ backgroundColor: '#5678E9' }}
-                          onClick={() => handleStatusChange(index, 'Declined')}
-                        >
-                          Decline
-                        </button>
-                      </>
-                 
-                  
+                    <button
+                      className="px-3 py-1 rounded-md border border-[#D3D3D3] text-[#202224] text-sm sm:text-xs md:text-sm"
+                      onClick={() => handleStatusChange(index, 'Accepted')}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="text-white px-3 py-1 rounded-md text-sm sm:text-xs md:text-sm"
+                      style={{ backgroundColor: '#5678E9' }}
+                      onClick={() => handleStatusChange(index, 'Declined')}
+                    >
+                      Decline
+                    </button>
                   </div>
                   <div className="flex items-center">
                     <span className="text-xs text-gray-500">{notification.timeAgo}</span>
@@ -119,7 +112,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
                       <img
                         src={DoneImage}
                         alt="Done"
-                        className="h-4 w-4 ml-1"
+                        className="h-4 w-4 ml-1 sm:h-3 sm:w-3"
                         style={{
                           filter:
                             'invert(41%) sepia(78%) saturate(1800%) hue-rotate(183deg) brightness(102%) contrast(88%)',

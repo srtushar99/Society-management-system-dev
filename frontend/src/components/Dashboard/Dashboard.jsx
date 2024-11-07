@@ -12,31 +12,34 @@ import Activity from './Activity/Activity';
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col md:flex-row h-screen  bg-gray-100">
       <Sidebar />
       <div className="flex-1 flex  flex-col">
         <Header  />
         <Cards />
 
         {/* Flex container for Chart, ContactsPage, and PendingMaintenance */}
-        <div className="flex flex-col md:flex-row flex-1 space-x-0 md:space-x-4 p-2">
-            <Chart />
+        <div className="flex flex-col md:flex-row flex-1  md:space-x-2 p-2">
           <div className="flex-1 mb-[180px] md:mb-0">
+            <Chart />
           </div>
+          <div className="flex-1 mb-2 sm:mb-4 ">
             <ContactsPage />
-          <div className="flex-1 mb-4 md:mb-0">
           </div>
+          <div className="flex-1    md:mb-0">
             <PendingMaintenance />
-          <div className="flex-1 mb-4 md:mb-0">
           </div>
         </div>
 
         {/* Flex container for Complain and Activity components */}
-        <div className="flex flex-col md:flex-row mt-2 space-x-2 md:space-x-4 p-2">
+        <div className="flex flex-col md:flex-row  flex-1  md:space-x-4 p-2">
+            <div className="flex-1 mb-2 md:mb-0">
             <Complain />
+          </div>
+          <div className="flex-1  md:mb-0">
             <Activity />
-          
-          
+          </div>
+       
         </div>
       </div>
     </div>

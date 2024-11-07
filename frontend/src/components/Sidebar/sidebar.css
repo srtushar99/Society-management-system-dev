@@ -25,7 +25,7 @@
     width: 30px;
     cursor: pointer;
     z-index: 1001;
-    display: block;
+    display: none;
   }
   
   .sidebar-toggle-btn .line {

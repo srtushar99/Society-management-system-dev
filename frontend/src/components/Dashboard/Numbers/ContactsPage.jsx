@@ -53,7 +53,10 @@ const ContactsPage = () => {
   };
 
   return (
-    <div className="mt-2 rounded-lg shadow-md p-4 ml-9" style={{ width: "350px", height: "400px" }}>
+    <div
+      className="mt-1 ml-2  rounded-lg shadow-md p-4 lg:ml-6 bg-white lg:w-[350px]"
+      style={{ width: "360px", height: "400px" }}
+    >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Important Numbers</h2>
         <button
@@ -76,15 +79,15 @@ const ContactsPage = () => {
             <div className="flex space-x-2">
               <button
                 onClick={() => handleDeleteContact(contact)} // Trigger delete modal
-                className="text-red-600 hover:text-red-800 bg-[#F6F8FB]"
+                className="text-red-600 hover:text-red-800 bg-[#F6F8FB] p-2 rounded"
               >
-                <img src={Delete} alt="Delete" className="h-5 w-5" />
+                <img src={Delete} alt="Delete" className="h-6 w-6 lg:h-5 lg:w-5" />
               </button>
               <button
                 onClick={() => handleEditContact(contact)} // Trigger edit modal
-                className="text-green-600 hover:text-green-800"
+                className="text-green-600 hover:text-green-800 p-2 rounded"
               >
-                <img src={Edit} alt="Edit" className="h-5 w-5" />
+                <img src={Edit} alt="Edit" className="h-6 w-6 lg:h-5 lg:w-5" />
               </button>
             </div>
           </div>
@@ -93,8 +96,8 @@ const ContactsPage = () => {
 
       {/* Add/Edit Contact Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-40">
+          <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg z-50">
             <div className="flex justify-between items-center mb-6">
               <span className="text-2xl font-bold text-[#202224]">
                 {editMode ? "Edit Number" : "Add Number"}

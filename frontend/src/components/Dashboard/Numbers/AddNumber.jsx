@@ -57,7 +57,7 @@ const AddNumber = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
       <div className="bg-white w-full max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">
@@ -132,10 +132,10 @@ const AddNumber = ({ isOpen, onClose }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-wrap gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               type="button"
-              className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               onClick={handleClose} // Close modal and redirect to dashboard
             >
               Cancel
@@ -143,7 +143,7 @@ const AddNumber = ({ isOpen, onClose }) => {
 
             <button
               type="submit"
-              className={`flex-1 sm:flex-none px-4 py-2 rounded-lg ${
+              className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
                 isFormValid
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" // Apply gradient if form is valid
                   : "bg-[#F6F8FB] text-[#202224]" // Default color if form is not valid
