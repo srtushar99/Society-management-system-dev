@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useNavigate } from "react-router-dom"; 
+import axiosInstance from '../../Common/axiosInstance';
 
-const AddNumber = ({ isOpen, onClose }) => {
-  // State for the input fields
+const AddNumber = ({ isOpen, onClose, fetchImportantNumbers  }) => {
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [work, setWork] = useState("");
+  const navigate = useNavigate();
 
-  // Regular expressions for validation
-  const nameRegex = /^[A-Za-z\s]+$/; // Only alphabets and spaces
-  const phoneRegex = /^[6789]\d{9}$/; // Starts with 6, 7, 8, or 9 and followed by 9 digits
+  const nameRegex = /^[A-Za-z\s]+$/; 
+  const phoneRegex = /^[6789]\d{9}$/; 
   const workRegex = /^[A-Za-z\s]+$/; 
 
-  // Check if all fields are filled and valid
   const isFormValid =
     fullName &&
     phoneNumber &&
@@ -22,36 +21,78 @@ const AddNumber = ({ isOpen, onClose }) => {
     phoneRegex.test(phoneNumber) &&
     workRegex.test(work);
 
-  const handleSubmit = (e) => {
+    const handleClose = () => {
+      onClose(); 
+      navigate("/dashboard"); 
+    };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      // Perform save action here
-      console.log("Form Submitted", { fullName, phoneNumber, work });
+      const createNumberObj = {
+        fullName,
+        phoneNumber,
+        work
+      };
+      try {
+        const response = await fetch("http://localhost:5000/api/v2/important-numbers/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(createNumberObj),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Successfully saved:", data);
+          fetchImportantNumbers(); // Fetch the updated list of contacts
+          onClose(); // Close the modal after successful submission
+          navigate("/dashboard"); 
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Network error:", error);
+      }
+
+      // try {
+      //   const response = await axiosInstance.post(
+      //     "/v2/important-numbers/create", 
+      //     {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(createNumberObj),
+      //     }
+      //   );
+  
+      //   if (response.status === 200) {
+      //     console.log("Successfully saved:", response.data);
+      //     onClose();
+      //     navigate("/dashboard");
+      //   } else {
+      //     console.error("Error saving number:", response.data.message || "Something went wrong.");
+      //   }
+      // } catch (error) {
+      //   console.error("Network error:", error.response?.data || error.message);
+      // }
     }
   };
 
-  // Handle phone number change and ensure first digit is 6, 7, 8, or 9
+
   const handlePhoneChange = (e) => {
     const value = e.target.value;
-
-    // Allow only numeric input
     if (/^\d*$/.test(value)) {
       if (value.length === 1 && !["6", "7", "8", "9"].includes(value)) {
-        return; // If the first digit is not 6, 7, 8, or 9, prevent the input
+        return; 
       }
       if (value.length <= 10) {
-        setPhoneNumber(value); // Allow up to 10 digits
+        setPhoneNumber(value); 
       }
     }
-  };
-
-  // Initialize navigate for redirection
-  const navigate = useNavigate();
-
-  // Handle closing the modal and redirecting to the dashboard
-  const handleClose = () => {
-    onClose(); // Close the modal
-    navigate("/dashboard"); // Redirect to the dashboard
   };
 
   if (!isOpen) return null;
@@ -65,14 +106,13 @@ const AddNumber = ({ isOpen, onClose }) => {
           </span>
           <button
             className="text-gray-600 hover:text-gray-800"
-            onClick={handleClose} // Close modal and redirect to dashboard
+            onClick={handleClose} 
           >
             <X className="h-6 w-6" />
           </button>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Full Name */}
           <div>
             <label className="block text-left font-medium text-gray-700 mb-1">
               Full Name<span className="text-red-500">*</span>
@@ -83,7 +123,6 @@ const AddNumber = ({ isOpen, onClose }) => {
               value={fullName}
               onChange={(e) => {
                 const value = e.target.value;
-                // Prevent non-alphabetical input
                 if (nameRegex.test(value) || value === "") {
                   setFullName(value);
                 }
@@ -92,7 +131,6 @@ const AddNumber = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Phone Number */}
           <div>
             <label className="block text-left font-medium text-gray-700 mb-1">
               Phone Number<span className="text-red-500">*</span>
@@ -106,12 +144,11 @@ const AddNumber = ({ isOpen, onClose }) => {
                 value={phoneNumber}
                 onChange={handlePhoneChange}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg text-[#202224]"
-                maxLength={10} // Limit input to 10 characters
+                maxLength={10} 
               />
             </div>
           </div>
 
-          {/* Work */}
           <div>
             <label className="block text-left font-medium text-gray-700 mb-1">
               Work<span className="text-red-500">*</span>
@@ -122,7 +159,6 @@ const AddNumber = ({ isOpen, onClose }) => {
               value={work}
               onChange={(e) => {
                 const value = e.target.value;
-                // Prevent non-alphabetical input
                 if (workRegex.test(value) || value === "") {
                   setWork(value);
                 }
@@ -131,12 +167,11 @@ const AddNumber = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               type="button"
               className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              onClick={handleClose} // Close modal and redirect to dashboard
+              onClick={handleClose} 
             >
               Cancel
             </button>
@@ -145,10 +180,10 @@ const AddNumber = ({ isOpen, onClose }) => {
               type="submit"
               className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
                 isFormValid
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" // Apply gradient if form is valid
-                  : "bg-[#F6F8FB] text-[#202224]" // Default color if form is not valid
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" 
+                  : "bg-[#F6F8FB] text-[#202224]" 
               }`}
-              disabled={!isFormValid} // Disable the button if form is not valid
+              disabled={!isFormValid} 
             >
               Save
             </button>

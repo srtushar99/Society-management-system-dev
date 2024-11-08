@@ -1,24 +1,20 @@
 import React, { useState } from "react";
-import plus from "../../assets/add-square.png"; // Add add icon
+import plus from "../../assets/add-square.png"; 
 import AddNumber from "./AddNumber";
 import EditNumber from "./EditNumber";
-import DeleteNumber from "./DeleteNumber"; // Import DeleteNumber
+import DeleteNumber from "./DeleteNumber"; 
 import '../Maintenance/scrollbar.css'; 
 import '../../Sidebar/sidebar.css';
-// Ensure this path is correct
+import axiosInstance from '../../Common/axiosInstance'; 
+import { useEffect  } from 'react';
 
 const ContactsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [contactToEdit, setContactToEdit] = useState(null);
-  const [contactToDelete, setContactToDelete] = useState(null); // Track contact to delete
-  const [contacts, setContacts] = useState([
-    { name: "Hanna Donin", phone: "+91 99587 33657", work: "Plumber" },
-    { name: "John Doe", phone: "+91 98765 43210", work: "Electrician" },
-    { name: "Jane Smith", phone: "+91 12345 67890", work: "Carpenter" },
-    { name: "Jane Smith", phone: "+91 12345 67890", work: "Carpenter" },
-    { name: "Jane Smith", phone: "+91 12345 67890", work: "Carpenter" },  
-  ]);
+  const [contactToDelete, setContactToDelete] = useState(null); 
+  const [contacts, setContacts] = useState([]);
+ 
 
   // Open the modal to add a contact
   const handleAddContact = () => {
@@ -32,28 +28,41 @@ const ContactsPage = () => {
     setIsModalOpen(false);
   };
 
-  // Open the modal to edit an existing contact
   const handleEditContact = (contact) => {
     setEditMode(true);
     setContactToEdit(contact);
     setIsModalOpen(true);
   };
 
-  // Handle opening the delete confirmation modal
   const handleDeleteContact = (contact) => {
-    setContactToDelete(contact); // Set the contact to delete
+    setContactToDelete(contact);
   };
 
-  // Handle deleting the contact
   const handleConfirmDelete = (contact) => {
     setContacts(contacts.filter((c) => c !== contact)); // Remove contact from list
     setContactToDelete(null);
   };
 
-  // Handle canceling the deletion
   const handleCancelDelete = () => {
     setContactToDelete(null);
   };
+
+       // Fetch Important Numbers from the API
+      const fetchImportantNumbers = async () => {
+        try {
+            const response = await axiosInstance.get('/v2/important-numbers/');
+            // console.log(response.data);
+            setContacts(response.data.data); 
+        } catch (error) {
+            console.error('Error fetching Important Numbers:', error);
+        }
+    };
+
+
+    useEffect(() => {
+      fetchImportantNumbers();
+    }, []);
+
 
   return (
     <div
@@ -75,8 +84,8 @@ const ContactsPage = () => {
         {contacts.map((contact, index) => (
           <div key={index} className="flex justify-between items-center border-b py-2">
             <div className="flex flex-col">
-              <div className="font-medium">Name: {contact.name}</div>
-              <div className="text-gray-600">Ph Number: <span>{contact.phone}</span></div>
+              <div className="font-medium">Name: {contact.fullName}</div>
+              <div className="text-gray-600">Ph Number: <span>{contact.phoneNumber}</span></div>
               <div className="text-gray-500">Work: {contact.work}</div>
             </div>
             <div className="flex space-x-2">
@@ -118,11 +127,13 @@ const ContactsPage = () => {
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 contactData={contactToEdit}
+                fetchImportantNumbers={fetchImportantNumbers}
               />
             ) : (
               <AddNumber
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
+                fetchImportantNumbers={fetchImportantNumbers}
               />
             )}
           </div>

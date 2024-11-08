@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';  
+import axiosInstance from '../../Common/axiosInstance';
 
-const EditNumber = ({ isOpen, onClose, contactData, onSave }) => {
-  // States to hold form values
+const EditNumber = ({ isOpen, onClose, contactData, fetchImportantNumbers }) => {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [work, setWork] = useState('');
 
-  // Regular expressions for validation
   const nameRegex = /^[A-Za-z\s]*$/; // Only alphabets and spaces
   const phoneRegex = /^[6789]\d{9}$/; // Starts with 6, 7, 8, or 9 and followed by 9 digits
   const workRegex = /^[A-Za-z\s]*$/; // Only alphabets and spaces
 
-  // Check if the form is valid
   const isFormValid =
     fullName &&
     phoneNumber &&
@@ -22,25 +20,13 @@ const EditNumber = ({ isOpen, onClose, contactData, onSave }) => {
     phoneRegex.test(phoneNumber) &&
     workRegex.test(work);
 
-  // Pre-fill the form with existing contact data when the modal is opened
-  useEffect(() => {
-    if (isOpen && contactData) {
-      setFullName(contactData.name);
-      setPhoneNumber(contactData.phone);
-      setWork(contactData.work);
-    }
-  }, [isOpen, contactData]);
-
-  // Initialize navigate for redirection
   const navigate = useNavigate();
 
-  // Handle phone number change
   const handlePhoneChange = (e) => {
     const value = e.target.value;
     // Allow only numeric input
     if (/^\d*$/.test(value)) {
       if (value.length === 1 && !['6', '7', '8', '9'].includes(value)) {
-        // Prevent input if the first digit is not 6, 7, 8, or 9
         return;
       }
       if (value.length <= 10) {
@@ -49,7 +35,6 @@ const EditNumber = ({ isOpen, onClose, contactData, onSave }) => {
     }
   };
 
-  // Handle full name change and restrict to alphabetic characters and spaces only
   const handleFullNameChange = (e) => {
     const value = e.target.value;
     if (nameRegex.test(value)) {
@@ -57,7 +42,6 @@ const EditNumber = ({ isOpen, onClose, contactData, onSave }) => {
     }
   };
 
-  // Handle work change and restrict to alphabetic characters and spaces only
   const handleWorkChange = (e) => {
     const value = e.target.value;
     if (workRegex.test(value)) {
@@ -65,22 +49,42 @@ const EditNumber = ({ isOpen, onClose, contactData, onSave }) => {
     }
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+   // Handle form submission
+   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave({ name: fullName, phone: phoneNumber, work }); // Pass the updated data to the parent
-      onClose(); // Close the modal
+      try {
+        const response = await axiosInstance.put(`/v2/important-numbers/${contactData._id}`, {
+          fullName,
+          phoneNumber,
+          work
+        });
+        if(!!response.data){
+          fetchImportantNumbers(); 
+          onClose(); 
+        }
+      } catch (err) {
+        console.error(error);
+      }
     }
   };
 
-  // Redirect to dashboard when modal is closed
+
   const handleClose = () => {
-    onClose();  // First call the passed onClose function
-    navigate('/dashboard'); // Redirect to dashboard
+    onClose();  
+    navigate('/dashboard'); 
   };
 
   if (!isOpen) return null;
+
+  useEffect(() => {
+    if (isOpen && contactData) {
+      setFullName(contactData.fullName);
+      setPhoneNumber(contactData.phoneNumber);
+      setWork(contactData.work);
+    }
+  }, [isOpen, contactData]);
+
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">

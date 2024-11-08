@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
+import axiosInstance from '../../Common/axiosInstance';
 
 const DeleteNumber = ({ isOpen, contact, onDelete, onCancel }) => {
-  // If the modal isn't open, return null (don't render anything)
+  
   if (!isOpen) return null;
 
-  const handleDelete = () => {
-    onDelete(contact); // Call the onDelete function passed from parent
-    onCancel(); // Close the modal after deletion
-  };
+    // Handle delete logic with API call
+    const handleDelete = async () => {
+      try {
+        const response = await axiosInstance.delete(`/v2/important-numbers/${contact._id}`);
+        if (response.status === 200) {
+          onDelete(contact); 
+          onCancel();
+        }
+      } catch (error) {
+        console.error('Error deleting contact:', error);
+      }
+    };
 
   const handleCancel = () => {
     onCancel(); // Close the modal without deleting
