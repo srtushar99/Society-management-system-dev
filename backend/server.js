@@ -26,6 +26,9 @@ const tenantRoute = require("./routes/tenantRoute")
 const expensesRoute = require("./routes/expensesRoutes")
 const noteRoute = require("./routes/noteRoutes")
 const facilityRoute = require("./routes/facilityRoutes")
+const complaintRoute = require("./routes/createComplaintRoutes")
+const requestsRoute = require("./routes/requestTrackingRoutes")
+const annoucementRoute = require("./routes/annoucementRoutes")
 
 //user registration and login schema
 app.use("/api/v1",userRoutes);
@@ -46,7 +49,17 @@ app.use('/api/v2/note', noteRoute);
 
 //facility management
 app.use('/api/v2/facility', facilityRoute);
+
+// complaint tracking
+app.use('/api/v2/complaint', complaintRoute);
+app.use('/api/v2/requests', requestsRoute);
+
+// Annoucement
   
+app.use('/api/v2/annoucement', annoucementRoute);
+
+
+
   app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
