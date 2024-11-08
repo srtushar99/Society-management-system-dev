@@ -73,3 +73,16 @@ exports.updateAnnouncement = async (req, res) => {
     }
 };
 
+// Delete an announcement by ID
+exports.deleteAnnouncement = async (req, res) => {
+    try {
+        const announcement = await Announcement.findByIdAndDelete(req.params.id);
+        if (!announcement) {
+            return res.status(404).json({ message: 'Announcement not found' });
+        }
+        res.status(200).json({ message: 'Announcement deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting announcement', error });
+    }
+};
+
