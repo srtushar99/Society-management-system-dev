@@ -1,11 +1,13 @@
-import React from "react";
+import React from 'react';
 import Ellipse1091 from '../../assets/Ellipse 1091.png';
 import Ellipse1093 from '../../assets/Ellipse 1093.png';
 import Ellipse1094 from '../../assets/Ellipse 1094.png';
 import Ellipse1095 from '../../assets/Ellipse 1095.png';
 import Ellipse1096 from '../../assets/Ellipse 1096.png';
+import '../../Sidebar/sidebar.css';
 
-// Placeholder Avatar components
+import './scrollbar.css'
+
 const Avatar = ({ children, className }) => (
   <div className={`rounded-full overflow-hidden ${className} flex items-center justify-center`}>
     {children}
@@ -13,10 +15,9 @@ const Avatar = ({ children, className }) => (
 );
 
 const AvatarImage = ({ src, alt }) => (
-  <img src={src || '/fallback-avatar.png'} alt={alt} className="h-full  w-full object-cover" />
+  <img src={src || '/fallback-avatar.png'} alt={alt} className="h-full w-full object-cover" />
 );
 
-// Placeholder Card components
 const Card = ({ children, className }) => (
   <div className={`border rounded-lg shadow-md p-4 ${className}`}>
     {children}
@@ -84,7 +85,7 @@ const maintenanceItems = [
 
 const PendingMaintenance = () => {
   return (
-    <div className=" sm:w-full bg-white rounded lg:h-[405px]  lg:w-[360px]  sm:ml-4 ">
+    <div className="sm:w-full bg-white rounded lg:h-[405px] lg:w-[360px] sm:ml-2">
       <Card className="w-full h-full">
         <CardHeader>
           <CardTitle className="text-base sm:text-lg">Pending Maintenances</CardTitle>
@@ -99,8 +100,8 @@ const PendingMaintenance = () => {
           {maintenanceItems.map((item) => (
             <div key={item.id} className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
-                <Avatar className="h-30 w-10 lg:w-10 ">
-                  <AvatarImage  className="sm:h-28" src={item.avatar} alt={item.name} />
+                <Avatar className="h-30 w-10 lg:w-10">
+                  <AvatarImage className="sm:h-28" src={item.avatar} alt={item.name} />
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="font-medium text-sm sm:text-base">{item.name}</span>
