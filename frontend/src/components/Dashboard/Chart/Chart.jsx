@@ -85,7 +85,7 @@ const Chart = () => {
   };
 
   return (
-    <div className="h-[240px] sm:h-[240px] w-full sm:w-[760px] sm:ml-[320px]">
+    <div className="h-[240px] sm:h-[240px]   sm:w-[730px] md:h-[240px] lg:w-[760px] md:ms-[880px] sm:ml-[310px] lg:ml-[0px] xl:ml-[290px] 2xl:ml-[320px]">
       <Card>
         <CardHeader>
           <CardTitle>Total Balance</CardTitle>
@@ -129,6 +129,5 @@ const Chart = () => {
     </div>
   );
 };
-
 
 export default Chart;

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import Edit from "../../assets/edit.png"; // Add edit icon
-import Delete from "../../assets/trash.png"; // Add trash icon
 import plus from "../../assets/add-square.png"; // Add add icon
 import AddNumber from "./AddNumber";
 import EditNumber from "./EditNumber";
 import DeleteNumber from "./DeleteNumber"; // Import DeleteNumber
+import '../Maintenance/scrollbar.css'; 
+import '../../Sidebar/sidebar.css';
+// Ensure this path is correct
 
 const ContactsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +16,8 @@ const ContactsPage = () => {
     { name: "Hanna Donin", phone: "+91 99587 33657", work: "Plumber" },
     { name: "John Doe", phone: "+91 98765 43210", work: "Electrician" },
     { name: "Jane Smith", phone: "+91 12345 67890", work: "Carpenter" },
+    { name: "Jane Smith", phone: "+91 12345 67890", work: "Carpenter" },
+    { name: "Jane Smith", phone: "+91 12345 67890", work: "Carpenter" },  
   ]);
 
   // Open the modal to add a contact
@@ -54,8 +57,8 @@ const ContactsPage = () => {
 
   return (
     <div
-      className="mt-1 rounded-lg shadow-md p-4 lg:ml-8  sm:w-[390px]  bg-white lg:w-[360px]"
-      style={{  height: "400px" }}
+      className="rounded-lg shadow-md p-4 lg:ml-6 sm:w-[390px] bg-white lg:w-[360px] lg:h-[380px]"
+      style={{ height: "405px" }}
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Important Numbers</h2>
@@ -68,7 +71,7 @@ const ContactsPage = () => {
         </button>
       </div>
 
-      <div className="overflow-y-auto h-[320px]">
+      <div className="overflow-y-auto h-[320px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {contacts.map((contact, index) => (
           <div key={index} className="flex justify-between items-center border-b py-2">
             <div className="flex flex-col">
@@ -81,15 +84,12 @@ const ContactsPage = () => {
                 onClick={() => handleDeleteContact(contact)} // Trigger delete modal
                 className="text-red-600 hover:text-red-800 bg-[#F6F8FB] p-2 rounded"
               >
-            
                 <i className="fa-solid fa-trash h-6 w-6 lg:h-5 lg:w-5"></i>
-
               </button>
               <button
                 onClick={() => handleEditContact(contact)} // Trigger edit modal
                 className="text-green-600 hover:text-green-800 p-2 rounded"
               >
-                
                 <i className="fa-solid fa-pen-to-square h-6 w-6 lg:h-5 lg:w-5"></i>
               </button>
             </div>

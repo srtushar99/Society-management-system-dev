@@ -7,43 +7,45 @@ import Chart from './Chart/Chart';
 import ContactsPage from './Numbers/ContactsPage';
 import PendingMaintenance from './Maintenance/PendingMaintenance';
 import Complain from './ComplainList/Complain';
+import '../Sidebar/sidebar.css';
 import Activity from './Activity/Activity';
-
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen  bg-gray-100">
+    <div className="d-flex flex-column flex-md-row h-100 bg-light">
+      {/* Sidebar */}
       <Sidebar />
-      <div className="flex-1 flex  flex-col">
-        <Header  />
+
+      {/* Main Content */}
+      <div className="flex-1 d-flex flex-column">
+        <Header />
         <Cards />
 
-        {/* Flex container for Chart, ContactsPage, and PendingMaintenance */}
-        <div className="flex flex-col md:flex-row flex-1  md:space-x-2 p-2">
-          <div className="flex-1 mb-[180px] md:mb-0">
+        {/* Content Grid: Chart, ContactsPage, and Pending Maintenance */}
+        <div className="d-flex flex-column flex-md-row flex-1 p-2">
+          <div className="flex-1 mb-3 mb-md-0">
             <Chart />
           </div>
-          <div className="flex-1 mb-2 sm:mb-4 ">
+          <div className="flex-1 mb-3 mb-md-0">
             <ContactsPage />
           </div>
-          <div className="flex-1    md:mb-0">
+          <div className="flex-1">
             <PendingMaintenance />
           </div>
         </div>
 
-        {/* Flex container for Complain and Activity components */}
-        <div className="flex flex-col md:flex-row  flex-1  md:space-x-4 p-2">
-            <div className="flex-1 mb-2 md:mb-0">
+        {/* Content Grid: Complain List and Activity */}
+        <div className="d-flex flex-column flex-md-row flex-1 p-2">
+          <div className="flex-1 mb-3 mb-md-0">
             <Complain />
           </div>
-          <div className="flex-1  md:mb-0">
+          <div className="flex-1">
             <Activity />
           </div>
-       
         </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Dashboard;
