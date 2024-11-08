@@ -1,5 +1,4 @@
 import React from 'react';
-
 import sendMoneyIcon from '../../assets/money-send.png'; // Update with actual path
 import receiveMoneyIcon from '../../assets/money-recive.png'; // Update with actual path
 import documentIcon from '../../assets/document.png'; // Update with actual path
@@ -7,23 +6,22 @@ import buildingIcon from '../../assets/building-4.png'; // Update with actual pa
 
 const Card = ({ title, amount, icon, color }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg h-[100px] sm:-2 sm:p-4 sm:ms-10  mb-1 mt-2 w-full sm:w-[360px] flex">
+    <div className="bg-white shadow-lg rounded-lg h-[100px] sm:p-4 sm:ml-10 lg:ml-8 mb-1 mt-2 w-full sm:w-[360px] flex">
       <div
         style={{
           width: '8px',
           height: '36px',
           backgroundColor: color,
-          marginTop: "30px",
-          opacity: 0.7, // Adjust opacity here
+          marginTop: "16px",
+          opacity: 0.7,
         }}
-        className="rounded-r-lg s lg:mt-3 pl-2 ms-2 "
+        className="rounded-r-lg lg:mt-3 pl-2 ml-2"
       ></div>
       <div className="flex-1 flex justify-between items-center pl-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
           <p className="text-xl font-bold text-gray-700">{amount}</p>
         </div>
-        {/* Icon with background */}
         <div className="bg-gray-100 mr-3 rounded">
           <img src={icon} alt={title} className="w-8 h-8" />
         </div>

@@ -8,8 +8,8 @@ import ResetPassword from './components/Reset Password/ResetPassword';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from './components/Dashboard/Dashboard';
-import AddNumber from './components/Dashboard/Numbers/AddNumber';
-import NoNotification from './components/Dashboard/Notification/NoNotification';
+import EditProfile from './components/Dashboard/EditProfile/EditProfile';
+import UpdateProfile from './components/Dashboard/EditProfile/UpdateProfile';
 
 function App() {
     return (
@@ -20,6 +20,8 @@ function App() {
             <Route path="/getotp" element={<GetOtp />} />
             <Route path="/resetpassword" element={<ResetPassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/update-profile" element={<UpdateProfile />} />
           
           
 

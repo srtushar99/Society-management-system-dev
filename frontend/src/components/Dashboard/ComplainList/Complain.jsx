@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import AvatarImage from '../../assets/Avatar.png';
-import DeleteComplain from './DeleteComplain'; // Import DeleteComplain component
-import EditComplain from './EditComplain'; // Import EditComplain modal
-import ViewComplain from './ViewComplain'; // Import ViewComplain modal
+import DeleteComplain from './DeleteComplain';
+import EditComplain from './EditComplain';
+import ViewComplain from './ViewComplain';
+// import '../Maintenance/scrollbar.css'; // Ensure this path is correct
 
-// Initial mock complaints data
 const initialComplaints = [
   {
     id: '1',
@@ -33,16 +33,25 @@ const initialComplaints = [
     status: 'Solve',
     description: 'An unresolved issue that has caused significant disruption.',
   },
+  {
+    id: '4',
+    complainer: { name: 'Jane Smith', avatar: AvatarImage },
+    complaintName: 'Unresolved Issue',
+    date: '03/02/2024',
+    priority: 'High',
+    status: 'Solve',
+    description: 'An unresolved issue that has caused significant disruption.',
+  },
 ];
 
 const Badge = ({ children, className }) => (
-  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${className}`}>
+  <span className={`px-2 py-2 p-3  rounded-full text-xs font-semibold ${className}`}>
     {children}
   </span>
 );
 
 const Complain = () => {
-  const [complaints, setComplaints] = useState(initialComplaints); // Store complaints in state
+  const [complaints, setComplaints] = useState(initialComplaints);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedComplaintForDelete, setSelectedComplaintForDelete] = useState(null);
@@ -59,30 +68,29 @@ const Complain = () => {
 
   const openDeleteModal = (complaint) => {
     setSelectedComplaintForDelete(complaint);
-    setIsDeleteModalOpen(true); // Open the delete modal
+    setIsDeleteModalOpen(true);
   };
 
   const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false); // Close the delete modal
-    setSelectedComplaintForDelete(null); // Clear the selected complaint
+    setIsDeleteModalOpen(false);
+    setSelectedComplaintForDelete(null);
   };
 
   const openEditModal = (complaint) => {
     setSelectedComplaintForEdit(complaint);
-    setIsEditModalOpen(true); // Open the edit modal
+    setIsEditModalOpen(true);
   };
 
   const closeEditModal = () => {
-    setIsEditModalOpen(false); // Close the edit modal
-    setSelectedComplaintForEdit(null); // Clear the selected complaint
+    setIsEditModalOpen(false);
+    setSelectedComplaintForEdit(null);
   };
 
   const handleDelete = () => {
-    // Remove the deleted complaint from the list immutably
     setComplaints((prevComplaints) =>
       prevComplaints.filter((complaint) => complaint.id !== selectedComplaintForDelete.id)
     );
-    closeDeleteModal(); // Close the delete modal
+    closeDeleteModal();
   };
 
   const Select = ({ children, defaultValue, onChange }) => {
@@ -97,11 +105,10 @@ const Complain = () => {
     );
   };
 
-  // Custom Option Component with Circle
   const CustomOption = ({ value, gradient, label }) => (
     <option value={value} className="flex items-center">
       <span
-        className="inline-block w-4 mt-2 h-4 rounded-full mr-2 border border-white"
+        className="inline-block w-4 h-4 rounded-full mr-2 border border-white"
         style={{ background: `linear-gradient(90deg, ${gradient})` }}
       ></span>
       {label}
@@ -114,7 +121,7 @@ const Complain = () => {
   };
 
   return (
-    <div className="lg:w-[1160px] md:w-[1150px] lg:ms-[320px] lg:h-[305px] sm:h-[315px] bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="lg:w-[1150px] md:w-[1150px] lg:ms-[320px]  h-[350px] sm:h-[300px] bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-3 flex justify-between items-center border-b">
         <h2 className="text-2xl font-bold text-gray-800">Complaint List</h2>
         <Select defaultValue="month" onChange={handleRangeChange}>
@@ -125,9 +132,9 @@ const Complain = () => {
         </Select>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <table className="w-full table-auto">
-          <thead>
+          <thead >
             <tr className="bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
               <th className="p-3">Complainer Name</th>
               <th className="p-3">Complaint Name</th>
@@ -160,6 +167,7 @@ const Complain = () => {
                         : complaint.priority === 'Medium'
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-green-100 text-green-800'
+                        
                     }
                   >
                     {complaint.priority}
@@ -182,19 +190,18 @@ const Complain = () => {
                   <div className="flex flex-wrap sm:flex-nowrap sm:space-x-2 space-y-2 sm:space-y-0">
                     <button
                       className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"
-                      onClick={() => openEditModal(complaint)} // Open Edit modal
+                      onClick={() => openEditModal(complaint)}
                     >
                       <i className="fa-solid fa-pen-to-square"></i>
                     </button>
                     <button
                       className="bg-blue-50 text-[#5678E9] rounded-2 p-2 sm:w-10 sm:h-10"
-                      onClick={() => openComplaintModal(complaint)} // Open View modal
+                      onClick={() => openComplaintModal(complaint)}
                     >
                       <i className="fa-solid fa-eye w-2"></i>
                     </button>
-                    <button
-                      className="bg-blue-50 text-red-600 rounded-2 p-2 sm:w-10 sm:h-10"
-                      onClick={() => openDeleteModal(complaint)} // Open Delete modal
+                    <button className="bg-blue-50 text-red-600 rounded-2 p-2 sm:w-10 sm:h-10"
+                      onClick={() => openDeleteModal(complaint)}
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>
@@ -206,15 +213,13 @@ const Complain = () => {
         </table>
       </div>
 
-      {/* View Complaint Modal */}
       {selectedComplaint && (
         <ViewComplain
           complaint={selectedComplaint}
-          onClose={closeComplaintModal} // Close modal
+          onClose={closeComplaintModal}
         />
       )}
 
-      {/* Delete Confirmation Modal */}
       <DeleteComplain
         isOpen={isDeleteModalOpen}
         contact={selectedComplaintForDelete}
@@ -222,7 +227,6 @@ const Complain = () => {
         onCancel={closeDeleteModal}
       />
 
-      {/* Edit Complaint Modal */}
       <EditComplain
         isOpen={isEditModalOpen}
         complaint={selectedComplaintForEdit}

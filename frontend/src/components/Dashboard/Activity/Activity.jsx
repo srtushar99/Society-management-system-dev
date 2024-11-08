@@ -1,4 +1,5 @@
 import React from "react";
+import '../Maintenance/scrollbar.css'; // Ensure this path is correct
 
 const Activity = () => {
   const activities = [
@@ -44,47 +45,46 @@ const Activity = () => {
     },
   ];
 
-  // Select components
-const Select = ({ children, defaultValue, onChange }) => {
-  return (
-    <select
-      defaultValue={defaultValue}
-      onChange={onChange}
-      className="border rounded-md p-2"
-    >
-      {children}
-    </select>
+  const Select = ({ children, defaultValue, onChange }) => {
+    return (
+      <select
+        defaultValue={defaultValue}
+        onChange={onChange}
+        className="border rounded-md p-2"
+      >
+        {children}
+      </select>
+    );
+  };
+
+  const CustomOption = ({ value, gradient, label }) => (
+    <option value={value} className="flex items-center">
+      <span
+        className="inline-block w-4 h-4 rounded-full mr-2 border border-white"
+        style={{ background: `linear-gradient(90deg, ${gradient})` }}
+      ></span>
+      {label}
+    </option>
   );
-};
 
-// Custom Option Component with Circle
-const CustomOption = ({ value, gradient, label }) => (
-  <option value={value} className="flex items-center">
-    <span
-      className="inline-block w-4 mt-2  h-4 rounded-full mr-2 border border-white"
-      style={{ background: `linear-gradient(90deg, ${gradient})` }}
-    ></span>
-    {label}
-  </option>
-);
+  const handleRangeChange = (event) => {
+    const selectedRange = event.target.value;
+    console.log(selectedRange);
+  };
 
-const handleRangeChange = (event) => {
-  const selectedRange = event.target.value;
-  console.log(selectedRange);
-}
   return (
-    <div className="border bg-white border-gray-300 rounded-lg sm:mt-5  h-[300px] p-3 mt-2  lg:w-[360px]  sm:ml-7 ">
+    <div className="border bg-white border-gray-300 rounded-lg mt-0 h-[300px] p-3 sm:mt-5 lg:w-[360px] sm:ml-4">
       <div className="flex justify-between items-center mb-3">
         <h5 className="text-xl font-semibold text-gray-900">Upcoming Activity</h5>
         <Select defaultValue="month" onChange={handleRangeChange}>
-            <CustomOption value="last-week" gradient="#FF9F00, #FF3D00" label="Last Week" />
-            <CustomOption value="last-month" gradient="#F09619, #FE512E" label="Last Month" />
-            <CustomOption value="last-year" gradient="#007BFF, #00C853" label="Last Year" />
-            <CustomOption value="month" gradient="#007BFF, #00C853" label="Month" />
-          </Select>
+          <CustomOption value="last-week" gradient="#FF9F00, #FF3D00" label="Last Week" />
+          <CustomOption value="last-month" gradient="#F09619, #FE512E" label="Last Month" />
+          <CustomOption value="last-year" gradient="#007BFF, #00C853" label="Last Year" />
+          <CustomOption value="month" gradient="#007BFF, #00C853" label="Month" />
+        </Select>
       </div>
 
-      <div className="overflow-y-auto h-[200px]">
+      <div className="overflow-y-auto h-[200px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {activities.map((activity, index) => (
           <div
             key={index}

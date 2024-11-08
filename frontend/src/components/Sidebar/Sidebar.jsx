@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Nav } from 'react-bootstrap';
+import { Nav, Dropdown } from 'react-bootstrap';
 import 'font-awesome/css/font-awesome.min.css'; 
 import DashboardIcon from './icons/Widget 5.png';
 import FinacialIcon from './icons/Finacial.svg';
@@ -107,7 +107,7 @@ const Sidebar = () => {
         </div>
 
         <Nav className="flex-column">
-          {['dashboard', 'Resident-Manegement', 'Financial-Management', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map(link => (
+          {['dashboard', 'Resident-Manegement','Finacial-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map(link => (
             <div key={link} style={{ position: 'relative' }}>
               <div style={getIndicatorStyle(link)}></div>
               <Nav.Link href="" style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
@@ -123,7 +123,9 @@ const Sidebar = () => {
               </Nav.Link>
             </div>
           ))}
-        </Nav>
+          </Nav>
+          
+        
 
         <div style={{ marginTop: 'auto' }}>
           <Nav.Link href="" style={{ color: "#E74C3C", padding: '0 10px', height: '52px' }} onClick={() => handleLinkClick('logout')}>
