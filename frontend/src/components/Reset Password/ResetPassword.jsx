@@ -36,7 +36,7 @@ const ResetPassword = () => {
       return false;
     }
 
-    setErrorMessage('');
+    setErrorMessage(''); // Clear error if all validations pass
     return true;
   };
 
@@ -44,34 +44,31 @@ const ResetPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
-    if (!validatePasswords()) return;
+    // Validate passwords before making the API call
+    if (!validatePasswords()) {
+      return; // Stop the submission if validation fails
+    }
+
+    setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
     const requestData = {
-      email: email,
-      newPassword: newPassword,
-      confirmPassword: confirmPassword,
-  };
+      email,
+      newPassword,
+      confirmPassword
+    };
 
     try {
-      setLoading(true);
-      setErrorMessage(''); // Clear previous error message
-      setSuccessMessage(''); // Clear success message if any
-
-    //   const response = await axios.post(
-    //     'http://localhost:5000/api/v1/reset-password/', // Update the endpoint if needed
-    //     requestData
-    // );
-    const response = await axiosInstance.post('/v1/reset-password/', requestData );
-      console.log(response.data);
+      const response = await axiosInstance.post('/v1/reset-password/', requestData);
       setLoading(false);
 
-      // Assuming the API returns a success message
       if (response.data.success) {
         setSuccessMessage('Password reset successfully!');
-        navigate('/')
+        navigate('/'); // Redirect to home or login page after success
       } else {
         setErrorMessage(response.data.message || 'An error occurred');
       }
-
     } catch (error) {
       setLoading(false);
       setErrorMessage('An error occurred. Please try again.');
@@ -95,7 +92,9 @@ const ResetPassword = () => {
           <form onSubmit={handleResetPassword}>
             {/* New Password */}
             <div className="form-group mb-3 position-relative">
-              <label style={{ color: "#202224" }}>New Password<span style={{ color: "#FE512E" }}>*</span></label>
+              <label style={{ color: "#202224" }}>
+                New Password<span style={{ color: "#FE512E" }}>*</span>
+              </label>
               <input 
                 type={showNewPassword ? "text" : "password"} 
                 className="form-control" 
@@ -119,7 +118,9 @@ const ResetPassword = () => {
 
             {/* Confirm Password */}
             <div className="form-group mb-3 position-relative">
-              <label style={{ color: "#202224" }}>Confirm Password<span style={{ color: "#FE512E" }}>*</span></label>
+              <label style={{ color: "#202224" }}>
+                Confirm Password<span style={{ color: "#FE512E" }}>*</span>
+              </label>
               <input 
                 type={showConfirmPassword ? "text" : "password"} 
                 className="form-control" 
