@@ -22,7 +22,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
     descriptionRegex.test(description) &&
     dateRegex.test(date);
 
-  // Pre-fill the form with existing note data when the modal is opened
+ 
   useEffect(() => {
     if (isOpen && noteData) {
       setTitle(noteData.title);
@@ -31,10 +31,10 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
     }
   }, [isOpen, noteData]);
 
-  // Initialize navigate for redirection
+
   const navigate = useNavigate();
 
-  // Handle title change and restrict to alphabetic characters and spaces only
+ 
   const handleTitleChange = (e) => {
     const value = e.target.value;
     if (titleRegex.test(value)) {
@@ -42,7 +42,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
     }
   };
 
-  // Handle description change and restrict to alphabetic characters and spaces only
+
   const handleDescriptionChange = (e) => {
     const value = e.target.value;
     if (descriptionRegex.test(value)) {
@@ -50,7 +50,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
     }
   };
 
-  // Handle date change and restrict to proper date format (YYYY-MM-DD)
+ 
   const handleDateChange = (e) => {
     const value = e.target.value;
     if (dateRegex.test(value)) {
@@ -62,15 +62,15 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave({ title, description, date }); // Pass the updated data to the parent
-      onClose(); // Close the modal
+      onSave({ title, description, date }); 
+      onClose(); 
     }
   };
 
   // Redirect to dashboard when modal is closed
   const handleClose = () => {
-    onClose(); // First call the passed onClose function
-    navigate("/notes"); // Redirect to dashboard
+    onClose(); 
+    navigate("/notes"); 
   };
 
   if (!isOpen) return null;
@@ -95,7 +95,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
               type="text"
               placeholder="Enter Title"
               value={title}
-              onChange={handleTitleChange} // Restrict to alphabetic characters and spaces
+              onChange={handleTitleChange} 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
@@ -108,7 +108,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
             <textarea
               placeholder="Enter Description"
               value={description}
-              onChange={handleDescriptionChange} // Restrict to alphabetic characters and spaces
+              onChange={handleDescriptionChange} 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] h-22 resize-none"
             />
           </div>
@@ -121,7 +121,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
             <input
               type="date"
               value={date}
-              onChange={handleDateChange} // Restrict to proper date format (YYYY-MM-DD)
+              onChange={handleDateChange} 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
@@ -131,7 +131,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
             <button
               type="button"
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              onClick={handleClose} // Close and redirect to dashboard
+              onClick={handleClose} 
             >
               Cancel
             </button>
@@ -139,7 +139,7 @@ const EditNote = ({ isOpen, onClose, noteData, onSave }) => {
             <button
               type="submit"
               className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-              disabled={!isFormValid} // Disable the button if form is not valid
+              disabled={!isFormValid} 
             >
               Save
             </button>

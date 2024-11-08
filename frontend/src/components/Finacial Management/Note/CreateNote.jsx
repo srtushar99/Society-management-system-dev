@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
 const CreateNote = ({ isOpen, onClose }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(null); // State for the date
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
 
   // Regular expressions for validation
-  const titleRegex = /^[A-Za-z\s]+$/; // Only alphabets and spaces for title
-  const descriptionRegex = /^[A-Za-z\s]+$/; // Only alphabets and spaces for description
+  const titleRegex = /^[A-Za-z\s]+$/;
+  const descriptionRegex = /^[A-Za-z\s]+$/; 
 
   // Check if all fields are filled and valid
   const isFormValid =
@@ -24,24 +27,28 @@ const CreateNote = ({ isOpen, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      // Perform save action here (you can call API to save data)
+     
       console.log("Form Submitted", { title, description, date });
-      // You might also want to reset the form or navigate elsewhere after submit
     } else {
       console.log("Form is invalid");
     }
   };
 
-  // Initialize navigate for redirection
+
   const navigate = useNavigate();
 
-  // Handle closing the modal and redirecting to the dashboard
+
   const handleClose = () => {
-    if (onClose) onClose(); // Close the modal
-    navigate("/notes"); // Redirect to the dashboard
+    if (onClose) onClose(); 
+    navigate("/notes"); 
   };
 
-  if (!isOpen) return null; // If modal is not open, return nothing
+  if (!isOpen) return null; 
+
+
+  const handleCalendarIconClick = () => {
+    setIsCalendarOpen(!isCalendarOpen); 
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
@@ -82,20 +89,18 @@ const CreateNote = ({ isOpen, onClose }) => {
             <label className="block text-left font-medium text-gray-700 mb-1">
               Description<span className="text-red-500">*</span>
             </label>
-            <div className="flex">
-              <input
-                type="text"
-                value={description}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  // Allow only alphabetic input for description
-                  if (descriptionRegex.test(value) || value === "") {
-                    setDescription(value);
-                  }
-                }}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg text-[#202224]"
-              />
-            </div>
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow only alphabetic input for description
+                if (descriptionRegex.test(value) || value === "") {
+                  setDescription(value);
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            />
           </div>
 
           {/* Date */}
@@ -104,14 +109,20 @@ const CreateNote = ({ isOpen, onClose }) => {
               Date<span className="text-red-500">*</span>
             </label>
             <div className="flex items-center">
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10" // Add padding-right for icon
+              <DatePicker
+                selected={date}
+                onChange={(date) => setDate(date)} // Update the date state
+                className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
+                placeholderText="Select a date"
+                dateFormat="MM/dd/yyyy"
+                autoComplete="off"
+                open={isCalendarOpen} // Control the visibility of the calendar
               />
               {/* Calendar Icon */}
-              {/* <i className="fa-solid fa-calendar-days absolute right-3 text-[]"></i> */}
+              <i
+                className="fa-solid fa-calendar-days absolute w right-3 text-[#202224] cursor-pointer"
+                onClick={handleCalendarIconClick} // Toggle calendar visibility on icon click
+              />
             </div>
           </div>
 

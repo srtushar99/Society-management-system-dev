@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Nav, Dropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
 import 'font-awesome/css/font-awesome.min.css';
 import DashboardIcon from './icons/Widget 5.png';
 import FinancialIcon from './icons/dollar-square.png';
@@ -15,6 +15,8 @@ const Sidebar = () => {
   const [activeLink, setActiveLink] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
   const [financialActive, setFinancialActive] = useState(''); // Track which financial item is active
+
+  const navigate = useNavigate(); // Hook to navigate programmatically
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -54,10 +56,13 @@ const Sidebar = () => {
   });
 
   const handleLinkClick = (link) => {
+    console.log('Active Link:', link);  // Debugging log to verify the active link
     setActiveLink(link);
     closeSidebar();
+    if (link === 'announcements') {
+      navigate('/announcements'); // Redirect to the announcements page
+    }
   };
-
   const getIconStyle = (link) => ({
     marginRight: '10px',
     width: '20px',
@@ -75,7 +80,7 @@ const Sidebar = () => {
     backgroundColor: financialActive === item ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
     display: 'flex',
     alignItems: 'center',
-    padding: '10px 15px', // Add padding for better spacing
+    padding: '10px 15px',
   });
 
   const dropdownIndicatorStyle = {
@@ -83,8 +88,8 @@ const Sidebar = () => {
     width: '2px',
     height: '26px',
     borderRadius: '10px 0px 0px 0px',
-    opacity: '0.5',
-    marginRight: '20px',
+    // opacity: '0.5',
+    // marginRight: '20px',
   };
 
   return (
@@ -124,25 +129,29 @@ const Sidebar = () => {
         </div>
 
         <Nav className="flex-column">
-          {['dashboard', 'Resident-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map((link) => (
-            <div key={link} style={{ position: 'relative' }}>
-              <div style={getIndicatorStyle(link)}></div>
-              <Link to={`/${link}`} style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
-                {link === 'dashboard' && <img src={DashboardIcon} style={getIconStyle(link)} alt="Dashboard" />}
-                {link === 'Resident-Manegement' && (
-                  <i className="fa-solid fa-money-bill" style={{ marginRight: '10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>
-                )}
-                {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities" />}
-                {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
-                {link === 'security-Management' && <img src={SecurityIcon} style={getIconStyle(link)} alt="Security Management" />}
-                {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
-                {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
-                {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
-              </Link>
-            </div>
-          ))}
+        {['dashboard', 'Resident-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map((link) => (
+  <div key={link} style={{ position: 'relative' }}>
+    <div style={getIndicatorStyle(link)}></div>
+    <Link
+      to={`/${link}`}
+      style={getLinkStyle(link)}
+      onClick={() => handleLinkClick(link)} // Ensure this is being called on click
+    >
+      {link === 'dashboard' && <img src={DashboardIcon} style={getIconStyle(link)} alt="Dashboard" />}
+      {link === 'Resident-Manegement' && (
+        <i className="fa-solid fa-money-bill" style={{ marginRight: '10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>
+      )}
+      {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities" />}
+      {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
+      {link === 'security-Management' && <img src={SecurityIcon} style={getIconStyle(link)} alt="Security Management" />}
+      {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
+      {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
+      {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
+    </Link>
+  </div>
+))}
 
-          {/* Financial Management Dropdown moved to the bottom */}
+          {/* Financial Management Dropdown */}
           <div style={{ position: 'relative' }}>
             <div style={getIndicatorStyle('Financial-Manegement')}></div>
             <Dropdown onClick={() => handleLinkClick('Financial-Manegement')}>
@@ -156,8 +165,8 @@ const Sidebar = () => {
                   style={dropdownItemStyle('Income')}
                   onClick={() => handleFinancialClick('Income')}
                 >
-                  <div className="text-[#4F4F4F]" style={{ display: 'flex', alignItems: 'center' }}>
-                    {financialActive === 'Income' && <div style={dropdownIndicatorStyle}></div>} 
+                  <div className="text-[#4F4F4F] " style={{ display: 'flex', alignItems: 'center' }}>
+                    {financialActive === 'Income' && <div style={dropdownIndicatorStyle}></div>}
                     Income
                   </div>
                 </Dropdown.Item>
@@ -178,7 +187,9 @@ const Sidebar = () => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     {financialActive === 'Notes' && <div style={dropdownIndicatorStyle}></div>}
-                    <Link to="/notes" className="no-underline text-[#4F4F4F]">Note</Link>
+                    <Link to="/notes" className="no-underline text-[#4F4F4F]">
+                      Note
+                    </Link>
                   </div>
                 </Dropdown.Item>
               </Dropdown.Menu>
