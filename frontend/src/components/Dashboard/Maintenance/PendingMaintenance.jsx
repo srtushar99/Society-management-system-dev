@@ -4,6 +4,8 @@ import Ellipse1093 from '../../assets/Ellipse 1093.png';
 import Ellipse1094 from '../../assets/Ellipse 1094.png';
 import Ellipse1095 from '../../assets/Ellipse 1095.png';
 import Ellipse1096 from '../../assets/Ellipse 1096.png';
+import '../../Sidebar/sidebar.css';
+
 import './scrollbar.css'
 
 const Avatar = ({ children, className }) => (

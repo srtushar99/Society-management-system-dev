@@ -1,5 +1,5 @@
 import React, { useState } from "react"; 
-import { useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import "tailwindcss/tailwind.css"; 
 import Sidebar from "../../Sidebar/Sidebar";
 import NotificationIcon from "../../assets/notification-bing.png";
@@ -63,7 +63,17 @@ const EditProfile = () => {
       <Sidebar />
       <div style={backgroundStyle}></div>
 
-      <header className="flex justify-end px-6 bg-white h-[60px]">
+      <header className="flex justify-between items-center px-6 bg-white ml-[290px] h-[60px] shadow-md">
+        
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center space-x-2 text-gray-600">
+          {/* Home Link */}
+          <Link to="/dashboard" className="text-[#A7A7A7] no-underline font-semibold">Home</Link>
+          <span className="text-gray-400"> &gt; </span>
+          <span className="font-semibold text-[#5678E9]">Edit Profile</span>
+        </div>
+
+        {/* Notifications and Profile Section */}
         <div className="flex items-center space-x-4">
           <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
             <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
@@ -78,12 +88,13 @@ const EditProfile = () => {
         </div>
       </header>
 
+
       <div className="flex items-center mt-10 md:mt-20 lg:mt-28 ms-[560px]">
         <p className="text-2xl font-semibold">Profile</p>
         <button
           className="flex items-center text-white rounded-md px-2 ms-[590px] py-2 mb-2"
           style={{
-            background: "linear-gradient(90deg, #FE512E 0%, #F09619 100%)",
+            background: "linear-gradient(90deg, #FE512E 0%, #F09619 100%)",zIndex:'1000'
           }}
           onClick={handleEditButtonClick}
         >

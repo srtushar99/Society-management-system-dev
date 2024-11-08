@@ -2,7 +2,9 @@ import React from 'react';
 import sendMoneyIcon from '../../assets/money-send.png'; // Update with actual path
 import receiveMoneyIcon from '../../assets/money-recive.png'; // Update with actual path
 import documentIcon from '../../assets/document.png'; // Update with actual path
-import buildingIcon from '../../assets/building-4.png'; // Update with actual path
+import buildingIcon from '../../assets/building-4.png'; 
+import '../../Sidebar/sidebar.css';
+// Update with actual path
 
 const Card = ({ title, amount, icon, color }) => {
   return (

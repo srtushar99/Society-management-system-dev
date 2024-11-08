@@ -3,6 +3,8 @@ import AvatarImage from '../../assets/Avatar.png';
 import DeleteComplain from './DeleteComplain';
 import EditComplain from './EditComplain';
 import ViewComplain from './ViewComplain';
+import '../../Sidebar/sidebar.css';
+
 // import '../Maintenance/scrollbar.css'; // Ensure this path is correct
 
 const initialComplaints = [

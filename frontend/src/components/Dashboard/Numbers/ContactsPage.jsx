@@ -3,7 +3,9 @@ import plus from "../../assets/add-square.png"; // Add add icon
 import AddNumber from "./AddNumber";
 import EditNumber from "./EditNumber";
 import DeleteNumber from "./DeleteNumber"; // Import DeleteNumber
-import '../Maintenance/scrollbar.css'; // Ensure this path is correct
+import '../Maintenance/scrollbar.css'; 
+import '../../Sidebar/sidebar.css';
+// Ensure this path is correct
 
 const ContactsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

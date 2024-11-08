@@ -1,5 +1,7 @@
 import React from "react";
-import '../Maintenance/scrollbar.css'; // Ensure this path is correct
+import '../Maintenance/scrollbar.css';
+import '../../Sidebar/sidebar.css';
+ // Ensure this path is correct
 
 const Activity = () => {
   const activities = [

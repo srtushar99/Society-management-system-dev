@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Nav, Dropdown } from 'react-bootstrap';
-import 'font-awesome/css/font-awesome.min.css'; 
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import 'font-awesome/css/font-awesome.min.css';
 import DashboardIcon from './icons/Widget 5.png';
-import FinacialIcon from './icons/Finacial.svg';
+import FinancialIcon from './icons/dollar-square.png';
 import FacilitiesIcon from './icons/domain.svg';
 import ComplaintsTrackingIcon from './icons/sms-tracking.png';
 import SecurityIcon from './icons/encrypted.svg';
@@ -13,14 +14,13 @@ import './sidebar.css';
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
+  const [financialActive, setFinancialActive] = useState(''); // Track which financial item is active
 
-  // Toggle sidebar visibility on small screens
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   const closeSidebar = () => {
-    // Close sidebar when an item is clicked
     setSidebarOpen(false);
   };
 
@@ -46,7 +46,7 @@ const Sidebar = () => {
 
   const getIndicatorStyle = (link) => ({
     position: 'absolute',
-    left: '-15px', 
+    left: '-15px',
     width: '7px',
     height: '52px',
     borderRadius: '0 5px 5px 0',
@@ -55,7 +55,7 @@ const Sidebar = () => {
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
-    closeSidebar();  // Close the sidebar when a link is clicked
+    closeSidebar();
   };
 
   const getIconStyle = (link) => ({
@@ -65,72 +65,131 @@ const Sidebar = () => {
     filter: activeLink === link ? 'brightness(0) invert(1)' : 'none',
   });
 
+  const handleFinancialClick = (item) => {
+    setFinancialActive(item);
+    setActiveLink(item);
+  };
+
+  const dropdownItemStyle = (item) => ({
+    color: financialActive === item ? 'rgba(32, 34, 36, 1)' : '#4F4F4F',
+    backgroundColor: financialActive === item ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '10px 15px', // Add padding for better spacing
+  });
+
+  const dropdownIndicatorStyle = {
+    background: 'rgba(32, 34, 36, 1)',
+    width: '2px',
+    height: '26px',
+    borderRadius: '10px 0px 0px 0px',
+    opacity: '0.5',
+    marginRight: '20px',
+  };
+
   return (
     <div>
-      {/* Hamburger menu button for small screens */}
-      <div 
-        className="sidebar-toggle-btn block lg:hidden md:hidden" 
-        onClick={toggleSidebar}
-      >
+      <div className="sidebar-toggle-btn block lg:hidden md:hidden" onClick={toggleSidebar}>
         <div className="line"></div>
         <div className="line"></div>
         <div className="line"></div>
       </div>
 
-      {/* Sidebar */}
-      <div 
-        className={`sidebar ${sidebarOpen ? 'open' : ''}`} 
+      <div
+        className={`sidebar ${sidebarOpen ? 'open' : ''}`}
         style={{
-          position: 'fixed', 
-          height: '100vh', 
-          background: '#F8F9FA', 
-          padding: '20px', 
-          boxShadow: '2px 0 5px rgba(0,0,0,0.1)', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          width: '290px', 
+          position: 'fixed',
+          height: '100vh',
+          background: '#F8F9FA',
+          padding: '20px',
+          boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '290px',
         }}
       >
         <div style={{ marginBottom: '20px' }}>
-          <h1 
-            className="nunito-sans" 
+          <h1
+            className="nunito-sans"
             style={{
-              textAlign: "center", 
-              fontWeight: "bold", 
-              fontSize: "30px", 
-              color: "rgba(254, 81, 46, 1)"
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: '30px',
+              color: 'rgba(254, 81, 46, 1)',
             }}
-            onClick={() => closeSidebar()}  // Close sidebar when clicking on DashStack
+            onClick={() => closeSidebar()}
           >
-            Dash<span style={{ color: "#202224" }}>Stack</span>
+            Dash<span style={{ color: '#202224' }}>Stack</span>
           </h1>
         </div>
 
         <Nav className="flex-column">
-          {['dashboard', 'Resident-Manegement','Finacial-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map(link => (
+          {['dashboard', 'Resident-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-Management', 'security-guard', 'announcements'].map((link) => (
             <div key={link} style={{ position: 'relative' }}>
               <div style={getIndicatorStyle(link)}></div>
-              <Nav.Link href="" style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
+              <Link to={`/${link}`} style={getLinkStyle(link)} onClick={() => handleLinkClick(link)}>
                 {link === 'dashboard' && <img src={DashboardIcon} style={getIconStyle(link)} alt="Dashboard" />}
-                {link === 'Resident-Manegement' && <i className="fa-solid fa-money-bill" style={{ marginRight: '10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>}
-                {link === 'Financial-Management' && <img src={FinacialIcon} style={getIconStyle(link)} alt="Financial Management" />}
+                {link === 'Resident-Manegement' && (
+                  <i className="fa-solid fa-money-bill" style={{ marginRight: '10px', color: activeLink === link ? '#FFFFFF' : '#4F4F4F' }}></i>
+                )}
                 {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities" />}
                 {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
                 {link === 'security-Management' && <img src={SecurityIcon} style={getIconStyle(link)} alt="Security Management" />}
                 {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
                 {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
                 {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
-              </Nav.Link>
+              </Link>
             </div>
           ))}
-          </Nav>
-          
-        
+
+          {/* Financial Management Dropdown moved to the bottom */}
+          <div style={{ position: 'relative' }}>
+            <div style={getIndicatorStyle('Financial-Manegement')}></div>
+            <Dropdown onClick={() => handleLinkClick('Financial-Manegement')}>
+              <Dropdown.Toggle variant="link" style={{ ...getLinkStyle('Financial-Manegement'), fontSize: '14px' }}>
+                <img src={FinancialIcon} style={getIconStyle('Financial-Manegement')} alt="Financial Management" />
+                Financial Management
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="w-[225px] border-0">
+                <Dropdown.Item
+                  href="#"
+                  style={dropdownItemStyle('Income')}
+                  onClick={() => handleFinancialClick('Income')}
+                >
+                  <div className="text-[#4F4F4F]" style={{ display: 'flex', alignItems: 'center' }}>
+                    {financialActive === 'Income' && <div style={dropdownIndicatorStyle}></div>} 
+                    Income
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  href="#"
+                  style={dropdownItemStyle('Expense')}
+                  onClick={() => handleFinancialClick('Expense')}
+                >
+                  <div className="text-[#4F4F4F]" style={{ display: 'flex', alignItems: 'center' }}>
+                    {financialActive === 'Expense' && <div style={dropdownIndicatorStyle}></div>}
+                    Expense
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  href="#"
+                  style={dropdownItemStyle('Notes')}
+                  onClick={() => handleFinancialClick('Notes')}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {financialActive === 'Notes' && <div style={dropdownIndicatorStyle}></div>}
+                    <Link to="/notes" className="no-underline text-[#4F4F4F]">Note</Link>
+                  </div>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </Nav>
 
         <div style={{ marginTop: 'auto' }}>
-          <Nav.Link href="" style={{ color: "#E74C3C", padding: '0 10px', height: '52px' }} onClick={() => handleLinkClick('logout')}>
+          <Link to="/logout" style={{ color: '#E74C3C', padding: '0 10px', height: '52px' }} onClick={() => handleLinkClick('logout')}>
             <i className="fa fa-sign-out" style={{ marginRight: '8px', color: '#E74C3C' }}></i> Logout
-          </Nav.Link>
+          </Link>
         </div>
       </div>
     </div>

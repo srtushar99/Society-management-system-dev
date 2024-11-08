@@ -6,6 +6,7 @@ import AvatarImage from "../../assets/Avatar.png";
 import pngwingImage from "../../assets/Frame 1000006013.png";
 import ProfileImage from "../../assets/Ellipse 1101.png";
 import editIcon from "../../assets/edit.png";
+import { Link } from "react-router-dom";
 
 const UpdateProfile = () => {
   const [firstName, setFirstName] = useState("Arlene");
@@ -60,27 +61,23 @@ const UpdateProfile = () => {
       {/* Background image div with inline styles */}
       <div style={backgroundStyle}></div>
 
-      <header className="flex justify-end px-6 bg-white h-[60px]">
-        <div className="flex items-center space-x-4">
-          <button
-            className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300"
-            onClick={() => setIsModalOpen(true)} // Open the modal
-          >
-            <img
-              src={NotificationIcon}
-              alt="Notifications"
-              className="h-6 w-6"
-            />
-          </button>
+      <header className="flex justify-between items-center px-6 bg-white ml-[290px] h-[60px] shadow-md">
+        
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center space-x-2 text-gray-600">
+          {/* Home Link */}
+          <Link to="/dashboard" className="text-[#A7A7A7] no-underline font-semibold">Home</Link>
+          <span className="text-gray-400"> &gt; </span>
+          <span className="font-semibold  text-[#5678E9]">Edit Profile</span>
+        </div>
 
+        {/* Notifications and Profile Section */}
+        <div className="flex items-center space-x-4">
+          <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
+            <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
+          </button>
           <div className="flex items-center space-x-3 cursor-pointer">
-            <img
-              src={AvatarImage}
-              alt="Moni Roy"
-              width="40"
-              height="40"
-              className="rounded-full"
-            />
+            <img src={AvatarImage} alt="Moni Roy" width="40" height="40" className="rounded-full" />
             <div className="hidden sm:block flex-col items-start mt-2">
               <span className="font-medium text-sm">Moni Roy</span>
               <p className="text-xs text-gray-500">Admin</p>
@@ -88,7 +85,6 @@ const UpdateProfile = () => {
           </div>
         </div>
       </header>
-
       {/* Right side form heading and button */}
       <div className="flex items-center mt-[100px] ms-[600px]">
         <p className="text-2xl font-semibold text-[rgba(32, 34, 36, 1)]">Edit Profile</p>
