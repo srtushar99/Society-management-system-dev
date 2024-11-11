@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
 dayjs.extend(customParseFormat);
 
-const EditProtocol = ({ isOpen, onClose, noteData, onSave }) => {
+const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(null); // Initialize date as null
@@ -40,13 +40,13 @@ const EditProtocol = ({ isOpen, onClose, noteData, onSave }) => {
 
   // Effect for setting initial state when the modal is opened
   useEffect(() => {
-    if (isOpen && noteData) {
-      setTitle(noteData.title || "");
-      setDescription(noteData.description || "");
-      setDate(noteData.date ? new Date(noteData.date) : null); // Convert string date to Date object
-      setTime(noteData.time || "12:00"); // Set the default time if not available
+    if (isOpen && protocol) {
+      setTitle(protocol.title || "");
+      setDescription(protocol.description || "");
+      setDate(protocol.date ? new Date(protocol.date) : null); // Convert string date to Date object
+      setTime(protocol.time || "12:00"); // Set the default time if not available
     }
-  }, [isOpen, noteData]);
+  }, [isOpen, protocol]);
 
   // Handle form inputs
   const handleTitleChange = (e) => {
@@ -76,8 +76,8 @@ const EditProtocol = ({ isOpen, onClose, noteData, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave({ title, description, date, time });
-      onClose();
+      onSave({ title, description, date, time });  // Pass the updated data to the parent component
+      onClose();  // Close the modal
     }
   };
 

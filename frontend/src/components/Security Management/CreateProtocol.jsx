@@ -8,47 +8,38 @@ const CreateProtocol = ({ isOpen, onClose }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(null); // State for the date
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
+ 
+
 
   // Regular expressions for validation
   const titleRegex = /^[A-Za-z\s]+$/;
-  const descriptionRegex = /^[A-Za-z\s]+$/; 
+  const descriptionRegex = /^[A-Za-z\s]+$/;
 
   // Check if all fields are filled and valid
   const isFormValid =
     title &&
     description &&
-    date &&
     titleRegex.test(title) &&
     descriptionRegex.test(description);
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-     
       console.log("Form Submitted", { title, description, date });
     } else {
       console.log("Form is invalid");
     }
   };
 
-
   const navigate = useNavigate();
 
-
   const handleClose = () => {
-    if (onClose) onClose(); 
-    navigate("/securityprotocol"); 
+    if (onClose) onClose();
+    navigate("/securityprotocol");
   };
 
-  if (!isOpen) return null; 
+  if (!isOpen) return null;
 
-
-  const handleCalendarIconClick = () => {
-    setIsCalendarOpen(!isCalendarOpen); 
-  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
@@ -75,7 +66,7 @@ const CreateProtocol = ({ isOpen, onClose }) => {
               value={title}
               onChange={(e) => {
                 const value = e.target.value;
-                // Prevent non-alphabetical input
+             
                 if (titleRegex.test(value) || value === "") {
                   setTitle(value);
                 }
@@ -104,8 +95,6 @@ const CreateProtocol = ({ isOpen, onClose }) => {
             />
           </div>
 
-       
-
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
@@ -120,8 +109,8 @@ const CreateProtocol = ({ isOpen, onClose }) => {
               type="submit"
               className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
                 isFormValid
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" // Apply gradient if form is valid
-                  : "bg-[#F6F8FB] text-[#202224]" // Default color if form is not valid
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" 
+                  : "bg-[#F6F8FB] text-[#202224]" 
               }`}
               disabled={!isFormValid} // Disable the button if form is not valid
             >
