@@ -16,6 +16,7 @@ import Annoucements from './components/Dashboard/Annoucement Management/Announce
 import VisitorLogs from './components/Security Management/VisitiorLogs';
 import SecurityProtocol from './components/Security Management/SecurityProtocol';
 
+// import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/announcements" element={<Annoucements />} />
             <Route path="/visitorlogs" element={<VisitorLogs />} />
             <Route path="/securityprotocol" element={<SecurityProtocol />} />
+            {/* <Route path="/securitygaurd" element={<SecurityGuardTable />} /> */}
 
           
           
