@@ -6,7 +6,8 @@ import AvatarImage from '../../assets/Avatar.png'; // Ensure this path is correc
 import CreateAnnouncement from './CreateAnnouncement';
 import EditAnnouncement from './EditAnnouncement';
 import DeleteAnnouncement from './DeleteAnnouncement'; // Import the DeleteAnnoucement modal
-import SecurityProtocol from './SecurityProtocol'; // Import the SecurityProtocol modal
+import SecurityProtocol from './SecurityProtocol';
+import '../../Sidebar/sidebar.css' // Import the SecurityProtocol modal
 
 const Annoucements = () => {
   const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
@@ -111,13 +112,14 @@ const Annoucements = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-w-full h-full bg-gray-100">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+
+      <div className="flex-1 flex flex-col  ">
         {/* Header */}
-        <header className="flex justify-between ml-[290px] items-center px-5 bg-white h-[60px] shadow-md">
+        <header className="flex justify-between  lg:ml-[290px] items-center px-5 bg-white h-[60px] shadow-md">
           {/* Breadcrumb Navigation */}
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 ml-5 text-gray-600">
             <Link to="/dashboard" className="text-[#A7A7A7] no-underline font-semibold">
               Home
             </Link>
@@ -141,10 +143,10 @@ const Annoucements = () => {
         </header>
 
         {/* Announcement Section */}
-        <main className="flex-1 rounded border ml-[290px] w-700px bg-gray-100">
-          <div className="w-[95%] ml-[40px] px-7 py-10 p-4 mt-5 rounded bg-[#FFFFFF]">
+        <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">
+          <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] px-7 py-10 p-4 mt-5 rounded bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-semibold text-gray-800">Announcement</h1>
+              <h1 className="lg:text-3xl  font-semibold text-gray-800">Announcement</h1>
               {/* Create Announcement Button */}
               <button
                 onClick={handleCreateNoteClick} // Trigger modal opening
@@ -156,7 +158,7 @@ const Annoucements = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {cards.map((card, index) => (
-                <div key={card.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
+                <div key={card.id} className="bg-white rounded-lg shadow-md relative">
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
                     <span className="font-semibold">{card.title}</span>
                     <div className="flex items-center gap-2">

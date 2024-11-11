@@ -5,13 +5,13 @@ import DatePicker from "react-datepicker";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import timeIcon from "../../assets/Vector.png"; // Import your custom time icon
+import timeIcon from "../../components/assets/Vector.png"; // Import your custom time icon
 
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
 dayjs.extend(customParseFormat);
 
-const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
+const EditProtocol = ({ isOpen, onClose, noteData, onSave }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(null); // Initialize date as null
@@ -83,7 +83,7 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
 
   const handleClose = () => {
     onClose();
-    navigate("/announcements");
+    navigate("/securityprotocol"); // Adjust to your desired page route
   };
 
   // Calendar visibility toggle
@@ -114,7 +114,7 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50" ref={modalRef}>
       <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">Edit Announcement</span>
+          <span className="text-2xl font-bold text-[#202224]">Edit Protocol</span>
           <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
@@ -123,7 +123,7 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
-              Announcement Title<span className="text-red-500">*</span>
+              Protocol Title<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -149,7 +149,7 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
-                Announcement Date<span className="text-red-500">*</span>
+                Protocol Date<span className="text-red-500">*</span>
               </label>
               <div className="flex items-center relative" ref={datePickerRef}>
                 <DatePicker
@@ -171,16 +171,16 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
 
             <div className="w-1/2 relative">
               <label className="block text-left font-medium text-[#202224] mb-1">
-                Announcement Time<span className="text-red-500">*</span>
+                Protocol Time<span className="text-red-500">*</span>
               </label>
               <div className="flex items-center">
                 <TimePicker
                   value={time ? dayjs(time, "HH:mm") : null}
-                    
                   format="HH:mm"
                   suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   popupClassName="custom-time-picker-popup" // Optional: Use this for additional styling
+                  onChange={handleTimeChange} // Update time state
                 />
               </div>
             </div>
@@ -209,4 +209,4 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, onSave }) => {
   );
 };
 
-export default EditAnnouncement;
+export default EditProtocol;
