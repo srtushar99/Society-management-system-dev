@@ -1,26 +1,22 @@
 const mongoose = require('mongoose');
 
-const OtherIncomeSchema = new mongoose.Schema({
-    title: {
+const AnnouncementSchema = new mongoose.Schema({
+    Announcement_Title: {
         type: String,
         required: true,
         trim: true,
     },
-    date: {
-        type: Date,
-        required: true,
-    },
-    dueDate: {
-        type: Date,
-        required: true,
-    },
-    description: {
+    Description: {
         type: String,
         required: true,
         trim: true,
     },
-    amount: {
-        type: Number,
+    Announcement_Date: {
+        type: Date,
+        required: true,
+    },
+    Announcement_Time: {
+        type: String,
         required: true,
     },
     role: {
@@ -32,6 +28,6 @@ const OtherIncomeSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-const OtherIncome = mongoose.model('OtherIncome', OtherIncomeSchema);
+const Announcement = mongoose.model('Announcement', AnnouncementSchema);
 
-module.exports = OtherIncome;
+module.exports = Announcement;

@@ -17,7 +17,12 @@ const MaintenanceSchema = new mongoose.Schema({
     penaltyAppliedAfterDays: {
         type: Number,
         required: true,
-    }
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'resident', 'security'], 
+        default: 'resident' 
+    },
 }, {
     timestamps: true // Automatically manage createdAt and updatedAt
 });
