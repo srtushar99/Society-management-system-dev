@@ -11,6 +11,11 @@ import Dashboard from './components/Dashboard/Dashboard';
 import EditProfile from './components/Dashboard/EditProfile/EditProfile';
 import UpdateProfile from './components/Dashboard/EditProfile/UpdateProfile';
 import Note from './components/Finacial Management/Note/Note';
+import Annoucements from './components/Dashboard/Annoucement Management/Announcements';
+
+import VisitorLogs from './components/Security Management/VisitiorLogs';
+import SecurityProtocol from './components/Security Management/SecurityProtocol';
+
 
 function App() {
     return (
@@ -24,6 +29,9 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/update-profile" element={<UpdateProfile />} />
             <Route path="/notes" element={<Note />} />
+            <Route path="/announcements" element={<Annoucements />} />
+            <Route path="/visitorlogs" element={<VisitorLogs />} />
+            <Route path="/securityprotocol" element={<SecurityProtocol />} />
 
           
           

@@ -76,3 +76,12 @@
       transform: translateX(0);
     }
   }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    /* On medium screens (tablets), adjust the sidebar's layout */
+   .cards{
+    width: 50%;
+    background-color: red !important;
+   }
+    
+  }

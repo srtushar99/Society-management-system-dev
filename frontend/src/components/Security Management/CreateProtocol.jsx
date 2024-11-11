@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate for redire
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
-const CreateNote = ({ isOpen, onClose }) => {
+const CreateProtocol = ({ isOpen, onClose }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -40,7 +40,7 @@ const CreateNote = ({ isOpen, onClose }) => {
 
   const handleClose = () => {
     if (onClose) onClose(); 
-    navigate("/notes"); 
+    navigate("/securityprotocol"); 
   };
 
   if (!isOpen) return null; 
@@ -54,7 +54,7 @@ const CreateNote = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
       <div className="bg-white w-full max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">Add Note</span>
+          <span className="text-2xl font-bold text-[#202224]">Security Protocol</span>
           <button
             className="text-gray-600 hover:text-gray-800"
             onClick={handleClose} // Close modal and redirect to dashboard
@@ -89,8 +89,9 @@ const CreateNote = ({ isOpen, onClose }) => {
             <label className="block text-left font-medium text-gray-700 mb-1">
               Description<span className="text-red-500">*</span>
             </label>
-            <input
+            <textarea
               type="text"
+              placeholder="Enter description"
               value={description}
               onChange={(e) => {
                 const value = e.target.value;
@@ -99,32 +100,11 @@ const CreateNote = ({ isOpen, onClose }) => {
                   setDescription(value);
                 }
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] h-20 resize-none"
             />
           </div>
 
-          {/* Date */}
-          <div className="relative">
-            <label className="block text-left font-medium text-gray-700 mb-1">
-              Date<span className="text-red-500">*</span>
-            </label>
-            <div className="flex items-center">
-              <DatePicker
-                selected={date}
-                onChange={(date) => setDate(date)} // Update the date state
-                className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
-                placeholderText="Select a date"
-                dateFormat="MM/dd/yyyy"
-                autoComplete="off"
-                open={isCalendarOpen} // Control the visibility of the calendar
-              />
-              {/* Calendar Icon */}
-              <i
-                className="fa-solid fa-calendar-days absolute w right-3 text-[#202224] cursor-pointer"
-                onClick={handleCalendarIconClick} // Toggle calendar visibility on icon click
-              />
-            </div>
-          </div>
+       
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -154,4 +134,4 @@ const CreateNote = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreateNote;
+export default CreateProtocol;
