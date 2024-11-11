@@ -89,7 +89,7 @@ const Sidebar = () => {
 
   return (
     <div>
-      <div className="sidebar-toggle-btn block lg:hidden md:hidden" onClick={toggleSidebar}>
+      <div className="sidebar-toggle-btn block lg:hidden md:hidden" onClick={toggleSidebar}  style={{ width: '250px', position: 'fixed', height: '100vh', background: '#f8f9fa' }}>
         <div className="line"></div>
         <div className="line"></div>
         <div className="line"></div>

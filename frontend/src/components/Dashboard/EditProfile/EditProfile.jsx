@@ -34,6 +34,7 @@ const EditProfile = () => {
     });
   };
 
+  
   const backgroundStyle = {
     display: "block",
     position: "absolute",
