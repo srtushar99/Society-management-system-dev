@@ -3,11 +3,13 @@ import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
+import axiosInstance from '../../Common/axiosInstance';
+import moment from 'moment';
 
-const CreateNote = ({ isOpen, onClose }) => {
+const CreateNote = ({ isOpen, onClose, fetchNote }) => {
   // State for the input fields
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [Title, setTitle] = useState("");
+  const [Description, setDescription] = useState("");
   const [date, setDate] = useState(null); // State for the date
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
 
@@ -17,18 +19,60 @@ const CreateNote = ({ isOpen, onClose }) => {
 
   // Check if all fields are filled and valid
   const isFormValid =
-    title &&
-    description &&
+    Title &&
+    Description &&
     date &&
-    titleRegex.test(title) &&
-    descriptionRegex.test(description);
+    titleRegex.test(Title) &&
+    descriptionRegex.test(Description);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // // Handle form submission
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (isFormValid) {
+     
+  //     console.log("Form Submitted", { title, description, date });
+  //   } else {
+  //     console.log("Form is invalid");
+  //   }
+  // };
+
+  const ClearAllData = () => {
+    setTitle("");
+    setDescription("");
+    setDate(null);
+    setIsCalendarOpen(false);
+  };
+
+   // Handle form submission
+   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-     
-      console.log("Form Submitted", { title, description, date });
+
+      const Date = moment(date).format('YYYY-MM-DD');
+      const noteData = {
+        Title,
+        Description,
+        Date
+      };
+
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/note/addnotes",
+          noteData
+        );
+        if (response.status===201) {
+          console.log("Successfully saved:", response.data);
+          fetchNote();
+          onClose(); 
+          ClearAllData();
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating announcement:", error);
+      }
     } else {
       console.log("Form is invalid");
     }
@@ -41,6 +85,16 @@ const CreateNote = ({ isOpen, onClose }) => {
   const handleClose = () => {
     if (onClose) onClose(); 
     navigate("/notes"); 
+  };
+
+  const handleDateChange = (date) => {
+    setDate(date);
+    setIsCalendarOpen(false); 
+  };
+
+  const ColseData = () => {
+    handleClose();
+    ClearAllData();
   };
 
   if (!isOpen) return null; 
@@ -72,7 +126,7 @@ const CreateNote = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Title"
-              value={title}
+              value={Title}
               onChange={(e) => {
                 const value = e.target.value;
                 // Prevent non-alphabetical input
@@ -91,7 +145,7 @@ const CreateNote = ({ isOpen, onClose }) => {
             </label>
             <input
               type="text"
-              value={description}
+              value={Description}
               onChange={(e) => {
                 const value = e.target.value;
                 // Allow only alphabetic input for description
@@ -111,7 +165,7 @@ const CreateNote = ({ isOpen, onClose }) => {
             <div className="flex items-center">
               <DatePicker
                 selected={date}
-                onChange={(date) => setDate(date)} // Update the date state
+                onChange={handleDateChange} 
                 className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                 placeholderText="Select a date"
                 dateFormat="MM/dd/yyyy"
@@ -131,7 +185,7 @@ const CreateNote = ({ isOpen, onClose }) => {
             <button
               type="button"
               className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              onClick={handleClose} // Close modal and redirect to dashboard
+              onClick={ColseData} // Close modal and redirect to dashboard
             >
               Cancel
             </button>

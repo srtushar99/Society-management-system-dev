@@ -5,86 +5,125 @@ import DatePicker from "react-datepicker";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import timeIcon from '../../assets/Vector.png'
-
-import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
+import timeIcon from '../../assets/Vector.png';
+import axiosInstance from '../../Common/axiosInstance';
+import "react-datepicker/dist/react-datepicker.css"; 
+import moment from 'moment';
 
 dayjs.extend(customParseFormat);
 
-const CreateAnnouncement = ({ isOpen, onClose }) => {
-  // State for the input fields
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState(null); // Default date is null
-  const [time, setTime] = useState(""); // Add time state (HH:mm)
+const CreateAnnouncement = ({ isOpen, onClose, fetchAnnouncement }) => {
+  const [Announcement_Title, setAnnouncement_Title] = useState("");
+  const [Description, setDescription] = useState("");
+  const [date, setDate] = useState(null); 
+  const [Announcement_Time, setAnnouncement_Time] = useState(""); 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  // Refs to detect clicks outside of the modal or calendar
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
 
-  // Regular expressions for validation
   const titleRegex = /^[A-Za-z\s]+$/;
   const descriptionRegex = /^[A-Za-z\s]+$/;
-  const timeRegex = /^([0-9]{2}):([0-9]{2})$/;
+  const timeRegex = /^(?:[01]?\d|2[0-3]):[0-5]\d (AM|PM)$/;
 
-  // Form validity check
   const isFormValid =
-    title &&
-    description &&
+    Announcement_Title &&
+    Description &&
     date &&
-    time &&
-    titleRegex.test(title) &&
-    descriptionRegex.test(description) &&
-    timeRegex.test(time);
+    Announcement_Time &&
+    titleRegex.test(Announcement_Title) &&
+    descriptionRegex.test(Description) &&
+    timeRegex.test(Announcement_Time);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const ClearAllData = () => {
+    setAnnouncement_Title("");
+    setDescription("");
+    setDate(null);
+    setAnnouncement_Time("");
+    setIsCalendarOpen(false);
+  };
+
+  const handleClose = () => {
+    if (onClose) onClose(); 
+    navigate("/announcements"); 
+  };
+
+  const ColseData = () => {
+    handleClose();
+    ClearAllData();
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      // Combine the date and time into a complete datetime object
-      const [hour, minute] = time.split(":");
+      const [hour, minute] = Announcement_Time.split(":");
       const combinedDateTime = dayjs(date)
         .hour(parseInt(hour))
         .minute(parseInt(minute));
-      
-      console.log("Form Submitted", { title, description, combinedDateTime });
+        const ChangeDateFormat = new Date(combinedDateTime);
+        const Announcement_Date = moment(ChangeDateFormat).format('YYYY-MM-DD');
+
+      const announcementData = {
+        Announcement_Title,
+        Description,
+        Announcement_Date,
+        Announcement_Time,
+      };
+
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/annoucement/addannouncement",
+          announcementData
+        );
+        if (response.status===201) {
+          console.log("Successfully saved:", response.data);
+          fetchAnnouncement();
+          onClose(); 
+          ClearAllData();
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating announcement:", error);
+      }
     } else {
       console.log("Form is invalid");
     }
   };
 
-  const handleClose = () => {
-    if (onClose) onClose(); // Close the modal
-    navigate("/announcements"); // Redirect to announcements page
-  };
-
+  
   const handleDateChange = (date) => {
     setDate(date);
-    setIsCalendarOpen(false); // Close calendar after selecting the date
+    setIsCalendarOpen(false); 
   };
 
   const handleTimeChange = (value) => {
-    const timeString = value ? value.format("HH:mm") : ""; // Format time as HH:mm
-    setTime(timeString);
+    const formattedDate = dayjs(value);
+    const hour = formattedDate.hour();
+    const ampm = hour < 12 ? "AM" : "PM"; 
+    const timeString = formattedDate.format("HH:mm");
+    setAnnouncement_Time(`${timeString} ${ampm}`);
   };
 
   const handleCalendarIconClick = () => {
-    setIsCalendarOpen(!isCalendarOpen); // Toggle calendar visibility
+    setIsCalendarOpen(!isCalendarOpen); 
   };
 
   const handleClickOutside = (e) => {
-    // Check if the click was outside the modal and the calendar
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
-        // Close calendar if clicked outside the calendar
         setIsCalendarOpen(false);
       }
     }
   };
 
-  // Add event listener for clicks outside the modal
+  
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -116,11 +155,11 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Title"
-              value={title}
+              value={Announcement_Title}
               onChange={(e) => {
                 const value = e.target.value;
                 if (titleRegex.test(value) || value === "") {
-                  setTitle(value);
+                  setAnnouncement_Title(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
@@ -135,7 +174,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
             <textarea
               type="text"
               placeholder="Enter Description"
-              value={description}
+              value={Description}
               onChange={(e) => {
                 const value = e.target.value;
                 if (descriptionRegex.test(value) || value === "") {
@@ -155,7 +194,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
               <div className="flex items-center relative" ref={datePickerRef}>
                 <DatePicker
                   selected={date}
-                  onChange={handleDateChange} // Close calendar after selecting a date
+                  onChange={handleDateChange} 
                   className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholderText="Select a date"
                   dateFormat="MM/dd/yyyy"
@@ -174,7 +213,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
                 Announcement Time<span className="text-red-500">*</span>
               </label>
               <TimePicker
-                value={time ? dayjs(time, "HH:mm") : null}
+                value={Announcement_Time ? dayjs(Announcement_Time, "HH:mm") : null}
                 onChange={handleTimeChange}
                 format="HH:mm"
                 suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
@@ -188,7 +227,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
             <button
               type="button"
               className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
-              onClick={handleClose}
+              onClick={ColseData}
             >
               Cancel
             </button>

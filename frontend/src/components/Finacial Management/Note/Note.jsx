@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import useNavigate
 import NotificationIcon from "../../assets/notification-bing.png";
 import AvatarImage from "../../assets/Avatar.png";
 import CreateNote from "./CreateNote"; // Import CreateNote component
 import EditNote from "./EditNote"; // Import EditNote component
 import Sidebar from "../../Sidebar/Sidebar";
+import axiosInstance from '../../Common/axiosInstance';
 
 const Note = () => {
   const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
@@ -12,17 +13,18 @@ const Note = () => {
   const [isEditNoteOpen, setIsEditNoteOpen] = useState(false); // Manage EditNote modal visibility
   const [selectedNote, setSelectedNote] = useState(null); // Store selected note for editing
   // const navigate = useNavigate(); // Initialize navigate function
+  const [cards, setCards] = useState([]);
 
-  const cards = [
-    { id: 1, title: "Rent or Mortgage", description: "A visual representation of your spending categories visual representation. " },
-    { id: 2, title: "Housing Costs", description: "A visual representation of your spending categories visual representation. " },
-    { id: 3, title: "Property Taxes", description: "A visual representation of your spending categories visual representation. " },
-    { id: 4, title: "Maintenance Fees", description: "A visual representation of your spending categories visual representation. " },
-    { id: 5, title: "Rent or Transportation", description: "A visual representation of your spending categories visual representation. " },
-    { id: 6, title: "Breakdown", description: "A visual representation of your spending categories visual representation. " },
-    { id: 7, title: "Expense Tracker", description: "A visual representation of your spending categories visual representation. " },
-    { id: 8, title: "Personal Expenses", description: "A visual representation of your spending categories visual representation. " },
-  ];
+  // const cards = [
+  //   { id: 1, title: "Rent or Mortgage", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 2, title: "Housing Costs", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 3, title: "Property Taxes", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 4, title: "Maintenance Fees", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 5, title: "Rent or Transportation", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 6, title: "Breakdown", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 7, title: "Expense Tracker", description: "A visual representation of your spending categories visual representation. " },
+  //   { id: 8, title: "Personal Expenses", description: "A visual representation of your spending categories visual representation. " },
+  // ];
 
   // Toggle dropdown menu visibility
   const toggleDropdown = (index) => {
@@ -54,6 +56,20 @@ const Note = () => {
     setIsEditNoteOpen(false); // Close the modal
     setSelectedNote(null); // Clear selected note data
   };
+
+   // Fetch Note from the API
+   const fetchNote = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/note/');
+         setCards(response.data.notes); 
+      } catch (error) {
+        console.error('Error fetching Note:', error);
+      }
+    };
+
+    useEffect(() => {
+      fetchNote();
+    }, []);
 
   return (
     <div className="flex  w-full h-screen bg-gray-100">
@@ -106,7 +122,7 @@ const Note = () => {
               {cards.map((card, index) => (
                 <div key={card.id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
-                    <span className="font-semibold">{card.title}</span>
+                    <span className="font-semibold">{!!card.Title ? card.Title : " "}</span>
                     <div className="flex items-center gap-2">
                       <i
                         className="border rounded p-2 bg-white text-[#5678E9] fa-solid fa-ellipsis-vertical cursor-pointer"
@@ -129,7 +145,7 @@ const Note = () => {
 
                   <div className="p-4 bg-[#FFFFFF]">
                     <h3 className="text-sm font-medium text-gray-600 mb-2">Description</h3>
-                    <p className="text-sm text-gray-500">{card.description}</p>
+                    <p className="text-sm text-gray-500">{!!card.Description ? card.Description : " "}</p>
                   </div>
                 </div>
               ))}
@@ -139,10 +155,10 @@ const Note = () => {
       </div>
 
       {/* CreateNote Modal */}
-      <CreateNote isOpen={isCreateNoteOpen} onClose={closeCreateNoteModal} />
+      <CreateNote isOpen={isCreateNoteOpen} onClose={closeCreateNoteModal} fetchNote={fetchNote}/>
 
       {/* EditNote Modal */}
-      <EditNote isOpen={isEditNoteOpen} onClose={closeEditNoteModal} noteData={selectedNote} />
+      <EditNote isOpen={isEditNoteOpen} onClose={closeEditNoteModal} noteData={selectedNote} fetchNote={fetchNote}/>
     </div>
   );
 };

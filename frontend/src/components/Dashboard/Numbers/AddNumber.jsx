@@ -47,8 +47,8 @@ const AddNumber = ({ isOpen, onClose, fetchImportantNumbers  }) => {
           const data = await response.json();
           console.log("Successfully saved:", data);
           fetchImportantNumbers(); // Fetch the updated list of contacts
-          onClose(); // Close the modal after successful submission
-          navigate("/dashboard"); 
+          handleClose(); // Close the modal after successful submission
+          // navigate("/dashboard"); 
         } else {
           const errorData = await response.json();
           console.error("Error saving number:", errorData.message || "Something went wrong.");

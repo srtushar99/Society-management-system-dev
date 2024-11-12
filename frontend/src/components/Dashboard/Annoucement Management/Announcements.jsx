@@ -1,32 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../../Sidebar/Sidebar';
 import { Link } from 'react-router-dom';
-import NotificationIcon from '../../assets/notification-bing.png'; // Ensure this path is correct
-import AvatarImage from '../../assets/Avatar.png'; // Ensure this path is correct
+import NotificationIcon from '../../assets/notification-bing.png'; 
+import AvatarImage from '../../assets/Avatar.png'; 
 import CreateAnnouncement from './CreateAnnouncement';
 import EditAnnouncement from './EditAnnouncement';
-import DeleteAnnouncement from './DeleteAnnouncement'; // Import the DeleteAnnoucement modal
+import DeleteAnnouncement from './DeleteAnnouncement'; 
 import SecurityProtocol from './SecurityProtocol';
-import '../../Sidebar/sidebar.css' // Import the SecurityProtocol modal
+import '../../Sidebar/sidebar.css' 
+import axiosInstance from '../../Common/axiosInstance'; 
+import moment from 'moment';
 
 const Annoucements = () => {
-  const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
+  const [openDropdown, setOpenDropdown] = useState(null); 
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false); 
   const [isEditNoteOpen, setIsEditNoteOpen] = useState(false); 
   const [selectedNote, setSelectedNote] = useState(null); 
-  const [activeOption, setActiveOption] = useState(null); // Track the active option clicked (Edit/View/Delete)
-  const [isDeleteNoteOpen, setIsDeleteNoteOpen] = useState(false); // State to control the delete modal
-  const [noteToDelete, setNoteToDelete] = useState(null); // Store the note to delete
-  const [isSecurityProtocolOpen, setIsSecurityProtocolOpen] = useState(false); // State for SecurityProtocol visibility
-
-  const [cards, setCards] = useState([
-    { id: 1, title: "Community Initiatives", date: "01/02/2024", time: "10:15 AM", description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa." },
-    { id: 2, title: "Community Initiatives", date: "01/02/2024", time: "10:15 AM", description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa." },
-    { id: 3, title: "Community Initiatives", date: "01/02/2024", time: "10:15 AM", description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa." },
-    { id: 4, title: "Community Initiatives", date: "01/02/2024", time: "10:15 AM", description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa." },
-    { id: 5, title: "Community Initiatives", date: "01/02/2024", time: "10:15 AM", description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa." },
-    { id: 6, title: "Community Initiatives", date: "01/02/2024", time: "10:15 AM", description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa." },
-  ]);
+  const [activeOption, setActiveOption] = useState(null); 
+  const [isDeleteNoteOpen, setIsDeleteNoteOpen] = useState(false); 
+  const [noteToDelete, setNoteToDelete] = useState(null); 
+  const [isSecurityProtocolOpen, setIsSecurityProtocolOpen] = useState(false); 
+  const [cards, setCards] = useState([]);
 
   // Refs for the dropdowns
   const dropdownRefs = useRef([]);
@@ -51,7 +45,7 @@ const Annoucements = () => {
       setIsDeleteNoteOpen(true); // Open Delete modal
     }
     if (option === 'view') {
-      setIsSecurityProtocolOpen(true); // Open SecurityProtocol modal
+      handleViewNoteClick(card);
     }
   };
 
@@ -71,6 +65,11 @@ const Annoucements = () => {
     setIsEditNoteOpen(true); // Open the EditNote modal
   };
 
+  const handleViewNoteClick = (note) => {
+    setSelectedNote(note); 
+    setIsSecurityProtocolOpen(true);
+  };
+
   // Close the EditNote modal
   const closeEditNoteModal = () => {
     setIsEditNoteOpen(false); // Close the modal
@@ -85,7 +84,7 @@ const Annoucements = () => {
 
   // Handle Delete Confirmation
   const handleDeleteNote = (note) => {
-    setCards(cards.filter((card) => card.id !== note.id)); // Remove the deleted card from the list
+    setCards(cards.filter((card) => card._id !== note.id)); // Remove the deleted card from the list
     closeDeleteNoteModal(); // Close the modal after deletion
   };
 
@@ -101,12 +100,23 @@ const Annoucements = () => {
     }
   };
 
+    // Fetch Announcement from the API
+    const fetchAnnouncement = async () => {
+      try {
+          const response = await axiosInstance.get('/v2/annoucement/');
+          console.log(response.data.announcements);
+          setCards(response.data.announcements); 
+      } catch (error) {
+          console.error('Error fetching Announcement:', error);
+      }
+  };
+
+
   // Attach and detach event listener
   useEffect(() => {
-    // Add event listener when the component mounts
+    fetchAnnouncement();
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Cleanup the event listener when the component unmounts
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -158,9 +168,9 @@ const Annoucements = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {cards.map((card, index) => (
-                <div key={card.id} className="bg-white rounded-lg shadow-md relative">
+                <div key={card._id} className="bg-white rounded-lg shadow-md relative">
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
-                    <span className="font-semibold">{card.title}</span>
+                    <span className="font-semibold">{!!card.Announcement_Title ? card.Announcement_Title : " "}</span>
                     <div className="flex items-center gap-2">
                       <i
                         className="border rounded p-2 bg-white text-[#5678E9] fa-solid fa-ellipsis-vertical cursor-pointer"
@@ -200,14 +210,14 @@ const Annoucements = () => {
                   <div className="p-4 bg-[#FFFFFF]">
                     <div className="flex justify-between mb-2">
                       <h3 className="text-sm text-[#4F4F4F]">Announcement Date:</h3>
-                      <p className="text-sm text-[#4F4F4F]">{card.date}</p>
+                      <p className="text-sm text-[#4F4F4F]">{!!card.Announcement_Date ? moment(card.Announcement_Date).format('DD/MM/YYYY') : " "}</p>
                     </div>
                     <div className="flex justify-between mb-2">
                       <h3 className="text-sm text-[#4F4F4F]">Announcement Time:</h3>
-                      <p className="text-sm text-[#4F4F4F]">{card.time}</p>
+                      <p className="text-sm text-[#4F4F4F]">{!!card.Announcement_Time ? card.Announcement_Time : " "}</p>
                     </div>
                     <h3 className="text-sm text-[#4F4F4F] mb-2">Description:</h3>
-                    <p className="text-sm text-gray-500">{card.description}</p>
+                    <p className="text-sm text-gray-500">{!!card.Description ? card.Description : " "}</p>
                   </div>
                 </div>
               ))}
@@ -217,12 +227,12 @@ const Annoucements = () => {
       </div>
 
       {/* Modal Components */}
-      <CreateAnnouncement isOpen={isCreateNoteOpen} onClose={closeCreateNoteModal} />
-      <EditAnnouncement isOpen={isEditNoteOpen} onClose={closeEditNoteModal} noteData={selectedNote} />
-      <DeleteAnnouncement isOpen={isDeleteNoteOpen} contact={noteToDelete} onDelete={handleDeleteNote} onCancel={closeDeleteNoteModal} />
+      <CreateAnnouncement isOpen={isCreateNoteOpen} onClose={closeCreateNoteModal} fetchAnnouncement={fetchAnnouncement}/>
+      <EditAnnouncement isOpen={isEditNoteOpen} onClose={closeEditNoteModal} noteData={selectedNote} fetchAnnouncement={fetchAnnouncement}/>
+      <DeleteAnnouncement isOpen={isDeleteNoteOpen} contact={noteToDelete} onDelete={handleDeleteNote} onCancel={closeDeleteNoteModal} fetchAnnouncement={fetchAnnouncement}/>
       
       {/* SecurityProtocol Modal */}
-      {isSecurityProtocolOpen && <SecurityProtocol isOpen={isSecurityProtocolOpen} onClose={closeSecurityProtocolModal} />}
+      {isSecurityProtocolOpen && <SecurityProtocol isOpen={isSecurityProtocolOpen} onClose={closeSecurityProtocolModal} noteData={selectedNote}/>}
     </div>
   );
 };

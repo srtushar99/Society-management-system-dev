@@ -1,6 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 
-function SecurityProtocol({ isOpen, onClose }) {
+function SecurityProtocol({ isOpen, onClose, noteData }) {
   if (!isOpen) return null;
 
   return (
@@ -17,25 +18,23 @@ function SecurityProtocol({ isOpen, onClose }) {
         <div className="border-[1px] border-gray-300 mt-2"></div> {/* This is the horizontal line */}
         <div className="mt-4">
           <p className="text-[#A7A7A7]  mb-1">Title</p>
-          <p>Community Initiatives</p>
+          <p>{!!noteData.Announcement_Title ? noteData.Announcement_Title : " "}</p>
         </div>
         <div className="mt-4">
           <p className=" text-[#A7A7A7]  mb-1">Description</p>
-          <p>The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in...</p>
+          <p>{!!noteData.Description ? noteData.Description : " "}</p>
         </div>
         <div className="mt-4  flex justify-start">
           <div>
             <p className="text-[#A7A7A7]  mb-1">Date</p>
-            <p>01/02/2024</p>
+            <p>{!!noteData.Announcement_Date ? moment(noteData.Announcement_Date).format('DD/MM/YYYY') : " "}</p>
           </div>
           <div>
             <p className="text-[#A7A7A7]  ml-10 mb-1">Time</p>
-            <p className="  ml-10 ">3:45 PM</p>
+            <p className="  ml-10 ">{!!noteData.Announcement_Time ? noteData.Announcement_Time : " "}</p>
           </div>
         </div>
 
-        {/* Horizontal Line */}
-      
       </div>
     </div>
   );
