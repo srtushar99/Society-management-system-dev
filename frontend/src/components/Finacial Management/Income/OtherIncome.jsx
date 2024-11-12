@@ -205,35 +205,35 @@ const OtherIncome = () => {
         </header>
 
         
-        <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">
-          
+        <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">      
         <div className="lg:mt-[10px]">
-          <div className="mt-4 px-4 sm:px-8">
-            <button
-              onClick={() => handleButtonClick("maintenance")}
-              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top ${
-                activeButton === "maintenance"
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFFF]"
-                  : "bg-[#FFFFFF] text-[#202224]"
-              }`}
-            >
-              {" "}
-              Maintenance{" "}
-            </button>
-            <Link
-              to="/otherincome"
-              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
-                activeButton === "otherIncome"
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
-                  : "bg-[#FFFFFF] text-[#202224]"
-              }`}
-            >
-              {" "}
-              Other Income{" "}
-            </Link>
-          </div>
+        <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
+              <Link
+                to="/income"
+                className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
+                  activeButton === "maintenance"
+                    ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
+                    : "bg-[#FFFFFF] text-[#202224]"
+                }`}
+                onClick={() => setActiveButton("maintenance")}
+              >
+                Maintenance
+              </Link>
+              <Link
+                to="/otherincome"
+                className={`w-full lg:h-[50px] sm:w-[150px] text-[] px-4  py-3 rounded-top no-underline ${
+                  activeButton === "otherIncome"
+                    ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
+                    : "bg-[#FFFFFF] text-[#202224]"
+                }`}
+                onClick={() => setActiveButton("otherIncome")}
+              >
+                Other Income
+              </Link>
+            </div>
+
         </div>
-          <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] px-7 py-10 p-4  rounded bg-[#FFFFFF]">
+          <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] px-7 py-10 p-4 mt-3 rounded bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
               <h1 className="lg:text-3xl  font-semibold text-gray-800">
               Other Income
