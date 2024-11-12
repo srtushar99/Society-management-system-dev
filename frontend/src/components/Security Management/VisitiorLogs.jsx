@@ -15,10 +15,10 @@ import IIcon from "../assets/I.png";
 
 const visitors = [
   { name: 'Evelyn Harper', phone: '97852 12369', img: AIcon, date: '10/01/2024', unit: '1001', time: '3:45 PM' },
-  { name: 'Wade Warren', phone: '97852 25893', img: BIcon, date: '11/01/2024', unit: '1002', time: '2:45 AM' },
+  { name: 'Wade Warren', phone: '97852 25893',   img: BIcon, date: '11/01/2024', unit: '1002', time: '2:45 AM' },
   { name: 'Guy Hawkins', phone: '975869 55563', img: CIcon, date: '12/01/2024', unit: '1003', time: '3:00 PM' },
-  { name: 'Robert Fox', phone: '97444 96323', img: DIcon, date: '13/01/2024', unit: '1004', time: '5:30 AM' },
-  { name: 'Jacob Jones', phone: '97123 12583', img: EIcon, date: '14/01/2024', unit: '2001', time: '12:45 PM' },
+  { name: 'Robert Fox', phone: '97444 96323',   img: DIcon, date: '13/01/2024', unit: '1004', time: '5:30 AM' },
+  { name: 'Jacob Jones', phone: '97123 12583',  img: EIcon, date: '14/01/2024', unit: '2001', time: '12:45 PM' },
   { name: 'Ronald Richards', phone: '97259 12363', img: FIcon, date: '15/01/2024', unit: '2002', time: '3:45 PM' },
   { name: 'Annette Black', phone: '97569 77763', img: GIcon, date: '16/01/2024', unit: '2003', time: '6:00 AM' },
   { name: 'Jerome Bell', phone: '97123 25863', img: HIcon, date: '17/01/2024', unit: '2004', time: '3:45 PM' },

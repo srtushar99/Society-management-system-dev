@@ -15,6 +15,10 @@ import Annoucements from './components/Dashboard/Annoucement Management/Announce
 
 import VisitorLogs from './components/Security Management/VisitiorLogs';
 import SecurityProtocol from './components/Security Management/SecurityProtocol';
+import Income from './components/Finacial Management/Income/Income';
+import OtherIncome from './components/Finacial Management/Income/OtherIncome';
+import Expance from './components/Finacial Management/Expanse/Expanse';
+import MemberList from './components/Finacial Management/Income/MemberList';
 
 
 function App() {
@@ -29,6 +33,11 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/update-profile" element={<UpdateProfile />} />
             <Route path="/notes" element={<Note />} />
+            <Route path="/income" element={<Income />} />
+            <Route path="/otherincome" element={<OtherIncome />} />
+            <Route path="/expense" element={<Expance />} />
+            <Route path="/memberlist" element={<MemberList />} />
+
             <Route path="/announcements" element={<Annoucements />} />
             <Route path="/visitorlogs" element={<VisitorLogs />} />
             <Route path="/securityprotocol" element={<SecurityProtocol />} />

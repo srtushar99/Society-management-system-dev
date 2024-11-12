@@ -2,52 +2,40 @@ import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
-import { TimePicker } from "antd";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import timeIcon from '../../assets/Vector.png'
-
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
-dayjs.extend(customParseFormat);
-
-const CreateAnnouncement = ({ isOpen, onClose }) => {
+const CreateIncome = ({ isOpen, onClose }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(null); // Default date is null
-  const [time, setTime] = useState(""); // Add time state (HH:mm)
+  const [amount, setAmount] = useState(""); // Add amount state
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
 
+  // Regex for title, description, and amount validation
   const titleRegex = /^[A-Za-z\s]+$/;
   const descriptionRegex = /^[A-Za-z\s]+$/;
-  const timeRegex = /^([0-9]{2}):([0-9]{2})$/;
+  const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/; // Validate number with optional decimal places
 
   const isFormValid =
     title &&
     description &&
     date &&
-    time &&
+    amount &&
     titleRegex.test(title) &&
     descriptionRegex.test(description) &&
-    timeRegex.test(time);
+    amountRegex.test(amount);
 
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      // Combine the date and time into a complete datetime object
-      const [hour, minute] = time.split(":");
-      const combinedDateTime = dayjs(date)
-        .hour(parseInt(hour))
-        .minute(parseInt(minute));
-      
-      console.log("Form Submitted", { title, description, combinedDateTime });
+      console.log("Form Submitted", { title, description, date, amount });
+      // Handle form submission logic here
     } else {
       console.log("Form is invalid");
     }
@@ -55,17 +43,12 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
 
   const handleClose = () => {
     if (onClose) onClose(); // Close the modal
-    navigate("/announcements"); // Redirect to announcements page
+    navigate("/otherincome"); // Redirect to announcements page
   };
 
   const handleDateChange = (date) => {
     setDate(date);
     setIsCalendarOpen(false); // Close calendar after selecting the date
-  };
-
-  const handleTimeChange = (value) => {
-    const timeString = value ? value.format("HH:mm") : ""; // Format time as HH:mm
-    setTime(timeString);
   };
 
   const handleCalendarIconClick = () => {
@@ -97,9 +80,9 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
       ref={modalRef}
       className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4"
     >
-      <div className="bg-white w-full max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
+      <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">Add Announcement</span>
+          <span className="text-2xl font-bold text-[#202224]">Create Other Income</span>
           <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
@@ -109,7 +92,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
           {/* Title */}
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
-              Announcement Title<span className="text-red-500">*</span>
+               Title<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -121,9 +104,55 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
                   setTitle(value);
                 }
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              className="w-80 % px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
+
+          <div className="flex gap-2">
+                <div className="w-50% ">
+                  <label className="block  text-left font-medium text-gray-700 mb-1">
+                    Date<span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex items-center">
+                    <DatePicker
+                      selected={date}
+                      onChange={(date) => setDate(date)}
+                      className="w-[150px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] "
+                      placeholderText="Select a date"
+                      dateFormat="MM/dd/yyyy"
+                      autoComplete="off"
+                      open={isCalendarOpen}
+                    />
+                    {/* Calendar Icon */}
+                    <i
+                      className="fa-solid fa-calendar-days absolute ml-[130px] text-[#202224] cursor-pointer"
+                      onClick={handleCalendarIconClick}
+                    />
+                  </div>
+                </div>
+                <div className=" relative ml-4">
+                  <label className="block text-left font-medium text-gray-700 mb-1">
+                    Due Date<span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex items-center">
+                    <DatePicker
+                      selected={date}
+                      onChange={(date) => setDate(date)} // Update the date state
+                      className="w-[150px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] "
+                      placeholderText="Select a date"
+                      dateFormat="MM/dd/yyyy"
+                      autoComplete="off"
+                      open={isCalendarOpen} // Control the visibility of the calendar
+                    />
+                    {/* Calendar Icon */}
+                    <i
+                      className="fa-solid fa-calendar-days absolute ml-[130px] text-[#202224] cursor-pointer"
+                      onClick={handleCalendarIconClick} // Toggle calendar visibility on icon click
+                    />
+                  </div>
+                </div>
+              </div>
+
 
           {/* Description */}
           <div>
@@ -131,7 +160,6 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
               Description<span className="text-red-500">*</span>
             </label>
             <textarea
-              type="text"
               placeholder="Enter Description"
               value={description}
               onChange={(e) => {
@@ -140,45 +168,29 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
                   setDescription(value);
                 }
               }}
-              className="w-full  px-3 py-2 border border-gray-300 rounded-lg text-[#202224] resize-none"
+              className="w-80 px-3 py-2 border border-gray-300 rounded-lg text-[#202224] resize-none"
             />
           </div>
 
-          {/* Date and Time */}
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <label className="block text-left font-medium text-[#202224] mb-1">
-                Announcement Date<span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center relative" ref={datePickerRef}>
-                <DatePicker
-                  selected={date}
-                  onChange={handleDateChange} // Close calendar after selecting a date
-                  className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
-                  placeholderText="Select a date"
-                  dateFormat="MM/dd/yyyy"
-                  autoComplete="off"
-                  open={isCalendarOpen}
-                />
-                <i
-                  className="fa-solid fa-calendar-days absolute right-10 text-[#202224] cursor-pointer"
-                  onClick={handleCalendarIconClick}
-                />
-              </div>
-            </div>
-
-            <div className="w-1/2">
-              <label className="block text-left font-medium text-gray-700 mb-1">
-                Announcement Time<span className="text-red-500">*</span>
-              </label>
-              <TimePicker
-                value={time ? dayjs(time, "HH:mm") : null}
-                onChange={handleTimeChange}
-                format="HH:mm"
-                suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-              />
-            </div>
+          {/* Date */}
+          
+          {/* Amount */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+              Amount<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Enter Amount"
+              value={amount}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (amountRegex.test(value) || value === "") {
+                  setAmount(value);
+                }
+              }}
+              className="w-80 px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            />
           </div>
 
           {/* Buttons */}
@@ -209,4 +221,4 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreateAnnouncement;
+export default CreateIncome;

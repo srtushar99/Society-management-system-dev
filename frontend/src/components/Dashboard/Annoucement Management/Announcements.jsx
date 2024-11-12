@@ -34,9 +34,9 @@ const Annoucements = () => {
   // Toggle dropdown menu visibility
   const toggleDropdown = (index) => {
     if (openDropdown === index) {
-      setOpenDropdown(null); // Close the dropdown if it's already open
+      setOpenDropdown(null); 
     } else {
-      setOpenDropdown(index); // Open the dropdown for the clicked card
+      setOpenDropdown(index);
     }
   };
 

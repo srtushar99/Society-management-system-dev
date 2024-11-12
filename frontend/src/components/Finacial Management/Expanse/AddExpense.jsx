@@ -2,70 +2,64 @@ import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
-import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import timeIcon from '../../assets/Vector.png'
 
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
 dayjs.extend(customParseFormat);
 
-const CreateAnnouncement = ({ isOpen, onClose }) => {
+const AddExpense = ({ isOpen, onClose }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(null); // Default date is null
-  const [time, setTime] = useState(""); // Add time state (HH:mm)
+  const [amount, setAmount] = useState(""); // State for Maintenance Amount
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
 
   const titleRegex = /^[A-Za-z\s]+$/;
   const descriptionRegex = /^[A-Za-z\s]+$/;
-  const timeRegex = /^([0-9]{2}):([0-9]{2})$/;
+  const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/; // Regex to accept numeric values with optional decimals
 
   const isFormValid =
     title &&
     description &&
     date &&
-    time &&
+    amount &&
     titleRegex.test(title) &&
     descriptionRegex.test(description) &&
-    timeRegex.test(time);
+    amountRegex.test(amount);
 
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      // Combine the date and time into a complete datetime object
-      const [hour, minute] = time.split(":");
-      const combinedDateTime = dayjs(date)
-        .hour(parseInt(hour))
-        .minute(parseInt(minute));
-      
-      console.log("Form Submitted", { title, description, combinedDateTime });
+      // Only date and amount are considered now
+      console.log("Form Submitted", { title, description, date, amount });
     } else {
       console.log("Form is invalid");
     }
   };
 
   const handleClose = () => {
-    if (onClose) onClose(); // Close the modal
-    navigate("/announcements"); // Redirect to announcements page
+    if (onClose) onClose();
+    navigate("/expense");
   };
 
   const handleDateChange = (date) => {
     setDate(date);
-    setIsCalendarOpen(false); // Close calendar after selecting the date
+    setIsCalendarOpen(false); // Close calendar after selecting a date
   };
 
-  const handleTimeChange = (value) => {
-    const timeString = value ? value.format("HH:mm") : ""; // Format time as HH:mm
-    setTime(timeString);
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    if (amountRegex.test(value) || value === "") {
+      setAmount(value);
+    }
   };
 
   const handleCalendarIconClick = () => {
@@ -99,7 +93,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
     >
       <div className="bg-white w-full max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">Add Announcement</span>
+          <span className="text-2xl font-bold text-[#202224]">Add Expenses details</span>
           <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
@@ -109,7 +103,7 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
           {/* Title */}
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
-              Announcement Title<span className="text-red-500">*</span>
+              Title<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -144,17 +138,18 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Date and Time */}
+          {/* Date and Amount in the same row */}
           <div className="flex gap-4">
+            {/* Date Picker */}
             <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
-                Announcement Date<span className="text-red-500">*</span>
+                Date<span className="text-red-500">*</span>
               </label>
               <div className="flex items-center relative" ref={datePickerRef}>
                 <DatePicker
                   selected={date}
                   onChange={handleDateChange} // Close calendar after selecting a date
-                  className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholderText="Select a date"
                   dateFormat="MM/dd/yyyy"
                   autoComplete="off"
@@ -167,17 +162,21 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
               </div>
             </div>
 
+            {/* Amount Input */}
             <div className="w-1/2">
-              <label className="block text-left font-medium text-gray-700 mb-1">
-                Announcement Time<span className="text-red-500">*</span>
+              <label className="block text-left font-medium text-[#202224] mb-1">
+                Amount<span className="text-red-500">*</span>
               </label>
-              <TimePicker
-                value={time ? dayjs(time, "HH:mm") : null}
-                onChange={handleTimeChange}
-                format="HH:mm"
-                suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-              />
+              <div className="flex items-center border border-gray-300 rounded-lg">
+                <span className="text-xl text-[#202224] ml-3">₹</span>
+                <input
+                  type="text"
+                  value={amount}
+                  onChange={handleAmountChange} // Restrict input to numeric values
+                  className="w-full px-3 py-2 text-[#202224] rounded-lg pl-6"
+                  placeholder="0000"
+                />
+              </div>
             </div>
           </div>
 
@@ -209,4 +208,4 @@ const CreateAnnouncement = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreateAnnouncement;
+export default AddExpense;
