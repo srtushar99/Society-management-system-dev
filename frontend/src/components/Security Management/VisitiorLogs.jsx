@@ -48,10 +48,10 @@ const VisitorLogs = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md">
+        <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md"style={{padding:"35px 10px"}}>
           {/* Breadcrumb Navigation */}
-          <div className="flex items-center space-x-2 text-gray-600 ml-20 md:ml-20">
-            <Link to="/dashboard" className="text-[#A7A7A7] no-underline font-semibold">
+          <div className="flex items-center space-x-2 text-gray-600">
+            <Link to="/dashboard" className="text-[#A7A7A7] no-underline ms-4 font-semibold">
               Home
             </Link>
             <span className="text-gray-400"> &gt; </span>
@@ -59,7 +59,7 @@ const VisitorLogs = () => {
           </div>
 
           {/* Notifications and Profile Section */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 justify-end me-5">
             <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
               <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
             </button>
@@ -78,9 +78,9 @@ const VisitorLogs = () => {
           <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1560px] bg-white">
             <h1 className="p-3 text-3xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>
             <div />
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-[#5678E9] relative lg:w-[1560px]" style={{ opacity: "10%" }}>
-                <tr className="text-left text-sm font-semibold">
+            <table className="min-w-full  border border-gray-200 rounded-lg " >
+              <thead className=" relative lg:w-[1560px]" style={{ backgroundColor:"rgba(86, 120, 233, 0.1)" }} >
+                <tr className="text-left text-sm  font-semibold ">
                   <th className="p-3 text-[#202224]">Visitor Name</th>
                   <th className="p-3 hidden sm:table-cell">Phone Number</th>
                   <th className="p-3 hidden md:table-cell">Date</th>

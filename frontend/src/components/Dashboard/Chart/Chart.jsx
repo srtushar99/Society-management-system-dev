@@ -85,8 +85,8 @@ const Chart = () => {
   };
 
   return (
-    <div className="h-[240px] sm:h-[240px]   sm:w-[730px] md:h-[240px] lg:w-[760px] md:ms-[880px] sm:ml-[310px] lg:ml-[0px] xl:ml-[290px] 2xl:ml-[320px]">
-      <Card>
+    <div className="h-[240px] sm:h-[240px]  pe-1  sm:w-[730px] md:h-[240px] lg:w-[760px] md:ms-[880px] sm:ml-[310px] lg:ml-[0px] xl:ml-[290px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
+      <Card className="me-2">
         <CardHeader>
           <CardTitle>Total Balance</CardTitle>
           <Select defaultValue="month" onChange={handleRangeChange}>
@@ -97,10 +97,10 @@ const Chart = () => {
           </Select>
         </CardHeader>
         <CardContent>
-          <ChartContainer className="h-[270px]">
+          <ChartContainer className="h-[270px] "style={{zIndex:"-99999999"}}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 30, right: 40, bottom: 20, left: 10 }}>
-                <CartesianGrid vertical={false} horizontal={true} strokeDasharray="3 4" />
+                <CartesianGrid style={{zIndex:"-99989898"}} vertical={false} horizontal={true} strokeDasharray="3 4" />
                 <XAxis
                   dataKey="month"
                   className="text-sm mr-4"

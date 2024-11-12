@@ -75,8 +75,8 @@ const Activity = () => {
   };
 
   return (
-    <div className="border bg-white border-gray-300 rounded-lg mt-0 h-[300px] p-3 sm:mt-5 lg:w-[360px] sm:ml-4">
-      <div className="flex justify-between items-center mb-3">
+    <div className="border bg-white border-gray-300 rounded-lg mt-1 h-[300px] mx-4 sm:mt-5 lg:w-[360px] sm:ml-4 ">
+      <div className="flex justify-between items-center  p-3">
         <h5 className="text-xl font-semibold text-gray-900">Upcoming Activity</h5>
         <Select defaultValue="month" onChange={handleRangeChange}>
           <CustomOption value="last-week" gradient="#FF9F00, #FF3D00" label="Last Week" />
@@ -86,9 +86,9 @@ const Activity = () => {
         </Select>
       </div>
 
-      <div className="overflow-y-auto h-[200px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="overflow-y-auto h-[200px] px-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {activities.map((activity, index) => (
-          <div
+          <div 
             key={index}
             className="flex items-center gap-1 bg-white rounded-lg shadow-sm p-1"
           >
@@ -97,8 +97,8 @@ const Activity = () => {
             >
               {activity.letter}
             </div>
-            <div className="flex-1">
-              <span className="text-gray-900 font-medium">{activity.title}</span>
+            <div className="flex-1 pt-1 px-1 ml-2  ">
+              <span className="text-gray-900 font-medium d-flex pt-1"style={{alignItems:"center"}}>{activity.title}</span>
               <p className="text-sm text-gray-500">{activity.time}</p>
             </div>
             <div className="text-sm text-gray-500">{activity.date}</div>

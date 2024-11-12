@@ -60,19 +60,19 @@ const SecurityProtocol = () => {
   };
 
   return (
-    <div className="flex bg-gray-100 w-full h-full">
+    <div className="flex bg-gray-100  w-full h-full">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <header className="flex justify-between  lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md ">
-          <div className="flex items-center space-x-2 text-gray-600">
-            <Link to="/securityprotocol" className="text-[#A7A7A7] no-underline font-semibold ml-20 md:ml-20 ">
+      <div className="flex-1 flex flex-col ">
+        <header className="flex justify-between   lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md "style={{padding:"35px 10px"}}>
+          <div className="flex items-center space-x-2  text-gray-600">
+            <Link to="/securityprotocol" className="text-[#A7A7A7] no-underline font-semibold ms-4 md:ml-20 ">
               Home
             </Link>
-            <span className="text-gray-400"> &gt; </span>
+            <span className="text-gray-400 "> &gt; </span>
             <span className="font-semibold text-[#5678E9]">Security Protocols</span>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center me-5  justify-end space-x-4">
             <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
               <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
             </button>
@@ -99,7 +99,7 @@ const SecurityProtocol = () => {
           </div>
 
           <table className="bg-white border border-gray-200 rounded-lg shadow-md w-full">
-          <thead className='bg-[#5678E9]' style={{opacity:"10%"}} >  
+          <thead className=''style={{ backgroundColor:"rgba(86, 120, 233, 0.1)" }} >  
         <tr className="text-left text-sm font-semibold">  
           <th className="p-3 text-[#202224] ">Visitor Name</th>  
           <th className="p-3 hidden sm:table-cell">Phone Number</th>  
@@ -128,7 +128,7 @@ const SecurityProtocol = () => {
                         className="bg-blue-50 text-[#5678E9] rounded-2 p-2 sm:w-10 sm:h-10"
                         onClick={() => openViewModal(item)} // Open View Protocol modal
                       >
-                        <i className="fa-solid fa-eye w-2"></i>
+                        <i className="fa-solid fa-eye w-2 me-2"></i>
                       </button>
                       <button
                         className="bg-blue-50 text-red-600 rounded-2 p-2 sm:w-10 sm:h-10"

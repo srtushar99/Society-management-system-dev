@@ -19,7 +19,7 @@ const AvatarImage = ({ src, alt }) => (
 );
 
 const Card = ({ children, className }) => (
-  <div className={`border rounded-lg shadow-md p-4 ${className}`}>
+  <div className={`border rounded-lg shadow-md p ${className}`}>
     {children}
   </div>
 );
@@ -85,9 +85,9 @@ const maintenanceItems = [
 
 const PendingMaintenance = () => {
   return (
-    <div className="sm:w-full bg-white rounded lg:h-[405px] lg:w-[360px] sm:ml-2">
-      <Card className="w-full h-full">
-        <CardHeader>
+    <div className="sm:w-full bg-white rounded lg:h-[405px] lg:w-[360px] mx-2sm:ml-2">
+      <Card className="w-full h-full ">
+        <CardHeader className="pt-4 px-3">
           <CardTitle className="text-base sm:text-lg">Pending Maintenances</CardTitle>
           <button
             onClick={() => window.location.href = '/all-maintenance'}
@@ -96,7 +96,7 @@ const PendingMaintenance = () => {
             View all
           </button>
         </CardHeader>
-        <CardContent className="h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md">
+        <CardContent className="h-[280px] overflow-y-auto scrollbar-thin px-3 scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md" >
           {maintenanceItems.map((item) => (
             <div key={item.id} className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">

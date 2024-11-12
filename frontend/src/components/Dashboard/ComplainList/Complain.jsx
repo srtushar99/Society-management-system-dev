@@ -47,7 +47,7 @@ const initialComplaints = [
 ];
 
 const Badge = ({ children, className }) => (
-  <span className={`px-2 py-2 p-3  rounded-full text-xs font-semibold ${className}`}>
+  <span className={`px-4 py-2 p-3   text-xs font-semibold ${className}`}style={{borderRadius:"15px",}}>
     {children}
   </span>
 );
@@ -110,7 +110,7 @@ const Complain = () => {
   const CustomOption = ({ value, gradient, label }) => (
     <option value={value} className="flex items-center">
       <span
-        className="inline-block w-4 h-4 rounded-full mr-2 border border-white"
+        className="inline-block  w-4 h-4 mr-2 border "
         style={{ background: `linear-gradient(90deg, ${gradient})` }}
       ></span>
       {label}
@@ -123,8 +123,8 @@ const Complain = () => {
   };
 
   return (
-    <div className="lg:w-[1150px] md:w-[1150px] lg:ms-[320px]  h-[350px] sm:h-[300px] bg-white shadow-lg rounded-lg overflow-hidden">
-      <div className="p-3 flex justify-between items-center border-b">
+    <div className="lg:w-[1150px] md:w-[1150px] lg:ms-[320px] mt-1 h-[350px] sm:h-[300px] bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="p-3 flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Complaint List</h2>
         <Select defaultValue="month" onChange={handleRangeChange}>
           <CustomOption value="last-week" gradient="#FF9F00, #FF3D00" label="Last Week" />
@@ -134,11 +134,11 @@ const Complain = () => {
         </Select>
       </div>
 
-      <div className="h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        <table className="w-full table-auto">
-          <thead >
-            <tr className="bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
-              <th className="p-3">Complainer Name</th>
+      <div className="h-[200px] overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <table className="w-full table-auto  " >
+          <thead  >
+            <tr className="bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase    "   >
+              <th className="p-3" >Complainer Name</th>
               <th className="p-3">Complaint Name</th>
               <th className="p-3">Date</th>
               <th className="p-3">Priority</th>
@@ -161,16 +161,16 @@ const Complain = () => {
                 </td>
                 <td className="p-2">{complaint.complaintName}</td>
                 <td className="p-2">{complaint.date}</td>
-                <td className="p-2">
+                <td className="p-2 ">
                   <Badge
-                    className={
+                    className={ 
                       complaint.priority === 'High'
-                        ? 'bg-red-100 text-red-800'
+                        ? 'bg-red-700 text-white'
                         : complaint.priority === 'Medium'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-green-100 text-green-800'
+                        ? 'bg-primary text-white'
+                        : 'bg-success text-white'
                         
-                    }
+                    } 
                   >
                     {complaint.priority}
                   </Badge>
@@ -181,7 +181,7 @@ const Complain = () => {
                       complaint.status === 'Open'
                         ? 'bg-blue-100 text-blue-800'
                         : complaint.status === 'Pending'
-                        ? 'bg-orange-100 text-orange-800'
+                        ? 'bg-yellow-200 text-warning'
                         : 'bg-green-100 text-green-800'
                     }
                   >
@@ -200,7 +200,7 @@ const Complain = () => {
                       className="bg-blue-50 text-[#5678E9] rounded-2 p-2 sm:w-10 sm:h-10"
                       onClick={() => openComplaintModal(complaint)}
                     >
-                      <i className="fa-solid fa-eye w-2"></i>
+                      <i className="fa-solid fa-eye "></i>
                     </button>
                     <button className="bg-blue-50 text-red-600 rounded-2 p-2 sm:w-10 sm:h-10"
                       onClick={() => openDeleteModal(complaint)}
