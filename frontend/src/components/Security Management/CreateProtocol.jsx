@@ -8,8 +8,7 @@ const CreateProtocol = ({ isOpen, onClose }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
- 
-
+  
 
   // Regular expressions for validation
   const titleRegex = /^[A-Za-z\s]+$/;
@@ -19,6 +18,7 @@ const CreateProtocol = ({ isOpen, onClose }) => {
   const isFormValid =
     title &&
     description &&
+ 
     titleRegex.test(title) &&
     descriptionRegex.test(description);
 
