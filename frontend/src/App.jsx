@@ -32,6 +32,7 @@ function App() {
             <Route path="/notes" element={<Note />} />
             <Route path="/announcements" element={<Annoucements />} />
             <Route path="/visitorlogs" element={<VisitorLogs />} />
+            
             <Route path="/securityprotocol" element={<SecurityProtocol />} />
             {/* <Route path="/securitygaurd" element={<SecurityGuardTable />} /> */}
 
