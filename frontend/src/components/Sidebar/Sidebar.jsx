@@ -108,7 +108,7 @@ const Sidebar = () => {
 
   return (
     <div>
-      <div className="sidebar-toggle-btn block lg:hidden  " style={{zIndex:"9999"}} onClick={toggleSidebar}>
+      <div className="sidebar-toggle-btn block lg:hidden  " onClick={toggleSidebar}>
         <div className="line"></div>
         <div className="line"></div>
         <div className="line"></div>
@@ -143,8 +143,8 @@ const Sidebar = () => {
           </h1>
         </div>
 
-        <Nav className="flex-column ">
-          {['dashboard', 'Resident-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-guard', 'announcements',].map((link) => (
+        <Nav className="flex-column">
+          {['dashboard', 'Resident-Manegement', 'Facilities-Management', 'complaints-Tracking', 'security-guard', 'announcements'].map((link) => (
             <div key={link} style={{ position: 'relative' }}>
               <div style={getIndicatorStyle(link)}></div>
               <Link
@@ -159,8 +159,6 @@ const Sidebar = () => {
                 {link === 'Facilities-Management' && <img src={FacilitiesIcon} style={getIconStyle(link)} alt="Facilities" />}
                 {link === 'complaints-Tracking' && <img src={ComplaintsTrackingIcon} style={getIconStyle(link)} alt="Complaints Tracking" />}
                 {link === 'security-guard' && <img src={SecurityGuardIcon} style={getIconStyle(link)} alt="Security Guard" />}
-               
-               
                 {link === 'announcements' && <img src={AnnouncementIcon} style={getIconStyle(link)} alt="Announcements" />}
                 {link.charAt(0).toUpperCase() + link.slice(1).replace(/-/g, ' ')}
               </Link>
@@ -168,7 +166,7 @@ const Sidebar = () => {
           ))}
 
           {/* Security Management Dropdown */}
-          <div style={{ position: 'relative' ,zIndex:"9898989"}}>
+          <div style={{ position: 'relative' }}>
             <div style={getIndicatorStyle('security-Management')}></div>
             <Dropdown onClick={() => handleLinkClick('security-Management')} show={showSecurityDropdown}>
               <Dropdown.Toggle variant="link" style={{ ...getLinkStyle('security-Management'), fontSize: '14px'  }} onClick={() => setShowSecurityDropdown(!showSecurityDropdown)}>
@@ -202,7 +200,7 @@ const Sidebar = () => {
           </div>
 
           {/* Financial Management Dropdown */}
-          <div style={{ position: 'relative' ,zIndex:"9898988"}}>
+          <div style={{ position: 'relative' }}>
             <div style={getIndicatorStyle('Financial-Manegement')}></div>
             <Dropdown onClick={() => handleLinkClick('Financial-Manegement')} show={showFinancialDropdown}>
               <Dropdown.Toggle variant="link" style={{ ...getLinkStyle('Financial-Manegement'), fontSize: '14px' }} onClick={() => setShowFinancialDropdown(!showFinancialDropdown)}>
