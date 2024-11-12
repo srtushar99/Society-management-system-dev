@@ -22,11 +22,11 @@ const Dashboard = () => {
         <Cards />
 
         {/* Content Grid: Chart, ContactsPage, and Pending Maintenance */}
-        <div className="d-flex flex-column flex-md-row flex-1 p-2">
+        <div className="d-flex flex-column flex-md-row flex-1 px-2">
           <div className="flex-1 mb-3 mb-md-0">
             <Chart />
           </div>
-          <div className="flex-1 mb-3 mb-md-0">
+          <div className="flex-1 mb-3 mx-1 mb-md-0">
             <ContactsPage />
           </div>
           <div className="flex-1">

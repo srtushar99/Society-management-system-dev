@@ -66,10 +66,10 @@ const ContactsPage = () => {
 
   return (
     <div
-      className="rounded-lg shadow-md p-4 lg:ml-6 sm:w-[390px] bg-white lg:w-[360px] lg:h-[380px]"
+      className="rounded-lg shadow-md  lg:ml-6 sm:w-[390px] bg-white lg:w-[360px] lg:h-[380px]"
       style={{ height: "405px" }}
     >
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 px-3 pt-3">
         <h2 className="text-xl font-semibold">Important Numbers</h2>
         <button
           onClick={handleAddContact}
@@ -80,7 +80,7 @@ const ContactsPage = () => {
         </button>
       </div>
 
-      <div className="overflow-y-auto h-[320px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="overflow-y-auto h-[320px] px-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {contacts.map((contact, index) => (
           <div key={index} className="flex justify-between items-center border-b py-2">
             <div className="flex flex-col">

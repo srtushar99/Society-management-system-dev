@@ -9,8 +9,8 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #202224; /* Change this to your desired thumb color */
-  border-radius: 10px; /* Rounded corners */
+  background-color: #202224;
+  border-radius: 10px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {

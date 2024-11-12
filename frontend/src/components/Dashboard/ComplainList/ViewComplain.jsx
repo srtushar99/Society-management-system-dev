@@ -56,7 +56,7 @@ const ViewComplain = ({ complaint, onClose }) => {
       <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
         <div className="bg-white w-[450px] max-w-3xl mx-auto p-6 rounded-lg shadow-lg overflow-y-auto">
           {/* Header */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-6 ">
             <h1 className="text-2xl font-bold text-gray-900">View Complain</h1>
             <button
             className="text-gray-600 hover:text-gray-800"
