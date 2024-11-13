@@ -11,7 +11,7 @@ import "../../Sidebar/sidebar.css";
 import CreateIncome from "./CreateIncome";
 
 const OtherIncome = () => {
-  const [activeButton, setActiveButton] = useState("maintenance");
+  const [activeButton, setActiveButton] = useState("otherIncome");
   const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false);
   const [isEditNoteOpen, setIsEditNoteOpen] = useState(false);
@@ -100,6 +100,8 @@ const OtherIncome = () => {
   const closeCreateNoteModal = () => {
     setIsCreateNoteOpen(false);
   };
+
+
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
   };
@@ -206,8 +208,8 @@ const OtherIncome = () => {
 
         
         <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">      
-        <div className="lg:mt-[10px]">
-        <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
+        <div className="lg:mt-[10px] bg">
+            <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
               <Link
                 to="/income"
                 className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
@@ -221,7 +223,7 @@ const OtherIncome = () => {
               </Link>
               <Link
                 to="/otherincome"
-                className={`w-full lg:h-[50px] sm:w-[150px] text-[] px-4  py-3 rounded-top no-underline ${
+                className={`w-full lg:h-[50px] sm:w-[150px] text-[] px-4 py-3 rounded-top no-underline ${
                   activeButton === "otherIncome"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -231,8 +233,8 @@ const OtherIncome = () => {
                 Other Income
               </Link>
             </div>
+          </div>
 
-        </div>
           <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] px-7 py-10 p-4 mt-3 rounded bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
               <h1 className="lg:text-3xl  font-semibold text-gray-800">
@@ -241,7 +243,7 @@ const OtherIncome = () => {
            
               <button
                 onClick={handleCreateNoteClick} // Trigger modal opening
-                className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
+                className="bg-orange-500  text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
               >
                 Create Other Income
               </button>

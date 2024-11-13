@@ -26,33 +26,6 @@ const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Function to determine badge colors for priority and status
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "High":
-        return "bg-red-500 text-white";
-      case "Medium":
-        return "bg-yellow-500 text-white";
-      case "Low":
-        return "bg-green-500 text-white";
-      default:
-        return "bg-gray-500 text-white";
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Open":
-        return "bg-blue-100 text-blue-600";
-      case "Pending":
-        return "bg-yellow-100 text-yellow-600";
-      case "Solved":
-        return "bg-green-100 text-green-600";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  };
-
   // Define images for each unit
   const unitImages = {
     1001: AIcon,
