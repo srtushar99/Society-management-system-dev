@@ -22,7 +22,8 @@ import MemberList from './components/Finacial Management/Income/MemberList';
 import Password from 'antd/es/input/Password';
 import Facilities from './components/Facilities Management/Facilities';
 import ComplaintTracking from './components/Complaint Tracking/Create Complaint/ComplaintTracking';
-import Notification from './components/Facilities Management/Notification';
+
+import NotificationModal from './components/Facilities Management/Notification';
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
@@ -47,7 +48,7 @@ function App() {
             <Route path="/password" element={<Password />} />
             <Route path="/Facility-Management" element={<Facilities />} />
             <Route path="/complaints-Tracking" element={<ComplaintTracking />} />
-            <Route path="/notification" element={<Notification />} />
+            <Route path="/notifications" element={<NotificationModal />} />
 
             
             <Route path="/securityprotocol" element={<SecurityProtocol />} />

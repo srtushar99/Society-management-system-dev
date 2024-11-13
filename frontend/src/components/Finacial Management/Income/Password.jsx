@@ -7,7 +7,7 @@ const Password = () => {
   const [isAddMaintenanceOpen, setIsAddMaintenanceOpen] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);  // Track password visibility
 
-  const correctPassword = "correctPassword123";
+  const correctPassword = "a";
 
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
@@ -29,6 +29,7 @@ const Password = () => {
     setPassword("");
     setErrorMessage(null);
     setIsAddMaintenanceOpen(false);
+    
   };
 
   const togglePasswordVisibility = () => {

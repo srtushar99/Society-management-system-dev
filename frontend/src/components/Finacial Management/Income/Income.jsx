@@ -31,6 +31,7 @@ const Income = ({ color }) => {
   const [isViewMaintenanceOpen, setIsViewMaintenanceOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null); // To hold the selected maintenance data
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [closePasswordModalOpen, setclosePasswordModalOpen] = useState(false);
   const data = [
     {
       name: "Cody Fisher",
@@ -146,7 +147,7 @@ const Income = ({ color }) => {
   };
 
   const closePasswordModal = () => {
-    setIsPasswordModalOpen(false); // Close the Password modal
+    setclosePasswordModalOpen(false); // Close the Password modal
   };
 
   const closeAddMaintenanceModal = () => {
@@ -400,7 +401,7 @@ const Income = ({ color }) => {
         {isPasswordModalOpen && (
           <Password
             isOpen={isPasswordModalOpen}
-            onClose={closePasswordModal}
+            onClose={closePasswordModalOpen}
           />
         )}
 
