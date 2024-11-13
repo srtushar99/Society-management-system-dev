@@ -75,7 +75,7 @@ const Header = () => {
         </div>
 
         {/* Search Icon only visible on smaller screens */}
-        <div className="md:hidden flex justify-end sm:mr-5">
+        <div className="md:hidden flex  justify-end sm:mr-5">
           <button className="p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
             <Search className="h-6 w-6" />
           </button>
@@ -83,7 +83,7 @@ const Header = () => {
       </div>
 
       {/* Right Section with Notification and Avatar */}
-      <div className="flex items-center space-x-4 sm:space-x-6">
+      <div className="flex items-center justify-end me-5 space-x-4 sm:space-x-6">
         {/* Notification Icon */}
         <button
           className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"

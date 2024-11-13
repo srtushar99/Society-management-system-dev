@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../../Sidebar/Sidebar';
-import { Link } from 'react-router-dom';
+import { Link,    } from 'react-router-dom';
 import NotificationIcon from '../../assets/notification-bing.png'; 
 import AvatarImage from '../../assets/Avatar.png'; 
 import CreateAnnouncement from './CreateAnnouncement';
@@ -10,6 +10,11 @@ import SecurityProtocol from './SecurityProtocol';
 import '../../Sidebar/sidebar.css' 
 import axiosInstance from '../../Common/axiosInstance'; 
 import moment from 'moment';
+import NotificationModal from '../Notification/NotificationModal';
+import NoNotification from '../Notification/NoNotification'; // Import the NoNotification component
+import { useNavigate } from 'react-router-dom';
+ 
+ 
 
 const Annoucements = () => {
   const [openDropdown, setOpenDropdown] = useState(null); 
@@ -24,7 +29,58 @@ const Annoucements = () => {
 
   // Refs for the dropdowns
   const dropdownRefs = useRef([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize the navigate function
 
+  const notifications = [
+    {
+      title: "Evelyn Harper (A- 101)",
+      timing: "Monday 11:41 AM",
+      message: (
+        <>
+          Evelyn Harper gave a fund of <span style={{ color: '#5678E9' }}>1000 for Navratri</span>.
+        </>
+      ),
+      timeAgo: "32 Minutes ago",
+    },
+    {
+      title: "Maintenance (A- 101)",
+      timing: "Tuesday 11:41 AM",
+      message: (
+        <>
+          Evelyn Harper gave a <span style={{ color: '#5678E9' }}>Maintenance of 1000</span>.<br />
+        </>
+      ),
+      timeAgo: "2 days ago",
+    },
+    {
+      title: "Ganesh Chaturthi (A- 101)",
+      timing: "Saturday 11:41 AM",
+      message: (
+        <>
+          Per Person Amount: <span style={{ color: '#5678E9' }}>₹ 1500</span>. 
+          The celebration of Ganesh Chaturthi involves the installation of clay idols of Lord Ganesa in our residence.
+        </>
+      ),
+      timeAgo: "2 days ago",
+    },
+    {
+      title: "Update Maintenance",
+      message: "Maintenance Amount: ₹ 1,500 Maintenance Penalty: ₹ 350.",
+      timeAgo: "32 Minutes ago",
+    },
+  ];
+
+  const handleClearAll = () => {
+    navigate('/no-notifications'); 
+  };
+
+  const isNoNotifications = notifications.length === 0;
+
+  // Function to handle profile click and navigate to the EditProfile page
+  const handleProfileClick = () => {
+    navigate('/edit-profile'); // This will navigate to the EditProfile page
+  };
   // Toggle dropdown menu visibility
   const toggleDropdown = (index) => {
     if (openDropdown === index) {
@@ -110,7 +166,7 @@ const Annoucements = () => {
           console.error('Error fetching Announcement:', error);
       }
   };
-
+  
 
   // Attach and detach event listener
   useEffect(() => {
@@ -120,7 +176,7 @@ const Annoucements = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+ 
   return (
     <div className="flex h-w-full h-full bg-gray-100">
       <Sidebar />
@@ -138,18 +194,49 @@ const Annoucements = () => {
           </div>
 
           {/* Notifications and Profile Section */}
-          <div className="flex items-center space-x-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-              <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-            </button>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <img src={AvatarImage} alt="Moni Roy" width="40" height="40" className="rounded-full" />
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                <p className="text-xs text-gray-500">Admin</p>
-              </div>
-            </div>
+          <div className="flex items-center justify-end me-5 space-x-4 sm:space-x-6">
+        {/* Notification Icon */}
+        <button
+          className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
+          onClick={() => setIsModalOpen(true)} // Open the modal
+        >
+          <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
+        </button>
+
+        {/* Profile Section */}
+        <div className="flex items-center space-x-3 cursor-pointer" onClick={handleProfileClick}>
+          {/* Avatar Image */}
+          <img
+            src={AvatarImage}
+            alt="Moni Roy"
+            width="40"
+            height="40"
+            className="rounded-full"
+          />
+          
+          {/* Profile Text visible only on larger screens */}
+          <div className="hidden sm:block flex-col items-start mt-2">
+            <span className="font-medium text-sm">Moni Roy</span>
+            <p className="text-xs text-gray-500">Admin</p>
           </div>
+        </div>
+      </div>
+       {/* Modal for Notifications */}
+       {isNoNotifications ? (
+        <NoNotification
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          notifications={notifications}
+          onClearAll={handleClearAll}
+        />
+      ) : (
+        <NotificationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          notifications={notifications}
+          onClearAll={handleClearAll} // Pass the clear function
+        />
+      )}
         </header>
 
         {/* Announcement Section */}
