@@ -28,7 +28,9 @@ const noteRoute = require("./routes/noteRoutes")
 const facilityRoute = require("./routes/facilityRoutes")
 const complaintRoute = require("./routes/createComplaintRoutes")
 const requestsRoute = require("./routes/requestTrackingRoutes")
+const securityprotocolRoute = require("./routes/securityProtocolRoutes")
 const annoucementRoute = require("./routes/annoucementRoutes")
+const securityGuardRoute = require("./routes/securityGuardRoutes")
 
 //user registration and login schema
 app.use("/api/v1",userRoutes);
@@ -54,10 +56,15 @@ app.use('/api/v2/facility', facilityRoute);
 app.use('/api/v2/complaint', complaintRoute);
 app.use('/api/v2/requests', requestsRoute);
 
-// Annoucement
-  
-app.use('/api/v2/annoucement', annoucementRoute);
+//security management
+app.use('/api/v2/securityprotocol', securityprotocolRoute);
 
+
+// securityGuard
+app.use('/api/v2/security', securityGuardRoute);
+
+// Annoucement
+app.use('/api/v2/annoucement', annoucementRoute);
 
 
   app.listen(PORT, () => {
