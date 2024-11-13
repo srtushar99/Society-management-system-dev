@@ -67,12 +67,14 @@ const CreateFacility = ({ isOpen, onClose }) => {
         // Display success notification
         setShowNotification(true);
 
-        // Simulate a short delay before redirect to the notifications page
-        setTimeout(() => {
-          navigate("/notification"); // Redirect to the notifications page
-        }); // 2 seconds delay for the notification to be visible
+         // Hide the notification after 5 seconds
+         setTimeout(() => {
+           setShowNotification(false); // Hide the notification
+          //  navigate("/dashboard"); // Redirect to the notifications page
+         }, 5000); // 5000ms = 5 seconds
 
-        ClearAllData(); // Clear form fields after successful submission
+        // Clear form fields after successful submission
+        ClearAllData();
       } catch (error) {
         console.error("Error creating facility:", error);
       }
@@ -214,14 +216,7 @@ const CreateFacility = ({ isOpen, onClose }) => {
         </form>
       </div>
 
-      {/* Show Notification after successful submission */}
-      {showNotification && notificationData && (
-        <Notification
-          isOpen={showNotification}
-          onClose={() => setShowNotification(false)}
-          notifications={[notificationData]} // Pass the notification data here
-        />
-      )}
+      
     </div>
   );
 };
