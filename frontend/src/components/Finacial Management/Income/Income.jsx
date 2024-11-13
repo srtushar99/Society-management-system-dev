@@ -19,17 +19,18 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png";
-import AddMaintenance from "./AddMaintenance";
+
 import ViewMaintenance from "./ViewMaintenance";
 import "../../Dashboard/Maintenance/scrollbar.css";
+import Password from "./Password";
 
 
 const Income = ({ color }) => {
   const [activeButton, setActiveButton] = useState("maintenance");
-  const [isAddMaintenanceOpen, setIsAddMaintenanceOpen] = useState(false);
+  
   const [isViewMaintenanceOpen, setIsViewMaintenanceOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null); // To hold the selected maintenance data
-
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const data = [
     {
       name: "Cody Fisher",
@@ -139,8 +140,13 @@ const Income = ({ color }) => {
     setActiveButton(buttonType);
   };
 
-  const openAddMaintenanceModal = () => {
-    setIsAddMaintenanceOpen(true);
+  
+  const openPasswordModal = () => {
+    setIsPasswordModalOpen(true); // Open the Password modal
+  };
+
+  const closePasswordModal = () => {
+    setIsPasswordModalOpen(false); // Close the Password modal
   };
 
   const closeAddMaintenanceModal = () => {
@@ -227,7 +233,7 @@ const Income = ({ color }) => {
             </div>
           </div>
           <button
-            onClick={openAddMaintenanceModal}
+            onClick={openPasswordModal} 
             className="bg-gradient-to-r from-red-500 to-yellow-500 text-white font-bold py-2 px-4 rounded-md"
           >
             Set Maintenance
@@ -240,7 +246,7 @@ const Income = ({ color }) => {
               onClick={() => handleButtonClick("maintenance")}
               className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top ${
                 activeButton === "maintenance"
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFFF]"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
             >
@@ -388,10 +394,16 @@ const Income = ({ color }) => {
             </div>
           </div>
         </div>
-        <AddMaintenance
-          isOpen={isAddMaintenanceOpen}
-          onClose={closeAddMaintenanceModal}
-        />
+      
+
+        {/* Password Modal */}
+        {isPasswordModalOpen && (
+          <Password
+            isOpen={isPasswordModalOpen}
+            onClose={closePasswordModal}
+          />
+        )}
+
         {isViewMaintenanceOpen && (
           <ViewMaintenance
             isOpen={isViewMaintenanceOpen}

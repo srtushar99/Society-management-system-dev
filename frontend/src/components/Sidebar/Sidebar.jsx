@@ -206,7 +206,7 @@ const Sidebar = () => {
           <div style={{ position: 'relative' }}>
             <div style={getIndicatorStyle('Facilities-Management')}></div>
             <Link
-              to="/Facilities-Management"
+              to="/Facility-Management"
               style={getLinkStyle('Facilities-Management')}
               onClick={() => handleLinkClick('Facilities-Management')}
             >
