@@ -194,19 +194,19 @@ const Annoucements = () => {
             <span className="font-semibold text-[#5678E9]">Announcement</span>
           </div>
 
-          {/* Notifications and Profile Section */}
+{/*          
           <div className="flex items-center justify-end me-5 space-x-4 sm:space-x-6">
-        {/* Notification Icon */}
+       
         <button
           className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
           onClick={() => setIsModalOpen(true)} // Open the modal
         >
           <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-        </button>
+        </button> */}
 
-        {/* Profile Section */}
-        <div className="flex items-center space-x-3 cursor-pointer" onClick={handleProfileClick}>
-          {/* Avatar Image */}
+       
+        {/* <div className="flex items-center space-x-3 cursor-pointer" onClick={handleProfileClick}>
+         
           <img
             src={AvatarImage}
             alt="Moni Roy"
@@ -215,14 +215,14 @@ const Annoucements = () => {
             className="rounded-full"
           />
           
-          {/* Profile Text visible only on larger screens */}
+        
           <div className="hidden sm:block flex-col items-start mt-2">
             <span className="font-medium text-sm">Moni Roy</span>
             <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>
       </div>
-       {/* Modal for Notifications */}
+     
        {isNoNotifications ? (
         <NoNotification
           isOpen={isModalOpen}
@@ -235,9 +235,9 @@ const Annoucements = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           notifications={notifications}
-          onClearAll={handleClearAll} // Pass the clear function
+          onClearAll={handleClearAll}
         />
-      )}
+      )} */}
         <HeaderBaner/>
         </header>
 

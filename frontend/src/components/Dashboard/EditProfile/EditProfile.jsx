@@ -54,7 +54,7 @@ const EditProfile = () => {
         </div>
 
         {/* Notifications and Profile Section */}
-        <div className="flex items-center space-x-4">
+        {/* <div className="flex items-center space-x-4">
           <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
             <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
           </button>
@@ -65,7 +65,7 @@ const EditProfile = () => {
               <p className="text-xs text-gray-500">Admin</p>
             </div>
           </div>
-        </div>
+        </div> */}
        <HeaderBaner/>
       </header>
 
