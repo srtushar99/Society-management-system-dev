@@ -18,7 +18,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
     Complainer_name: "",
     Complaint_name: "",
     Description: "",
-    wing: "",
+    Wing: "",
     unit: "",
     priority: "",
     status: "",
@@ -61,7 +61,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
       name === "Complainer_name" ||
       name === "Complaint_name" ||
       name === "Description" ||
-      name === "wing"
+      name === "Wing"
     ) {
       const regex = /^[A-Za-z\s]*$/;
       if (regex.test(value) || value === "") {
@@ -88,7 +88,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
       name !== "Complainer_name" &&
       name !== "Complaint_name" &&
       name !== "Description" &&
-      name !== "wing" &&
+      name !== "Wing" &&
       name !== "unit"
     ) {
       setFormData((prev) => ({
