@@ -13,37 +13,35 @@ import IIcon from "../../assets/I.png"; // Import useNavigate for redirection
 import axiosInstance from '../../Common/axiosInstance';
 
 const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
-  // Rename state to avoid name conflict with the prop
   const [formData, setFormData] = useState({
     Complainer_name: "",
     Complaint_name: "",
     Description: "",
     Wing: "",
-    unit: "",
-    priority: "",
-    status: "",
+    Unit: "",
+    Priority: "",
+    Status: "",
   });
 
-  // Check if the form is valid
   const isFormValid =
     formData.Complainer_name &&
     formData.Complaint_name &&
     formData.Description &&
-    formData.unit;
+    formData.Unit;
 
-    const unitImages = {
-        1001: [AIcon],
-        1002: [BIcon],
-        1003: [CIcon],
-        1004: [DIcon],
-        2001: [EIcon],
-        2002: [FIcon],
-        2003: [GIcon],
-        2004: [HIcon],
-        3001: [IIcon],
-        3002: [AIcon],
-        3003: [BIcon],
-      };
+  const unitImages = {
+    1001: [AIcon],
+    1002: [BIcon],
+    1003: [CIcon],
+    1004: [DIcon],
+    2001: [EIcon],
+    2002: [FIcon],
+    2003: [GIcon],
+    2004: [HIcon],
+    3001: [IIcon],
+    3002: [AIcon],
+    3003: [BIcon],
+  };
 
   useEffect(() => {
     if (isOpen && protocol) {
@@ -55,54 +53,29 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Validate alphabet-only fields
-    if (
-      name === "Complainer_name" ||
-      name === "Complaint_name" ||
-      name === "Description" ||
-      name === "Wing"
-    ) {
-      const regex = /^[A-Za-z\s]*$/;
-      if (regex.test(value) || value === "") {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    }
-
-    // Validate numeric unit
-    if (name === "unit") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value) || value === "") {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    }
-
-    // Update other fields without restriction
-    if (
-      name !== "Complainer_name" &&
-      name !== "Complaint_name" &&
-      name !== "Description" &&
-      name !== "Wing" &&
-      name !== "unit"
-    ) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave(formData); // Pass the form data to the onSave function
-      onClose(); // Close modal
+      console.log(formData);
+      
+      try {
+        const response = await axiosInstance.put(`/v2/complaint/updatecomplaint/${protocol._id}`, formData);
+        if(!!response.data){
+          fetchComplaint(); 
+          onClose(); 
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
     }
   };
 
@@ -132,7 +105,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
             <input
               type="text"
               name="Complainer_name"
-              value={protocol.Complainer_name}
+              value={formData.Complainer_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -146,7 +119,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
             <input
               type="text"
               name="Complaint_name"
-              value={protocol.Complaint_name}
+              value={formData.Complaint_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -160,7 +133,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
             <input
               type="text"
               name="Description"
-              value={protocol.Description}
+              value={formData.Description}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -172,15 +145,13 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="block text-left font-medium text-gray-700 mb-1">
                 Wing<span className="text-red-500">*</span>
               </label>
-              <p className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]">
-              <img
-                      src={unitImages[protocol.unit]}
-                      alt={protocol.unit}
-                      width="25"
-                      height="25"
-                      className="rounded-lg"
-                    />
-                    </p>
+              <input
+                type="text"
+                name="Wing"
+                value={formData.Wing}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              />
             </div>
             <div>
               <label className="block text-left font-medium text-gray-700 mb-1">
@@ -188,16 +159,17 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               </label>
               <input
                 type="text"
-                name="unit"
-                value={protocol.unit}
+                name="Unit"
+                value={formData.Unit}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
             </div>
           </div>
 
-          {/* Priority */}
-          <div>
+          {/* Priority and Status components here... */}
+        {/* Priority */}
+         <div>
             <label className="block text-left font-medium text-gray-700 mb-1">
               Priority<span className="text-red-500">*</span>
             </label>
@@ -206,19 +178,19 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FE512E] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="High"
-                  checked={formData.priority === "High"}
+                  checked={formData.Priority === "High"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "High"
+                    formData.Priority === "High"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   High
@@ -229,19 +201,19 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FFEB3B] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Medium"
-                  checked={formData.priority === "Medium"}
+                  checked={formData.Priority === "Medium"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "Medium"
+                    formData.Priority === "Medium"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Medium
@@ -252,19 +224,19 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#4CAF50] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Low"
-                  checked={formData.priority === "Low"}
+                  checked={formData.Priority === "Low"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "Low"
+                    formData.Priority === "Low"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Low
@@ -283,19 +255,19 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Open"
-                  checked={formData.status === "Open"}
+                  checked={formData.Status === "Open"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Open"
+                    formData.Status === "Open"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#4CAF50]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Open
@@ -306,19 +278,19 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Pending"
-                  checked={formData.status === "Pending"}
+                  checked={formData.Status === "Pending"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Pending"
+                    formData.Status === "Pending"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#FFEB3B]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Pending
@@ -329,19 +301,19 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Solve"
-                  checked={formData.status === "Solve"}
+                  checked={formData.Status === "Solve"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Solve"
+                    formData.Status === "Solve"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#F44336]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Solve
@@ -349,6 +321,7 @@ const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
               </label>
             </div>
           </div>
+
 
           {/* Buttons */}
           <div className="flex gap-4 pt-4 w-full">

@@ -388,6 +388,7 @@ const CreateComplaint = () => {
             onCancel={closeDeleteModal}
             protocol={selectedProtocolForDelete}
             onDelete={() => handleDelete(selectedProtocolForDelete.id)} // Pass the ID of the protocol to delete
+            fetchComplaint={fetchComplaint}
           />
         )}
       </div>
