@@ -111,8 +111,8 @@ const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
               </div>
 
               <div>
-                <h3 className="text-gray-500 text-sm mb-1">Unit</h3>
-                <p className="font-medium text-gray-900">
+                <h3 className="text-gray-500 text-sm mb-1" >Unit</h3>
+                <p className="font-medium text-gray-900  ">
                   {maintenance.unit || "N/A"}
                 </p>
               </div>

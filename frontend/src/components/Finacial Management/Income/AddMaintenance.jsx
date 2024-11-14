@@ -133,9 +133,11 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
           {/* Maintenance Amount */}
           <div className="flex gap-4">
             <div className="w-1/2 relative">
+            
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Maintenance Amount
               </label>
+              
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <span className="text-xl text-[#202224] ml-3">₹</span>
                 <input

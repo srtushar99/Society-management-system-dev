@@ -190,22 +190,39 @@ const Income = ({ color }) => {
           <HeaderBaner/>
         </header>
 
-        <div className="flex justify-between items-center lg:ms-7 h-44 lg:mt-7 lg:w-[1560px] p-4 bg-white rounded-md">
-          <div className="flex space-x-4">
-            <div
+        <div className="flex justify-between items-center lg:ms-7 h-44 lg:mt-7 lg:w-[1560px] p-3 bg-white rounded-md">
+          <div className="flex space-x-4 relative">
+            <div 
               style={{
-                width: "8px",
-                height: "36px",
-                textColor: color,
-                marginTop: "16px",
+                width: "5px",
+                height: "46px",
+                backgroundColor: "rgba(57, 151, 61, 0.5)",
+                bottom:"50%",
+                left:"15px",
+                position:"absolute",
+                top:"50%",
+
               }}
-              className="rounded-r-lg lg:mt-3"
+              className="rounded-r-lg lg:mt-3  my-auto"
             ></div>
-            <div className=" rounded-tr-sm border-red-500 rounded-md p-4">
+            <div className=" rounded-tr-sm   p-3 " style={{maxHeight:"105px",width:"236px",borderRadius:"15px",borderRight:"2px solid green",borderTop:"2px solid green",}}>
               <p className="text-gray-500 text-sm">Maintenance Amount</p>
               <p className="font-bold text-[#39973D] text-lg">₹ 0</p>
             </div>
-            <div className="bg-[#FFFFFF] rounded-md p-4">
+            <div className="bg-[#FFFFFF] p-3" style={{maxHeight:"105px",width:"236px",borderRadius:"15px" ,borderRight:"2px solid red",borderTop:"2px solid red",position:"relative"}}>
+            <div 
+              style={{
+                width: "5px",
+                height: "46px",
+                backgroundColor: "rgba(231, 76, 60, 0.5)",
+                bottom:"50%",
+                left:"0px",
+                position:"absolute",
+                top:"50%",
+
+              }}
+              className="rounded-r-lg lg:mt-3  my-auto"
+            ></div>
               <p className="text-gray-500 text-sm">Penalty Amount</p>
               <p className="font-bold text-lg text-red-500">₹ 0</p>
             </div>
@@ -282,7 +299,7 @@ const Income = ({ color }) => {
                       </td>
                       <td className="pt-3  hidden lg:table-cell text-gray-600">
                         {unitImages[row.unit]?.map((img, idx) => (
-                          <img
+                          <img style={{display:"inline"}}
                             key={idx}
                             src={img}
                             alt={`Unit ${row.unit}`}
