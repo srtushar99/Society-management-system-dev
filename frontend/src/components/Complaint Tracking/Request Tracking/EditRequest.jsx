@@ -10,39 +10,41 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png"; // Import useNavigate for redirection
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
+const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   // Rename state to avoid name conflict with the prop
   const [formData, setFormData] = useState({
-    Complainername: "",
-    Complaintname: "",
-    description: "",
-    wing: "",
+    Requestername: "", // Changed
+    Requestname: "",  // Changed
     unit: "",
     priority: "",
     status: "",
+    Date: new Date(), // Default to the current date
   });
 
   // Check if the form is valid
   const isFormValid =
-    formData.Complainername &&
-    formData.Complaintname &&
-    formData.description &&
-    formData.unit;
+    formData.Requestername &&  // Changed
+    formData.Requestname &&    // Changed
+    formData.unit &&
+    formData.Date;
 
-    const unitImages = {
-        1001: [AIcon],
-        1002: [BIcon],
-        1003: [CIcon],
-        1004: [DIcon],
-        2001: [EIcon],
-        2002: [FIcon],
-        2003: [GIcon],
-        2004: [HIcon],
-        3001: [IIcon],
-        3002: [AIcon],
-        3003: [BIcon],
-      };
+  const unitImages = {
+    1001: [AIcon],
+    1002: [BIcon],
+    1003: [CIcon],
+    1004: [DIcon],
+    2001: [EIcon],
+    2002: [FIcon],
+    2003: [GIcon],
+    2004: [HIcon],
+    3001: [IIcon],
+    3002: [AIcon],
+    3003: [BIcon],
+  };
 
   useEffect(() => {
     if (isOpen && protocol) {
@@ -58,10 +60,8 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
     // Validate alphabet-only fields
     if (
-      name === "complainername" ||
-      name === "complaintname" ||
-      name === "description" ||
-      name === "wing"
+      name === "Requestername" ||  // Changed
+      name === "Requestname"  // Changed
     ) {
       const regex = /^[A-Za-z\s]*$/;
       if (regex.test(value) || value === "") {
@@ -85,10 +85,8 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
     // Update other fields without restriction
     if (
-      name !== "complainername" &&
-      name !== "complaintname" &&
-      name !== "description" &&
-      name !== "wing" &&
+      name !== "Requestername" &&   // Changed
+      name !== "Requestname" &&     // Changed
       name !== "unit"
     ) {
       setFormData((prev) => ({
@@ -97,6 +95,19 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
       }));
     }
   };
+
+  const handleDateChange = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      Date: date, // Update the date in the state when selected
+    }));
+    setIsCalendarOpen(false); // Close the calendar after date selection
+  };
+
+  const handleCalendarIconClick = () => {
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -108,7 +119,7 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
   const handleClose = () => {
     onClose(); // Close modal
-    navigate("/createcomplaint"); // Redirect to dashboard
+    navigate("/requesttracking"); // Redirect to dashboard
   };
 
   if (!isOpen) return null; // Don't render if modal is not open
@@ -117,55 +128,61 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
       <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">Edit Complaint</span>
+          <span className="text-2xl font-bold text-[#202224]">Edit Request</span> {/* Changed "Complaint" to "Request" */}
           <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Complainer Name */}
+          {/* Requester Name */}
           <div>
             <label className="block text-left font-medium text-gray-700 mb-1">
-              Complainer Name<span className="text-red-500">*</span>
+              Requester Name<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              name="complainerName"
-              value={protocol.Complainername}
+              name="Requestername" // Changed
+              value={formData.Requestername} // Changed
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          {/* Complaint Name */}
+          {/* Request Name */}
           <div>
             <label className="block text-left font-medium text-gray-700 mb-1">
-              Complaint Name<span className="text-red-500">*</span>
+              Request Name<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              name="complaintName"
-              value={protocol.Complaintname}
+              name="Requestname" // Changed
+              value={formData.Requestname} // Changed
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          {/* Description */}
-          <div>
+          <div className="relative">
             <label className="block text-left font-medium text-gray-700 mb-1">
-              Description<span className="text-red-500">*</span>
+              Request Date
             </label>
-            <input
-              type="text"
-              name="description"
-              value={protocol.description}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            <DatePicker
+              selected={formData.Date}
+              onChange={handleDateChange}
+              className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              dateFormat="dd/MM/yyyy"
+              required
+              open={isCalendarOpen} // Control calendar visibility with the state
+            />
+            
+              <i
+              className="fa-solid fa-calendar-days absolute top-9 right-3 text-[#202224] cursor-pointer"
+              onClick={handleCalendarIconClick}
             />
           </div>
 
+          
           {/* Wing and Unit */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -173,14 +190,14 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
                 Wing<span className="text-red-500">*</span>
               </label>
               <p className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]">
-              <img
-                      src={unitImages[protocol.unit]}
-                      alt={protocol.unit}
-                      width="25"
-                      height="25"
-                      className="rounded-lg"
-                    />
-                    </p>
+                <img
+                  src={unitImages[formData.unit]}
+                  alt={formData.unit}
+                  width="25"
+                  height="25"
+                  className="rounded-lg"
+                />
+              </p>
             </div>
             <div>
               <label className="block text-left font-medium text-gray-700 mb-1">
@@ -189,7 +206,7 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
               <input
                 type="text"
                 name="unit"
-                value={protocol.unit}
+                value={formData.unit}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
@@ -378,4 +395,4 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
   );
 };
 
-export default EditTracking;
+export default EditRequest;

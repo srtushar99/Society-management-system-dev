@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+
 import NotificationIcon from '../../assets/notification-bing.png';
 import AvatarImage from '../../assets/Avatar.png';
 import NotificationModal from '../Notification/NotificationModal';
 import NoNotification from '../Notification/NoNotification'; // Import the NoNotification component
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import Notification from '../../Facilities Management/Notification';
+// import Notification from '../../Facilities Management/Notification';
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,24 +64,7 @@ const Header = () => {
   return (
     <header className="flex items-center v-screen justify-between px-6 bg-white sm:ms-[50px] h-[60px] flex-wrap md:flex-nowrap">
       {/* Search Bar Section */}
-      <div className="relative flex-1 md:flex-none md:ml-[290px] md:mr-4">
-        {/* Search input visible on larger screens */}
-        <div className="hidden md:block">
-          <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 h-5 w-5 " />
-          <input
-            type="text"
-            placeholder="Search Here"
-            className="pl-10 pr-4 py-2 w-full sm:w-64 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Search Icon only visible on smaller screens */}
-        <div className="md:hidden flex justify-end sm:mr-5">
-          <button className="p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-            <Search className="h-6 w-6" />
-          </button>
-        </div>
-      </div>
+    
 
       {/* Right Section with Notification and Avatar */}
       <div className="flex items-center space-x-4 sm:space-x-6">

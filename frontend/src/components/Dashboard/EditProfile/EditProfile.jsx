@@ -7,6 +7,7 @@ import AvatarImage from "../../assets/Avatar.png";
 import pngwingImage from "../../assets/Frame 1000006013.png";
 import ProfileImage from "../../assets/Ellipse 1101.png";
 import editIcon from "../../assets/edit.png";
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 
 const EditProfile = () => {
   const [firstName, setFirstName] = useState("Arlene");
@@ -75,18 +76,7 @@ const EditProfile = () => {
         </div>
 
         {/* Notifications and Profile Section */}
-        <div className="flex items-center space-x-4">
-          <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-            <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-          </button>
-          <div className="flex items-center space-x-3 cursor-pointer">
-            <img src={AvatarImage} alt="Moni Roy" width="40" height="40" className="rounded-full" />
-            <div className="hidden sm:block flex-col items-start mt-2">
-              <span className="font-medium text-sm">Moni Roy</span>
-              <p className="text-xs text-gray-500">Admin</p>
-            </div>
-          </div>
-        </div>
+       <HeaderBaner/>
       </header>
 
 

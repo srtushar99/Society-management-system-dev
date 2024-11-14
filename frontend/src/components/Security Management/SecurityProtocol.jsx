@@ -6,7 +6,8 @@ import AvatarImage from "../assets/Avatar.png";
 import CreateProtocol from './CreateProtocol';
 import EditProtocol from './EditProtocol';
 import ViewProtocol from './ViewProtocol';
-import DeleteProtocol from './DeleteProtocol'; // Import DeleteProtocol modal
+import DeleteProtocol from './DeleteProtocol';
+import HeaderBaner  from "../Dashboard/Header/HeaderBaner"; // Import DeleteProtocol modal
 
 const initialData = [
   { id: 1, title: 'Physical Security', description: 'Implementing surveillance cameras in public spaces.', date: '11/01/2024', time: '3:45 PM' },
@@ -72,18 +73,7 @@ const SecurityProtocol = () => {
             <span className="font-semibold text-[#5678E9]">Security Protocols</span>
           </div>
 
-          <div className="flex items-center me-5  justify-end space-x-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-              <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-            </button>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <img src={AvatarImage} alt="Moni Roy" width="40" height="40" className="rounded-full" />
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                <p className="text-xs text-gray-500">Admin</p>
-              </div>
-            </div>
-          </div>
+        <HeaderBaner/>
         </header>
 
         {/* Content */}

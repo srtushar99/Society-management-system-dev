@@ -21,9 +21,12 @@ import Expance from './components/Finacial Management/Expanse/Expanse';
 import MemberList from './components/Finacial Management/Income/MemberList';
 import Password from 'antd/es/input/Password';
 import Facilities from './components/Facilities Management/Facilities';
-import ComplaintTracking from './components/Complaint Tracking/Create Complaint/ComplaintTracking';
+
 
 import NotificationModal from './components/Facilities Management/Notification';
+import CreateComplaint from './components/Complaint Tracking/Create Complaint/CreateComplaint';
+import RequestTracking from './components/Complaint Tracking/Request Tracking/RequestTracking';
+import SecurityGuard from './components/Security Guard/SecurityGuard';
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
@@ -47,11 +50,11 @@ function App() {
             <Route path="/visitorlogs" element={<VisitorLogs />} />
             <Route path="/password" element={<Password />} />
             <Route path="/Facility-Management" element={<Facilities />} />
-            <Route path="/complaints-Tracking" element={<ComplaintTracking />} />
+            <Route path="/createcomplaint" element={<CreateComplaint />} />
+            <Route path="/requesttracking" element={<RequestTracking />} />
             <Route path="/notifications" element={<NotificationModal />} />
-
-            
             <Route path="/securityprotocol" element={<SecurityProtocol />} />
+            <Route path="/security-guard" element={<SecurityGuard/>} />
             {/* <Route path="/securitygaurd" element={<SecurityGuardTable />} /> */}
 
           

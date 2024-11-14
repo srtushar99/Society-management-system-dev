@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';  // Ensure Sidebar is imported
-import NotificationIcon from "../assets/notification-bing.png";
 import AvatarImage from "../assets/Avatar.png";
 import AIcon from "../assets/A.png"; 
 import BIcon from "../assets/B.png"; 
@@ -12,6 +11,7 @@ import FIcon from "../assets/F.png";
 import GIcon from "../assets/G.png"; 
 import HIcon from "../assets/H.png"; 
 import IIcon from "../assets/I.png"; 
+import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
 
 const visitors = [
   { name: 'Evelyn Harper', phone: '97852 12369', img: AIcon, date: '10/01/2024', unit: '1001', time: '3:45 PM' },
@@ -59,18 +59,7 @@ const VisitorLogs = () => {
           </div>
 
           {/* Notifications and Profile Section */}
-          <div className="flex items-center space-x-4 justify-end me-5">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-              <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-            </button>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <img src={AvatarImage} alt="Moni Roy" width="40" height="40" className="rounded-full" />
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                <p className="text-xs text-gray-500">Admin</p>
-              </div>
-            </div>
-          </div>
+          <HeaderBaner/>
         </header>
 
         <div className="ps-6 pe-6 w-full">
