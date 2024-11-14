@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import AddMaintenance from "./AddMaintenance";
+import { useNavigate } from "react-router-dom";
 
-const Password = () => {
+const Password = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [isAddMaintenanceOpen, setIsAddMaintenanceOpen] = useState(false);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);  // Track password visibility
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Track password visibility
+  const navigate = useNavigate(); // Navigate hook
 
-  const correctPassword = "a";
+  const correctPassword = "a"; // Replace with actual logic
 
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
@@ -25,11 +27,9 @@ const Password = () => {
     }
   };
 
-  const handleCancel = () => {
-    setPassword("");
-    setErrorMessage(null);
-    setIsAddMaintenanceOpen(false);
-    
+  const handleClose = () => {
+    if (onClose) onClose(); // Close the modal
+    navigate("/Income"); // Redirect to the Income page
   };
 
   const togglePasswordVisibility = () => {
@@ -37,7 +37,7 @@ const Password = () => {
   };
 
   return (
-    <>
+    isOpen && (
       <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
         <div className="absolute w-[410px] h-[251px] bg-white p-6 gap-4 rounded-[15px_15px_15px_15px] opacity-100 shadow-lg">
           <h2 className="text-xl font-semibold text-gray-700">Set Maintenance Password</h2>
@@ -45,7 +45,6 @@ const Password = () => {
           <div className="flex flex-col mt-4">
             <label htmlFor="password" className="text-sm font-medium text-gray-600">Password</label>
             <div className="flex items-center border border-gray-300 rounded-md mt-2">
-             
               <input
                 id="password"
                 type={isPasswordVisible ? "text" : "password"} // Toggle between 'password' and 'text' types
@@ -66,9 +65,8 @@ const Password = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 mt-4">
             <button
-              type="button"
-              onClick={handleCancel}
-              className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              onClick={handleClose} // Call handleClose to both close the modal and redirect
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
@@ -85,12 +83,12 @@ const Password = () => {
             </button>
           </div>
         </div>
-      </div>
 
-      {isAddMaintenanceOpen && (
-        <AddMaintenance isOpen={isAddMaintenanceOpen} onClose={() => setIsAddMaintenanceOpen(false)} />
-      )}
-    </>
+        {isAddMaintenanceOpen && (
+          <AddMaintenance isOpen={isAddMaintenanceOpen} onClose={() => setIsAddMaintenanceOpen(false)} />
+        )}
+      </div>
+    )
   );
 };
 

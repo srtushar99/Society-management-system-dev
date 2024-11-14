@@ -1,37 +1,37 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker"; 
 
-const CreateTracking = ({ isOpen, onClose }) => {
+const CreateRequest = ({ isOpen, onClose }) => {  
   // State for the input fields
-  const [complainerName, setComplainerName] = useState("");
-  const [complaintName, setComplaintName] = useState("");
-  const [description, setDescription] = useState("");
-  const [wing, setWing] = useState(""); // Corrected state for 'wing'
-  const [unit, setUnit] = useState(""); // Corrected state for 'unit'
+  const [Requestername, setRequestername] = useState(""); 
+  const [Requestname, setRequestname] = useState(""); 
+  const [wing, setWing] = useState(""); 
+  const [unit, setUnit] = useState(""); 
   const [priority, setPriority] = useState("High");
   const [status, setStatus] = useState("Open");
+  const [requestDate, setRequestDate] = useState(new Date()); // Initialize with current date
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const modalRef = useRef(null);
 
   // Regex for validation
   const nameRegex = /^[A-Za-z\s]+$/; // Validate names with only letters and spaces
-  const descriptionRegex = /^[A-Za-z\s]+$/; // Validate description with letters and spaces only
   const unitRegex = /^[0-9]+$/; // Validate unit with only numbers
   const wingRegex = /^[A-Za-z\s]+$/; // Validate wing with only alphabets
 
   // Form validation
   const isFormValid =
-    complainerName &&
-    complaintName &&
-    description &&
+    Requestername &&
+    Requestname &&
     wing &&
     unit &&
-    nameRegex.test(complainerName) &&
-    nameRegex.test(complaintName) &&
+    requestDate && // Ensure requestDate is filled
+    nameRegex.test(Requestername) &&
+    nameRegex.test(Requestname) &&
     wingRegex.test(wing) &&
-    unitRegex.test(unit) &&
-    descriptionRegex.test(description);
+    unitRegex.test(unit);
 
   const navigate = useNavigate();
 
@@ -39,13 +39,13 @@ const CreateTracking = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (isFormValid) {
       console.log("Form Submitted", {
-        complainerName,
-        complaintName,
-        description,
+        Requestername,
+        Requestname,
         wing,
         unit,
         priority,
         status,
+        requestDate, // Log request date
       });
       // Handle form submission logic here
     } else {
@@ -55,7 +55,7 @@ const CreateTracking = ({ isOpen, onClose }) => {
 
   const handleClose = () => {
     if (onClose) onClose(); // Close the modal
-    navigate("/createcomplaint"); // Redirect to complaints tracking page
+    navigate("/requesttracking"); // Redirect to complaints tracking page
   };
 
   const handleClickOutside = (e) => {
@@ -64,6 +64,15 @@ const CreateTracking = ({ isOpen, onClose }) => {
       // Close the modal if clicked outside
       handleClose();
     }
+  };
+
+  const handleDateChange = (date) => {
+    setRequestDate(date); // Update requestDate when the user selects a date
+    setIsCalendarOpen(false); // Close the calendar after date selection
+  };
+
+  const handleCalendarIconClick = () => {
+    setIsCalendarOpen(!isCalendarOpen); // Toggle the visibility of the calendar
   };
 
   // Add event listener for clicks outside the modal
@@ -83,67 +92,70 @@ const CreateTracking = ({ isOpen, onClose }) => {
     >
       <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">Create Complaint</span>
+          <span className="text-2xl font-bold text-[#202224]">Create Request</span>
           <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Complainer Name */}
+      
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
-              Complainer Name<span className="text-red-500">*</span>
+              Requester Name<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              placeholder="Enter Complainer Name"
-              value={complainerName}
+              placeholder="Enter Requester Name"
+              value={Requestername}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setComplainerName(value);
+                  setRequestername(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          {/* Complaint Name */}
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
-              Complaint Name<span className="text-red-500">*</span>
+              Request Name<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              placeholder="Enter Complaint Name"
-              value={complaintName}
+              placeholder="Enter Request Name"
+              value={Requestname}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setComplaintName(value);
+                  setRequestname(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          {/* Description */}
-          <div>
-            <label className="block text-left font-medium text-[#202224] mb-1">
-              Description<span className="text-red-500">*</span>
+          {/* Request Date */}
+          <div className="">
+            <label className="block text-left font-medium text-gray-700 mb-1">
+              Request Date
             </label>
-            <textarea
-              placeholder="Enter Description"
-              value={description}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (descriptionRegex.test(value) || value === "") {
-                  setDescription(value);
-                }
-              }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] resize-none"
-            />
+            <div className="flex items-center relative">
+              <DatePicker
+                selected={requestDate} // Pass the correct state to DatePicker
+                onChange={handleDateChange}
+                className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
+                placeholderText="Select a date"
+                dateFormat="dd/MM/yyyy"
+                autoComplete="off"
+                open={isCalendarOpen}
+              />
+              <i
+                className="fa-solid fa-calendar-days absolute right-3 text-[#202224] cursor-pointer"
+                onClick={handleCalendarIconClick}
+              />
+            </div>
           </div>
 
           {/* Wing */}
@@ -304,4 +316,4 @@ const CreateTracking = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreateTracking;
+export default CreateRequest;

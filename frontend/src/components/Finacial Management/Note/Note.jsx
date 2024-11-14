@@ -11,6 +11,7 @@ import NoNotification from "../../Dashboard/Notification/NoNotification";
 import NotificationModal from "../../Dashboard/Notification/NotificationModal";
 
 
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 
 const Note = () => {
   const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
@@ -189,6 +190,7 @@ const Note = () => {
           onClearAll={handleClearAll} // Pass the clear function
         />
       )}
+         <HeaderBaner/>
         </header>
 
         

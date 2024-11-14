@@ -7,6 +7,7 @@ import AvatarImage from "../../assets/Avatar.png";
 import pngwingImage from "../../assets/Frame 1000006013.png";
 import ProfileImage from "../../assets/Ellipse 1101.png";
 import editIcon from "../../assets/edit.png";
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 
 const EditProfile = () => {
   const [firstName, setFirstName] = useState("Arlene");
@@ -65,6 +66,7 @@ const EditProfile = () => {
             </div>
           </div>
         </div>
+       <HeaderBaner/>
       </header>
 
       {/* Edit Profile Section */}

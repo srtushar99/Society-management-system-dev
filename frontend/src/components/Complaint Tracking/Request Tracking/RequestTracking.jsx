@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../Sidebar/Sidebar";
 import NotificationIcon from "../../assets/notification-bing.png";
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 
 import AvatarImage from "../../assets/Avatar.png";
 import AIcon from "../../assets/A.png";
@@ -13,108 +14,119 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png";
-import CreateTracking from "./CreateTracking";
-import DeleteTracking from "./DeleteTracking";
-import ViewTracking from "./ViewTracking";
-import EditTracking from "./EditTracking";
-import axiosInstance from '../../Common/axiosInstance';
+import CreateRequst from "./CreateRequest";
+import EditRequest from "./EditRequest";
+import ViewRequest from "./ViewRequest";
+import DeleteRequst from "./DeleteRequest";
+
 
 const initialData = [
   {
     id: 1,
-    Complainername: "Evelyn Harper",
-    Complaintname: "Unethical Behavior",
-    description: "Providing false information or deliberately.",
+    Requestername: "Evelyn Harper",
+    Requestname: "Unethical Behavior",
+    description: "Regular waste collection services.",
+    Date:"10/02/2024",
     unit: "1001",
     priority: "Medium",
     status: "Pending",
   },
   {
     id: 2,
-    Complainername: "Esther Howard",
-    Complaintname: "Preventive Measures",
-    description: "Regular waste collection services.",
+    Requestername: "Esther Howard",
+    Requestname: "Preventive Measures",
+    description: "Event and recreational activities.",
+    Date:"11/02/2024",
     unit: "1002",
     priority: "Low",
     status: "Open",
   },
   {
     id: 3,
-    Complainername: "Jenny Wilson",
-    Complaintname: "Unethical Behavior",
-    description: "Designated garages for residents and guests.",
+    Requestername: "Jenny Wilson",
+    Requestname: "Unethical Behavior",
+    description: "Regular waste collection services",
+    Date:"12/02/2024",
     unit: "1003",
     priority: "High",
     status: "Solve",
   },
   {
     id: 4,
-    Complainername: "Guy Hawkins",
-    Complaintname: "Preventive Measures",
-    description: "The celebration of Ganesh Chaturthi involves.",
+    Requestername: "Guy Hawkins",
+    Requestname: "Preventive Measures",
+    description: "Rack the fluctuations in spending.",
+    Date:"13/02/2024",
     unit: "1004",
     priority: "Medium",
     status: "Pending",
   },
   {
     id: 5,
-    Complainername: "Robert Fox",
-    Complaintname: "Unethical Behavior",
-    description: "Identify your largest expenditures enabling you.",
+    Requestername: "Robert Fox",
+    Requestname: "Unethical Behavior",
+    description: "Expenses will way sense for you.",
+    Date:"14/02/2024",
     unit: "2001",
     priority: "Low",
     status: "Open",
   },
   {
     id: 6,
-    Complainername: "Jacob Jones",
-    Complaintname: "Preventive Measures",
-    description: "Expenses will way that makes sense for you.",
+    Requestername: "Jacob Jones",
+    Requestname: "Preventive Measures",
+    description: "Providing information deliberately.",
+    Date:"15/02/2024",
     unit: "2002",
     priority: "High",
     status: "Solve",
   },
   {
     id: 7,
-    Complainername: "Cody Fisher",
-    Complaintname: "Unethical Behavior",
-    description: "Track the fluctuations in spending over time.",
+    Requestername: "Cody Fisher",
+    Requestname: "Unethical Behavior",
+    description: "Expenses will way sense for you.",
+    Date:"16/02/2024",
     unit: "2003",
     priority: "Medium",
     status: "Pending",
   },
   {
     id: 8,
-    Complainername: "Bessie Cooper",
-    Complaintname: "Preventive Measures",
-    description: "Event hosting and recreational activities.",
+    Requestername: "Bessie Cooper",
+    Requestname: "Preventive Measures",
+    description: "Regular waste collection services.",
+    Date:"17/02/2024",
     unit: "2004",
     priority: "Low",
     status: "Open",
   },
   {
     id: 9,
-    Complainername: "Albert Flores",
-    Complaintname: "Unethical Behavior",
-    description: "Providing false information or deliberately.",
+    Requestername: "Albert Flores",
+    Requestname: "Unethical Behavior",
+    description: "Event and recreational activities.",
+    Date:"18/02/2024",
     unit: "3001",
     priority: "High",
     status: "Solve",
   },
   {
     id: 10,
-    Complainername: "Floyd Miles",
-    Complaintname: "Preventive Measures",
-    description: "Preferences by categorizing and organizing your expenses.",
+    Requestername: "Floyd Miles",
+    Requestname: "Preventive Measures",
+    description: "Rack the fluctuations in spending.",
+    Date:"19/02/2024",
     unit: "3002",
     priority: "Medium",
     status: "Pending",
   },
   {
     id: 11,
-    Complainername: "Kathryn Murphy",
-    Complaintname: "Unethical Behavior",
-    description: "Providing false information or deliberately.",
+    Requestername: "Kathryn Murphy",
+    Requestname: "Unethical Behavior",
+    description: "Expenses will way sense for you.",
+    Date:"20/02/2024",
     unit: "3003",
     priority: "Low",
     status: "Open",
@@ -135,7 +147,7 @@ const unitImages = {
   3003: [BIcon],
 };
 
-const ComplaintTracking = () => {
+const RequestTracking = () => {
   const [data, setData] = useState(initialData); // Use state for data
   const [isCreateProtocolOpen, setIsCreateProtocolOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -145,7 +157,6 @@ const ComplaintTracking = () => {
   const [selectedProtocolForDelete, setSelectedProtocolForDelete] =
     useState(null); // State for protocol to delete
 
-  const [complaint, setComplaint] = useState([]);
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
 
@@ -169,8 +180,8 @@ const ComplaintTracking = () => {
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    // setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
-    setComplaint(complaint.filter((item) => item._id !== id)); 
+    setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
+
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
   };
@@ -189,27 +200,6 @@ const ComplaintTracking = () => {
     </span>
   );
   
-
-   // Fetch fetchComplaint from the API
-   const fetchComplaint = async () => {
-    try {
-        const response = await axiosInstance.get('/v2/complaint/');
-        console.log(response.data);
-        if(response.status === 200){
-          setComplaint(response.data.complaints); 
-        }
-       
-    } catch (error) {
-        console.error('Error fetching Important Numbers:', error);
-    }
-};
-
-
-    useEffect(() => {
-      fetchComplaint();
-    }, []);
-
-
   return (
     <div className="flex bg-gray-100  w-full h-full">
       <Sidebar />
@@ -220,39 +210,18 @@ const ComplaintTracking = () => {
         >
           <div className="flex items-center space-x-2  text-gray-600">
             <Link
-              to="/securityprotocol"
+              to="/dashboard"
               className="text-[#A7A7A7] no-underline font-semibold ms-4 md:ml-20 "
             >
               Home
             </Link>
             <span className="text-gray-400 "> &gt; </span>
             <span className="font-semibold text-[#5678E9]">
-              Create Complaint
+              Request Tracking
             </span>
           </div>
-
-          <div className="flex items-center me-5  justify-end space-x-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-              <img
-                src={NotificationIcon}
-                alt="Notifications"
-                className="h-6 w-6"
-              />
-            </button>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <img
-                src={AvatarImage}
-                alt="Moni Roy"
-                width="40"
-                height="40"
-                className="rounded-full"
-              />
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                <p className="text-xs text-gray-500">Admin</p>
-              </div>
-            </div>
-          </div>
+          
+          <HeaderBaner/>
         </header>
 
         {/* Content */}
@@ -265,7 +234,7 @@ const ComplaintTracking = () => {
               onClick={openCreateProtocolModal}
               className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
             >
-              Create Create
+              Create Request
             </button>
           </div>
             <div className="overflow-x-auto  h-[700px] scrollbar-thin  scrollbar-thumb-gray-300 scrollbar-track-gray-100">
@@ -275,11 +244,12 @@ const ComplaintTracking = () => {
               style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
             >
               <tr className="text-left text-sm font-semibold">
-                <th className="p-3 ps-5 text-[#202224]">Complainer Name</th>
+                <th className="p-3 ps-5 text-[#202224]">Requster Name</th>
                 <th className="p-3 ps-2 hidden sm:table-cell">
-                  Complaint Name
+                  Request Name
                 </th>
                 <th className="p-3 ps-5 hidden sm:table-cell">Description</th>
+                <th className="p-3 ps-2 hidden sm:table-cell">Date</th>
                 <th className="p-3 ps-2 hidden lg:table-cell">Unit Number</th>
                 <th className="p-3 ps-5 hidden lg:table-cell">Priority</th>
                 <th className="p-3 ps-5 hidden lg:table-cell">Status</th>
@@ -288,7 +258,7 @@ const ComplaintTracking = () => {
             </thead>
 
             <tbody>
-              {complaint.map((item, index) => (
+              {data.map((item, index) => (
                 <tr key={index} className="border-t border-gray-200">
                   <td className="px-4 py-3 flex items-center space-x-3">
                     <img
@@ -296,50 +266,52 @@ const ComplaintTracking = () => {
                       alt="avatar"
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>{item.Complainer_name}</span>
+                    <span>{item.Requestername}</span>
                   </td>
                   <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">
-                    {item.Complaint_name}
+                    {item.Requestname}
                   </td>
 
                   <td className="p-3 pt-2 ps-5 hidden sm:table-cell text-gray-600">
-                    {item.Description}
+                    {item.description}
+                  </td><td className="p-3 pt-2 ps-1 hidden sm:table-cell text-gray-600">
+                    {item.Date}
                   </td>
                   <td className="p-3 pt-2 ps-3 d-flex hidden sm:table-cell text-gray-600">
                     {" "}
                     <img
-                      src={unitImages[item.Unit]}
-                      alt={item.Unit}
+                      src={unitImages[item.unit]}
+                      alt={item.unit}
                       width="25"
                       height="25"
                       className="rounded-full"
                     />
-                    {item.Unit}
+                    {item.unit}
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden lg:table-cell text-gray-600">
                     <Badge
                       className={
-                        item.Priority === "High"
+                        item.priority === "High"
                           ? "bg-[#E74C3C] text-white" // High priority: Red background, white text
-                          : item.Priority === "Medium"
+                          : item.priority === "Medium"
                           ? "bg-[#5678E9] text-white" // Medium priority: Blue background, white text
                           : "bg-[#39973D] text-white" // Low priority: Green background, white text
                       }
                     >
-                      {item.Priority}
+                      {item.priority}
                     </Badge>
                   </td>
                   <td className="p-3 pt-2 ps-3 hidden md:table-cell text-gray-600">
                   <Badge
                     className={
-                      item.Status === 'Open'
+                      item.status === 'Open'
                         ? 'bg-[#5678E91A] text-blue-800'
-                        : item.Status === 'Pending'
+                        : item.status === 'Pending'
                         ? 'bg-[#FFC3131A] text-warning'
                         : 'bg-[#39973D1A] text-green-800'
                     }
                   >
-                    {item.Status}
+                    {item.status}
                   </Badge>
                   </td>
 
@@ -374,27 +346,27 @@ const ComplaintTracking = () => {
 
         {/* Modals */}
         {isCreateProtocolOpen && (
-          <CreateTracking
+          <CreateRequst
             isOpen={isCreateProtocolOpen}
             onClose={closeCreateProtocolModal}
           />
         )}
         {isEditModalOpen && selectedProtocolForView && (
-          <EditTracking
+          <EditRequest
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             protocol={selectedProtocolForView}
           />
         )}
         {isViewModalOpen && selectedProtocolForView && (
-          <ViewTracking
+          <ViewRequest
             isOpen={isViewModalOpen}
             onClose={closeViewModal}
             protocol={selectedProtocolForView}
           />
         )}
         {isDeleteModalOpen && selectedProtocolForDelete && (
-          <DeleteTracking
+          <DeleteRequst
             isOpen={isDeleteModalOpen}
             onCancel={closeDeleteModal}
             protocol={selectedProtocolForDelete}
@@ -406,4 +378,4 @@ const ComplaintTracking = () => {
   );
 };
 
-export default ComplaintTracking;
+export default RequestTracking;

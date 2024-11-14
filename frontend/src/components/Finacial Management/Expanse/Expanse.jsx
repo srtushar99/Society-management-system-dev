@@ -7,6 +7,7 @@ import AddExpense from './AddExpense';
 import EditExpense from './EditExpense';
 import ViewExpense from './ViewExpense';
 import DeleteExpense from './DeleteExpense';
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 
 const initialData = [
   { id: 1, title: 'Rent or Mortgage', description: 'A visual representation of your spending categories...', date: '10/02/2024', Amount: '1000', BillAmount: ""},
@@ -71,18 +72,7 @@ const Expense = () => {
             <span className="font-semibold text-[#5678E9]">Add Expense Details</span>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-              <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-            </button>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <img src={AvatarImage} alt="Moni Roy" width="40" height="40" className="rounded-full" />
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                <p className="text-xs text-gray-500">Admin</p>
-              </div>
-            </div>
-          </div>
+          <HeaderBaner/>
         </header>
 
         {/* Content */}

@@ -161,7 +161,7 @@ const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
           </div>
 
           {/* Schedule Service Date */}
-          <div className="relative">
+          <div className="">
             <label className="block text-left font-medium text-gray-700 mb-1">
               Schedule Service Date
             </label>

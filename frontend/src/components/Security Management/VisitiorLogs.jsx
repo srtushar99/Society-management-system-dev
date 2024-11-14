@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';  // Ensure Sidebar is imported
-import NotificationIcon from "../assets/notification-bing.png";
 import AvatarImage from "../assets/Avatar.png";
 import AIcon from "../assets/A.png"; 
 import BIcon from "../assets/B.png"; 
@@ -12,6 +11,7 @@ import FIcon from "../assets/F.png";
 import GIcon from "../assets/G.png"; 
 import HIcon from "../assets/H.png"; 
 import IIcon from "../assets/I.png"; 
+import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
 
 
 import { useNavigate } from 'react-router-dom';
@@ -161,6 +161,7 @@ const VisitorLogs = () => {
           onClearAll={handleClearAll} // Pass the clear function
         />
       )}
+          <HeaderBaner/>
         </header>
 
         <div className="ps-6 pe-6 w-full">

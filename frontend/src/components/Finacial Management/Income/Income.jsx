@@ -19,7 +19,7 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png";
-
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 import ViewMaintenance from "./ViewMaintenance";
 import "../../Dashboard/Maintenance/scrollbar.css";
 import Password from "./Password";
@@ -31,7 +31,6 @@ const Income = ({ color }) => {
   const [isViewMaintenanceOpen, setIsViewMaintenanceOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null); // To hold the selected maintenance data
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [closePasswordModalOpen, setclosePasswordModalOpen] = useState(false);
   const data = [
     {
       name: "Cody Fisher",
@@ -147,12 +146,10 @@ const Income = ({ color }) => {
   };
 
   const closePasswordModal = () => {
-    setclosePasswordModalOpen(false); // Close the Password modal
+    setIsPasswordModalOpen(false); // Close the Password modal
   };
 
-  const closeAddMaintenanceModal = () => {
-    setIsAddMaintenanceOpen(false);
-  };
+
 
   const closeViewMaintenanceModal = () => {
     setIsViewMaintenanceOpen(false); // Close the ViewMaintenance modal
@@ -188,29 +185,9 @@ const Income = ({ color }) => {
               Financial Management
             </span>
           </div>
+    
 
-          <div className="flex items-center space-x-4">
-            <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-              <img
-                src={NotificationIcon}
-                alt="Notifications"
-                className="h-6 w-6"
-              />
-            </button>
-            <div className="flex items-center space-x-3 cursor-pointer">
-              <img
-                src={AvatarImage}
-                alt="Profile Avatar"
-                width="40"
-                height="40"
-                className="rounded-full"
-              />
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                <p className="text-xs text-gray-500">Admin</p>
-              </div>
-            </div>
-          </div>
+          <HeaderBaner/>
         </header>
 
         <div className="flex justify-between items-center lg:ms-7 h-44 lg:mt-7 lg:w-[1560px] p-4 bg-white rounded-md">
@@ -401,7 +378,7 @@ const Income = ({ color }) => {
         {isPasswordModalOpen && (
           <Password
             isOpen={isPasswordModalOpen}
-            onClose={closePasswordModalOpen}
+            onClose={closePasswordModal}
           />
         )}
 

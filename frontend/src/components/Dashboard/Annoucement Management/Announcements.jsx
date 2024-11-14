@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
  
  
 
+import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 const Annoucements = () => {
   const [openDropdown, setOpenDropdown] = useState(null); 
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false); 
@@ -237,6 +238,7 @@ const Annoucements = () => {
           onClearAll={handleClearAll} // Pass the clear function
         />
       )}
+        <HeaderBaner/>
         </header>
 
         {/* Announcement Section */}

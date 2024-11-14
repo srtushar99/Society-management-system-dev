@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import NoNotification from '../Dashboard/Notification/NoNotification';
 import NotificationModal from '../Dashboard/Notification/NotificationModal';// Import DeleteProtocol modal
 import moment from 'moment';
+import HeaderBaner  from "../Dashboard/Header/HeaderBaner"; // Import DeleteProtocol modal
 
 const initialData = [
   { id: 1, title: 'Physical Security', description: 'Implementing surveillance cameras in public spaces.', date: '11/01/2024', time: '3:45 PM' },
@@ -196,6 +197,7 @@ const SecurityProtocol = () => {
           onClearAll={handleClearAll} // Pass the clear function
         />
       )}
+        <HeaderBaner/>
         </header>
 
         {/* Content */}

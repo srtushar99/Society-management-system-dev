@@ -12,7 +12,6 @@ import EditProfile from './components/Dashboard/EditProfile/EditProfile';
 import UpdateProfile from './components/Dashboard/EditProfile/UpdateProfile';
 import Note from './components/Finacial Management/Note/Note';
 import Annoucements from './components/Dashboard/Annoucement Management/Announcements';
-
 import VisitorLogs from './components/Security Management/VisitiorLogs';
 import SecurityProtocol from './components/Security Management/SecurityProtocol';
 import Income from './components/Finacial Management/Income/Income';
@@ -21,9 +20,12 @@ import Expance from './components/Finacial Management/Expanse/Expanse';
 import MemberList from './components/Finacial Management/Income/MemberList';
 import Password from 'antd/es/input/Password';
 import Facilities from './components/Facilities Management/Facilities';
-import ComplaintTracking from './components/Complaint Tracking/Create Complaint/ComplaintTracking';
-
 import NotificationModal from './components/Facilities Management/Notification';
+import CreateComplaint from './components/Complaint Tracking/Create Complaint/CreateComplaint';
+import RequestTracking from './components/Complaint Tracking/Request Tracking/RequestTracking';
+import SecurityGuard from './components/Security Guard/SecurityGuard';
+import Resident from './components/Resident Management/Resident';
+import Owner from './components/Resident Management/Owner';
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
@@ -47,18 +49,14 @@ function App() {
             <Route path="/visitorlogs" element={<VisitorLogs />} />
             <Route path="/password" element={<Password />} />
             <Route path="/Facility-Management" element={<Facilities />} />
-            <Route path="/complaints-Tracking" element={<ComplaintTracking />} />
+            <Route path="/createcomplaint" element={<CreateComplaint />} />
+            <Route path="/requesttracking" element={<RequestTracking />} />
             <Route path="/notifications" element={<NotificationModal />} />
-
-            
             <Route path="/securityprotocol" element={<SecurityProtocol />} />
-            {/* <Route path="/securitygaurd" element={<SecurityGuardTable />} /> */}
-
-          
-          
-
-          
-
+            <Route path="/security-guard" element={<SecurityGuard/>} />
+            <Route path="/Resident-Manegement" element={<Resident/>} />
+            <Route path="/Owner" element={<Owner/>} />
+            {/* // <Routes path="/securitygaurd" element={<SecurityGuardTable />} />  */}
         </Routes>
     );
 }
