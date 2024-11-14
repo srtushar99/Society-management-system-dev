@@ -10,13 +10,14 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png"; // Import useNavigate for redirection
+import axiosInstance from '../../Common/axiosInstance';
 
-const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
+const EditTracking = ({ isOpen, onClose, protocol, fetchComplaint }) => {
   // Rename state to avoid name conflict with the prop
   const [formData, setFormData] = useState({
-    Complainername: "",
-    Complaintname: "",
-    description: "",
+    Complainer_name: "",
+    Complaint_name: "",
+    Description: "",
     wing: "",
     unit: "",
     priority: "",
@@ -25,9 +26,9 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
   // Check if the form is valid
   const isFormValid =
-    formData.Complainername &&
-    formData.Complaintname &&
-    formData.description &&
+    formData.Complainer_name &&
+    formData.Complaint_name &&
+    formData.Description &&
     formData.unit;
 
     const unitImages = {
@@ -46,7 +47,6 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
   useEffect(() => {
     if (isOpen && protocol) {
-      // Safely set form data if the protocol prop is provided
       setFormData(protocol);
     }
   }, [isOpen, protocol]);
@@ -58,9 +58,9 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
     // Validate alphabet-only fields
     if (
-      name === "complainername" ||
-      name === "complaintname" ||
-      name === "description" ||
+      name === "Complainer_name" ||
+      name === "Complaint_name" ||
+      name === "Description" ||
       name === "wing"
     ) {
       const regex = /^[A-Za-z\s]*$/;
@@ -85,9 +85,9 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
 
     // Update other fields without restriction
     if (
-      name !== "complainername" &&
-      name !== "complaintname" &&
-      name !== "description" &&
+      name !== "Complainer_name" &&
+      name !== "Complaint_name" &&
+      name !== "Description" &&
       name !== "wing" &&
       name !== "unit"
     ) {
@@ -131,8 +131,8 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
             </label>
             <input
               type="text"
-              name="complainerName"
-              value={protocol.Complainername}
+              name="Complainer_name"
+              value={protocol.Complainer_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -145,8 +145,8 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
             </label>
             <input
               type="text"
-              name="complaintName"
-              value={protocol.Complaintname}
+              name="Complaint_name"
+              value={protocol.Complaint_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -159,8 +159,8 @@ const EditTracking = ({ isOpen, onClose, protocol, onSave }) => {
             </label>
             <input
               type="text"
-              name="description"
-              value={protocol.description}
+              name="Description"
+              value={protocol.Description}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />

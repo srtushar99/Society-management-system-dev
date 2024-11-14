@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from '../../Common/axiosInstance';
 
-const CreateTracking = ({ isOpen, onClose }) => {
+const CreateTracking = ({ isOpen, onClose, fetchComplaint }) => {
   // State for the input fields
-  const [complainerName, setComplainerName] = useState("");
-  const [complaintName, setComplaintName] = useState("");
-  const [description, setDescription] = useState("");
-  const [wing, setWing] = useState(""); // Corrected state for 'wing'
-  const [unit, setUnit] = useState(""); // Corrected state for 'unit'
-  const [priority, setPriority] = useState("High");
-  const [status, setStatus] = useState("Open");
+  const [Complainer_name, setComplainer_name] = useState("");
+  const [Complaint_name, setComplaint_name] = useState("");
+  const [Description, setDescription] = useState("");
+  const [Wing, setWing] = useState(""); // Corrected state for 'wing'
+  const [Unit, setUnit] = useState(""); // Corrected state for 'unit'
+  const [Priority, setPriority] = useState("High");
+  const [Status, setStatus] = useState("Open");
 
   const modalRef = useRef(null);
 
@@ -22,32 +23,61 @@ const CreateTracking = ({ isOpen, onClose }) => {
 
   // Form validation
   const isFormValid =
-    complainerName &&
-    complaintName &&
-    description &&
-    wing &&
-    unit &&
-    nameRegex.test(complainerName) &&
-    nameRegex.test(complaintName) &&
-    wingRegex.test(wing) &&
-    unitRegex.test(unit) &&
-    descriptionRegex.test(description);
+    Complainer_name &&
+    Complaint_name &&
+    Description &&
+    Wing &&
+    Unit &&
+    nameRegex.test(Complainer_name) &&
+    nameRegex.test(Complaint_name) &&
+    wingRegex.test(Wing) &&
+    unitRegex.test(Unit) &&
+    descriptionRegex.test(Description);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const ClearAllData = () => {
+    setComplainer_name("");
+    setComplaint_name("");
+    setDescription("");
+    setWing("");
+    setUnit("");
+    setPriority("High");
+    setStatus("Open");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      console.log("Form Submitted", {
-        complainerName,
-        complaintName,
-        description,
-        wing,
-        unit,
-        priority,
-        status,
-      });
-      // Handle form submission logic here
+      const ComplaintData = {
+       Complainer_name,
+       Complaint_name,
+       Description,
+       Wing,
+       Unit,
+       Priority,
+       Status
+      };
+
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/complaint/addcomplaint",
+          ComplaintData
+        );
+        if (response.status===201) {
+          console.log("Successfully saved:", response.data);
+          fetchComplaint();
+          onClose(); 
+          ClearAllData();
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating Complaint:", error);
+      }
+
     } else {
       console.log("Form is invalid");
     }
@@ -56,6 +86,7 @@ const CreateTracking = ({ isOpen, onClose }) => {
   const handleClose = () => {
     if (onClose) onClose(); // Close the modal
     navigate("/createcomplaint"); // Redirect to complaints tracking page
+    ClearAllData();
   };
 
   const handleClickOutside = (e) => {
@@ -98,11 +129,11 @@ const CreateTracking = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Complainer Name"
-              value={complainerName}
+              value={Complainer_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setComplainerName(value);
+                  setComplainer_name(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
@@ -117,11 +148,11 @@ const CreateTracking = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Complaint Name"
-              value={complaintName}
+              value={Complaint_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setComplaintName(value);
+                  setComplaint_name(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
@@ -135,7 +166,7 @@ const CreateTracking = ({ isOpen, onClose }) => {
             </label>
             <textarea
               placeholder="Enter Description"
-              value={description}
+              value={Description}
               onChange={(e) => {
                 const value = e.target.value;
                 if (descriptionRegex.test(value) || value === "") {
@@ -154,7 +185,7 @@ const CreateTracking = ({ isOpen, onClose }) => {
               </label>
               <input
                 type="text"
-                value={wing}
+                value={Wing}
                 onChange={(e) => {
                   const value = e.target.value;
                   if (wingRegex.test(value) || value === "") {
@@ -170,7 +201,7 @@ const CreateTracking = ({ isOpen, onClose }) => {
               </label>
               <input
                 type="text"
-                value={unit}
+                value={Unit}
                 onChange={(e) => {
                   const value = e.target.value;
                   if (unitRegex.test(value) || value === "") {
@@ -192,39 +223,39 @@ const CreateTracking = ({ isOpen, onClose }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FE512E] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="High"
-                  checked={priority === "High"}
+                  checked={Priority === "High"}
                   onChange={() => setPriority("High")}
-                  className={`w-4 h-4 border-2 ${priority === "High" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
+                  className={`w-4 h-4 border-2 ${Priority === "High" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span className={`ml-2 text-sm ${priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>High</span>
+                <span className={`ml-2 text-sm ${Priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>High</span>
               </label>
 
               {/* Medium Priority */}
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FFEB3B] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Medium"
-                  checked={priority === "Medium"}
+                  checked={Priority === "Medium"}
                   onChange={() => setPriority("Medium")}
-                  className={`w-4 h-4 border-2 ${priority === "Medium" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
+                  className={`w-4 h-4 border-2 ${Priority === "Medium" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span className={`ml-2 text-sm ${priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Medium</span>
+                <span className={`ml-2 text-sm ${Priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Medium</span>
               </label>
 
               {/* Low Priority */}
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#4CAF50] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Low"
-                  checked={priority === "Low"}
+                  checked={Priority === "Low"}
                   onChange={() => setPriority("Low")}
-                  className={`w-4 h-4 border-2 ${priority === "Low" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
+                  className={`w-4 h-4 border-2 ${Priority === "Low" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span className={`ml-2 text-sm ${priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Low</span>
+                <span className={`ml-2 text-sm ${Priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Low</span>
               </label>
             </div>
           </div>
@@ -239,39 +270,39 @@ const CreateTracking = ({ isOpen, onClose }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Open"
-                  checked={status === "Open"}
+                  checked={Status === "Open"}
                   onChange={() => setStatus("Open")}
-                  className={`w-4 h-4 border-2 ${status === "Open" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#4CAF50]"}`}
+                  className={`w-4 h-4 border-2 ${Status === "Open" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#4CAF50]"}`}
                 />
-                <span className={`ml-2 text-sm ${status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Open</span>
+                <span className={`ml-2 text-sm ${Status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Open</span>
               </label>
 
               {/* Pending Status */}
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Pending"
-                  checked={status === "Pending"}
+                  checked={Status === "Pending"}
                   onChange={() => setStatus("Pending")}
-                  className={`w-4 h-4 border-2 ${status === "Pending" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#FFEB3B]"}`}
+                  className={`w-4 h-4 border-2 ${Status === "Pending" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#FFEB3B]"}`}
                 />
-                <span className={`ml-2 text-sm ${status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Pending</span>
+                <span className={`ml-2 text-sm ${Status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Pending</span>
               </label>
 
               {/* Solve Status */}
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Solve"
-                  checked={status === "Solve"}
+                  checked={Status === "Solve"}
                   onChange={() => setStatus("Solve")}
-                  className={`w-4 h-4 border-2 ${status === "Solve" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#F44336]"}`}
+                  className={`w-4 h-4 border-2 ${Status === "Solve" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#F44336]"}`}
                 />
-                <span className={`ml-2 text-sm ${status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Solve</span>
+                <span className={`ml-2 text-sm ${Status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Solve</span>
               </label>
             </div>
           </div>

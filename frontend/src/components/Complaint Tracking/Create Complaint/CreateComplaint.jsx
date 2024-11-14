@@ -121,19 +121,27 @@ const initialData = [
   },
 ];
 
+// const unitImages = {
+//   1001: [AIcon],
+//   1002: [BIcon],
+//   1003: [CIcon],
+//   1004: [DIcon],
+//   2001: [EIcon],
+//   2002: [FIcon],
+//   2003: [GIcon],
+//   2004: [HIcon],
+//   3001: [IIcon],
+//   3002: [AIcon],
+//   3003: [BIcon],
+// };
+
 const unitImages = {
-  1001: [AIcon],
-  1002: [BIcon],
-  1003: [CIcon],
-  1004: [DIcon],
-  2001: [EIcon],
-  2002: [FIcon],
-  2003: [GIcon],
-  2004: [HIcon],
-  3001: [IIcon],
-  3002: [AIcon],
-  3003: [BIcon],
-};
+  102: [BIcon], 
+  102: [BIcon], 
+  101: [AIcon], 
+  102: [CIcon],
+}
+
 
 const CreateComplaint = () => {
   const [data, setData] = useState(initialData); // Use state for data
@@ -285,15 +293,15 @@ const CreateComplaint = () => {
                     {item.Description}
                   </td>
                   <td className="p-3 pt-2 ps-3 d-flex hidden sm:table-cell text-gray-600">
-                    {" "}
+                    {/* {" "}
                     <img
-                      src={unitImages[item.Unit]}
-                      alt={item.Unit}
+                      src={unitImages[item.Wing]}
+                      alt={item.Wing}
                       width="25"
                       height="25"
                       className="rounded-full"
-                    />
-                    {item.Unit}
+                    /> */}
+                    {item.Wing + " "+item.Unit}
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden lg:table-cell text-gray-600">
                     <Badge
@@ -356,6 +364,7 @@ const CreateComplaint = () => {
           <CreateTracking
             isOpen={isCreateProtocolOpen}
             onClose={closeCreateProtocolModal}
+            fetchComplaint={fetchComplaint}
           />
         )}
         {isEditModalOpen && selectedProtocolForView && (
@@ -363,6 +372,7 @@ const CreateComplaint = () => {
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             protocol={selectedProtocolForView}
+            fetchComplaint={fetchComplaint}
           />
         )}
         {isViewModalOpen && selectedProtocolForView && (
