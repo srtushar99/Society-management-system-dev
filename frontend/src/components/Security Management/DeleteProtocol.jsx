@@ -1,14 +1,22 @@
 import React from 'react';
+import axiosInstance from '../Common/axiosInstance';
 
-const DeleteProtocol = ({ isOpen, protocol, onDelete, onCancel }) => {
+const DeleteProtocol = ({ isOpen, protocol, onDelete, onCancel, fetchSecurityProtocols}) => {
   // If the modal isn't open, return null (don't render anything)
   if (!isOpen) return null;
 
-  const handleDelete = () => {
-    if (protocol) {
-      onDelete(protocol.id); // Assuming `protocol` has an `id` property
+  // Handle delete logic with API call
+  const handleDelete = async () => {
+    try {
+      const response = await axiosInstance.delete(`/v2/securityprotocol/delete/${protocol._id}`);
+      if (response.status === 200) {
+        onDelete(protocol); 
+        onCancel();
+        fetchSecurityProtocols();
+      }
+    } catch (error) {
+      console.error('Error deleting contact:', error);
     }
-    onCancel(); // Close the modal after deletion
   };
 
   const handleCancel = () => {

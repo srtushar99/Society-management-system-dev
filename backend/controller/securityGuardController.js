@@ -1,234 +1,250 @@
 const cloudinary = require('../utils/cloudinary');
-const fs = require('fs');
-const moment = require('moment'); 
-const Security = require('../models/securityGuardModel'); // Assuming you have a model for Security
+const fs = require("fs")
+const crypto = require("crypto");
+const { hash } = require("../utils/hashpassword");
+const senData = require("../config/nodemailer");
+const Guard = require("../models/securityGuardModel");
+const moment = require('moment');
 
-// Helper function to upload a file to Cloudinary and delete the local file
-const uploadAndDeleteLocal = async (fileArray) => {
-    if (fileArray && fileArray[0]) {
-        const filePath = fileArray[0].path;
-        try {
-            // Upload to Cloudinary
-            const result = await cloudinary.uploader.upload(filePath);
-            // Delete the local file after uploading to Cloudinary
-            fs.unlink(filePath, (err) => {
-                if (err) console.error("Error deleting file from server:", err);
-                else console.log("File deleted from server:", filePath);
-            });
-            return result.secure_url;
-        } catch (error) {
-            console.error("Error uploading to Cloudinary:", error);
-            throw error;
-        }
-    }
-    return '';
-};
+// add security guard
 
-// Controller to create a new security record
 
-exports.createSecurity = async (req, res) => {
+exports.CreateSecurityGuard = async (req, res) => {
     try {
-        const { First_Name, Phone_Number, Gender, Shift, Shift_Date, Shift_Time, Aadhar_Card } = req.body;
-
-        // Parse Shift_Date to a JavaScript Date object using moment.js
-        const parsedDate = moment(Shift_Date, "DD/MM/YYYY", true);
+        function generatePassword(length = 6) {
+            const password = crypto.randomInt(0, Math.pow(10, length)).toString();
+            return password.padStart(length, "0")
+        }
         
-        // Validate the date format
-        if (!parsedDate.isValid()) {
+        const {
+            full_name,
+            MailOrPhone,
+            gender,
+            shift,
+            date,
+            time,
+            role,
+        } = req.body;
+
+        // Convert date string (DD/MM/YYYY) to Date object
+        const parsedDate = moment(date, "DD/MM/YYYY").toDate();
+        if (!parsedDate || isNaN(parsedDate.getTime())) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid Shift_Date format. Expected format is DD/MM/YYYY."
+                message: "Invalid date format. Use DD/MM/YYYY",
             });
         }
 
-        // Convert parsed date to a JavaScript Date object
-        const formattedDate = parsedDate.toDate();
+        const password = generatePassword();
+        console.log(password);
 
-        // Upload Security Photo and Aadhar Card images to Cloudinary
-        const Security_Photo_URL = await uploadAndDeleteLocal(req.files?.Security_Photo);
-        const Aadhar_Card_URL = await uploadAndDeleteLocal(req.files?.Aadhar_Card);
+        const hashpassword = await hash(password);
 
-        // Create a new security record with URLs from Cloudinary
-        const newSecurity = new Security({
-            Security_Photo: Security_Photo_URL,
-            First_Name,
-            Phone_Number,
-            Gender,
-            Shift,
-            Shift_Date: formattedDate, // Use the correctly formatted Date object
-            Shift_Time,
-            Aadhar_Card: Aadhar_Card_URL,
-        });
-
-        // Save the new security record to the database
-        await newSecurity.save();
-
-        return res.status(201).json({
-            success: true,
-            message: "Security record added successfully",
-        });
-    } catch (error) {
-        console.error("Error adding security record:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to add security record"
-        });
-    }
-};
-
-
-// Controller to get all security records
-exports.GetAllSecurity = async (req, res) => {
-    try {
-        const securityRecords = await Security.find();
-        if (!securityRecords || securityRecords.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "No security records found"
-            });
-        }
-        return res.json({
-            success: true,
-            securityRecords: securityRecords
-        });
-    } catch (error) {
-        console.error("Error retrieving security records:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to retrieve security records"
-        });
-    }
-};
-
-exports.GetSecurityById = async (req, res) => {
-    try {
-        const security = await Security.findById(req.params.id);
-        if (!security) {
-            return res.status(404).json({
-                success: false,
-                message: "Security record not found"
-            });
-        }
-        return res.json({
-            success: true,
-            security
-        });
-    } catch (error) {
-        console.error("Error retrieving security record by ID:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to retrieve security record"
-        });
-    }
-};
-
-// Update Security record by ID
-
-exports.updateSecurity = async (req, res) => {
-    try {
-        const { First_Name, Phone_Number, Gender, Shift, Shift_Date, Shift_Time } = req.body;
-
-        // Parse Shift_Date to a JavaScript Date object using moment.js
-        let formattedDate;
-        if (Shift_Date) {
-            const parsedDate = moment(Shift_Date, "DD/MM/YYYY", true);
-            
-            // Validate the date format
-            if (!parsedDate.isValid()) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Invalid Shift_Date format. Expected format is DD/MM/YYYY."
-                });
+        const uploadAndDeleteLocal = async (fileArray) => {
+            if (fileArray && fileArray[0]) {
+                const filePath = fileArray[0].path;
+                try {
+                    const result = await cloudinary.uploader.upload(filePath);
+                    fs.unlink(filePath, (err) => {
+                        if (err) console.error("Error deleting file from server:", err);
+                        else console.log("File deleted from server:", filePath);
+                    });
+                    return result.secure_url;
+                } catch (error) {
+                    console.error("Error uploading to Cloudinary:", error);
+                    throw error;
+                }
             }
-
-            // Convert parsed date to a JavaScript Date object
-            formattedDate = parsedDate.toDate();
-        }
-
-        // Upload new images if provided
-        const Security_Photo_URL = req.files?.Security_Photo
-            ? await uploadAndDeleteLocal(req.files.Security_Photo)
-            : undefined;
-        const Aadhar_Card_URL = req.files?.Aadhar_Card
-            ? await uploadAndDeleteLocal(req.files.Aadhar_Card)
-            : undefined;
-
-        // Create the update object with conditionally added fields
-        const updateData = {
-            First_Name,
-            Phone_Number,
-            Gender,
-            Shift,
-            Shift_Time,
-            ...(formattedDate && { Shift_Date: formattedDate }),
-            ...(Security_Photo_URL && { Security_Photo: Security_Photo_URL }),
-            ...(Aadhar_Card_URL && { Aadhar_Card: Aadhar_Card_URL }),
+            return '';
         };
 
-        // Find and update the security record by ID
-        const updatedSecurity = await Security.findByIdAndUpdate(req.params.id, updateData, {
-            new: true, // Return the updated document
-            runValidators: true, // Ensure validation rules are applied
-        });
+        const profileimage = await uploadAndDeleteLocal(req.files?.profileimage);
+        const adhar_card = await uploadAndDeleteLocal(req.files?.adhar_card);
 
-        if (!updatedSecurity) {
-            return res.status(404).json({
+        if (!full_name || !MailOrPhone || !gender || !shift || !date || !time || !profileimage || !adhar_card) {
+            return res.status(400).json({
                 success: false,
-                message: "Security record not found",
+                message: "All fields are required",
             });
         }
 
-        return res.json({
+        const newOwner = new Guard({
+            full_name,
+            MailOrPhone,
+            gender,
+            shift,
+            date: parsedDate,  // Use the parsed date here
+            time,
+            profileimage,
+            adhar_card,
+            role: role || "security",
+            password: hashpassword
+        });
+
+        await newOwner.save();
+
+        if (MailOrPhone.includes("@")) {
+            await senData(
+                newOwner.MailOrPhone,
+                "Registration Successful - Login Details",
+                `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a security. Your login details are as follows:\n\nUsername: ${newOwner.MailOrPhone}\nPassword: <b> ${password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
+            );
+         } 
+        return res.status(200).json({
             success: true,
-            message: "Security record updated successfully",
-            data: updatedSecurity,
+            message: "Security Guard Successfully added"
         });
     } catch (error) {
-        console.error("Error updating security record:", error);
+        console.error(error);
         return res.status(500).json({
             success: false,
-            message: "Failed to update security record",
+            message: "Internal server error"
         });
     }
 };
 
+ 
+ //get a security Guard
+ exports.GetSecurityGuard= async (req,res)=>{
+     try {
+         const find= await Guard.find();
+         if(!find){
+             return res.status(400).json({
+                 success:false,
+                 message:"No data found"
+             })
+         }
+         return res.status(200).json({
+             success:true,
+             Guard:find
+         })
+     } catch (error) {
+         console.error(error);
+         return res.status(500).json({
+              success: false,
+              message: "error in Announcement fetching"
+          });
+     }
+ }
+ exports.GetByIdGuard= async (req,res)=>{
+     try {
+         const find= await Guard.findById(req.params.id);
+         if(!find){
+             return res.status(400).json({
+                 success:false,
+                 message:"No data found"
+             })
+         }
+         return res.status(200).json({
+             success:true,
+             Guard:find
+         })
+     } catch (error) {
+         console.error(error);
+         return res.status(500).json({
+              success: false,
+              message: "error in Announcement fetching"
+          });
+     }
+ }
+ exports.DeleteGuard= async (req,res)=>{
+     try {
+         const find= await Guard.findByIdAndDelete(req.params.id);
+         if(!find){
+             return res.status(400).json({
+                 success:false,
+                 message:"No data found"
+             })
+         }
+         return res.status(200).json({
+             success:true,
+             message:"Security Guard deleted"
+         })
+     } catch (error) {
+         console.error(error);
+         return res.status(500).json({
+              success: false,
+              message: "error in Announcement deleting"
+          });
+     }
+ }
 
+ //update security
 
-// Delete Security record by ID
-exports.deleteSecurity = async (req, res) => {
+exports.updateSecurityGuard = async (req, res) => {
+    const { id } = req.params;
+    const {
+        full_name,
+        MailOrPhone,
+        gender,
+        shift,
+        date,
+        time,
+        role,
+    } = req.body;
+
     try {
-        const securityRecord = await Security.findById(req.params.id);
-        
-        if (!securityRecord) {
+        const guard = await Guard.findById(id);
+        if (!guard) {
             return res.status(404).json({
                 success: false,
-                message: "Security record not found",
+                message: "Security Guard not found"
             });
         }
 
-        // Delete images from Cloudinary if URLs exist
-        if (securityRecord.Security_Photo) {
-            const publicId = securityRecord.Security_Photo.split('/').pop().split('.')[0];
-            await cloudinary.uploader.destroy(publicId);
+        const uploadAndDeleteLocal = async (fileArray) => {
+            if (fileArray && fileArray[0]) {
+                const filePath = fileArray[0].path;
+                try {
+                    const result = await cloudinary.uploader.upload(filePath);
+                    fs.unlink(filePath, (err) => {
+                        if (err) console.error("Error deleting file from server:", err);
+                    });
+                    return result.secure_url;
+                } catch (error) {
+                    console.error("Error uploading to Cloudinary:", error);
+                    throw error;
+                }
+            }
+            return '';
+        };
+
+        if (full_name) guard.full_name = full_name;
+        if (MailOrPhone) guard.MailOrPhone = MailOrPhone;
+        if (gender) guard.gender = gender;
+        if (shift) guard.shift = shift;
+        if (date) {
+            const parsedDate = moment(date, "DD/MM/YYYY").toDate();
+            if (!parsedDate || isNaN(parsedDate.getTime())) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid date format. Use DD/MM/YYYY",
+                });
+            }
+            guard.date = parsedDate;
+        }
+        if (time) guard.time = time;
+        if (role) guard.role = role || guard.role;
+
+        if (req.files?.profileimage) {
+            guard.profileimage = await uploadAndDeleteLocal(req.files.profileimage);
         }
 
-        if (securityRecord.Aadhar_Card) {
-            const publicId = securityRecord.Aadhar_Card.split('/').pop().split('.')[0];
-            await cloudinary.uploader.destroy(publicId);
+        if (req.files?.adhar_card) {
+            guard.adhar_card = await uploadAndDeleteLocal(req.files.adhar_card);
         }
 
-        // Delete the record from the database
-        await securityRecord.deleteOne();
+        await guard.save();
 
-        return res.json({
+        return res.status(200).json({
             success: true,
-            message: "Security record deleted successfully",
+            message: "Security Guard details updated successfully",
         });
     } catch (error) {
-        console.error("Error deleting security record:", error);
+        console.error("Error updating Security Guard:", error);
         return res.status(500).json({
             success: false,
-            message: "Failed to delete security record",
+            message: "An error occurred while updating Security Guard details",
         });
     }
 };

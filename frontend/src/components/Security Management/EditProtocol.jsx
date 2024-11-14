@@ -6,16 +6,17 @@ import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import timeIcon from "../../components/assets/Vector.png"; // Import your custom time icon
-
+import axiosInstance from '../Common/axiosInstance';
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
+import moment from 'moment';
 
 dayjs.extend(customParseFormat);
 
-const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+const EditProtocol = ({ isOpen, onClose, protocol, onSave, fetchSecurityProtocols }) => {
+  const [Title, setTitle] = useState("");
+  const [Description, setDescription] = useState("");
   const [date, setDate] = useState(null); // Initialize date as null
-  const [time, setTime] = useState(""); // Initialize time as empty string
+  const [Time, setTime] = useState(""); // Initialize time as empty string
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State for calendar visibility
 
   const modalRef = useRef(null);
@@ -25,26 +26,31 @@ const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
 
   const titleRegex = /^[A-Za-z\s]*$/;
   const descriptionRegex = /^[A-Za-z\s]*$/;
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  const timeRegex = /^([0-9]{2}):([0-9]{2})$/; // Validates time in HH:mm format
+  const timeRegex = /^(?:[01]?\d|2[0-3]):[0-5]\d (AM|PM)$/;
 
   const isFormValid =
-    title &&
-    description &&
+    Title &&
+    Description &&
     date &&
-    time &&
-    titleRegex.test(title) &&
-    descriptionRegex.test(description) &&
-    dateRegex.test(date) &&
-    timeRegex.test(time);
+    Time &&
+    titleRegex.test(Title) &&
+    descriptionRegex.test(Description) &&
+    timeRegex.test(Time);
+
+    const ClearAllData = () => {
+      setTitle("");
+      setDescription("");
+      setTime("");
+      setDate(null);
+    };
 
   // Effect for setting initial state when the modal is opened
   useEffect(() => {
     if (isOpen && protocol) {
-      setTitle(protocol.title || "");
-      setDescription(protocol.description || "");
-      setDate(protocol.date ? new Date(protocol.date) : null); // Convert string date to Date object
-      setTime(protocol.time || "12:00"); // Set the default time if not available
+      setTitle(protocol.Title || "");
+      setDescription(protocol.Description || "");
+      setDate(protocol.Date ? new Date(protocol.Date) : null); // Convert string date to Date object
+      setTime(protocol.Time || "12:00"); // Set the default time if not available
     }
   }, [isOpen, protocol]);
 
@@ -69,15 +75,37 @@ const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
   };
 
   const handleTimeChange = (value) => {
-    const timeString = value ? value.format("HH:mm") : ""; // Format time as HH:mm
-    setTime(timeString);
+    const formattedDate = dayjs(value);
+    const hour = formattedDate.hour();
+    const ampm = hour < 12 ? "AM" : "PM"; 
+    const timeString = formattedDate.format("HH:mm");
+    setTime(`${timeString} ${ampm}`);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave({ title, description, date, time });  // Pass the updated data to the parent component
-      onClose();  // Close the modal
+      const Date = moment(date).format('YYYY-MM-DD');
+      const ProtocolsData = {
+        Title,
+        Description,
+        Date,
+        Time
+      };
+
+      try {
+        const response = await axiosInstance.put(`/v2/securityprotocol/update/${protocol._id}`, ProtocolsData);
+        if(!!response.data){
+          fetchSecurityProtocols(); 
+          onClose(); 
+          ClearAllData();
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
     }
   };
 
@@ -128,7 +156,7 @@ const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
             <input
               type="text"
               placeholder="Enter Title"
-              value={title}
+              value={Title}
               onChange={handleTitleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -140,7 +168,7 @@ const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
             </label>
             <textarea
               placeholder="Enter Description"
-              value={description}
+              value={Description}
               onChange={handleDescriptionChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] h-22 resize-none"
             />
@@ -175,7 +203,7 @@ const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
               </label>
               <div className="flex items-center">
                 <TimePicker
-                  value={time ? dayjs(time, "HH:mm") : null}
+                  value={Time ? dayjs(Time, "HH:mm") : null}
                   format="HH:mm"
                   suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
@@ -198,7 +226,6 @@ const EditProtocol = ({ isOpen, onClose, protocol, onSave }) => {
             <button
               type="submit"
               className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-              disabled={!isFormValid}
             >
               Save
             </button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import NotificationIcon from "../assets/notification-bing.png"; 
@@ -7,10 +7,11 @@ import CreateProtocol from './CreateProtocol';
 import EditProtocol from './EditProtocol';
 import ViewProtocol from './ViewProtocol';
 import DeleteProtocol from './DeleteProtocol';
-
+import axiosInstance from '../Common/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import NoNotification from '../Dashboard/Notification/NoNotification';
 import NotificationModal from '../Dashboard/Notification/NotificationModal';// Import DeleteProtocol modal
+import moment from 'moment';
 
 const initialData = [
   { id: 1, title: 'Physical Security', description: 'Implementing surveillance cameras in public spaces.', date: '11/01/2024', time: '3:45 PM' },
@@ -33,7 +34,7 @@ const SecurityProtocol = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Add state for Delete Protocol modal
   const [selectedProtocolForView, setSelectedProtocolForView] = useState(null);
   const [selectedProtocolForDelete, setSelectedProtocolForDelete] = useState(null); // State for protocol to delete
-
+  const [SecurityProtocols, setSecurityProtocols] = useState([]);
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
 
@@ -57,7 +58,7 @@ const SecurityProtocol = () => {
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    setData(data.filter(item => item.id !== id)); // Update the state to remove the deleted protocol
+    setSecurityProtocols(SecurityProtocols.filter(item => item._id !== id)); // Update the state to remove the deleted protocol
 
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
@@ -114,6 +115,27 @@ const SecurityProtocol = () => {
   const handleProfileClick = () => {
     navigate('/edit-profile'); // This will navigate to the EditProfile page
   };
+
+
+    // Fetch Security Protocols from the API
+    const fetchSecurityProtocols = async () => {
+        try {
+            const response = await axiosInstance.get('/v2/securityprotocol/');
+            console.log(response.data);
+            if(response.status === 200){
+             setSecurityProtocols(response.data.data); 
+            }
+           
+        } catch (error) {
+            console.error('Error fetching Security Protocols:', error);
+        }
+    };
+
+
+    useEffect(() => {
+      fetchSecurityProtocols();
+    }, []);
+
 
   return (
     <div className="flex bg-gray-100  w-full h-full">
@@ -191,21 +213,21 @@ const SecurityProtocol = () => {
           <table className="bg-white border border-gray-200 rounded-lg shadow-md w-full">
           <thead className=''style={{ backgroundColor:"rgba(86, 120, 233, 0.1)" }} >  
         <tr className="text-left text-sm font-semibold">  
-          <th className="p-3 text-[#202224] ">Visitor Name</th>  
-          <th className="p-3 hidden sm:table-cell">Phone Number</th>  
+          <th className="p-3 text-[#202224] ">Title</th>  
+          <th className="p-3 hidden sm:table-cell">Description</th>  
           <th className="p-3 hidden md:table-cell">Date</th>  
-          <th className="p-3 hidden lg:table-cell">Unit Number</th>  
-          <th className="p-3 hidden xl:table-cell">Time</th>  
+          <th className="p-3 hidden lg:table-cell">Time</th>  
+          <th className="p-3 hidden xl:table-cell">Action</th>  
         </tr>  
       </thead>  
 
             <tbody>
-              {data.map((item, index) => (
+              {SecurityProtocols.map((item, index) => (
                 <tr key={index} className="border-t border-gray-200">
-                  <td className="p-3 pt-2 text-gray-700 font-medium">{item.title}</td>
-                  <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">{item.description}</td>
-                  <td className="p-3 pt-2 hidden md:table-cell text-gray-600">{item.date}</td>
-                  <td className="p-3 pt-2 hidden lg:table-cell text-gray-600">{item.time}</td>
+                  <td className="p-3 pt-2 text-gray-700 font-medium">{item.Title}</td>
+                  <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">{item.Description}</td>
+                  <td className="p-3 pt-2 hidden md:table-cell text-gray-600">{!!item.Date ? moment(item.Date).format('DD/MM/YYYY') : " "}</td>
+                  <td className="p-3 pt-2 hidden lg:table-cell text-gray-600">{item.Time}</td>
                   <td className="p-3 pt-2">
                     <div className="flex flex-wrap sm:flex-nowrap sm:space-x-2 space-y-2 sm:space-y-0">
                       <button
@@ -235,7 +257,7 @@ const SecurityProtocol = () => {
         </div>
 
         {/* Modals */}
-        {isCreateProtocolOpen && <CreateProtocol isOpen={isCreateProtocolOpen} onClose={closeCreateProtocolModal} />}
+        {isCreateProtocolOpen && <CreateProtocol isOpen={isCreateProtocolOpen} onClose={closeCreateProtocolModal} fetchSecurityProtocols={fetchSecurityProtocols}/>}
         {isEditModalOpen && selectedProtocolForView && (
           <EditProtocol
             isOpen={isEditModalOpen}
@@ -245,6 +267,7 @@ const SecurityProtocol = () => {
               console.log(updatedData); 
               closeEditModal();
             }}
+            fetchSecurityProtocols={fetchSecurityProtocols}
           />
         )}
         {isViewModalOpen && selectedProtocolForView && (
@@ -256,6 +279,7 @@ const SecurityProtocol = () => {
             onCancel={closeDeleteModal}
             protocol={selectedProtocolForDelete}
             onDelete={() => handleDelete(selectedProtocolForDelete.id)} // Pass the ID of the protocol to delete
+            fetchSecurityProtocols={fetchSecurityProtocols}
           />
         )}
       </div>

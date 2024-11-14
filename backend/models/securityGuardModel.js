@@ -1,43 +1,57 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require("mongoose");
 
-const SecuritySchema = new mongoose.Schema({
-  Security_Photo: {
-    type: String,
-    required: true,
-  },
-  First_Name: {
-    type: String,
-    required: true,
-  },
-  Phone_Number: {
-    type: String,
-    required: true,
-  },
-  Gender: {
-    type: String,
-    required: true,
-    enum: ['Male', 'Female', 'Other']
-  },
-  Shift: {
-    type: String,
-    required: true,
-    enum: ['Day', 'Night']
-  },
-  Shift_Date: {
-    type: Date,
-    required: true,
-  },
-  Shift_Time: {
-    type: String,
-    required: true,
-  },
-  Aadhar_Card: {
-    type: String,
-    required: true,
-  }
-}, { timestamps: true });
+const securityschema= new Schema({
+    profileimage:{
+        type:String,
+        required:true
+    },
+    full_name:{
+        type:String,
+        required:true
+    },
+    MailOrPhone:{
+        type:String,
+        required:true
+    },
+    gender:{
+        type:String,
+        enum:['Male','Female','Others']
+    },
+    shift:{
+        type:String,
+        enum:['Day','Night']
+    },
+    date:{
+        type:Date,
+        required:true
+    },
+    time:{
+        type:String,
+        required:true
+    },
+    adhar_card:{
+        type:String,
+        required:true
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'resident', 'security'], 
+        default: 'security' 
+    },
+   password: {  
+        type: String,
+        required: true
+    },
+    otp: {
+        type: String,
+      },
+      otpExpiration: {
+        type: Date,
+        default: Date.now,
+        get: (otpExpiration) => otpExpiration.getTime(),
+        set: (otpExpiration) => new Date(otpExpiration),
+      },
+},{timestamps:true})
 
-// Corrected: use mongoose.model instead of model
-const Security = mongoose.model("Security", SecuritySchema);
-
-module.exports = Security;
+const Guard=model("SecurityGuard",securityschema)
+module.exports=Guard;
