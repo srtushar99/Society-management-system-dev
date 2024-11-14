@@ -62,9 +62,11 @@ const AddGuard = ({ isOpen, onClose }) => {
     setIsCalendarOpen(false); // Close calendar after selecting a date
   };
 
+ 
   const handleTimeChange = (value) => {
-    const time = value ? value.format("HH:mm") : ""; // Format time as HH:mm
-    setShiftTime(time);
+    // Format the time using dayjs to ensure it matches HH:mm format
+    const timeString = value ? value.format("HH:mm") : "";
+    setShiftTime(timeString);
   };
 
   const handleClose = () => {
@@ -77,9 +79,11 @@ const AddGuard = ({ isOpen, onClose }) => {
     if (
       modalRef.current &&
       !modalRef.current.contains(e.target) &&
-      !timePickerRef.current.contains(e.target)
+      !timePickerRef.current.contains(e.target) && // Ensure TimePicker doesn't trigger closing
+      !datePickerRef.current.contains(e.target) && // Ensure DatePicker doesn't trigger closing
+      !e.target.closest('input') && // Ensure clicks on inputs don't trigger closing
+      !e.target.closest('select') // Ensure clicks on select fields don't trigger closing
     ) {
-      handleClose();
     }
   };
 
@@ -257,9 +261,9 @@ const AddGuard = ({ isOpen, onClose }) => {
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift Time<span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center" ref={timePickerRef}>
+              <div className="flex items-center relative" ref={timePickerRef}>
                 <TimePicker
-                  value={shiftTime ? dayjs(shiftTime, "HH:mm") : null} // Pass the correct time format
+                  value={shiftTime ? dayjs(shiftTime, "HH:mm") : null}
                   format="HH:mm"
                   suffixIcon={<img src={timeIcon} alt="Time Icon" />}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
