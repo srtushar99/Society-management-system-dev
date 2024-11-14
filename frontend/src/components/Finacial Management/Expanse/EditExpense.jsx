@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, Trash2 } from "lucide-react"; // Make sure Trash2 is imported
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
@@ -15,9 +15,12 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
   const [date, setDate] = useState(null); // Initialize date as null
   const [amount, setAmount] = useState(""); // Initialize amount as empty string
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State for calendar visibility
+  const [bill, setBill] = useState(null); // State for the uploaded bill
+  const [billName, setBillName] = useState(""); // State for the bill name
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
+  const fileInputRef = useRef(null); // Reference for file input
 
   const navigate = useNavigate();
 
@@ -34,7 +37,8 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
     titleRegex.test(title) &&
     descriptionRegex.test(description) &&
     dateRegex.test(date) &&
-    amountRegex.test(amount);
+    amountRegex.test(amount) &&
+    bill; // Ensure bill is selected
 
   // Effect for setting initial state when the modal is opened
   useEffect(() => {
@@ -43,6 +47,8 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
       setDescription(expense.description || "");
       setDate(expense.date ? new Date(expense.date) : null); // Convert string date to Date object
       setAmount(expense.amount || "1000"); // Set the initial amount if provided
+      setBill(expense.bill || null); // Set initial bill if available
+      setBillName(expense.billName || ""); // Set the bill name if available
     }
   }, [isOpen, expense]);
 
@@ -73,10 +79,24 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setBill(file);
+      setBillName(file.name); // Set the name of the uploaded file
+    }
+  };
+
+  const handleDeleteBill = () => {
+    setBill(null);
+    setBillName(""); // Reset bill name
+    fileInputRef.current.value = ""; // Reset the file input field
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave({ title, description, date, amount });
+      onSave({ title, description, date, amount, bill });
       onClose();
     }
   };
@@ -185,6 +205,43 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
                 />
               </div>
             </div>
+          </div>
+
+          {/* File Upload Section */}
+          <div style={{ position: "relative" }}>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+              Upload Bill<span className="text-red-500">*</span>
+            </label>
+            <div className="flex justify-center items-center border-2 border-dashed border-gray-300 rounded-lg  py-4">
+              <div className="text-center">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  id="fileInput"
+                  ref={fileInputRef} // Assign ref to the input field
+                />
+                <label htmlFor="fileInput" className="text-blue-500 cursor-pointer">
+                  <i className="fa fa-upload mb-2 text-2xl"></i>
+                  <p>Upload a file or drag and drop</p>
+                  <p className="text-gray-400 text-sm">PNG, JPG, GIF up to 10MB</p>
+                </label>
+              </div>
+            </div>
+            {bill && (
+              <div className="flex items-center mt-2" style={{ position: "absolute", top: "50%", left: "5%" }}>
+                <p className="text-sm text-success py-4 pt-5 ps-4 mx-5 me-2">{billName}</p>
+                <button
+                  type="button"
+                  onClick={handleDeleteBill}
+                  className="text-gray-600 hover:text-gray-800"
+                  style={{ fontSize: "28px" }}
+                >
+                  <Trash2 className="h-4 w-4 mt-2" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-4 pt-4">
