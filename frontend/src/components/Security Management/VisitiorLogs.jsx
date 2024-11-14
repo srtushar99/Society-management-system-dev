@@ -169,8 +169,8 @@ const VisitorLogs = () => {
             <h1 className="p-3 text-3xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>
             <div />
             <div className="overflow-x-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            <table className="min-w-full  border border-gray-200 rounded-lg " >
-              <thead className=" relative lg:w-[1560px]" style={{ backgroundColor:"rgba(86, 120, 233, 0.1)" }} >
+            <table className="min-w-full  border border-gray-200  rounded-table ">
+              <thead className=" relative lg:w-[1560px]" style={{ backgroundColor:"rgba(86, 120, 233, 0.1)", }} >
                 <tr className="text-left text-sm  font-semibold ">
                   <th className="p-3 text-[#202224]">Visitor Name</th>
                   <th className="p-3 hidden sm:table-cell">Phone Number</th>
