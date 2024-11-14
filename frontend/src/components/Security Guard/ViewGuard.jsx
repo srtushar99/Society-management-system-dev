@@ -18,6 +18,19 @@ const ViewGuard = ({ isOpen, onClose, Guard }) => {
   if (!isOpen || !Guard) return null;
 
   // Badge component
+  const Badge1 = ({ children, className }) => (
+    <span
+      className={`px-2 py-2 pe-10 text-xs font-semibold ${className}`}
+      style={{
+        borderRadius: "15px",
+        minWidth: "80px",
+        textAlign: "center",
+        marginLeft:"50px"
+      }}
+    >
+      {children}
+    </span>
+  );
   const Badge = ({ children, className }) => (
     <span
       className={`px-2 py-2 pe-10 text-xs font-semibold ${className}`}
@@ -25,7 +38,7 @@ const ViewGuard = ({ isOpen, onClose, Guard }) => {
         borderRadius: "15px",
         minWidth: "80px",
         textAlign: "center",
-        marginLeft:"20px"
+        marginLeft:"10px"
       }}
     >
       {children}
@@ -87,7 +100,7 @@ const ViewGuard = ({ isOpen, onClose, Guard }) => {
 
             <div className='right-3' >
               <h3 className="text-gray-500 text-sm mb-1 ml-[50px] ">Gender</h3>
-              <Badge
+              <Badge1
                 className={
                   Guard.Gender === 'Male'
                     ? 'bg-[#21A8E41A] text-[#5678E9]'
@@ -97,7 +110,7 @@ const ViewGuard = ({ isOpen, onClose, Guard }) => {
                 }
               >
                 <i className="fa-solid fa-user"></i> {Guard.Gender}
-              </Badge>
+              </Badge1>
             </div>
           </div>
         </div>

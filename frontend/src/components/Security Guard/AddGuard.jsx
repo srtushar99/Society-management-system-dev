@@ -7,23 +7,23 @@ import dayjs from "dayjs";
 import timeIcon from "../../components/assets/Vector.png"; // Import your custom time icon
 
 const AddGuard = ({ isOpen, onClose }) => {
-  // State for the input fields
-  const [guardName, setGuardName] = useState(""); 
-  const [number, setNumber] = useState(""); 
-  const [shiftDate, setShiftDate] = useState(""); 
-  const [shiftTime, setShiftTime] = useState(null); // Use null as the initial state for shiftTime
-  const [selectShift, setSelectShift] = useState(""); 
-  const [gender, setGender] = useState(""); 
+  const [guardName, setGuardName] = useState("");
+  const [number, setNumber] = useState("");
+  const [shiftDate, setShiftDate] = useState(null); // Store as Date object
+  const [shiftTime, setShiftTime] = useState(null); // Store as dayjs object
+  const [selectShift, setSelectShift] = useState("");
+  const [gender, setGender] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [Photo, setPhoto] = useState(null); // State to store the uploaded photo
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
-  
+  const timePickerRef = useRef(null); // Ref for the TimePicker
+
   // Regex for validation
-  const nameRegex = /^[A-Za-z\s]+$/; 
-  const numberRegex = /^[0-9]+$/; 
-  const shiftTimeRegex = /^[0-9]{2}:[0-9]{2}$/; 
+  const nameRegex = /^[A-Za-z\s]+$/;
+  const numberRegex = /^[6789][0-9]{0,9}$/;
+  const shiftTimeRegex = /^[0-9]{2}:[0-9]{2}$/;
 
   // Form validation
   const isFormValid =
@@ -58,28 +58,33 @@ const AddGuard = ({ isOpen, onClose }) => {
   };
 
   const handleDateChange = (date) => {
-    setShiftDate(date);
-    setIsCalendarOpen(false); 
+    setShiftDate(date); // Store the selected date as a Date object
+    setIsCalendarOpen(false); // Close calendar after selecting a date
   };
 
   const handleTimeChange = (value) => {
-    const formattedTime = value ? value.format("HH:mm") : null; // Handle time change to format HH:mm
-    setShiftTime(formattedTime); // Store the time as a string in HH:mm format
+    const time = value ? value.format("HH:mm") : ""; // Format time as HH:mm
+    setShiftTime(time);
   };
 
   const handleClose = () => {
-    if (onClose) onClose(); 
-    navigate("/security-guard"); 
+    if (onClose) onClose();
+    navigate("/security-guard");
   };
 
   const handleClickOutside = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
+    // Ignore clicks inside the modal and TimePicker
+    if (
+      modalRef.current &&
+      !modalRef.current.contains(e.target) &&
+      !timePickerRef.current.contains(e.target)
+    ) {
       handleClose();
     }
   };
 
   const handleCalendarIconClick = () => {
-    setIsCalendarOpen(!isCalendarOpen); 
+    setIsCalendarOpen(!isCalendarOpen);
   };
 
   useEffect(() => {
@@ -110,9 +115,7 @@ const AddGuard = ({ isOpen, onClose }) => {
     >
       <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">
-            Add Security
-          </span>
+          <span className="text-2xl font-bold text-[#202224]">Add Security</span>
           <button
             className="text-gray-600 hover:text-gray-800"
             onClick={handleClose}
@@ -127,21 +130,22 @@ const AddGuard = ({ isOpen, onClose }) => {
             <div className="d-flex">
               {/* Circle container for the photo */}
               <div className="border bg-[#F4F4F4]  rounded-full w-[50px] h-[50px]  flex justify-center items-center">
-                {photo ? (
+                {Photo ? (
                   <img
-                    src={photo}
+                    src={Photo}
                     alt="Guard"
                     className="w-[50px] h-[50px] object-cover rounded-full"
                   />
                 ) : (
-                    <i class="fa-solid fa-camera text-[#FFFFFF]"></i>
+                  <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
                 )}
               </div>
               {/* Button to upload photo */}
-              <button 
-                type="button" 
-                className="ml-5 text-blue-500 no-underline" 
-                onClick={() => document.getElementById('fileInput').click()}>
+              <button
+                type="button"
+                className="ml-5 text-blue-500 no-underline"
+                onClick={() => document.getElementById("fileInput").click()}
+              >
                 Add Photo
               </button>
             </div>
@@ -221,7 +225,6 @@ const AddGuard = ({ isOpen, onClose }) => {
               >
                 <option value="">Select Shift</option>
                 <option value="Morning">Day</option>
-            
                 <option value="Night">Night</option>
               </select>
             </div>
@@ -236,16 +239,16 @@ const AddGuard = ({ isOpen, onClose }) => {
               <div className="flex items-center relative" ref={datePickerRef}>
                 <DatePicker
                   selected={shiftDate}
-                  onChange={handleDateChange} 
+                  onChange={handleDateChange}
                   className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholderText="Select a date"
-                  dateFormat="MM/dd/yyyy"
+                  dateFormat="dd/MM/yyyy"
                   autoComplete="off"
-                  open={isCalendarOpen} 
+                  open={isCalendarOpen}
                 />
                 <i
                   className="fa-solid fa-calendar-days absolute right-10 text-[#202224] cursor-pointer"
-                  onClick={handleCalendarIconClick} 
+                  onClick={handleCalendarIconClick}
                 />
               </div>
             </div>
@@ -254,14 +257,14 @@ const AddGuard = ({ isOpen, onClose }) => {
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift Time<span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center">
+              <div className="flex items-center" ref={timePickerRef}>
                 <TimePicker
                   value={shiftTime ? dayjs(shiftTime, "HH:mm") : null} // Pass the correct time format
                   format="HH:mm"
                   suffixIcon={<img src={timeIcon} alt="Time Icon" />}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   popupClassName="custom-time-picker-popup"
-                  onChange={handleTimeChange} 
+                  onChange={handleTimeChange}
                 />
               </div>
             </div>
@@ -279,7 +282,11 @@ const AddGuard = ({ isOpen, onClose }) => {
 
             <button
               type="submit"
-              className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${isFormValid ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "bg-[#F6F8FB] text-[#202224]"}`}
+              className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
+                isFormValid
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+                  : "bg-[#F6F8FB] text-[#202224]"
+              }`}
               disabled={!isFormValid}
             >
               {isFormValid ? "Save" : "Create"}

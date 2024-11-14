@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
-
+import plus from "../assets/add-square.png"; 
 import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
 import AvatarImage from "../assets/Avatar.png";
 import AddGuard from "./AddGuard";
@@ -207,6 +207,7 @@ const SecurityGaurd = () => {
               onClick={openCreateProtocolModal}
               className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
             >
+               <img src={plus} alt="Add" className="mr-2 h-4 w-4" />
              Add Security
             </button>
           </div>
@@ -223,7 +224,7 @@ const SecurityGaurd = () => {
                 </th>
                 <th className="p-3 ps-5 hidden sm:table-cell">Select Shift</th>
                 <th className="p-3 ps-2 hidden lg:table-cell">Shift Date</th>
-                <th className="p-3 ps-5 hidden lg:table-cell">Shift Time</th>
+                <th className="p-3 ps-5  hidden lg:table-cell">Shift Time</th>
                 <th className="p-3 ps-5 hidden lg:table-cell">Gender</th>
                 <th className="p-3 ps-5 hidden lg:table-cell">Action</th>
               </tr>
@@ -263,8 +264,11 @@ const SecurityGaurd = () => {
                       {item.Date}
                  
                   </td>
-                  <td className="p-3 pt-2 ps-2 hidden md:table-cell bg-[#F6F8FB] text-[#4F4F4F] rounded-lg w-[10px] h-[10px]  ml-10">
+                  <td className="p-3 pt-2 ps-2 hidden md:table-cell ">
+                    <span className="bg-[#F6F8FB] p-2 text-[#4F4F4F] rounded-2xl w-[30px] h-[60px]  ml-10">
                   {item.Time}
+
+                    </span>
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden md:table-cell text-gray-600">
                   <Badge
@@ -335,7 +339,7 @@ const SecurityGaurd = () => {
           <DeleteGuard
             isOpen={isDeleteModalOpen}
             onCancel={closeDeleteModal}
-            protocol={selectedProtocolForDelete}
+            Guard={selectedProtocolForDelete}
             onDelete={() => handleDelete(selectedProtocolForDelete.id)} // Pass the ID of the protocol to delete
           />
         )}
