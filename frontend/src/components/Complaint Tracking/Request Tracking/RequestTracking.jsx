@@ -300,7 +300,7 @@ const RequestTracking = () => {
                   </td><td className="p-3 pt-2 ps-1 hidden sm:table-cell text-gray-600">
                     {moment(item.Request_date).format("DD/MM/YYYY")}
                   </td>
-                  <td className="p-3 pt-2 ps-3 d-flex hidden sm:table-cell text-gray-600">
+                  <td className="py-3   d-flex hidden sm:table-cell text-gray-600">
                     {/* {" "}
                     <img
                       src={unitImages[item.unit]}
@@ -309,7 +309,7 @@ const RequestTracking = () => {
                       height="25"
                       className="rounded-full"
                     /> */}
-                    {item.Wing + " " + item.Unit}
+                   <span className=" px-2  mb-3" style={{color:"rgba(86, 120, 233, 1)",backgroundColor:"rgba(86, 120, 233, 0.1)",borderRadius:"50%",fontWeight:"700",marginRight:"5px"}}> { item.Wing } </span> {" "+item.Unit}
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden lg:table-cell text-gray-600">
                     <Badge

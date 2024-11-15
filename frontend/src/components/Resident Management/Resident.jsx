@@ -273,16 +273,16 @@ const Resident = () => {
                   <tr key={index} className="border-t border-gray-200">
                     <td className="px-4 py-3 flex items-center space-x-3">
                       {/* Display avatar based on the Name field */}
-                      <img
+                      <img 
                         src={item.Name === "-" ? Avatar : AvatarImage} // If Name is "--", use Avatar, else use AvatarImage
                         alt="avatar"
-                        className="w-8 h-8 rounded-full"
+                        className="w-8 h-8 rounded-full flex"
                       />
-                      <span>{item.Name}</span>
+                      <span >{item.Name}</span>
                     </td>
                     <td className="p-3 pt-2 ps-3 D-flex hidden sm:table-cell text-gray-600">
                       {/* Unit image */}
-                      <img
+                      <img style={{display:"inline"}}
                         src={unitImages[item.UnitNumber]}
                         alt={item.UnitNumber}
                         width="25"
