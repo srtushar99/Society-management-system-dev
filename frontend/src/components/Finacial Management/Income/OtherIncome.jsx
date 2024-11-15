@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../../Sidebar/Sidebar";
 import { Link } from "react-router-dom";
-import NotificationIcon from "../../assets/notification-bing.png"; // Ensure this path is correct
-import AvatarImage from "../../assets/Avatar.png"; // Ensure this path is correct
+
 // import CreateAnnouncement from './CreateAnnouncement';
 import EditIncome from "./EditIncome";
 import DeleteIncome from "./Delete"; 

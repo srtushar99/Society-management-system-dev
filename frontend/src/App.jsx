@@ -26,6 +26,7 @@ import RequestTracking from './components/Complaint Tracking/Request Tracking/Re
 import SecurityGuard from './components/Security Guard/SecurityGuard';
 import Resident from './components/Resident Management/Resident';
 import Owner from './components/Resident Management/Owner';
+import Tenant from './components/Resident Management/Tenant';
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
@@ -56,6 +57,7 @@ function App() {
             <Route path="/security-guard" element={<SecurityGuard/>} />
             <Route path="/Resident-Manegement" element={<Resident/>} />
             <Route path="/Owner" element={<Owner/>} />
+            <Route path="/tenant" element={<Tenant/>} />
             {/* // <Routes path="/securitygaurd" element={<SecurityGuardTable />} />  */}
         </Routes>
     );

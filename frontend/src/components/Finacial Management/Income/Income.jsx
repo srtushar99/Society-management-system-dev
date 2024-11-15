@@ -252,7 +252,7 @@ const Income = ({ color }) => {
             </div>
             <div className="overflow-x-auto h-[500px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <table className="w-full border-collapse text-sm text-left text-gray-600 rounded-top">
-                <thead>
+                <thead  style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
                   <tr className="bg-gray-100 text-gray-600 uppercase text-xs font-semibold">
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Unit Number</th>

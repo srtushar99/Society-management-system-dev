@@ -90,7 +90,7 @@ const Expense = () => {
 
           <div className="overflow-x-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           <table className="bg-white border border-gray-200 rounded-lg shadow-md w-full">
-            <thead className="bg-[#5678E9] w-full" style={{opacity: "10%"}} >
+            <thead  style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }} >
               <tr className="text-left text-sm font-semibold">
                 <th className="p-3 text-[#202224]">Title</th>
                 <th className="p-3 hidden sm:table-cell">Description</th>

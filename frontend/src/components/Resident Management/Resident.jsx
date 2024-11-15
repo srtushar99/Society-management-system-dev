@@ -219,7 +219,7 @@ const Resident = () => {
         >
           <div className="flex items-center space-x-2  text-gray-600">
             <Link
-              to="/securityprotocol"
+              to="/Resident-Manegement"
               className="text-[#A7A7A7] no-underline font-semibold ms-4 md:ml-20 "
             >
               Home
