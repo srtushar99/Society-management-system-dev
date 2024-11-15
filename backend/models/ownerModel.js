@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const Ownerschema= new Schema({
-    Owner_image:{
+    profileImage:{
         type:String,
          required:true
     },
@@ -75,10 +75,19 @@ const Ownerschema= new Schema({
         enum: ['admin', 'resident', 'security'], 
         default: 'resident' 
     },
-   password: {  // Add this field to store the hashed password
+    password: {  // Add this field to store the hashed password
         type: String,
         required: true
     },
+    Resident_status:{
+        type:String,
+        default:"Owner",
+    },
+    UnitStatus:{
+        type:String,
+        default:"Occupied"
+    }
+
 },{timestamps:true})
 
 

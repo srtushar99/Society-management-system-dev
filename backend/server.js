@@ -21,8 +21,7 @@ app.use(cookieParser());
 const userRoutes = require("./routes/userRoutes");
 const societyRoutes = require("./routes/societyRoutes");
 const importantNumberRoutes = require("./routes/importantNumberRoutes");
-const ownerRoute = require("./routes/ownerRoute")
-const tenantRoute = require("./routes/tenantRoute")
+const residentRoute = require("./routes/residentRoute")
 const expensesRoute = require("./routes/expensesRoutes")
 const noteRoute = require("./routes/noteRoutes")
 const facilityRoute = require("./routes/facilityRoutes")
@@ -31,6 +30,8 @@ const requestsRoute = require("./routes/requestTrackingRoutes")
 const securityprotocolRoute = require("./routes/securityProtocolRoutes")
 const annoucementRoute = require("./routes/annoucementRoutes")
 const securityGuardRoute = require("./routes/securityGuardRoutes")
+const incomeRoute = require("./routes/incomeRoutes")
+const maintenanceRoute = require("./routes/maintenanceRoutes")
 
 //user registration and login schema
 app.use("/api/v1",userRoutes);
@@ -42,10 +43,11 @@ app.use('/api/societies', societyRoutes);
 app.use('/api/v2/important-numbers', importantNumberRoutes);
 
 //resident apis
-app.use('/api/v2/Owner', ownerRoute);
-app.use('/api/v2/tenant', tenantRoute);
+app.use('/api/v2/resident', residentRoute);
 
 // financial management
+app.use('/api/v2/maintenance', maintenanceRoute);
+app.use('/api/v2/income', incomeRoute);
 app.use('/api/v2/expenses', expensesRoute);
 app.use('/api/v2/note', noteRoute);
 

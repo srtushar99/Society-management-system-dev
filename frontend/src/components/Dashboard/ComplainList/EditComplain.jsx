@@ -1,82 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react"; // Close icon
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import axiosInstance from '../../Common/axiosInstance';
 
-const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
+const EditComplain = ({ isOpen, complaint, onClose, fetchComplaint }) => {
   // States to hold form values
   const [formData, setFormData] = useState({
-    complainerName: "",
-    complaintName: "",
-    description: "",
-    wing: "",
-    unit: "",
-    priority: "",
-    status: "",
+    Complainer_name: "",
+    Complaint_name: "",
+    Description: "",
+    Wing: "",
+    Unit: "",
+    Priority: "",
+    Status: "",
   });
 
   const isFormValid =
-    formData.complainerName &&
-    formData.complaintName &&
-    formData.description &&
-    formData.unit;
+    formData.Complainer_name &&
+    formData.Complaint_name &&
+    formData.Description &&
+    formData.Unit;
 
-  useEffect(() => {
-    if (isOpen && complainData) {
-      setFormData(complainData);
-    }
-  }, [isOpen, complainData]);
 
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    // Validate alphabet-only fields
-    if (
-      name === "complainerName" ||
-      name === "complaintName" ||
-      name === "description" ||
-      name === "wing"
-    ) {
-      const regex = /^[A-Za-z\s]*$/;
-      if (regex.test(value) || value === "") {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    }
-
-    if (name === "unit") {
-      // Allow only numbers for this field
-      const regex = /^[0-9]*$/;
-      if (regex.test(value) || value === "") {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    }
-
-    if (
-      name !== "complainerName" &&
-      name !== "complaintName" &&
-      name !== "description" &&
-      name !== "wing" &&
-      name !== "unit"
-    ) {
+    const handleChange = (e) => {
+      const { name, value } = e.target;
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
-    }
-  };
+    };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave(formData);
-      onClose();
+      console.log(formData);
+      
+      try {
+        const response = await axiosInstance.put(`/v2/complaint/updatecomplaint/${complaint._id}`, formData);
+        if(!!response.data){
+          fetchComplaint(); 
+          onClose(); 
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
     }
   };
 
@@ -85,7 +57,16 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
     navigate("/dashboard"); // Redirect to dashboard
   };
 
+  useEffect(() => {
+    if (isOpen && complaint) {
+      setFormData(complaint);
+    }
+  }, [isOpen, complaint]);
+
+
   if (!isOpen) return null; // Don't render if modal is not open
+
+  
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
@@ -110,8 +91,8 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
             </label>
             <input
               type="text"
-              name="complainerName"
-              value={formData.complainerName}
+              name="Complainer_name"
+              value={formData.Complainer_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -124,8 +105,8 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
             </label>
             <input
               type="text"
-              name="complaintName"
-              value={formData.complaintName}
+              name="Complaint_name"
+              value={formData.Complaint_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -138,8 +119,8 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
             </label>
             <input
               type="text"
-              name="description"
-              value={formData.description}
+              name="Description"
+              value={formData.Description}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -153,8 +134,8 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               </label>
               <input
                 type="text"
-                name="wing"
-                value={formData.wing}
+                name="Wing"
+                value={formData.Wing}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
@@ -165,8 +146,8 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               </label>
               <input
                 type="text"
-                name="unit"
-                value={formData.unit}
+                name="Unit"
+                value={formData.Unit}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
@@ -183,19 +164,19 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FE512E] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="High"
-                  checked={formData.priority === "High"}
+                  checked={formData.Priority === "High"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "High"
+                    formData.Priority === "High"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "High"
+                    formData.Priority === "High"
                       ? "text-[#202224]"
                       : "text-[#D3D3D3]"
                   }`}
@@ -208,19 +189,19 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FFEB3B] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Medium"
-                  checked={formData.priority === "Medium"}
+                  checked={formData.Priority === "Medium"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "Medium"
+                    formData.Priority === "Medium"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "Medium"
+                    formData.Priority === "Medium"
                       ? "text-[#202224]"
                       : "text-[#D3D3D3]"
                   }`}
@@ -233,19 +214,19 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#4CAF50] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Low"
-                  checked={formData.priority === "Low"}
+                  checked={formData.Priority === "Low"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "Low"
+                    formData.Priority === "Low"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "Low"
+                    formData.Priority === "Low"
                       ? "text-[#202224]"
                       : "text-[#D3D3D3]"
                   }`}
@@ -266,19 +247,19 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Open"
-                  checked={formData.status === "Open"}
+                  checked={formData.Status === "Open"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Open"
+                    formData.Status === "Open"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#4CAF50]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Open"
+                    formData.Status === "Open"
                       ? "text-[#202224]"
                       : "text-[#D3D3D3]"
                   }`}
@@ -291,19 +272,19 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Pending"
-                  checked={formData.status === "Pending"}
+                  checked={formData.Status === "Pending"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Pending"
+                    formData.Status === "Pending"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#FFEB3B]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Pending"
+                    formData.Status === "Pending"
                       ? "text-[#202224]"
                       : "text-[#D3D3D3]"
                   }`}
@@ -316,19 +297,19 @@ const EditComplain = ({ isOpen, onClose, complainData, onSave }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Solve"
-                  checked={formData.status === "Solve"}
+                  checked={formData.Status === "Solve"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Solve"
+                    formData.Status === "Solve"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#F44336]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Solve"
+                    formData.Status === "Solve"
                       ? "text-[#202224]"
                       : "text-[#D3D3D3]"
                   }`}

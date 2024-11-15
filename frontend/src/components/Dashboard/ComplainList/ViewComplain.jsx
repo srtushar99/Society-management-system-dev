@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-
+import moment
+ from 'moment';
 const ViewComplain = ({ complaint, onClose }) => {
   if (!complaint) return null; // Ensure complaint exists
 
@@ -69,13 +70,13 @@ const ViewComplain = ({ complaint, onClose }) => {
           {/* Profile Section */}
           <div className="flex items-center gap-4 mb-8">
             <img
-              src={complaint.complainer.avatar || '/fallback-avatar.png'}
-              alt={complaint.complainer.name}
+              src={complaint.Complainer_name || '/fallback-avatar.png'}
+              alt={complaint.Complainer_name}
               className="w-16 h-16 rounded-full object-cover"
             />
             <div>
-              <h2 className="font-semibold text-lg text-gray-900">{complaint.complainer.name}</h2>
-              <p className="text-gray-500 text-sm">{complaint.date}</p>
+              <h2 className="font-semibold text-lg text-gray-900">{complaint.Complainer_name}</h2>
+              <p className="text-gray-500 text-sm">{!!complaint.createdAt ? moment(complaint.createdAt).format("MMM D, YYYY") : " "}</p>
             </div>
           </div>
 
@@ -83,37 +84,37 @@ const ViewComplain = ({ complaint, onClose }) => {
           <div className="space-y-6">
             <div>
               <h3 className="text-gray-500 text-sm mb-1">Complaint Name</h3>
-              <p className="font-medium text-gray-900">{complaint.complaintName}</p>
+              <p className="font-medium text-gray-900">{complaint.Complaint_name }</p>
             </div>
 
             <div>
               <h3 className="text-gray-500 text-sm mb-1">Description</h3>
-              <p className="font-medium text-gray-900">{complaint.description}</p>
+              <p className="font-medium text-gray-900">{complaint.Description}</p>
             </div>
 
             {/* Wing, Unit, Priority, Status on the same line */}
             <div className="grid grid-cols-4 gap-x-1 gap-y-1">
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Wing</h3>
-                <p className="font-medium text-gray-900">{complaint.wing || "N/A"}</p>
+                <p className="font-medium text-gray-900">{complaint.Wing || "N/A"}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Unit</h3>
-                <p className="font-medium text-gray-900">{complaint.unit || "N/A"}</p>
+                <p className="font-medium text-gray-900">{complaint.Unit || "N/A"}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Priority</h3>
-                <span className={`inline-block px-3 py-1 rounded-full text-sm ${getPriorityColor(complaint.priority)}`}>
-                  {complaint.priority}
+                <span className={`inline-block px-3 py-1 rounded-full text-sm ${getPriorityColor(complaint.Priority)}`}>
+                  {complaint.Priority}
                 </span>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Status</h3>
-                <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusColor(complaint.status)}`}>
-                  {complaint.status}
+                <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusColor(complaint.Status)}`}>
+                  {complaint.Status}
                 </span>
               </div>
             </div>

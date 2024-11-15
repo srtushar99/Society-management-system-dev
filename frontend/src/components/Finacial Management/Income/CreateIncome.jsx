@@ -3,14 +3,18 @@ import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
+import axiosInstance from '../../Common/axiosInstance';
+import moment from 'moment';
 
-const CreateIncome = ({ isOpen, onClose }) => {
+const CreateIncome = ({ isOpen, onClose, fetchOtherIncome }) => {
   // State for the input fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(null); // Default date is null
+  const [Date, setDate] = useState(null); // Default date is null
+  const [DueDate, setDueDate] = useState(null);
   const [amount, setAmount] = useState(""); // Add amount state
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isDuedateCalendarOpen, setIsDuedateCalendarOpen] = useState(false);
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
@@ -23,19 +27,57 @@ const CreateIncome = ({ isOpen, onClose }) => {
   const isFormValid =
     title &&
     description &&
-    date &&
+    Date &&
     amount &&
+    DueDate &&
     titleRegex.test(title) &&
     descriptionRegex.test(description) &&
     amountRegex.test(amount);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  
+  const ClearAllData = () => {
+    setTitle("");
+    setDescription("");
+    setDate(null);
+    setDueDate(null);
+    setAmount("");
+    setIsCalendarOpen(false);
+    setIsDuedateCalendarOpen(false);
+  };
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isFormValid) {
-      console.log("Form Submitted", { title, description, date, amount });
-      // Handle form submission logic here
+   if (isFormValid) {
+    const date = moment(Date).format("DD/MM/YYYY");
+    const dueDate = moment(DueDate).format("DD/MM/YYYY");
+      const OtherIncomeData = {
+        title,
+        description,
+        date,
+        dueDate,
+        amount
+      };
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/income/addincome",
+          OtherIncomeData
+        );
+        if (response.status===200) {
+          console.log("Successfully saved:", response.data);
+          fetchOtherIncome();
+          onClose(); 
+          ClearAllData();
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating Other Income:", error);
+      }
     } else {
       console.log("Form is invalid");
     }
@@ -46,13 +88,27 @@ const CreateIncome = ({ isOpen, onClose }) => {
     navigate("/otherincome"); // Redirect to announcements page
   };
 
+  const ColseData = () => {
+    handleClose();
+    ClearAllData();
+  };
+
   const handleDateChange = (date) => {
     setDate(date);
     setIsCalendarOpen(false); // Close calendar after selecting the date
   };
 
+  const handleDueDateChange = (date) => {
+    setDueDate(date);
+    setIsDuedateCalendarOpen(false); // Close calendar after selecting the date
+  };
+
   const handleCalendarIconClick = () => {
     setIsCalendarOpen(!isCalendarOpen); // Toggle calendar visibility
+  };
+
+  const handleDuedateCalendarIconClick = () => {
+    setIsDuedateCalendarOpen(!isDuedateCalendarOpen); // Toggle calendar visibility
   };
 
   const handleClickOutside = (e) => {
@@ -61,6 +117,7 @@ const CreateIncome = ({ isOpen, onClose }) => {
       if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
         // Close calendar if clicked outside the calendar
         setIsCalendarOpen(false);
+        setIsDuedateCalendarOpen(false);
       }
     }
   };
@@ -115,8 +172,8 @@ const CreateIncome = ({ isOpen, onClose }) => {
                   </label>
                   <div className="flex items-center">
                     <DatePicker
-                      selected={date}
-                      onChange={(date) => setDate(date)}
+                      selected={Date}
+                      onChange={handleDateChange}
                       className="w-[150px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] "
                       placeholderText="Select a date"
                       dateFormat="MM/dd/yyyy"
@@ -136,18 +193,18 @@ const CreateIncome = ({ isOpen, onClose }) => {
                   </label>
                   <div className="flex items-center">
                     <DatePicker
-                      selected={date}
-                      onChange={(date) => setDate(date)} // Update the date state
+                      selected={DueDate}
+                      onChange={handleDueDateChange} // Update the date state
                       className="w-[150px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] "
                       placeholderText="Select a date"
                       dateFormat="MM/dd/yyyy"
                       autoComplete="off"
-                      open={isCalendarOpen} // Control the visibility of the calendar
+                      open={isDuedateCalendarOpen} // Control the visibility of the calendar
                     />
                     {/* Calendar Icon */}
                     <i
                       className="fa-solid fa-calendar-days absolute ml-[130px] text-[#202224] cursor-pointer"
-                      onClick={handleCalendarIconClick} // Toggle calendar visibility on icon click
+                      onClick={handleDuedateCalendarIconClick} // Toggle calendar visibility on icon click
                     />
                   </div>
                 </div>
@@ -198,7 +255,7 @@ const CreateIncome = ({ isOpen, onClose }) => {
             <button
               type="button"
               className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
-              onClick={handleClose}
+              onClick={ColseData}
             >
               Cancel
             </button>
@@ -210,7 +267,6 @@ const CreateIncome = ({ isOpen, onClose }) => {
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                   : "bg-[#F6F8FB] text-[#202224]"
               }`}
-              disabled={!isFormValid}
             >
               Save
             </button>

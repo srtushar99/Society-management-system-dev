@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
 import plus from "../assets/add-square.png"; 
@@ -8,7 +8,8 @@ import AddGuard from "./AddGuard";
 import EditGuard from "./EditGuard";
 import ViewGuard from "./ViewGuard";
 import DeleteGuard from "./DeleteGuard";
-
+import moment from 'moment';
+import axiosInstance from '../Common/axiosInstance';
 
 
 const initialData = [
@@ -128,8 +129,8 @@ const SecurityGaurd = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Add state for Delete Protocol modal
   const [selectedProtocolForView, setSelectedProtocolForView] = useState(null);
-  const [selectedProtocolForDelete, setSelectedProtocolForDelete] =
-    useState(null); // State for protocol to delete
+  const [selectedProtocolForDelete, setSelectedProtocolForDelete] = useState(null); // State for protocol to delete
+  const [SecurityGaurd, setSecurityGaurd] = useState([]);
 
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
@@ -154,7 +155,7 @@ const SecurityGaurd = () => {
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
+    setSecurityGaurd(SecurityGaurd.filter((item) => item._id !== id)); // Update the state to remove the deleted protocol
 
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
@@ -172,6 +173,24 @@ const SecurityGaurd = () => {
       {children}
     </span>
   );
+
+
+  // Fetch Security Guard from the API
+  const fetchSecurityGuard = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/security/');
+        if(response.status === 200){
+          setSecurityGaurd(response.data.Guard); 
+        }
+       
+     } catch (error) {
+        console.error('Error fetching SecurityGuard:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSecurityGuard();
+  }, []);
 
   return (
     <div className="flex bg-gray-100  w-full h-full">
@@ -231,7 +250,7 @@ const SecurityGaurd = () => {
             </thead>
 
             <tbody>
-              {data.map((item, index) => (
+              {SecurityGaurd.map((item, index) => (
                 <tr key={index} className="border-t border-gray-200">
                   <td className="px-4 py-3 flex items-center space-x-3">
                     <img
@@ -239,34 +258,34 @@ const SecurityGaurd = () => {
                       alt="avatar"
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>{item.GaurdName}</span>
+                    <span>{item.full_name}</span>
                   </td>
                   <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">
-                    {item.Number}
+                    {item.MailOrPhone}
                   </td>
 
                   <td className="p-3 pt-2 ps-5 hidden sm:table-cell text-gray-600">
                   <Badge
                 className={
-                  item.Shift === 'Day'
+                  item.shift === 'Day'
                     ? 'bg-[#F4F4F4] text-[#FF9300]' // High priority: Red background, white text
-                    : item.Shift === 'Night'
+                    : item.shift === 'Night'
                     ? 'bg-[#4F4F4F] text-[#FFFFFF]' 
                     : 'bg-[#39973D] text-white'
                 }
               >
-              <i class="fa-solid fa-user"></i>  {item.Shift}
+              <i class="fa-solid fa-user"></i>  {item.shift}
               </Badge>
                   </td>
                  
                   <td className="p-3 pt-2  hidden lg:table-cell text-gray-600">
                 
-                      {item.Date}
+                      {!!item.date ? moment(item.date).format('DD/MM/YYYY') : " "}
                  
                   </td>
                   <td className="p-3 pt-2 ps-2 hidden md:table-cell ">
                     <span className="bg-[#F6F8FB] p-2 text-[#4F4F4F] rounded-2xl w-[30px] h-[60px]  ml-10">
-                  {item.Time}
+                  {item.time}
 
                     </span>
                   </td>
@@ -274,14 +293,14 @@ const SecurityGaurd = () => {
                   <Badge
               
                 className={
-                  item.Gender === 'Male'
+                  item.gender === 'Male'
                     ? 'bg-[#21A8E41A] text-[#5678E9]' // High priority: Red background, white text
-                    : item.Gender === 'Female'
+                    : item.gender === 'Female'
                     ? 'bg-[#FE76A81A] text-[#FE76A8]' 
                     : 'bg-[#39973D] text-white'
                 }
               >
-              <i class="fa-solid fa-user" ></i>  {item.Gender}
+              <i class="fa-solid fa-user" ></i>  {item.gender}
               </Badge>
                   </td>
 

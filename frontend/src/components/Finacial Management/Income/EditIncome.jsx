@@ -4,17 +4,21 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import axiosInstance from '../../Common/axiosInstance';
+import moment from 'moment';
 
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
 dayjs.extend(customParseFormat);
 
-const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
+const EditIncome = ({ isOpen, onClose, noteData, fetchOtherIncome }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(null); // Initialize date as null
+  const [Date, setDate] = useState(null); // Initialize date as null
+  const [DueDate, setdueDate] = useState(null);
   const [amount, setAmount] = useState(""); // Initialize amount as empty string
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State for calendar visibility
+  const [isdueCalendarOpen, setIsdueCalendarOpen] = useState(false); // State for calendar visibility
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
@@ -23,24 +27,25 @@ const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
 
   const titleRegex = /^[A-Za-z\s]*$/;
   const descriptionRegex = /^[A-Za-z\s]*$/;
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  const amountRegex = /^\d+(\.\d{1,2})?$/; // Validates amount with optional decimals
+  const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/; 
 
   const isFormValid =
     title &&
     description &&
-    date &&
-    amountRegex.test(amount) && // Validate the amount
+    Date &&
+    DueDate &&
+    amount && 
     titleRegex.test(title) &&
     descriptionRegex.test(description) &&
-    dateRegex.test(date);
+    amountRegex.test(amount);
 
   // Effect for setting initial state when the modal is opened
   useEffect(() => {
     if (isOpen && noteData) {
       setTitle(noteData.title || "");
       setDescription(noteData.description || "");
-      setDate(noteData.date ? new Date(noteData.date) : null); // Convert string date to Date object
+      setDate(noteData.date || null); // Convert string date to Date object
+      setdueDate(noteData.dueDate || null);
       setAmount(noteData.amount || "1500"); // Set amount from noteData
     }
   }, [isOpen, noteData]);
@@ -59,18 +64,44 @@ const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
     setIsCalendarOpen(false); // Close calendar after selecting a date
   };
 
-  const handleAmountChange = (e) => {
-    const value = e.target.value;
-    if (amountRegex.test(value)) {
-      setAmount(value); // Allow only valid amount formats (numeric and decimals)
-    }
+  const handledueDateChange = (date) => {
+    setdueDate(date);
+    setIsdueCalendarOpen(false); // Close calendar after selecting a date
   };
 
-  const handleSubmit = (e) => {
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+                if (amountRegex.test(value) || value === "") {
+                  setAmount(value);
+                }
+  };
+
+   // Handle form submission
+   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave({ title, description, date, amount });
-      onClose();
+      const date = moment(Date).format("DD/MM/YYYY");
+      const dueDate = moment(DueDate).format("DD/MM/YYYY");
+      const OtherIncomeData = {
+        title,
+        description,
+        date,
+        dueDate,
+        amount
+      };
+
+      try {
+        const response = await axiosInstance.put(`/v2/income/update/${noteData._id}`,OtherIncomeData);
+        if(!!response.data){
+          fetchOtherIncome(); 
+          onClose(); 
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
     }
   };
 
@@ -84,11 +115,16 @@ const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
     setIsCalendarOpen(!isCalendarOpen); // Toggle calendar visibility
   };
 
+  const handledueCalendarIconClick = () => {
+    setIsdueCalendarOpen(!isCalendarOpen); // Toggle calendar visibility
+  };
+
   // Close calendar when clicking outside the modal or calendar
   const handleClickOutside = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
         setIsCalendarOpen(false); // Close calendar if clicked outside
+        setIsdueCalendarOpen(false); 
       }
     }
   };
@@ -135,7 +171,7 @@ const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
               </label>
               <div className="flex items-center relative" ref={datePickerRef}>
                 <DatePicker
-                  selected={date}
+                  selected={Date}
                   onChange={handleDateChange} // Update the date state
                   className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholderText="Select a date"
@@ -157,18 +193,18 @@ const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
               </label>
               <div className="flex items-center relative" ref={datePickerRef}>
                 <DatePicker
-                  selected={date}
-                  onChange={handleDateChange} // Update the date state
+                  selected={DueDate}
+                  onChange={handledueDateChange} // Update the date state
                   className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholderText="Select a date"
                   dateFormat="MM/dd/yyyy"
                   autoComplete="off"
-                  open={isCalendarOpen} // Control the visibility of the calendar
+                  open={isdueCalendarOpen} // Control the visibility of the calendar
                 />
                 {/* Calendar Icon */}
                 <i
                   className="fa-solid fa-calendar-days absolute right-10 text-[#202224] cursor-pointer"
-                  onClick={handleCalendarIconClick} // Toggle calendar visibility on icon click
+                  onClick={handledueCalendarIconClick} // Toggle calendar visibility on icon click
                 />
               </div>
             </div>
@@ -202,7 +238,6 @@ const EditIncome = ({ isOpen, onClose, noteData, onSave }) => {
             <button
               type="submit"
               className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-              disabled={!isFormValid}
             >
               Save
             </button>

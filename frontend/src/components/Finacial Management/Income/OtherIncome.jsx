@@ -10,6 +10,8 @@ import ViewIncome from "./ViewIncome";
 import "../../Sidebar/sidebar.css"; 
 import CreateIncome from "./CreateIncome";
 import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
+import axiosInstance from '../../Common/axiosInstance';
+import moment from 'moment';
 
 const OtherIncome = () => {
   const [activeButton, setActiveButton] = useState("otherIncome");
@@ -21,6 +23,7 @@ const OtherIncome = () => {
   const [isDeleteNoteOpen, setIsDeleteNoteOpen] = useState(false); 
   const [noteToDelete, setNoteToDelete] = useState(null); 
   const [isSecurityProtocolOpen, setIsSecurityProtocolOpen] = useState(false); 
+  const [OtherIncome, setOtherIncome] = useState([]);
 
   const cards = [
     {
@@ -127,7 +130,7 @@ const OtherIncome = () => {
 
   // Handle Delete Confirmation
   const handleDeleteNote = (note) => {
-    setCards(cards.filter((card) => card.id !== note.id)); // Remove the deleted card from the list
+    setOtherIncome(OtherIncome.filter((card) => card._id !== note.id)); // Remove the deleted card from the list
     closeDeleteNoteModal(); // Close the modal after deletion
   };
 
@@ -146,12 +149,25 @@ const OtherIncome = () => {
     }
   };
 
-  // Attach and detach event listener
+  
+  // Fetch Other Income from the API
+  const fetchOtherIncome = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/income/');
+        console.log(response.data.Income);
+        if(response.status === 200){
+           setOtherIncome(response.data.Income); 
+        }
+     
+      } catch (error) {
+        console.error('Error fetching Other Income:', error);
+      }
+    };
+
   useEffect(() => {
-    // Add event listener when the component mounts
+    fetchOtherIncome();
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      // Cleanup the event listener when the component unmounts
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
@@ -230,13 +246,13 @@ const OtherIncome = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {cards.map((card, index) => (
+              {OtherIncome.map((card, index) => (
                 <div
-                  key={card.id}
+                  key={card._id}
                   className="bg-white rounded-lg shadow-md relative"
                 >
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
-                    <span className="font-semibold">{card.title}</span>
+                    <span className="font-semibold">{!!card.title ? card.title : ""}</span>
                     <div className="flex items-center gap-2">
                       <i
                         className="border rounded p-2 bg-white text-[#5678E9] fa-solid fa-ellipsis-vertical cursor-pointer"
@@ -289,7 +305,7 @@ const OtherIncome = () => {
                       Amount Per Member
                     </h3>
                     <span className="text-sm text-[#5678E9] text-center lg:ml-[140px] flex ps-2 p-1 pe-1 lg:w-[60px] h-7 border rounded-3xl bg-blue-200">
-                      ₹{card.AmountMember}
+                      ₹{!!card.amount ? card.amount : " "}
                     </span>
                   </div>
                   <div className="d-flex  ps-3 pt-2 bg-[#FFFFFF]">
@@ -297,13 +313,13 @@ const OtherIncome = () => {
                       Total Member
                     </h3>
                     <span className="text-sm font-bold text-[#202224] lg:ml-[220px]">
-                      {card.TotalMember}
+                      {!!card.member ? card.member : ""}
                     </span>
                   </div>
                   <div className="d-flex  ps-3 pt-2 bg-[#FFFFFF]">
                     <h3 className="text-sm font-medium text-gray-600 ">Date</h3>
                     <span className="text-sm font-bold text-[#202224]  lg:ml-[230px] ">
-                      {card.date}
+                      {!!card.date ? moment(card.date).format("DD/MM/YYYY") : ""}
                     </span>
                   </div>
                   <div className="d-flex  ps-3 pt-2 bg-[#FFFFFF]">
@@ -311,7 +327,7 @@ const OtherIncome = () => {
                       Due Date
                     </h3>
                     <span className="text-sm font-bold text-[#202224]  lg:ml-[200px] ">
-                      {card.DueDate}
+                      {!!card.dueDate ? moment(card.dueDate).format("DD/MM/YYYY") : " "}
                     </span>
                   </div>
                   <div className=" ps-3 pt-2 bg-[#FFFFFF]">
@@ -319,7 +335,7 @@ const OtherIncome = () => {
                       Description
                     </h3>
                     <p className="text-sm font-bold text-[#202224]">
-                      {card.description}
+                      {!!card.description ? card.description : ""}
                     </p>
                   </div>
                 </div>
@@ -333,19 +349,21 @@ const OtherIncome = () => {
       <CreateIncome
         isOpen={isCreateNoteOpen}
         onClose={closeCreateNoteModal}
-       
+        fetchOtherIncome={fetchOtherIncome}
       />
 
       <EditIncome
         isOpen={isEditNoteOpen}
         onClose={closeEditNoteModal}
         noteData={selectedNote}
+        fetchOtherIncome={fetchOtherIncome}
       />
       <DeleteIncome
         isOpen={isDeleteNoteOpen}
         contact={noteToDelete}
         onDelete={handleDeleteNote}
         onCancel={closeDeleteNoteModal}
+        fetchOtherIncome={fetchOtherIncome}
       />
 
       {/* SecurityProtocol Modal */}
