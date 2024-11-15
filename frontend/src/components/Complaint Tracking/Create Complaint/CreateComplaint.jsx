@@ -301,7 +301,7 @@ const CreateComplaint = () => {
                       height="25"
                       className="rounded-full"
                     /> */}
-                    {item.Wing + " "+item.Unit}
+             <span style={{color:"rgba(86, 120, 233, 1)",fontWeight:"700",marginRight:"8px"}}> { item.Wing } </span> {" "+item.Unit}
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden lg:table-cell text-gray-600">
                     <Badge

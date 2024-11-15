@@ -1,31 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Upload } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
-import timeIcon from "../../components/assets/Vector.png"; // Import your custom time icon
+import timeIcon from "../../components/assets/Vector.png";
 
 const AddGuard = ({ isOpen, onClose }) => {
   const [guardName, setGuardName] = useState("");
   const [number, setNumber] = useState("");
-  const [shiftDate, setShiftDate] = useState(null); // Store as Date object
-  const [shiftTime, setShiftTime] = useState(null); // Store as dayjs object
+  const [shiftDate, setShiftDate] = useState(null);
+  const [shiftTime, setShiftTime] = useState(null);
   const [selectShift, setSelectShift] = useState("");
   const [gender, setGender] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [Photo, setPhoto] = useState(null); // State to store the uploaded photo
+  const [photo, setPhoto] = useState(null);
+  const [aadharCard, setAadharCard] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
-  const timePickerRef = useRef(null); // Ref for the TimePicker
+  const timePickerRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const dropZoneRef = useRef(null);
 
-  // Regex for validation
   const nameRegex = /^[A-Za-z\s]+$/;
   const numberRegex = /^[6789][0-9]{0,9}$/;
   const shiftTimeRegex = /^[0-9]{2}:[0-9]{2}$/;
 
-  // Form validation
   const isFormValid =
     guardName &&
     number &&
@@ -33,6 +35,7 @@ const AddGuard = ({ isOpen, onClose }) => {
     shiftTime &&
     selectShift &&
     gender &&
+    aadharCard &&
     nameRegex.test(guardName) &&
     numberRegex.test(number) &&
     shiftTimeRegex.test(shiftTime);
@@ -49,21 +52,19 @@ const AddGuard = ({ isOpen, onClose }) => {
         shiftTime,
         selectShift,
         gender,
-        Photo, // Include the photo data in the form submission
+        photo,
+        aadharCard,
       });
-      // Handle form submission logic here
-    } else {
-      console.log("Form is invalid");
     }
   };
 
   const handleDateChange = (date) => {
-    setShiftDate(date); // Store the selected date as a Date object
-    setIsCalendarOpen(false); // Close calendar after selecting a date
+    setShiftDate(date);
+    setIsCalendarOpen(false);
   };
 
   const handleTimeChange = (value) => {
-    const time = value ? value.format("HH:mm") : ""; // Format time as HH:mm
+    const time = value ? value.format("HH:mm") : "";
     setShiftTime(time);
   };
 
@@ -73,11 +74,10 @@ const AddGuard = ({ isOpen, onClose }) => {
   };
 
   const handleClickOutside = (e) => {
-    // Ignore clicks inside the modal and TimePicker
     if (
       modalRef.current &&
       !modalRef.current.contains(e.target) &&
-      !timePickerRef.current.contains(e.target)
+      !timePickerRef.current?.contains(e.target)
     ) {
       handleClose();
     }
@@ -87,6 +87,54 @@ const AddGuard = ({ isOpen, onClose }) => {
     setIsCalendarOpen(!isCalendarOpen);
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhoto(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAadharCardChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+        setAadharCard(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setAadharCard(file);
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -94,32 +142,14 @@ const AddGuard = ({ isOpen, onClose }) => {
     };
   }, []);
 
-  // Handle photo upload
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result); // Set the photo as the base64 encoded string
-      };
-      reader.readAsDataURL(file); // Read the selected file as a Data URL
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div
-      ref={modalRef}
-      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4"
-    >
-      <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
+      <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg" ref={modalRef}>
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">Add Security</span>
-          <button
-            className="text-gray-600 hover:text-gray-800"
-            onClick={handleClose}
-          >
+          <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -127,31 +157,24 @@ const AddGuard = ({ isOpen, onClose }) => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Photo Upload */}
           <div>
-            <div className="d-flex">
-              {/* Circle container for the photo */}
-              <div className="border bg-[#F4F4F4]  rounded-full w-[50px] h-[50px]  flex justify-center items-center">
-                {Photo ? (
-                  <img
-                    src={Photo}
-                    alt="Guard"
-                    className="w-[50px] h-[50px] object-cover rounded-full"
-                  />
+            <div className="flex items-center">
+              <div className="border bg-[#F4F4F4] rounded-full w-[50px] h-[50px] flex justify-center items-center">
+                {photo ? (
+                  <img src={photo} alt="Guard" className="w-[50px] h-[50px] object-cover rounded-full" />
                 ) : (
                   <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
                 )}
               </div>
-              {/* Button to upload photo */}
               <button
                 type="button"
                 className="ml-5 text-blue-500 no-underline"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("photoInput").click()}
               >
                 Add Photo
               </button>
             </div>
-            {/* Hidden file input */}
             <input
-              id="fileInput"
+              id="photoInput"
               type="file"
               accept="image/*"
               onChange={handlePhotoChange}
@@ -166,7 +189,7 @@ const AddGuard = ({ isOpen, onClose }) => {
             </label>
             <input
               type="text"
-              placeholder="Enter Guard Name"
+              placeholder="Enter Full Name"
               value={guardName}
               onChange={(e) => {
                 const value = e.target.value;
@@ -174,11 +197,11 @@ const AddGuard = ({ isOpen, onClose }) => {
                   setGuardName(value);
                 }
               }}
-              className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          {/* Guard Number */}
+          {/* Phone Number */}
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
               Phone Number<span className="text-red-500">*</span>
@@ -197,15 +220,16 @@ const AddGuard = ({ isOpen, onClose }) => {
             />
           </div>
 
-          <div className="d-flex">
-            <div>
+          {/* Gender and Shift */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Gender<span className="text-red-500">*</span>
               </label>
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                className="w-[190px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -213,24 +237,23 @@ const AddGuard = ({ isOpen, onClose }) => {
               </select>
             </div>
 
-            {/* Shift Date */}
-            <div>
-              <label className="block ml-6 text-left font-medium text-[#202224] mb-1">
+            <div className="w-1/2">
+              <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift<span className="text-red-500">*</span>
               </label>
               <select
                 value={selectShift}
                 onChange={(e) => setSelectShift(e.target.value)}
-                className="w-[190px] ml-5 px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               >
                 <option value="">Select Shift</option>
-                <option value="Morning">Day</option>
+                <option value="Day">Day</option>
                 <option value="Night">Night</option>
               </select>
             </div>
           </div>
 
-          {/* Shift Time */}
+          {/* Date and Time */}
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
@@ -240,29 +263,29 @@ const AddGuard = ({ isOpen, onClose }) => {
                 <DatePicker
                   selected={shiftDate}
                   onChange={handleDateChange}
-                  className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
-                  placeholderText="Select a date"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                  placeholderText="Select Date"
                   dateFormat="dd/MM/yyyy"
                   autoComplete="off"
                   open={isCalendarOpen}
                 />
                 <i
-                  className="fa-solid fa-calendar-days absolute right-10 text-[#202224] cursor-pointer"
+                  className="fa-solid fa-calendar-days absolute right-3 text-[#202224] cursor-pointer"
                   onClick={handleCalendarIconClick}
                 />
               </div>
             </div>
 
-            <div className="w-1/2 relative">
+            <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift Time<span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center" ref={timePickerRef}>
+              <div ref={timePickerRef}>
                 <TimePicker
-                  value={shiftTime ? dayjs(shiftTime, "HH:mm") : null} // Pass the correct time format
+                  value={shiftTime ? dayjs(shiftTime, "HH:mm") : null}
                   format="HH:mm"
-                  suffixIcon={<img src={timeIcon} alt="Time Icon" />}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
+                  suffixIcon={<img src={timeIcon} alt="Time" />}
+                  className="w-full border border-gray-300 rounded-lg"
                   popupClassName="custom-time-picker-popup"
                   onChange={handleTimeChange}
                 />
@@ -270,11 +293,67 @@ const AddGuard = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-2">
+          {/* Aadhar Card Upload */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+              Upload Aadhar Card<span className="text-red-500">*</span>
+            </label>
+            <div
+              ref={dropZoneRef}
+              className={`border-2 border-dashed rounded-lg p-4 text-center ${
+                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleAadharCardChange}
+                className="hidden"
+                accept=".jpg,.jpeg,.png,.pdf"
+              />
+              {aadharCard ? (
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-sm text-gray-600">{aadharCard.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAadharCard(null);
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-4">
             <button
               type="button"
-              className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
               onClick={handleClose}
             >
               Cancel
@@ -282,14 +361,14 @@ const AddGuard = ({ isOpen, onClose }) => {
 
             <button
               type="submit"
-              className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
+              className={`flex-1 px-4 py-2 rounded-lg ${
                 isFormValid
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                  : "bg-[#F6F8FB] text-[#202224]"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
               disabled={!isFormValid}
             >
-              {isFormValid ? "Save" : "Create"}
+              Create
             </button>
           </div>
         </form>

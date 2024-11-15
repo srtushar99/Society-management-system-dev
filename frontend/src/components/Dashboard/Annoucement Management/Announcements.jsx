@@ -255,9 +255,9 @@ const Annoucements = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" >
               {cards.map((card, index) => (
-                <div key={card._id} className="bg-white rounded-lg shadow-md relative">
+                <div key={card._id} className="bg-white rounded-lg shadow-md relative"style={{borderRadius:"15px"}}>
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
                     <span className="font-semibold">{!!card.Announcement_Title ? card.Announcement_Title : " "}</span>
                     <div className="flex items-center gap-2">
