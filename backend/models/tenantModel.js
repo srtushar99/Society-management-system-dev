@@ -1,19 +1,19 @@
 const { Schema, model } = require("mongoose");
 
-const Tenatschema= new Schema({
-    Tenant_image:{
-        type:String,
-         required:true
-    },
-    Owner_full_name:{
+const tenantschema= new Schema({
+    Owner_Full_name:{
         type:String,
         required:true
     },
-    Owner_phone_number:{
+    Owner_Phone:{
         type:String,
         required:true
     },
-    Owner_address:{
+    Owner_Address:{
+        type:String,
+        required:true
+    },
+    profileImage:{
         type:String,
         required:true
     },
@@ -27,16 +27,18 @@ const Tenatschema= new Schema({
     },
     Email_address:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     Age:{
         type:Number,
         required:true
     },
-    Gender:{
-        type:String,
-        required:true,
-        enum: ['Male', 'Female', 'Other']
+    Gender: 
+    { 
+        type: String, 
+        required: true, 
+        enum: ['Male', 'Female', 'Other'] 
     },
     Wing:{
         type:String,
@@ -79,20 +81,24 @@ const Tenatschema= new Schema({
         vehicle_name: { type: String, required: true },
         vehicle_number: { type: String, required: true }
     }],
-    // cloudinary_id: {
-    //     type: String,
-    //   },
+    password: {  // Add this field to store the hashed password
+        type: String,
+        required: true
+    },
     role: {
         type: String,
         enum: ['admin', 'resident', 'security'], 
         default: 'resident' 
     },
-   password: {  // Add this field to store the hashed password
-        type: String,
-        required: true
+    Resident_status:{
+        type:String,
+        default:"Tenante",
     },
+    UnitStatus:{
+        type:String,
+        default:"Occupied"
+    }
+    
 },{timestamps:true})
-
-
-const Tenant = model("Tenant",Tenatschema);
-module.exports=Tenant;
+const Tenante = model("Tenante",tenantschema)
+module.exports=Tenante;
