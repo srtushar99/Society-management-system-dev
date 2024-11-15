@@ -177,7 +177,7 @@ const Owner = () => {
 
         <div className="lg:mt-[10px] ml-[325px]">
           <div className="mt-4 px-4 sm:px-8">
-            {/* Maintenance Button */}
+       
             <button
               onClick={() => handleButtonClick("owner")}
               className={`w- lg:h-[50px] sm:w-[100px] px-4 py-3 rounded-t-md transition-all ${
@@ -189,10 +189,9 @@ const Owner = () => {
               Owner
             </button>
 
-            {/* Other Income Link */}
             <Link
               to="/tenant"
-              onClick={() => handleButtonClick("tenant")} // Update activeButton on link click
+           
               className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-t-md no-underline transition-all ${
                 activeButton === "tenant"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"

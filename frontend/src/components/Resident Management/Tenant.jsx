@@ -194,6 +194,8 @@ const Tenant = () => {
           </div>
           <HeaderBaner />
         </header>
+
+
         <div className="lg:mt-[10px] ml-[300px] bg">
           <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
             <Link
@@ -203,23 +205,25 @@ const Tenant = () => {
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
-              onClick={() => handleButtonClick("owner")}
+         
             >
               Owner
             </Link>
             <Link
               to="/tenant"
-              className={`w-full lg:h-[50px] sm:w-[150px] text-[] px-4 py-3 rounded-top no-underline ${
+              className={`w-full lg:h-[50px] sm:w-[150px]  px-4 py-3 rounded-top no-underline ${
                 activeButton === "tenant"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
-              onClick={() => handleButtonClick("tenant")}
+ 
             >
               Tenant
             </Link>
           </div>
         </div>
+      
+      
         <div className=" w-[1500px]  mt-2 mb-5 ml-[340px]  ">
           <div
             onSubmit={handleSubmit}
