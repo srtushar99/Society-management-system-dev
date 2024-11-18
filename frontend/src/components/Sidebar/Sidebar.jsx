@@ -71,6 +71,7 @@ const Sidebar = () => {
     if (link === "announcements") {
       navigate("/announcements"); // Redirect to the announcements page
     }
+    
   };
 
   const getIconStyle = (link) => ({
@@ -338,7 +339,7 @@ const Sidebar = () => {
       
     </Dropdown.Menu>
   </Dropdown>
-</div>
+    </div>
 
           {/* Security Management Dropdown */}
           <div style={{ position: "relative", }}>
