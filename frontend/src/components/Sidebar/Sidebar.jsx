@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import DashboardIcon from "./icons/Widget 5.png";
 import FinancialIcon from "./icons/dollar-square.png";
@@ -13,15 +13,34 @@ import "./sidebar.css";
 
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(false); // State to manage sidebar visibility
-  const [financialActive, setFinancialActive] = useState(""); // Track which financial item is active
-  const [securityActive, setSecurityActive] = useState(""); // Track which security item is active
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [financialActive, setFinancialActive] = useState("");
+  const [securityActive, setSecurityActive] = useState("");
   const [showSecurityDropdown, setShowSecurityDropdown] = useState(false);
   const [showFinancialDropdown, setShowFinancialDropdown] = useState(false);
   const [showComplaintsDropdown, setShowComplaintsDropdown] = useState(false);
   const [complaintsActive, setComplaintsActive] = useState('');
 
-  const navigate = useNavigate(); // Hook to navigate programmatically
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const path = location.pathname.split('/')[1];
+    if (path === 'visitorlogs' || path === 'securityprotocol') {
+      setActiveLink('security-Management');
+      setSecurityActive(path);
+      setShowSecurityDropdown(true);
+    } else if (path === 'createcomplaint' || path === 'requesttracking') {
+      setActiveLink('Complaint-Tracking');
+      setComplaintsActive(path);
+    } else if (path === 'income' || path === 'expense' || path === 'notes') {
+      setActiveLink('Financial-Manegement');
+      setFinancialActive(path);
+      setShowFinancialDropdown(true);
+    } else {
+      setActiveLink(path || 'dashboard');
+    }
+  }, [location]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -44,12 +63,12 @@ const Sidebar = () => {
     transition: "background 0.3s, color 0.3s",
     width: "90%",
   };
+
   const getLinkStyle = (link) => ({
     ...navLinkStyle,
-    background:
-      activeLink === link
-        ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
-        : "transparent",
+    background: activeLink === link
+      ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
+      : "transparent",
     color: activeLink === link ? "#FFFFFF" : "#4F4F4F",
   });
 
@@ -59,19 +78,15 @@ const Sidebar = () => {
     width: "7px",
     height: "52px",
     borderRadius: "0 5px 5px 0",
-    background:
-      activeLink === link
-        ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
-        : "transparent",
+    background: activeLink === link
+      ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
+      : "transparent",
   });
 
-  const handleLinkClick = (link) => {
+  const handleLinkClick = (link, path) => {
     setActiveLink(link);
     closeSidebar();
-    if (link === "announcements") {
-      navigate("/announcements"); // Redirect to the announcements page
-    }
-    
+    navigate(path);
   };
 
   const getIconStyle = (link) => ({
@@ -83,45 +98,35 @@ const Sidebar = () => {
 
   const handleFinancialClick = (item, path) => {
     setFinancialActive(item);
-    setActiveLink(item);
-    navigate(path); // Navigate to the page when item is clicked
-    setShowFinancialDropdown(false);
+    setActiveLink("Financial-Manegement");
+    navigate(path);
+    setShowFinancialDropdown(true);
   };
 
   const handleSecurityClick = (item, path) => {
     setSecurityActive(item);
-    setActiveLink("security-Management"); // Update active state for the dropdown items
-    navigate(path); // Navigate to the page when item is clicked
-    setShowSecurityDropdown(false); // Close the dropdown
+    setActiveLink("security-Management");
+    navigate(path);
   };
 
   const handleComplaintsClick = (item, path) => {
-    setComplaintsActive(item); // Update active state for Complaint Tracking
-    setActiveLink(item);
+    setComplaintsActive(item);
+    setActiveLink("Complaint-Tracking");
     navigate(path);
-    setShowComplaintsDropdown(false);
+    setShowComplaintsDropdown(true);
   };
 
-  const dropdownItemStyle = (item) => ({
-    color: securityActive === item ? "rgba(32, 34, 36, 1)" : "#4F4F4F",
-    backgroundColor:
-      securityActive === item ? "rgba(255, 255, 255, 0.1)" : "transparent",
+  const dropdownItemStyle = (item, activeItem) => ({
+    color: activeItem === item ? "#FE512E" : "#4F4F4F",
+    backgroundColor: activeItem === item ? "rgba(254, 81, 46, 0.1)" : "transparent",
     display: "flex",
     alignItems: "center",
     padding: "10px 15px",
-  });
-
-  const dropdownItem = (item) => ({
-    color: complaintsActive === item ? "rgba(32, 34, 36, 1)" : "#4F4F4F",
-    backgroundColor:
-      complaintsActive === item ? "rgba(255, 255, 255, 0.1)" : "transparent",
-    display: "flex",
-    alignItems: "center",
-    padding: "10px 15px",
+    borderRadius: "5px",
   });
 
   const dropdownIndicatorStyle = {
-    background: "rgba(32, 34, 36, 1)",
+    background: "rgba(254, 81, 46, 1)",
     width: "2px",
     height: "26px",
     borderRadius: "10px 0px 0px 0px",
@@ -173,7 +178,7 @@ const Sidebar = () => {
             <Link
               to="/dashboard"
               style={getLinkStyle("dashboard")}
-              onClick={() => handleLinkClick("dashboard")}
+              onClick={() => handleLinkClick("dashboard", "/dashboard")}
             >
               <img
                 src={DashboardIcon}
@@ -189,7 +194,7 @@ const Sidebar = () => {
             <Link
               to="/Resident-Manegement"
               style={getLinkStyle("Resident-Manegement")}
-              onClick={() => handleLinkClick("Resident-Manegement")}
+              onClick={() => handleLinkClick("Resident-Manegement", "/Resident-Manegement")}
             >
               <i
                 className="fa-solid fa-money-bill"
@@ -204,12 +209,12 @@ const Sidebar = () => {
               Resident Management
             </Link>
           </div>
-          {/* Financial Management Dropdown */}
+
           <div style={{ position: "relative", zIndex: "9898988" }}>
             <div style={getIndicatorStyle("Financial-Manegement")}></div>
             <Dropdown
-              onClick={() => handleLinkClick("Financial-Manegement")}
               show={showFinancialDropdown}
+              onToggle={(isOpen) => setShowFinancialDropdown(isOpen)}
             >
               <Dropdown.Toggle
                 variant="link"
@@ -217,7 +222,7 @@ const Sidebar = () => {
                   ...getLinkStyle("Financial-Manegement"),
                   fontSize: "14px",
                 }}
-                onClick={() => setShowFinancialDropdown(!showFinancialDropdown)}
+                onClick={() => handleFinancialClick("income", "/income")}
               >
                 <img
                   src={FinancialIcon}
@@ -226,17 +231,16 @@ const Sidebar = () => {
                 />
                 Financial Management
               </Dropdown.Toggle>
-              <Dropdown.Menu className="w-[225px] border-0 bg-">
+              <Dropdown.Menu className="w-[225px] border-0 bg-white shadow-lg rounded-md mt-2">
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("Income")}
-                  onClick={() => handleFinancialClick("Income", "/income")}
+                  style={dropdownItemStyle("income", financialActive)}
+                  onClick={() => handleFinancialClick("income", "/income")}
                 >
-                  {financialActive === "Income" && (
+                  {financialActive === "income" && (
                     <div style={dropdownIndicatorStyle}></div>
                   )}
                   <div
-                    className="text-[#4F4F4F]"
                     style={{
                       marginLeft: "20px",
                       display: "flex",
@@ -248,10 +252,10 @@ const Sidebar = () => {
                 </Dropdown.Item>
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("Expense")}
-                  onClick={() => handleFinancialClick("Expense", "/expense")}
+                  style={dropdownItemStyle("expense", financialActive)}
+                  onClick={() => handleFinancialClick("expense", "/expense")}
                 >
-                  {financialActive === "Expense" && (
+                  {financialActive === "expense" && (
                     <div style={dropdownIndicatorStyle}></div>
                   )}
                   <div
@@ -266,10 +270,10 @@ const Sidebar = () => {
                 </Dropdown.Item>
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("Notes")}
-                  onClick={() => handleFinancialClick("Notes", "/notes")}
+                  style={dropdownItemStyle("notes", financialActive)}
+                  onClick={() => handleFinancialClick("notes", "/notes")}
                 >
-                  {financialActive === "Notes" && (
+                  {financialActive === "notes" && (
                     <div style={dropdownIndicatorStyle}></div>
                   )}
                   <div
@@ -284,69 +288,91 @@ const Sidebar = () => {
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-
-
           </div>
+
           <div style={{ position: "relative" }}>
-            <div style={getIndicatorStyle("Facilities-Management")}></div>
+            <div style={getIndicatorStyle("Facility-Management")}></div>
             <Link
               to="/Facility-Management"
-              style={getLinkStyle("Facilities-Management")}
-              onClick={() => handleLinkClick("Facilities-Management")}
+              style={getLinkStyle("Facility-Management")}
+              onClick={() => handleLinkClick("Facility-Management", "/Facility-Management")}
             >
               <img
                 src={FacilitiesIcon}
-                style={getIconStyle("Facilities-Management")}
+                style={getIconStyle("Facility-Management")}
                 alt="Facilities"
               />
               Facilities Management
             </Link>
           </div>
 
-         {/* Complaint Tracking Dropdown */}
-         <div style={{ position: 'relative', }}>
-  <div style={getIndicatorStyle('Complaint-Tracking')}></div>
-  <Dropdown onClick={() => handleLinkClick('Complaint-Tracking')} show={showComplaintsDropdown}>
-    <Dropdown.Toggle
-      variant="link"
-      style={{ ...getLinkStyle('Complaint-Tracking'), fontSize: '14px' }}
-      onClick={() => setShowComplaintsDropdown(!showComplaintsDropdown)}
-    >
-      <img src={ComplaintsTrackingIcon} style={getIconStyle('Complaint-Tracking')} alt="Complaint Tracking" />
-      Complaint Tracking
-    </Dropdown.Toggle>
-    <Dropdown.Menu className="w-[225px] border-0">
-    <Dropdown.Item
-        href="#"
-        style={dropdownItem('CreateComplaint')}
-        onClick={() => handleComplaintsClick('CreateComplaint', '/createcomplaint')}
-      >
-        {complaintsActive === 'CreateComplaint' && <div style={dropdownIndicatorStyle}></div>}
-        <div className="text-[#4F4F4F]" style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
-          Create Complaint
-        </div>
-      </Dropdown.Item>
-      <Dropdown.Item
-        href="#"
-        style={dropdownItem('RequestTracking')}
-        onClick={() => handleComplaintsClick('RequestTracking', '/requesttracking')}
-      >
-        {complaintsActive === 'RequestTracking' && <div style={dropdownIndicatorStyle}></div>}
-        <div className="text-[#4F4F4F]" style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
-          Request Tracking
-        </div>
-      </Dropdown.Item>
-      
-    </Dropdown.Menu>
-  </Dropdown>
-    </div>
+          <div style={{ position: "relative" }}>
+            <div style={getIndicatorStyle("Complaint-Tracking")}></div>
+            <Dropdown
+              show={showComplaintsDropdown}
+              onToggle={(isOpen) => setShowComplaintsDropdown(isOpen)}
+            >
+              <Dropdown.Toggle
+                variant="link"
+                style={{
+                  ...getLinkStyle("Complaint-Tracking"),
+                  fontSize: "14px",
+                }}
+                onClick={() => handleComplaintsClick("createcomplaint", "/createcomplaint")}
+              >
+                <img
+                  src={ComplaintsTrackingIcon}
+                  style={getIconStyle("Complaint-Tracking")}
+                  alt="Complaint Tracking"
+                />
+                Complaint Tracking
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="w-[225px] border-0 bg-white shadow-lg rounded-md mt-2">
+                <Dropdown.Item
+                  href="#"
+                  style={dropdownItemStyle("createcomplaint", complaintsActive)}
+                  onClick={() => handleComplaintsClick("createcomplaint", "/createcomplaint")}
+                >
+                  {complaintsActive === "createcomplaint" && (
+                    <div style={dropdownIndicatorStyle}></div>
+                  )}
+                  <div
+                    style={{
+                      marginLeft: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    Create Complaint
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  href="#"
+                  style={dropdownItemStyle("requesttracking", complaintsActive)}
+                  onClick={() => handleComplaintsClick("requesttracking", "/requesttracking")}
+                >
+                  {complaintsActive === "requesttracking" && (
+                    <div style={dropdownIndicatorStyle}></div>
+                  )}
+                  <div
+                    style={{
+                      marginLeft: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    Request Tracking
+                  </div>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
 
-          {/* Security Management Dropdown */}
           <div style={{ position: "relative", }}>
             <div style={getIndicatorStyle("security-Management")}></div>
             <Dropdown
-              onClick={() => handleLinkClick("security-Management")}
               show={showSecurityDropdown}
+              onToggle={(isOpen) => setShowSecurityDropdown(isOpen)}
             >
               <Dropdown.Toggle
                 variant="link"
@@ -354,7 +380,7 @@ const Sidebar = () => {
                   ...getLinkStyle("security-Management"),
                   fontSize: "14px",
                 }}
-                onClick={() => setShowSecurityDropdown(!showSecurityDropdown)}
+                onClick={() => handleFinancialClick("visitorlogs", "/visitorlogs")}
               >
                 <img
                   src={SecurityIcon}
@@ -363,19 +389,16 @@ const Sidebar = () => {
                 />
                 Security Management
               </Dropdown.Toggle>
-              <Dropdown.Menu className="w-[225px] border-0">
+              <Dropdown.Menu className="w-[225px] border-0 bg-white shadow-lg rounded-md mt-2">
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("VisitorLogs")}
-                  onClick={() =>
-                    handleSecurityClick("VisitorLogs", "/visitorlogs")
-                  }
+                  style={dropdownItemStyle("visitorlogs", securityActive)}
+                  onClick={() => handleSecurityClick("visitorlogs", "/visitorlogs")}
                 >
-                  {securityActive === "VisitorLogs" && (
+                  {securityActive === "visitorlogs" && (
                     <div style={dropdownIndicatorStyle}></div>
                   )}
                   <div
-                    className="text-[#4F4F4F]"
                     style={{
                       marginLeft: "20px",
                       display: "flex",
@@ -387,15 +410,10 @@ const Sidebar = () => {
                 </Dropdown.Item>
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("Security Protocol")}
-                  onClick={() =>
-                    handleSecurityClick(
-                      "Security Protocol",
-                      "/securityprotocol"
-                    )
-                  }
+                  style={dropdownItemStyle("securityprotocol", securityActive)}
+                  onClick={() => handleSecurityClick("securityprotocol", "/securityprotocol")}
                 >
-                  {securityActive === "Security Protocol" && (
+                  {securityActive === "securityprotocol" && (
                     <div style={dropdownIndicatorStyle}></div>
                   )}
                   <div
@@ -417,7 +435,8 @@ const Sidebar = () => {
             <Link
               to="/security-guard"
               style={getLinkStyle("security-guard")}
-              onClick={() => handleLinkClick("security-guard")}
+              onClick={() => handleLinkClick("security-guard", "/security-guard")
+              }
             >
               <img
                 src={SecurityGuardIcon}
@@ -433,7 +452,9 @@ const Sidebar = () => {
             <Link
               to="/announcements"
               style={getLinkStyle("announcements")}
-              onClick={() => handleLinkClick("announcements")}
+              onClick={() =>
+                handleLinkClick("announcements", "/announcements")
+              }
             >
               <img
                 src={AnnouncementIcon}
@@ -450,7 +471,7 @@ const Sidebar = () => {
             to="/logout"
             className="no-underline"
             style={{ color: "#E74C3C", padding: "0 10px", height: "52px" }}
-            onClick={() => handleLinkClick("logout")}
+            onClick={() => handleLinkClick("logout", "/logout")}
           >
             <i
               className="fa fa-sign-out"
