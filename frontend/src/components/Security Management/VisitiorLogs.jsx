@@ -105,9 +105,9 @@ const VisitorLogs = () => {
     <div className="flex bg-gray-100 w-full h-full">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        {/* Header */}
+        
         <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md"style={{padding:"35px 10px"}}>
-          {/* Breadcrumb Navigation */}
+         
           <div className="flex items-center space-x-2 text-gray-600">
             <Link to="/dashboard" className="text-[#A7A7A7] no-underline ms-4 font-semibold">
               Home
@@ -164,7 +164,7 @@ const VisitorLogs = () => {
         </header>
 
         <div className="ps-6 pe-6 w-full">
-          {/* Visitor Table */}
+         
           <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1560px] bg-white">
             <h1 className="p-3 text-3xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>
             <div />
@@ -184,7 +184,7 @@ const VisitorLogs = () => {
                   <tr key={index} className="border-t border-gray-200">
                     <td className="p-3 pt-3 pb-2 flex items-center">
                       <img
-                        src={AvatarImage} // Dynamically display the visitor's image
+                        src={AvatarImage} 
                         alt="visitor avatar"
                         className="w-10 h-10 rounded-full mr-3"
                       />

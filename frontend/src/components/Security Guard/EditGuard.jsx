@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X, FileImage, Download } from 'lucide-react';
+import { X, FileImage, Download, Upload } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import timeIcon from "../../components/assets/Vector.png";
 import AvatarImage from '../assets/Avatar.png';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -20,18 +19,14 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
   const [gender, setGender] = useState("");
   const [photo, setPhoto] = useState(null);
   const [aadharCard, setAadharCard] = useState(null);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  const [isDragging, setIsDragging] = useState(false); // For drag-and-drop state
 
   const modalRef = useRef(null);
-  const datePickerRef = useRef(null);
   const fileInputRef = useRef(null);
+  const dropZoneRef = useRef(null);
 
   const navigate = useNavigate();
-
-  const nameRegex = /^[A-Za-z\s]*$/;
-  const numberRegex = /^[0-9]*$/;
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  const timeRegex = /^([0-9]{2}):([0-9]{2})$/;
 
   useEffect(() => {
     if (isOpen && guard) {
@@ -75,6 +70,25 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
     }
   };
 
+  // Drag-and-drop handlers for the Aadhar Card upload
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleAadharCardChange({ target: { files: [file] } });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({
@@ -104,28 +118,28 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Photo Upload */}
-          <div className="flex items-center">
-            <div className="relative w-12 h-12">
+          <div className="flex items-center mb-4 space-x-4">
+            <div className="relative">
               <img
                 src={photo || AvatarImage}
                 alt="Profile"
                 className="w-12 h-12 rounded-full object-cover"
               />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="absolute -right-4 top-8 text-blue-500 text-sm"
-              >
-                Add Photo
-              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
             </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="hidden"
-            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Add Photo
+            </button>
           </div>
 
           {/* Full Name */}
@@ -192,14 +206,12 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Shift Date<span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <DatePicker
-                  selected={date}
-                  onChange={setDate}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg"
-                  dateFormat="dd/MM/yyyy"
-                />
-              </div>
+              <DatePicker
+                selected={date}
+                onChange={setDate}
+                className="w-full p-2.5 border border-gray-300 rounded-lg"
+                dateFormat="dd/MM/yyyy"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -216,28 +228,58 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
 
           {/* Aadhar Card Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-left font-medium text-[#202224] mb-1">
               Upload Aadhar Card<span className="text-red-500">*</span>
             </label>
-            {aadharCard ? (
-              <div className="flex items-center justify-between p-2 border border-gray-200 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <FileImage className="h-5 w-5 text-blue-500" />
-                  <div>
-                    <p className="text-sm text-gray-700">{aadharCard.name}</p>
-                    <p className="text-xs text-gray-500">{aadharCard.size}</p>
-                  </div>
-                </div>
-                <Download className="h-5 w-5 text-gray-400 cursor-pointer" />
-              </div>
-            ) : (
+            <div
+              ref={dropZoneRef}
+              className={`border-2 border-dashed rounded-lg p-4 text-center ${
+                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
               <input
+                ref={fileInputRef}
                 type="file"
                 onChange={handleAadharCardChange}
+                className="hidden"
                 accept=".jpg,.jpeg,.png,.pdf"
-                className="w-full p-2 border border-gray-300 rounded-lg"
               />
-            )}
+              {aadharCard ? (
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-sm text-gray-600">{aadharCard.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAadharCard(null);
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Action Buttons */}
