@@ -30,7 +30,11 @@ const Sidebar = () => {
       setActiveLink('security-Management');
       setSecurityActive(path);
       setShowSecurityDropdown(true);
-    } else if (path === 'createcomplaint' || path === 'requesttracking') {
+    } 
+    else if (path === 'edit-profile') {
+      setActiveLink('dashboard');
+    }
+    else if (path === 'createcomplaint' || path === 'requesttracking') {
       setActiveLink('Complaint-Tracking');
       setComplaintsActive(path);
     } else if (path === 'income' || path === 'expense' || path === 'notes') {
@@ -173,7 +177,7 @@ const Sidebar = () => {
         </div>
 
         <Nav className="flex-column">
-          <div style={{ position: "relative" }}>
+        <div style={{ position: "relative" }}>
             <div style={getIndicatorStyle("dashboard")}></div>
             <Link
               to="/dashboard"
