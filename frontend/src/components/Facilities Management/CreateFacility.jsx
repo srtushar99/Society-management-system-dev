@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -15,6 +15,8 @@ const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false); // Show notification after form submission
   const [notificationData, setNotificationData] = useState(null); // To store notification data
+
+  const datePickerRef = useRef(null);
 
   // Regular expressions for validation
   const nameRegex = /^[A-Za-z\s]+$/;
@@ -97,6 +99,11 @@ const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
     navigate("/Facility-Management"); // Redirect to the dashboard when modal is closed
   };
 
+  const ClosePopup = () => {
+    ClearAllData();
+    handleClose();
+  };
+
   const handleDateChange = (date) => {
     setDate(date);
     setIsCalendarOpen(false);
@@ -105,6 +112,21 @@ const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
   const handleCalendarIconClick = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
+
+  const handleClickOutside = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
+        setIsCalendarOpen(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!isOpen) return null; // Don't render anything if the modal is closed
 
@@ -165,7 +187,7 @@ const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
             <label className="block text-left font-medium text-gray-700 mb-1">
               Schedule Service Date
             </label>
-            <div className="flex items-center">
+            <div className="flex items-center relative" ref={datePickerRef}>
               <DatePicker
                 selected={date}
                 onChange={handleDateChange}
@@ -205,7 +227,7 @@ const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
             <button
               type="button"
               className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              onClick={handleClose}
+              onClick={ClosePopup}
             >
               Cancel
             </button>

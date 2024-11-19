@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../../Sidebar/Sidebar';
 import NotificationIcon from "../../assets/notification-bing.png"; 
@@ -9,6 +9,8 @@ import ViewExpense from './ViewExpense';
 import DeleteExpense from './DeleteExpense';
 import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 import { FileImage, FileIcon as FilePdf } from 'lucide-react';
+import axiosInstance from '../../Common/axiosInstance';
+import moment from 'moment';
 
 const initialData = [
   { id: 1, title: 'Rent or Mortgage', description: 'A visual representation of your spending categories...', date: '10/02/2024', Amount: '1000', billFormat: 'JPG'},
@@ -32,6 +34,7 @@ const Expense = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedExpenseForView, setSelectedExpenseForView] = useState(null);
   const [selectedExpenseForDelete, setSelectedExpenseForDelete] = useState(null);
+  const [Expense, setExpense] = useState([]);
 
   const openCreateExpenseModal = () => setIsExpenseOpen(true);
   const closeCreateExpenseModal = () => setIsExpenseOpen(false);
@@ -55,9 +58,38 @@ const Expense = () => {
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
   const handleDelete = (id) => {
-    setData(data.filter(item => item.id !== id));
+    setExpense(Expense.filter(item => item._id !== id));
     closeDeleteModal();
   };
+
+
+    // Fetch Expense  from the API
+    const fetchExpense = async () => {
+      try {
+          const response = await axiosInstance.get('/v2/expenses/viewexpenses');
+          console.log(response.data);
+          if(response.status === 200){
+            const updatedData = response.data.Owner.map(item => {
+              const url = item.Upload_Bill;
+              const format = url.split('.').pop().toLowerCase();
+              return {
+                ...item,
+                billFormat: format
+              };
+            });
+          setExpense(updatedData); 
+          }
+         
+      } catch (error) {
+          console.error('Error fetching Expense :', error);
+      }
+  };
+
+
+  useEffect(() => {
+    fetchExpense();
+  }, []);
+
 
   return (
     <div className="flex bg-gray-100 w-full h-full">
@@ -100,22 +132,24 @@ const Expense = () => {
               </thead>
 
               <tbody>
-                {data.map((item, index) => (
+                {Expense.map((item, index) => (
                   <tr key={index} className="border-t border-gray-200">
-                    <td className="p-3 pt-2 text-gray-700 font-medium">{item.title}</td>
-                    <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">{item.description}</td>
-                    <td className="p-3 pt-2 hidden md:table-cell text-gray-600">{item.date}</td>
-                    <td className="p-3 pt-2 hidden lg:table-cell text-[#39973D]">₹{item.Amount}</td>
-                    <td className="p-3 pt-2 hidden lg:table-cell text-gray-600">
-                      <div className="flex items-center space-x-2">
-                        {item.billFormat === 'JPG' ? (
+                    <td className="p-3 pt-2 text-gray-700 font-medium">{!!item.Title ? item.Title : ""}</td>
+                    <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">{!!item.Description ? item.Description : ""}</td>
+                    <td className="p-3 pt-2 hidden md:table-cell text-gray-600">{!!item.Date ? moment(item.Date).format("DD/MM/YYYY") : ""}</td>
+                    <td className="p-3 pt-2 hidden lg:table-cell text-[#39973D]">₹{!!item.Amount ? item.Amount : 0}</td>
+                    <><td className="p-3 pt-2 hidden lg:table-cell text-gray-600">
+                      {!!item.billFormat ? <div className="flex items-center space-x-2">
+                        {item.billFormat == 'JPG' || item.billFormat == "jpg" ? (
                           <FileImage className="w-5 h-5 text-blue-500" />
                         ) : (
                           <FilePdf className="w-5 h-5 text-red-500" />
                         )}
                         <span>{item.billFormat}</span>
-                      </div>
-                    </td>
+                      </div> :
+                      <div className="flex items-center space-x-2"></div>
+                      }
+                    </td></>
                     <td className="p-3 pt-2">
                       <div className="flex flex-wrap sm:flex-nowrap sm:space-x-2 space-y-2 sm:space-y-0 justify-center">
                         <button
@@ -145,7 +179,7 @@ const Expense = () => {
           </div>
         </div>
 
-        {isCreateExpenseOpen && <AddExpense isOpen={isCreateExpenseOpen} onClose={closeCreateExpenseModal} />}
+        {isCreateExpenseOpen && <AddExpense isOpen={isCreateExpenseOpen} onClose={closeCreateExpenseModal} fetchExpense={fetchExpense}/>}
         
         {isEditModalOpen && selectedExpenseForView && (
           <EditExpense
@@ -166,7 +200,8 @@ const Expense = () => {
             isOpen={isDeleteModalOpen}
             onCancel={closeDeleteModal}
             expense={selectedExpenseForDelete}
-            onDelete={() => handleDelete(selectedExpenseForDelete.id)}
+            onDelete={() => handleDelete(selectedExpenseForDelete._id)}
+            fetchExpense={fetchExpense}
           />
         )}
       </div>

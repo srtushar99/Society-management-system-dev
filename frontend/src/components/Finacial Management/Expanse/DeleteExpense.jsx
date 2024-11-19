@@ -1,12 +1,21 @@
 import React from 'react';
+import axiosInstance from '../../Common/axiosInstance';
 
-const DeleteExpense = ({ isOpen, contact, onDelete, onCancel }) => {
+const DeleteExpense = ({ isOpen, onCancel, expense, onDelete, fetchExpense }) => {
   // If the modal isn't open, return null (don't render anything)
   if (!isOpen) return null;
 
-  const handleDelete = () => {
-    onDelete(contact); // Call the onDelete function passed from parent
-    onCancel(); // Close the modal after deletion
+  const handleDelete = async () => {
+    try {
+      const response = await axiosInstance.delete(`/v2/expenses/${expense._id}`);
+      if (response.status === 200) {
+        onDelete(expense); 
+        onCancel();
+        fetchExpense();
+      }
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+    }
   };
 
   const handleCancel = () => {

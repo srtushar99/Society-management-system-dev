@@ -254,8 +254,8 @@ const SecurityGaurd = () => {
                 <tr key={index} className="border-t border-gray-200">
                   <td className="px-4 py-3 flex items-center space-x-3">
                     <img
-                      src={AvatarImage}
-                      alt="avatar"
+                      src={!!item.profileimage ? item.profileimage : AvatarImage}
+                      alt={item.full_name}
                       className="w-8 h-8 rounded-full"
                     />
                     <span>{item.full_name}</span>
