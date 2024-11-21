@@ -23,6 +23,9 @@ const expensesSchema = new mongoose.Schema({
         type: String,
         required:true
     },
+    Original_FileName:{
+        type: String
+    },
     role: {
         type: String,
         enum: ['admin', 'resident', 'security'], 

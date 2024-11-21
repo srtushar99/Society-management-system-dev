@@ -7,9 +7,8 @@ import dayjs from "dayjs";
 import timeIcon from "../../components/assets/Vector.png";
 import moment from 'moment';
 import axiosInstance from '../Common/axiosInstance';
-import axios from "axios";
 
-const AddGuard = ({ isOpen, onClose }) => {
+const AddGuard = ({ isOpen, onClose, fetchSecurityGuard }) => {
   const [full_name, setfull_name] = useState("");
   const [MailOrPhone, setMailOrPhone] = useState("");
   const [shiftDate, setShiftDate] = useState(null);
@@ -71,71 +70,37 @@ const AddGuard = ({ isOpen, onClose }) => {
     ClearAllData();
   };
 
-     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/ds8dsepcr/upload"; // Replace with your Cloudinary cloud name
-
-  const cloudinaryUpload = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file); // File to upload
-    formData.append("upload_preset", "first_presetname"); // Cloudinary upload preset
-    formData.append("cloud_name", "gds8dsepcr"); // Optional: Specify a folder in Cloudinary
-  
-    const response = await axios.post(cloudinaryUrl, formData);
-    return response.data.secure_url; // This is the dynamically generated URL
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (isFormValid) {
-    //   console.log("Form Submitted", {
-    //     full_name,
-    //     MailOrPhone,
-    //     shiftDate,
-    //     time,
-    //     shift,
-    //     gender,
-    //     profileimage,
-    //     adhar_card,
-    //   });
-    // }
     if (isFormValid) {
- // Upload files to Cloudinary
-    // const url = "https://res.cloudinary.com/ds8dsepcr/image/upload/v1731518517/"
-    const profileimage = uploadprofileimage ? await cloudinaryUpload(uploadprofileimage) : null;
-    const adhar_card = adharcard ? await cloudinaryUpload(adharcard) : null;
-    const password = "password123";
-        const date = moment(shiftDate).format('DD/MM/YYYY');
-        // const adhar_card = url + adharcard.name;
-        // const profileimage = url+uploadprofileimage.name;
-      const GuardData = {
-            full_name,
-            MailOrPhone,
-            date,
-            time,
-            shift,
-            gender,
-            profileimage,
-            adhar_card,
-            password
-      };
-      console.log(GuardData);
-
       try {
-        // Send data to the backend API using axios
-        const response = await axiosInstance.post(
-          "/v2/security/addsecurity",
-          GuardData
-        );
-        if (response.status===201) {
-          console.log("Successfully saved:", response.data);
-          // fetchAnnouncement();
-          onClose(); 
+        const formData = new FormData();
+        formData.append("full_name", full_name);
+        formData.append("MailOrPhone", MailOrPhone);
+        formData.append("date", moment(shiftDate).format('DD/MM/YYYY'));
+        formData.append("time", time);
+        formData.append("shift", shift);
+        formData.append("gender", gender);
+
+        if (uploadprofileimage) {
+          formData.append("profileimage", uploadprofileimage); 
+        }
+        if (adharcard) {
+          formData.append("adhar_card", adharcard); 
+        }
+
+        const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        if (response.status === 200) {
+          fetchSecurityGuard();
+          onClose();
           ClearAllData();
-        } else {
-          const errorData = await response.json();
-          console.error("Error saving number:", errorData.message || "Something went wrong.");
         }
       } catch (error) {
-        console.error("Error creating Guard :", error);
+        console.error("Error creating Guard:", error.response || error.message);
       }
     } else {
       console.log("Form is invalid");

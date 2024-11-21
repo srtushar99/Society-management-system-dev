@@ -338,6 +338,7 @@ const SecurityGaurd = () => {
           <AddGuard
             isOpen={isCreateProtocolOpen}
             onClose={closeCreateProtocolModal}
+            fetchSecurityGuard={fetchSecurityGuard}
           />
         )}
         {isEditModalOpen && selectedProtocolForView && (
@@ -345,6 +346,7 @@ const SecurityGaurd = () => {
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             guard={selectedProtocolForView}
+            fetchSecurityGuard={fetchSecurityGuard}
           />
         )}
         {isViewModalOpen && selectedProtocolForView && (
@@ -359,7 +361,8 @@ const SecurityGaurd = () => {
             isOpen={isDeleteModalOpen}
             onCancel={closeDeleteModal}
             Guard={selectedProtocolForDelete}
-            onDelete={() => handleDelete(selectedProtocolForDelete.id)} // Pass the ID of the protocol to delete
+            onDelete={() => handleDelete(selectedProtocolForDelete._id)} // Pass the ID of the protocol to delete
+            fetchSecurityGuard={fetchSecurityGuard}
           />
         )}
       </div>

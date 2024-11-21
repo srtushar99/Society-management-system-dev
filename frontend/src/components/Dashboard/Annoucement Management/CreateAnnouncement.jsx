@@ -108,6 +108,13 @@ const CreateAnnouncement = ({ isOpen, onClose, fetchAnnouncement }) => {
     const ampm = hour < 12 ? "AM" : "PM"; 
     const timeString = formattedDate.format("HH:mm");
     setAnnouncement_Time(`${timeString} ${ampm}`);
+    // const [hours, minute] = `${timeString} ${ampm}`.split(':');
+    // const Converthours = parseInt(hours, 10);
+    // const minutes = parseInt(minute.slice(0, 2), 10);
+    // const period = Converthours >= 12 ? 'PM' : 'AM';
+    // const adjustedHour = Converthours % 12 || 12; 
+    // console.log(`${String(adjustedHour).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`);
+    // setAnnouncement_Time(`${String(adjustedHour).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`);
   };
 
   const handleCalendarIconClick = () => {

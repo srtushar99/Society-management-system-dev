@@ -186,10 +186,11 @@ const Expense = () => {
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             expense={selectedExpenseForView}
-            onSave={(updatedData) => {
-              console.log(updatedData);
-              closeEditModal();
-            }}
+            // onSave={(updatedData) => {
+            //   console.log(updatedData);
+            //   closeEditModal();
+            // }}
+            fetchExpense={fetchExpense}
           />
         )}
         {isViewModalOpen && selectedExpenseForView && (

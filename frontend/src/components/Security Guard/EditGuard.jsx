@@ -7,10 +7,12 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import AvatarImage from '../assets/Avatar.png';
 import "react-datepicker/dist/react-datepicker.css";
-
+import axiosInstance from '../Common/axiosInstance';
+import moment from 'moment';
+import axios from 'axios';
 dayjs.extend(customParseFormat);
 
-const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
+const EditGuard = ({ isOpen, onClose, guard, fetchSecurityGuard }) => {
   const [guardName, setGuardName] = useState("");
   const [number, setNumber] = useState("");
   const [date, setDate] = useState(null);
@@ -18,40 +20,128 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
   const [shift, setShift] = useState("");
   const [gender, setGender] = useState("");
   const [photo, setPhoto] = useState(null);
+  const [changephoto, setChangephoto] = useState(null);
   const [aadharCard, setAadharCard] = useState(null);
 
-  const [isDragging, setIsDragging] = useState(false); // For drag-and-drop state
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileName, setFileName] = useState("");
+  const [fileSize, setFileSize] = useState("");
+  const [isaadharCard, setaadharCard] = useState(false);
+  const [isphoto, setphoto] = useState(false);
 
-  const modalRef = useRef(null);
   const fileInputRef = useRef(null);
   const dropZoneRef = useRef(null);
 
+  const nameRegex = /^[A-Za-z\s]+$/;
+  // const MailOrPhoneRegex = /^[6789][0-9]{0,9}$/;
+  const timeRegex = /^(?:[01]?\d|2[0-3]):[0-5]\d (AM|PM)$/;
+
+  const isFormValid =
+    guardName &&
+    number &&
+    date &&
+    time &&
+    shift &&
+    gender &&
+    aadharCard &&
+    nameRegex.test(guardName) &&
+    // nameRegex.test(MailOrPhone) &&
+    timeRegex.test(time);
+
   const navigate = useNavigate();
+
+
+   // Handle form submission
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isFormValid) {
+      try {
+        const formData = new FormData();
+        formData.append("full_name", guardName);
+        formData.append("MailOrPhone", number);
+        formData.append("date", moment(date).format('DD/MM/YYYY'));
+        formData.append("time", time);
+        formData.append("shift", shift);
+        formData.append("gender", gender);
+
+        if (!isphoto) {
+          formData.append("profileimage", guard.profileimage); 
+        }else{
+          formData.append("profileimage", changephoto); 
+        }
+        if (!isaadharCard) {
+          formData.append("adhar_card", guard.adhar_card); 
+        }else{
+          formData.append("adhar_card", aadharCard.file);
+        }
+
+
+        const response = await axiosInstance.put(`/v2/security/updatesecurity/${guard._id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if(!!response.data){
+          fetchSecurityGuard(); 
+          onClose(); 
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
+    }
+  };
+  
+
+  const processUploadBill = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setFileName(extractedFileName);
+      setFileSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setFileName(extractedFileName);
+      setFileSize("Unknown");
+    }
+  };
+
+  useEffect(() => {
+    if (guard && guard.adhar_card) {
+      processUploadBill(guard.adhar_card);
+    }
+  }, [guard]);
 
   useEffect(() => {
     if (isOpen && guard) {
-      setGuardName(guard.guardName || "Arlene McCoy");
-      setNumber(guard.number || "99130 44537");
-      setDate(guard.date ? dayjs(guard.date).toDate() : null);
-      setTime(guard.time || "3:45 PM");
-      setShift(guard.shift || "Day");
-      setGender(guard.gender || "Male");
-      setPhoto(guard.photo || null);
-      setAadharCard(guard.aadharCard || {
-        name: "Adharcard Front Side.JPG",
-        size: "3.5 MB"
-      });
+      setGuardName(guard.full_name || "");
+      setNumber(guard.MailOrPhone || "");
+      setDate(guard.date ? new Date(guard.date) : null);
+      setTime(guard.time || "");
+      setShift(guard.shift || "");
+      setGender(guard.gender || "");
+      setPhoto(guard.profileimage || "");
+      setAadharCard(
+        guard.adhar_card
+          ? {
+              name: fileName,
+              size: fileSize,
+            }
+          : null
+      );
     }
-  }, [isOpen, guard]);
+  }, [isOpen, guard, fileName, fileSize]);
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result);
-      };
+      reader.onloadend = () => setPhoto(reader.result);
       reader.readAsDataURL(file);
+      setChangephoto(file);
+      setphoto(true);
     }
   };
 
@@ -59,10 +149,11 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size <= 10 * 1024 * 1024) {
+        setaadharCard(true);
         setAadharCard({
           file,
           name: file.name,
-          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
         });
       } else {
         alert("File size should be less than 10MB");
@@ -70,15 +161,12 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
     }
   };
 
-  // Drag-and-drop handlers for the Aadhar Card upload
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+  const handleDragLeave = () => setIsDragging(false);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -89,26 +177,27 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({
-      guardName,
-      number,
-      date,
-      time,
-      shift,
-      gender,
-      photo,
-      aadharCard
-    });
-    onClose();
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   fetchSecurityGuard({
+  //     guardName,
+  //     number,
+  //     date,
+  //     time,
+  //     shift,
+  //     gender,
+  //     photo,
+  //     aadharCard,
+  //   });
+  //   onClose();
+  // };
 
-  if (!isOpen) return null;
+ 
+  if (!isOpen || !guard) return null;
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg" ref={modalRef}>
+      <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">Edit Security</span>
           <button onClick={onClose}>
@@ -121,12 +210,13 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
           <div className="flex items-center mb-4 space-x-4">
             <div className="relative">
               <img
-                src={photo || AvatarImage}
+                src={photo}
                 alt="Profile"
                 className="w-12 h-12 rounded-full object-cover"
               />
               <input
-                ref={fileInputRef}
+                // ref={fileInputRef}
+                id="photoInput"
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoChange}
@@ -135,8 +225,9 @@ const EditGuard = ({ isOpen, onClose, guard, onSave }) => {
             </div>
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
+              // onClick={() => fileInputRef.current?.click()}
               className="text-blue-600 hover:underline text-sm"
+              onClick={() => document.getElementById("photoInput").click()}
             >
               Add Photo
             </button>

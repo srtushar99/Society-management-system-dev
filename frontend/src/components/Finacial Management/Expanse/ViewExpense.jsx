@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { X, FileText, Download } from 'lucide-react';
+import { X, FileText, EyeIcon } from 'lucide-react';
 import moment from 'moment';
 import axios from 'axios';
 
 function ViewExpense({ isOpen, onClose, expense }) {
-  const [file_Name, setFileName] = useState("");
   const [file_Size, setFileSize] = useState("");
 
   const processUploadBill = async (url) => {
-    const fileName = url.substring(url.lastIndexOf('/') + 1);
-
     try {
       const response = await axios.head(url);
       const fileSizeBytes = response.headers['content-length'];
       const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
 
-      setFileName(fileName);
       setFileSize(fileSizeMB);
     } catch (error) {
       console.error("Error fetching file metadata:", error.message);
-      setFileName(fileName);
       setFileSize("Unknown");
     }
   };
@@ -72,12 +67,12 @@ function ViewExpense({ isOpen, onClose, expense }) {
               <div className="flex items-center space-x-3">
                 <FileText className="w-6 h-6 text-blue-500" />
                 <div>
-                  <p className="font-medium mb-2">{file_Name}</p>
+                  <p className="font-medium mb-2">{!!expense.Original_FileName ? expense.Original_FileName : ""}</p>
                   <p className="text-sm text-gray-500">{file_Size} MB</p>
                 </div>
               </div>
-              <a href={expense.Upload_Bill} download className="text-blue-500 hover:text-blue-600">
-                <Download className="w-5 h-5" />
+              <a href={expense.Upload_Bill} target="_blank" download className="text-blue-500 hover:text-blue-600">
+                <EyeIcon className="w-5 h-5" />
               </a>
             </div>
           </div>

@@ -27,7 +27,7 @@ const AddExpense = ({ isOpen, onClose, fetchExpense }) => {
   const titleRegex = /^[A-Za-z\s]+$/;
   const descriptionRegex = /^[A-Za-z\s]+$/;
   const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/;
-  const cloudinaryUrl = "https://api.cloudinary.com/v1_1/ds8dsepcr/upload"; // Replace with your Cloudinary cloud name
+  const cloudinaryUrl = "https://api.cloudinary.com/v1_1/ds8dsepcr/upload";
 
   const isFormValid =
     Title &&
@@ -70,6 +70,7 @@ const handleSubmit = async (e) => {
       formData.append("Description", Description);
       formData.append("Date", moment(date).toISOString());
       formData.append("Amount", Amount);
+      formData.append("Original_FileName", billName);
       if (bill) {
         formData.append("Upload_Bill", bill); // Append the file directly
       }

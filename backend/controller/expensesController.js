@@ -97,7 +97,7 @@ const fs=require("fs")
 
 exports.createExpense = async (req, res) => {
     try {
-        const { Title, Description, Date, Amount, role } = req.body;
+        const { Title, Description, Date, Amount, role,  Original_FileName } = req.body;
 
         // Function to upload and delete the file from the local server
         const uploadAndDeleteLocal = async (fileArray) => {
@@ -137,6 +137,7 @@ exports.createExpense = async (req, res) => {
             Date,
             Amount,
             Upload_Bill,
+            Original_FileName,
             role: role || "resident",
         });
 
@@ -225,7 +226,7 @@ const uploadAndDeleteLocal = async (fileArray) => {
 
 exports.UpdateExpense = async (req, res) => {
     try {
-        const { Title, Description, Date, Amount, role } = req.body;
+        const { Title, Description, Date, Amount, role,  Original_FileName } = req.body;
 
         let uploadUrl;
         if (req.files?.Upload_Bill) {
@@ -240,6 +241,7 @@ exports.UpdateExpense = async (req, res) => {
                 Date,
                 Amount,
                 Upload_Bill: uploadUrl || req.body.Upload_Bill,
+                Original_FileName,
                 role: role || "resident",
             },
             { new: true } // Return updated document

@@ -48,7 +48,7 @@ const ViewGuard = ({ isOpen, onClose, Guard }) => {
   );
 
   // You can either import images or define fallback values
-  const AvatarImage = Guard.Photo || 'default-avatar.jpg'; // Use the Guard's photo if available, or a default image
+  const AvatarImage = !!Guard.profileimage ? Guard.profileimage : 'default-avatar.jpg'; // Use the Guard's photo if available, or a default image
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
@@ -73,7 +73,7 @@ const ViewGuard = ({ isOpen, onClose, Guard }) => {
           />
           <div>
             <h2 className="font-semibold text-lg text-gray-900">{Guard.full_name}</h2>
-            <p className="text-gray-500 text-sm">{moment(Guard.createdAt).format("MMM D, YYYY")}</p> {/* You can dynamically change the date */}
+            <p className="text-gray-500 text-sm">{!!Guard.date ? moment(Guard.date).format("MMM D, YYYY") : ""}</p> {/* You can dynamically change the date */}
           </div>
         </div>
 

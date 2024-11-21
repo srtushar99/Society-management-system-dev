@@ -1,14 +1,28 @@
 import React from 'react';
+import axiosInstance from '../Common/axiosInstance';
 
-const DeleteGuard = ({ isOpen, Guard, onDelete, onCancel }) => {
+const DeleteGuard = ({ isOpen, onCancel, Guard, onDelete, fetchSecurityGuard }) => {
   // If the modal isn't open, return null (don't render anything)
   if (!isOpen) return null;
 
-  const handleDelete = () => {
-    if (Guard) {
-      onDelete(Guard.id); // Assuming `protocol` has an `id` property
+  // const handleDelete = () => {
+  //   if (Guard) {
+  //     onDelete(Guard.id); // Assuming `protocol` has an `id` property
+  //   }
+  //   onCancel(); // Close the modal after deletion
+  // };
+
+  const handleDelete = async () => {
+    try {
+      const response = await axiosInstance.delete(`/v2/security/deletesecurity/${Guard._id}`);
+      if (response.status === 200) {
+        onDelete(Guard); 
+        onCancel();
+        fetchSecurityGuard();
+      }
+    } catch (error) {
+      console.error('Error deleting Guard:', error);
     }
-    onCancel(); // Close the modal after deletion
   };
 
   const handleCancel = () => {
@@ -29,7 +43,7 @@ const DeleteGuard = ({ isOpen, Guard, onDelete, onCancel }) => {
         </div>
 
         <p className="text-gray-500 mb-6 text-sm sm:text-base">
-          Are you sure you want to delete this Security Protocol?
+          Are you sure you want to delete this Security Guard?
         </p>
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
           <button
