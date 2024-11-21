@@ -34,9 +34,13 @@ const Sidebar = () => {
     else if (path === 'edit-profile') {
       setActiveLink('dashboard');
     }
+    else if (path === 'otherincome') {
+      setActiveLink('Financial-Manegement');
+    }
     else if (path === 'createcomplaint' || path === 'requesttracking') {
       setActiveLink('Complaint-Tracking');
       setComplaintsActive(path);
+      setShowComplaintsDropdown(true);
     } else if (path === 'income' || path === 'expense' || path === 'notes') {
       setActiveLink('Financial-Manegement');
       setFinancialActive(path);
@@ -114,12 +118,21 @@ const Sidebar = () => {
   };
 
   const handleComplaintsClick = (item, path) => {
-    setComplaintsActive(item);
-    setActiveLink("Complaint-Tracking");
-    navigate(path);
-    setShowComplaintsDropdown(true);
+    if (!showComplaintsDropdown) {
+      setShowComplaintsDropdown(true);
+      setComplaintsActive("createcomplaint");
+      setActiveLink("Complaint-Tracking");
+      navigate("/createcomplaint");
+    } else {
+      setComplaintsActive(item);
+      setActiveLink("Complaint-Tracking");
+      navigate(path);
+    }
   };
 
+  const handleLogout = () => {
+    navigate("/");
+  };
   const dropdownItemStyle = (item, activeItem) => ({
     color: activeItem === item ? "#FE512E" : "#4F4F4F",
     backgroundColor: activeItem === item ? "rgba(254, 81, 46, 0.1)" : "transparent",
@@ -177,7 +190,7 @@ const Sidebar = () => {
         </div>
 
         <Nav className="flex-column">
-        <div style={{ position: "relative" }}>
+          <div style={{ position: "relative" }}>
             <div style={getIndicatorStyle("dashboard")}></div>
             <Link
               to="/dashboard"
@@ -384,7 +397,7 @@ const Sidebar = () => {
                   ...getLinkStyle("security-Management"),
                   fontSize: "14px",
                 }}
-                onClick={() => handleFinancialClick("visitorlogs", "/visitorlogs")}
+                onClick={() => handleSecurityClick("visitorlogs", "/visitorlogs")}
               >
                 <img
                   src={SecurityIcon}
@@ -439,8 +452,7 @@ const Sidebar = () => {
             <Link
               to="/security-guard"
               style={getLinkStyle("security-guard")}
-              onClick={() => handleLinkClick("security-guard", "/security-guard")
-              }
+              onClick={() => handleLinkClick("security-guard", "/security-guard")}
             >
               <img
                 src={SecurityGuardIcon}
@@ -456,9 +468,7 @@ const Sidebar = () => {
             <Link
               to="/announcements"
               style={getLinkStyle("announcements")}
-              onClick={() =>
-                handleLinkClick("announcements", "/announcements")
-              }
+              onClick={() => handleLinkClick("announcements", "/announcements")}
             >
               <img
                 src={AnnouncementIcon}
@@ -472,10 +482,10 @@ const Sidebar = () => {
 
         <div style={{ marginTop: "auto" }}>
           <Link
-            to="/logout"
+            to="/"
             className="no-underline"
             style={{ color: "#E74C3C", padding: "0 10px", height: "52px" }}
-            onClick={() => handleLinkClick("logout", "/logout")}
+            onClick={handleLogout}
           >
             <i
               className="fa fa-sign-out"

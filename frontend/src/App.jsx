@@ -30,6 +30,11 @@ import Tenant from './components/Resident Management/Tenant';
 import VacatePage from './components/Resident Management/VacatePage';
  import EditOwner from './components/Resident Management/EditOwner';
  import EditTenant from './components/Resident Management/EditTenant';
+import VisitorTracking from './components/SecurityRole/VisitorTracking';
+import AddVisitorModal from './components/SecurityRole/AddVisitorModal';
+import EmergencyManagement from './components/Dashboard/Emergency/EmergencyManagement';
+
+
 
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
@@ -68,6 +73,12 @@ function App() {
       
          
             {/* // <Routes path="/securitygaurd" element={<SecurityGuardTable />} />  */}
+            <Route path="/visitorTracking" element={<VisitorTracking/>} />
+            <Route path="/addvisitor" element={<AddVisitorModal/>} />
+            <Route path="/emergency" element={<EmergencyManagement/>} />
+            
+            
+            
         </Routes>
     );
 }
