@@ -116,51 +116,8 @@ const VisitorLogs = () => {
             <span className="font-semibold text-[#5678E9]">Visitor Logs</span>
           </div>
 
-{/*          
-          <div className="flex items-center justify-end me-5 space-x-4 sm:space-x-6">
-      
-        <button
-          className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
-          onClick={() => setIsModalOpen(true)} 
-        >
-          <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-        </button>
 
-        <div className="flex items-center space-x-3 cursor-pointer" onClick={handleProfileClick}>
          
-          <img
-            src={AvatarImage}
-            alt="Moni Roy"
-            width="40"
-            height="40"
-            className="rounded-full"
-          />
-          
-          
-          <div className="hidden sm:block flex-col items-start mt-2">
-            <span className="font-medium text-sm">Moni Roy</span>
-            <p className="text-xs text-gray-500">Admin</p>
-          </div>
-        </div>
-      </div>
-
-    
-      {isNoNotifications ? (
-        <NoNotification
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          notifications={notifications}
-          onClearAll={handleClearAll}
-        />
-      ) : (
-        <NotificationModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          notifications={notifications}
-          onClearAll={handleClearAll} 
-        />
-      )} */}
-          <HeaderBaner/>
         </header>
 
         <div className="ps-6 pe-6 w-full">

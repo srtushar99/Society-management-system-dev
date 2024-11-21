@@ -26,6 +26,12 @@ import RequestTracking from './components/Complaint Tracking/Request Tracking/Re
 import SecurityGuard from './components/Security Guard/SecurityGuard';
 import Resident from './components/Resident Management/Resident';
 import Owner from './components/Resident Management/Owner';
+import VisitorTracking from './components/SecurityRole/VisitorTracking';
+import AddVisitorModal from './components/SecurityRole/AddVisitorModal';
+import EmergencyManagement from './components/Dashboard/Emergency/EmergencyManagement';
+
+
+
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
@@ -56,7 +62,12 @@ function App() {
             <Route path="/security-guard" element={<SecurityGuard/>} />
             <Route path="/Resident-Manegement" element={<Resident/>} />
             <Route path="/Owner" element={<Owner/>} />
-            {/* // <Routes path="/securitygaurd" element={<SecurityGuardTable />} />  */}
+            <Route path="/visitorTracking" element={<VisitorTracking/>} />
+            <Route path="/addvisitor" element={<AddVisitorModal/>} />
+            <Route path="/emergency" element={<EmergencyManagement/>} />
+            
+            
+            
         </Routes>
     );
 }
