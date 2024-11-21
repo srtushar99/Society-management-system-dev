@@ -1,33 +1,138 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Assuming you have this component
 import Sidebar from "../Sidebar/Sidebar";
+import Avatar from '../assets/Avatar.png'
 
-const Tenant = () => {
-  const [activeButton, setActiveButton] = useState("tenant");
+const staticMembers = [
+  {
+    memberName: "Arlene McCoy",
+    Number: "9876543210",
+    email: "rachit@example.com",
+    age: "28",
+    gender: "male",
+    relation: "Self",
+  },
+  {
+    memberName: "Aditi",
+    Number: "9876543211",
+    email: "aditi@example.com",
+    age: "25",
+    gender: "female",
+    relation: "Spouse",
+  },
+  {
+    memberName: "Arjun",
+    Number: "9876543212",
+    email: "arjun@example.com",
+    age: "5",
+    gender: "male",
+    relation: "Son",
+  },
+  {
+    memberName: "Meera",
+    Number: "9876543213",
+    email: "meera@example.com",
+    age: "3",
+    gender: "female",
+    relation: "Daughter",
+  },
+  {
+    memberName: "Rahul",
+    Number: "9876543214",
+    email: "rahul@example.com",
+    age: "30",
+    gender: "male",
+    relation: "Brother",
+  },
+  {
+    memberName: "Sita",
+    Number: "9876543215",
+    email: "sita@example.com",
+    age: "60",
+    gender: "female",
+    relation: "Mother",
+  },
+];
+
+
+const staticVehicles = [
+  {
+    vehicleType: "4-wheeler",
+    vehicleName: "Toyota Camry",
+    vehicleNumber: "ABC1234",
+  },
+  {
+    vehicleType: "2-wheeler",
+    vehicleName: "Honda Activa",
+    vehicleNumber: "XYZ5678",
+  },
+  {
+    vehicleType: "4-wheeler",
+    vehicleName: "Ford Mustang",
+    vehicleNumber: "LMN9101",
+  },
+];
+const EditTenant = () => {
+  const [activeButton, setActiveButton] = useState("edittenant");
+  const location = useLocation();
+  const { ownerData } = location.state || {}; // Get the owner data from state
+  const navigate = useNavigate();
+  const { existingData, memberCount = 0, vehicleCount = 0 } = location.state || {};
+
   const [formData, setFormData] = useState({
     photo :"",
-    ownerName: "",
-    ownerPhone: "",
-    address: "",
-    fullName: "",
-    phoneNumber: "",
-    emailAddress: "",
-    age: "",
-    gender: "",
-    wing: "",
-    unit: "",
-    relation: "",
-    memberCount: 0,
+    ownerName: "Arlene McCoy",
+    ownerPhone: "+91 9575225165",
+    address: "C-101,Dhara Arcade , Mota Varacha Surat.",
+    fullName: existingData?.Name || "Rachit",
+    phoneNumber: existingData?.Number || "",
+    emailAddress: existingData?.Email || "rachit@gmail.com",
+    age: existingData?.Age || "20",
+    gender: existingData?.Gender || "male",
+    wing: existingData?.Wing || "A",
+    unit: existingData?.UnitNumber || "",
+    relation: existingData?.Relation || "Friend",
+    memberCount: memberCount,
     memberDetails: [],
-    vehicleCount: 0,
+    vehicleCount: vehicleCount,
     vehicleDetails: [],
   });
   const [photo, setPhoto] = useState(null);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (existingData) {
+      // Check if MemberDetails and VehicleDetails are defined and are arrays
+      const memberDetails = Array.isArray(existingData.MemberDetails) ? existingData.MemberDetails : [];
+      const vehicleDetails = Array.isArray(existingData.VehicleDetails) ? existingData.VehicleDetails : [];
+  
+      // Initialize member details with static data or existing data
+      const initialMemberDetails = Array.from({ length: formData.memberCount }, (_, index) => ({
+        memberName: memberDetails[index]?.memberName || staticMembers[index]?.memberName || "",
+        Number: memberDetails[index]?.Number || staticMembers[index]?.Number || "",
+        email: memberDetails[index]?.email || staticMembers[index]?.email || "",
+        age: memberDetails[index]?.age || staticMembers[index]?.age || "",
+        gender: memberDetails[index]?.gender || staticMembers[index]?.gender || "",
+        relation: memberDetails[index]?.relation || staticMembers[index]?.relation || "",
+      }));
+  
+      // Initialize vehicle details with static data or existing data
+      const initialVehicleDetails = Array.from({ length: formData.vehicleCount }, (_, index) => ({
+        vehicleType: vehicleDetails[index]?.vehicleType || staticVehicles[index]?.vehicleType || "",
+        vehicleName: vehicleDetails[index]?.vehicleName || staticVehicles[index]?.vehicleName || "",
+        vehicleNumber: vehicleDetails[index]?.vehicleNumber || staticVehicles[index]?.vehicleNumber || "",
+      }));
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        memberDetails: initialMemberDetails,
+        vehicleDetails: initialVehicleDetails,
+      }));
+    }
+  }, [existingData, formData.memberCount, formData.vehicleCount]);
 
   const isFormValid =
-  
+    
     formData.ownerName &&
     formData.ownerPhone &&
     formData.address &&
@@ -113,21 +218,7 @@ const Tenant = () => {
 
   const handleMemberCountChange = (e) => {
     const newMemberCount = parseInt(e.target.value, 10);
-    const newMemberDetails = [...formData.memberDetails].slice(
-      0,
-      newMemberCount
-    );
-
-    while (newMemberDetails.length < newMemberCount) {
-      newMemberDetails.push({
-        memberName: "",
-        Number: "",
-        email: "",
-        age: "",
-        gender: "",
-        relation: "",
-      });
-    }
+    const newMemberDetails = staticMembers.slice(0, newMemberCount); // Get static members based on selected count
 
     setFormData({
       ...formData,
@@ -138,20 +229,16 @@ const Tenant = () => {
 
   const handleVehicleCountChange = (e) => {
     const count = parseInt(e.target.value, 10);
-    const updatedVehicleDetails = [...formData.vehicleDetails].slice(0, count);
-    while (updatedVehicleDetails.length < count) {
-      updatedVehicleDetails.push({
-        vehicleType: "",
-        vehicleName: "",
-        vehicleNumber: "",
-      });
-    }
+    const updatedVehicleDetails = staticVehicles.slice(0, count); // Get static vehicles based on selected count
+
     setFormData((prevState) => ({
       ...prevState,
       vehicleCount: count,
       vehicleDetails: updatedVehicleDetails,
     }));
   };
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -268,27 +355,9 @@ const Tenant = () => {
         </header>
 
         <div className="lg:mt-[10px] ml-[300px] bg">
-          <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
-            <Link
-              to="/owner"
-              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
-                activeButton === "owner"
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
-                  : "bg-[#FFFFFF] text-[#202224]"
-              }`}
-            >
-              Owner
-            </Link>
-            <Link
-              to="/tenant"
-              className={`w-full lg:h-[50px] sm:w-[150px]  px-4 py-3 rounded-top no-underline ${
-                activeButton === "tenant"
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
-                  : "bg-[#FFFFFF] text-[#202224]"
-              }`}
-            >
-              Tenant
-            </Link>
+           <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
+            <Link to="/editowner" className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${activeButton === "editowner" ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#202224]"}`}>Owner</Link>
+            <Link to="/edittenant" className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${activeButton === "edittenant" ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#202224]"}`}>Tenant</Link>
           </div>
         </div>
 
@@ -298,8 +367,7 @@ const Tenant = () => {
             className="flex bg-white  w-[1500px] mb-2 rounded-e-md mx-auto p-6"
           >
             <div className="flex flex-col sm:flex-row gap-4 w-full">
-              {/* Owner Full Name */}
-              {/* Owner Full Name */}
+           
               <div className="flex-1">
                 <label className="block text-gray-700 font-medium">
                   Owner Full Name<span className="text-red-500">*</span>
@@ -356,7 +424,7 @@ const Tenant = () => {
                 <div className="border bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
                   {photo ? (
                     <img
-                      src={photo}
+                      src={Avatar}
                       alt="Owner"
                       className="w-[50px] h-[50px] object-cover rounded-full"
                     />
@@ -759,7 +827,7 @@ const Tenant = () => {
               <button
                 type="button"
                 className="w-20 sm:w-[] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
-                onClick={() => navigate("/Resident-Management")}
+                onClick={() => navigate("/Resident-Manegement")}
               >
                 Cancel
               </button>
@@ -782,4 +850,4 @@ const Tenant = () => {
   );
 };
 
-export default Tenant;
+export default EditTenant;

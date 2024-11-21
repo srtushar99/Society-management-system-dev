@@ -291,7 +291,6 @@ const AddGuard = ({ isOpen, onClose }) => {
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                   : "bg-[#F6F8FB] text-[#202224]"
               }`}
-              disabled={!isFormValid}
             >
               {isFormValid ? "Save" : "Create"}
             </button>

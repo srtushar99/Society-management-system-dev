@@ -27,6 +27,10 @@ import SecurityGuard from './components/Security Guard/SecurityGuard';
 import Resident from './components/Resident Management/Resident';
 import Owner from './components/Resident Management/Owner';
 import Tenant from './components/Resident Management/Tenant';
+import VacatePage from './components/Resident Management/VacatePage';
+ import EditOwner from './components/Resident Management/EditOwner';
+ import EditTenant from './components/Resident Management/EditTenant';
+
 
 // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
@@ -57,7 +61,12 @@ function App() {
             <Route path="/security-guard" element={<SecurityGuard/>} />
             <Route path="/Resident-Manegement" element={<Resident/>} />
             <Route path="/Owner" element={<Owner/>} />
+            <Route path="/vacate" element={<VacatePage />} />
             <Route path="/tenant" element={<Tenant/>} />
+           <Route path="/editowner" element={<EditOwner/>} /> 
+           <Route path="/edittenant" element={<EditTenant/>} /> 
+      
+         
             {/* // <Routes path="/securitygaurd" element={<SecurityGuardTable />} />  */}
         </Routes>
     );

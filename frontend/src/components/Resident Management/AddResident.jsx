@@ -1,13 +1,15 @@
+// AddResident.js
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react"; // Close icon
+import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import Vacate from "./VacatePage"; // Import Vacate component
 
 const AddResident = ({ isOpen, onClose, complainData, onSave }) => {
-  // States to hold form values
   const [formData, setFormData] = useState({
     status: "",
-    agreement: false, // Added state for agreement checkbox
+    agreement: false,
   });
+  const [vacateModalOpen, setVacateModalOpen] = useState(false); // Track if Vacate modal should be open
 
   const isFormValid = formData.status && formData.agreement;
 
@@ -33,8 +35,11 @@ const AddResident = ({ isOpen, onClose, complainData, onSave }) => {
       if (onSave) {
         onSave(formData); // Call onSave if provided
       }
-      onClose(); // Close the modal
-      navigate("/owner"); // Redirect to the Owner page
+      if (formData.status === "Vacate") {
+        setVacateModalOpen(true); // Open Vacate modal if "Vacate" is selected
+      } else {
+        navigate("/owner");
+      }
     }
   };
 
@@ -46,16 +51,11 @@ const AddResident = ({ isOpen, onClose, complainData, onSave }) => {
   if (!isOpen) return null; // Don't render if modal is not open
 
   return (
-
-    
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
       <div className="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">Resident Status</span>
-          <button
-            className="text-gray-600 hover:text-gray-800"
-            onClick={handleClose}
-          >
+          <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -155,6 +155,9 @@ const AddResident = ({ isOpen, onClose, complainData, onSave }) => {
           </div>
         </form>
       </div>
+
+      {/* Vacate Modal */}
+      <Vacate isOpen={vacateModalOpen} onClose={() => setVacateModalOpen(false)} />
     </div>
   );
 };
