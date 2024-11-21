@@ -38,7 +38,7 @@ const securityschema= new Schema({
         enum: ['admin', 'resident', 'security'], 
         default: 'security' 
     },
-   password: {  
+   Password: {  
         type: String,
         required: true
     },

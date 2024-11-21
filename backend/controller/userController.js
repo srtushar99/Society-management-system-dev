@@ -2,14 +2,25 @@ const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 const { generateTokenAndSetCookie } = require("../config/auth");
 const otpGenerator = require('otp-generator');
+const crypto = require("crypto");
 const senData = require("../config/nodemailer"); // Adjust the path accordingly
+const Owner = require("../models/ownerModel");
+const Tenante = require("../models/tenantModel");
+const Guard = require("../models/securityGuardModel");
+const { hash } = require("../utils/hashpassword");
+const { compare } = require("../utils/compare");
+const fs = require("fs");
+const cloudinary = require("../utils/cloudinary");
+const OTP_EXPIRATION_TIME = 60 * 1000; 
+
+
 
 
 // Registration page
 
 exports.Registration = async (req, res) => {
   try {
-    const { First_Name, Last_Name, Email_Address, Phone_Number, Country, State, City,select_society, Password, Confirm_password } = req.body;
+    const { First_Name, Last_Name, Email_Address, Phone_Number, Country, State, City,select_society, Password, Confirm_password ,role} = req.body;
 
     if (!First_Name || !Last_Name || !Email_Address || !Phone_Number || !Country || !State || !City || !select_society || !Password || !Confirm_password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
@@ -42,7 +53,8 @@ exports.Registration = async (req, res) => {
       City,
       select_society,
       Password: hashedPassword,  
-      Confirm_password: hashedPassword,  
+      Confirm_password: hashedPassword,
+      role  
     });
 
     await newUser.save();
@@ -75,48 +87,100 @@ exports.Registration = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { emailOrPhone, password } = req.body;
+    const { EmailOrPhone, password } = req.body;
 
-    if (!emailOrPhone || !password) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
+    // Validate input
+    if (!EmailOrPhone || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email/Phone and password are required",
+      });
     }
 
-    if (!/^\d+$/.test(emailOrPhone) && !/\S+@\S+\.\S+/.test(emailOrPhone)) {
-      return res.status(400).json({ success: false, message: "Invalid email or phone format" });
+    // Build query to find account
+    let query = {};
+    if (EmailOrPhone.includes("@")) {
+      query = {
+        $or: [
+          { Email_Address: EmailOrPhone },
+          { MailOrPhone: EmailOrPhone },
+          { Email_address: EmailOrPhone },
+        ],
+      };
+    } else {
+      query = {
+        $or: [
+          { Phone_Number: EmailOrPhone },
+          { MailOrPhone: EmailOrPhone },
+          { Phone_number: EmailOrPhone },
+        ],
+      };
     }
 
-    const user = await User.findOne({
-      $or: [
-        { Email_Address: emailOrPhone },
-        { Phone_Number: emailOrPhone }
-      ]
-    });
+    // Search for the account across all models
+    const account =
+      (await Owner.findOne(query)) ||
+      (await Tenante.findOne(query)) ||
+      (await User.findOne(query)) ||
+      (await Guard.findOne(query));
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: "Invalid credentials" });
+    if (!account) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Account credential",
+      });
     }
 
-    const isPasswordCorrect = await bcryptjs.compare(password, user.Password);
-   
-    if (!isPasswordCorrect) {
-      return res.status(400).json({ success: false, message: "Invalid credentials" });
+    // Validate password (check if Password exists and is not undefined)
+    if (!account.Password) {
+      return res.status(500).json({
+        success: false,
+        message: "Account password is not set correctly",
+      });
     }
 
-    generateTokenAndSetCookie(user._id, res);
-    res.status(200).json({
+    console.log("Comparing password:", password);
+    console.log("Stored password:", account.Password);
+
+    const isPasswordValid = await compare(password, account.Password); 
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password credentials",
+      });
+    }
+
+    // Generate JWT token and set cookie
+    generateTokenAndSetCookie(account._id, res);
+
+    // Exclude password and send success response
+    const { Password, ...safeUserDetails } = account._doc || account;
+    return res.status(200).json({
       success: true,
-      message: "Login successful! Welcome back.",
+      message: "Logged in successfully",
+      user: safeUserDetails,
     });
   } catch (error) {
-    console.log("Error in login controller", error.message);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Error during login:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
+
 
 // Logout page 
 exports.logout = async (req, res) => {
   try {
-    res.clearCookie("Society-Management");
+    res.clearCookie("Society-Management", {
+            path: "/",
+            httpOnly: true,
+            sameSite: "Strict",
+            secure: process.env.NODE_ENV !== "development",
+    });
+
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout controller", error.message);
@@ -130,60 +194,48 @@ exports.resetPassword = async (req, res) => {
     const { email, newPassword, confirmPassword } = req.body;
     const id = req.params.id;
 
-    if (!newPassword || !confirmPassword) {
+    if (!email || !newPassword || !confirmPassword) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    // Find user by email
-    const finddata = await User.findOne({ Email_Address: email });
-    if (!finddata) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ success: false, message: "Passwords do not match" });
+      return res.status(400).json({
+        success: false,
+        message: "Password and confirm password do not match",
+      });
     }
 
-    // Hash the new password
-    const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    const account =
+      (await User.findOne({ Email: email })) ||
+      (await Guard.findOne({ MailOrPhone: email })) ||
+      (await Owner.findOne({ Email_address: email })) || 
+      (await Tenante.findOne({ Email_address: email }))
 
-    // Update user's password
-    finddata.Password = hashedPassword;
-    await finddata.save();
+
+    if (!account) {
+      return res.status(404).json({
+        success: false,
+        message: "User  not found",
+      });
+    }
+
+    const hashedPassword = await hash(newPassword);
+
+    account.Password = hashedPassword;
+    await account.save();
 
     return res.status(200).json({
       success: true,
-      message: "Password reset successfully",
+      message: "Password changed successfully",
     });
   } catch (error) {
-    console.log("Error in reset password controller:", error.message);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Error during password reset:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
-
-// Edit profile 
-
-exports.editProfile = async (req, res) => {
-  try {
-    const userId = req.params.id;
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: req.body },
-      { new: true, runValidators: true } 
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({ message: 'Profile updated successfully', data: updatedUser });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
 
 // Find user by ID 
 
@@ -202,100 +254,270 @@ exports.findUserById = async (req, res) => {
   }
 };
 
+// find by id 
+exports.FindByIdProfile = async (req, res) => {
+  try {
+    const find = await User.findById(req.params.id, {
+      otp: 0,
+      otpExpiration: 0,
+    });
+    if (!find) {
+      return res.status(400).json({
+        success: false,
+        message: "No Data Found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      Profile: find,
+    });
+  } catch (error) {
+    console.log("Error in logout controller", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// Send Otp 
+
 exports.SendOtp = async (req, res) => {
   try {
       const { EmailOrPhone } = req.body;
       const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
-      const cdate = new Date();
+      const currentTime = new Date();
 
-      let user;
-      if (EmailOrPhone.includes('@')) {
-          // Find user by Email_Address instead of Email
-          user = await User.findOne({ Email_Address: EmailOrPhone });
-          if (!user) {
-              return res.status(404).json({
-                  success: false,
-                  message: "Email not registered"
-              });
-          }
-
-          await User.findOneAndUpdate(
-              { Email_Address: EmailOrPhone },
-              { otp, otpExpiration: new Date(cdate.getTime()) },
-              { upsert: true, new: true, setDefaultsOnInsert: true }
-          );
-
-          // Send OTP via email
-          senData(user.Email_Address, "Forgot your password", otp);
-
-          return res.status(200).json({
-              success: true,
-              message: "OTP sent successfully to email"
-          });
-
-      } else {
-          // For phone number handling (to be added later)
+      let account = await User.findOne({ $or: [{ Email_Address: EmailOrPhone }, { Phone_Number: EmailOrPhone }] });
+      if (!account) {
+        account = await Guard.findOne({ $or: [{ MailOrPhone: EmailOrPhone }, { MailOrPhone: EmailOrPhone }] });
+      }
+      if (!account) {
+        account = await Owner.findOne({ $or: [{ Email_address: EmailOrPhone }, { Phone: EmailOrPhone }] });
+      }
+      if (!account) {
+        account = await Tenante.findOne({ $or: [{ Email_address: EmailOrPhone }, { Phone: EmailOrPhone }] });
       }
 
-  } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-          success: false,
-          message: "Internal server error"
+    if (!account) {
+      return res.status(404).json({
+        success: false,
+        message: "Email or phone number is not registered",
       });
+    }
+
+    if (account.otpExpiration && account.otpExpiration > currentTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Current OTP is still valid. Please wait for it to expire.",
+      });
+    }
+
+    const otpExpiration = new Date(currentTime.getTime() + OTP_EXPIRATION_TIME);
+    account.otp = otp;
+    account.otpExpiration = otpExpiration;
+    await account.save();
+
+    if (EmailOrPhone.includes("@")) {
+      // Send OTP via email
+       await senData(account.Email_address || account.MailOrPhone || account.Email_address , "forget your password" , "forget otp is ",otp);
+
+      return res.status(200).json({
+        success: true,
+        message: "OTP sent successfully to email",
+      });
+    } else {
+      // Send OTP via SMS
+      // await twilioClient.messages.create({
+      //   body: `Your forgot password OTP is ${otp}`,
+      //   to: EmailOrPhone,
+      //   from: process.env.TWILIO_PHONE_NUMBER,
+      // });
+      return res.status(200).json({
+        success: true,
+        message: "OTP sent successfully to phone number",
+      });
+    }
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
+// verify Otp 
 
 exports.verifyOtp = async (req, res) => {
   try {
-      const { EmailOrPhone, otp } = req.body;
+    const { EmailOrPhone, otp } = req.body;
+    console.log("Provided OTP:", otp);
 
-      let user;
+    if (!EmailOrPhone || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email/Phone and OTP are required",
+      });
+    }
 
-      if (EmailOrPhone.includes('@')) {
-          user = await User.findOne({ Email_Address: EmailOrPhone });
-      } else {
-          user = await User.findOne({ Phone: EmailOrPhone });
-      }
-      
+    let account;
+    if (EmailOrPhone.includes("@")) {
+      account =
+        (await User.findOne({ Email_address: EmailOrPhone })) ||
+        (await Guard.findOne({ MailOrPhone: EmailOrPhone })) ||
+        (await Owner.findOne({ Email_address: EmailOrPhone })) ||
+        (await Tenante.findOne({ Email_address: EmailOrPhone }));
+    } else {
+      account =
+        (await User.findOne({ Phone_Number: EmailOrPhone })) ||
+        (await Guard.findOne({ MailOrPhone: EmailOrPhone })) ||
+        (await Owner.findOne({ Phone_number: EmailOrPhone })) ||
+        (await Tenante.findOne({ Phone_number: EmailOrPhone }));
+    }
 
-      if (!user) {
-          return res.status(404).json({
-              success: false,
-              message: "User not found"
-          });
-      }
+    if (!account) {
+      console.log("No account found for:", EmailOrPhone);
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
-      // Check if OTP matches
-      if (user.otp !== otp) {
+    console.log("Fetched account:", account);
+
+    // Check if OTP exists in the fetched account
+    if (!account.otp) {
+      console.error("OTP is not set in the account.");
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    // Validate OTP
+    // if (String(account.otp) !== String(otp)) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Invalid OTP",
+    //   });
+    // }
+    //      // Check if OTP matches
+         if (account.otp !== otp) {
           return res.status(400).json({
               success: false,
               message: "Invalid OTP"
           });
       }
 
-      // const currentDate = new Date();
-      // if (currentDate > user.otpExpiration) {
-      //     return res.status(400).json({
-      //         success: false,
-      //         message: "OTP has expired"
-      //     });
-      // }
-
-      // Clear OTP after successful verification
-      await User.findByIdAndUpdate(user._id, { otp: null, otpExpiration: null });
-
-      return res.status(200).json({
-          success: true,
-          message: "OTP verified successfully"
+    // Check for OTP expiration
+    const currentTime = new Date();
+    if (account.otpExpiration && currentTime > account.otpExpiration) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP has expired",
       });
+    }
 
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+    });
   } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-          success: false,
-          message: "Internal server error"
+    console.error("Error during OTP verification:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// exports.editProfile = async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+
+//     const updatedUser = await User.findByIdAndUpdate(
+//       userId,
+//       { $set: req.body },
+//       { new: true, runValidators: true } 
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     res.status(200).json({ message: 'Profile updated successfully', data: updatedUser });
+//   } catch (err) {
+//     res.status(500).json({ message: 'Server error', error: err.message });
+//   }
+// };
+
+exports.editProfile = async (req, res) => {
+  try {
+    const {
+      First_Name,
+      Last_Name,
+      Email_Address,
+      Phone_Number,
+      Country,
+      State,
+      City,
+      select_society,
+    } = req.body;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(Email_Address)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email",
       });
+    }
+
+    let imageUrl;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "user_profiles",
+        use_filename: true,
+        unique_filename: false,
+      });
+      imageUrl = result.secure_url;
+    }
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        First_Name,
+        Last_Name,
+        Email_Address,
+        Phone_Number,
+        Country,
+        State,
+        City,
+        select_society,
+
+        profileImage: imageUrl,
+      },
+      { new: true }
+    );
+
+    fs.unlink(req.file.path, (err) => {
+      if (err) {
+        console.log("error a deleting file", err);
+      } else {
+        console.log("file  deleted from server");
+      }
+    });
+    if (user) {
+      res.status(200).json({
+        success: true,
+        message: "User  Profile Updated...",
+      });
+    }
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server error",
+    });
   }
 };

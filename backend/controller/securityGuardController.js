@@ -12,8 +12,8 @@ const moment = require('moment');
 exports.CreateSecurityGuard = async (req, res) => {
     try {
         function generatePassword(length = 6) {
-            const password = crypto.randomInt(0, Math.pow(10, length)).toString();
-            return password.padStart(length, "0")
+            const Password = crypto.randomInt(0, Math.pow(10, length)).toString();
+            return Password.padStart(length, "0")
         }
         
         const {
@@ -35,10 +35,10 @@ exports.CreateSecurityGuard = async (req, res) => {
             });
         }
 
-        const password = generatePassword();
-        console.log(password);
+        const Password = generatePassword();
+        console.log(Password);
 
-        const hashpassword = await hash(password);
+        const hashpassword = await hash(Password);
 
         const uploadAndDeleteLocal = async (fileArray) => {
             if (fileArray && fileArray[0]) {
@@ -78,7 +78,7 @@ exports.CreateSecurityGuard = async (req, res) => {
             profileimage,
             adhar_card,
             role: role || "security",
-            password: hashpassword
+            Password: hashpassword
         });
 
         await newOwner.save();
@@ -87,7 +87,7 @@ exports.CreateSecurityGuard = async (req, res) => {
             await senData(
                 newOwner.MailOrPhone,
                 "Registration Successful - Login Details",
-                `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a security. Your login details are as follows:\n\nUsername: ${newOwner.MailOrPhone}\nPassword: <b> ${password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
+                `Dear ${newOwner.full_name},\n\nYou have successfully registered as a security. Your login details are as follows:\n\nUsername: ${newOwner.MailOrPhone}\nPassword: <b> ${Password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
             );
          } 
         return res.status(200).json({

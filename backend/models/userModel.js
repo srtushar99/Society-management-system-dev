@@ -53,7 +53,10 @@ const userSchema = mongoose.Schema({
     default:Date.now,
     get:(otpExpiration)=>otpExpiration.getTime(),
     set:(otpExpiration)=>new Date(otpExpiration)
-  }
+  },
+  profileImage: {
+    type: String,
+  },
 
 }, { timestamps: true });
 

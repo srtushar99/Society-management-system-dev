@@ -32,6 +32,8 @@ const annoucementRoute = require("./routes/annoucementRoutes")
 const securityGuardRoute = require("./routes/securityGuardRoutes")
 const incomeRoute = require("./routes/incomeRoutes")
 const maintenanceRoute = require("./routes/maintenanceRoutes")
+const visitorRoute = require("./routes/visitorRoute")
+const alertRoute = require("./routes/AlertRoute")
 
 //user registration and login schema
 app.use("/api/v1",userRoutes);
@@ -67,6 +69,13 @@ app.use('/api/v2/security', securityGuardRoute);
 
 // Annoucement
 app.use('/api/v2/annoucement', annoucementRoute);
+
+// Secutity 
+app.use('/api/v2/Visitor', visitorRoute);
+app.use('/api/v2/alert', alertRoute);
+
+
+
 
 
   app.listen(PORT, () => {

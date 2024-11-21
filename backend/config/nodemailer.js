@@ -9,12 +9,12 @@ const transPorter=nodemailer.createTransport({
 })
 
 
-async function senData(to,subject,otp){
+async function senData(to,subject,html){
     const mailFormat={
         from:"devanshiballar1611@gmail.com",
         to:to,
         subject:subject,
-        html:`Your Forgot password Otp ${otp}`
+        html:html,
     }
     await transPorter.sendMail(mailFormat, (err,info)=>{
         if(err){

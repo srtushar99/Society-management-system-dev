@@ -1,34 +1,6 @@
-// expensesController.js
 const Expenses = require('../models/expensesModel'); // Adjust path as necessary
 const cloudinary = require('../utils/cloudinary'); 
 const fs=require("fs")
-
-// Function to handle expense creation
-// const createExpense = async (req, res) => {
-//     try {
-//         // Upload file to Cloudinary (handled by multer middleware)
-//         const result = req.file ? req.file.path : null; // URL from Cloudinary
-
-//         if (!result) {
-//             return res.status(400).json({ error: 'Upload failed' });
-//         }
-
-//         // Create new expense record
-//         const expense = new Expenses({
-//             Title: req.body.Title,
-//             Description: req.body.Description,
-//             Date: req.body.Date,
-//             Amount: req.body.Amount,
-//             Upload_Bill: result 
-//         });
-
-//         // Save the expense
-//         await expense.save();
-//         res.status(201).json({ message: 'Expense created successfully', expense });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
 
 exports.createExpense = async (req, res) => {
     try {
@@ -38,6 +10,7 @@ exports.createExpense = async (req, res) => {
             Description,
             Date,
             Amount,
+            Original_FileName,
             role,
         } = req.body;
                         
@@ -73,6 +46,7 @@ exports.createExpense = async (req, res) => {
             Date,
             Amount,
             Upload_Bill,
+            Original_FileName,
             role:role || "resident",
             
         });
@@ -163,7 +137,7 @@ const uploadAndDeleteLocal = async (fileArray) => {
 
 exports.UpdateExpense = async (req, res) => {
     try {
-        const { Title, Description, Date, Amount, role } = req.body;
+        const { Title, Description, Date, Amount,Original_FileName, role } = req.body;
 
         let uploadUrl;
         if (req.files?.Upload_Bill) {
@@ -178,6 +152,7 @@ exports.UpdateExpense = async (req, res) => {
                 Date,
                 Amount,
                 Upload_Bill: uploadUrl || req.body.Upload_Bill,
+                Original_FileName,
                 role: role || "resident",
             },
             { new: true } // Return updated document

@@ -43,7 +43,6 @@ exports.IsResident = (req, res, next) => {
     return res.status(401).json({ success: false, message: "Unauthorized, no user found" });
   }
 
-  
   if (req.user.role === "resident") {
     next();
   } else {
@@ -51,13 +50,12 @@ exports.IsResident = (req, res, next) => {
   }
 };
   
-  exports.IsSecurity = (req, res, next) => {
+exports.IsSecurity = (req, res, next) => {
       
     if (!req.user) {
       return res.status(401).json({ success: false, message: "Unauthorized, no user found" });
     }
-  
-    
+   
     if (req.user.role === "security") {
       next();
     } else {
