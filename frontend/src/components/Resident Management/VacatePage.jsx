@@ -21,9 +21,9 @@ const VacatePage = ({ isOpen, onClose }) => {
   };
 
   const handleDeleteConfirm = () => {
-    console.log(`Wing: ${wing}, Unit: ${unit} has been vacated.`);
-    setIsDeleteOpen(false); 
-    onClose(); 
+  
+    // setIsDeleteOpen(false); 
+    onClose('/Residen'); 
     navigate("/Resident-Manegement"); 
   };
 
