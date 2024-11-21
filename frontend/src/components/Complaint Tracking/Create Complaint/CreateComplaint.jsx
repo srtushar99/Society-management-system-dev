@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../Sidebar/Sidebar";
 import NotificationIcon from "../../assets/notification-bing.png";
@@ -17,7 +17,7 @@ import CreateTracking from "./CreateTracking";
 import DeleteTracking from "./DeleteTracking";
 import ViewTracking from "./ViewTracking";
 import EditTracking from "./EditTracking";
-
+import axiosInstance from '../../Common/axiosInstance';
 
 const initialData = [
   {
@@ -121,19 +121,27 @@ const initialData = [
   },
 ];
 
+// const unitImages = {
+//   1001: [AIcon],
+//   1002: [BIcon],
+//   1003: [CIcon],
+//   1004: [DIcon],
+//   2001: [EIcon],
+//   2002: [FIcon],
+//   2003: [GIcon],
+//   2004: [HIcon],
+//   3001: [IIcon],
+//   3002: [AIcon],
+//   3003: [BIcon],
+// };
+
 const unitImages = {
-  1001: [AIcon],
-  1002: [BIcon],
-  1003: [CIcon],
-  1004: [DIcon],
-  2001: [EIcon],
-  2002: [FIcon],
-  2003: [GIcon],
-  2004: [HIcon],
-  3001: [IIcon],
-  3002: [AIcon],
-  3003: [BIcon],
-};
+  102: [BIcon], 
+  102: [BIcon], 
+  101: [AIcon], 
+  102: [CIcon],
+}
+
 
 const CreateComplaint = () => {
   const [data, setData] = useState(initialData); // Use state for data
@@ -145,6 +153,7 @@ const CreateComplaint = () => {
   const [selectedProtocolForDelete, setSelectedProtocolForDelete] =
     useState(null); // State for protocol to delete
 
+  const [complaint, setComplaint] = useState([]);
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
 
@@ -168,8 +177,8 @@ const CreateComplaint = () => {
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
-
+    // setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
+    setComplaint(complaint.filter((item) => item._id !== id)); 
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
   };
@@ -188,6 +197,27 @@ const CreateComplaint = () => {
     </span>
   );
   
+
+   // Fetch fetchComplaint from the API
+   const fetchComplaint = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/complaint/');
+        console.log(response.data);
+        if(response.status === 200){
+          setComplaint(response.data.complaints); 
+        }
+       
+    } catch (error) {
+        console.error('Error fetching Important Numbers:', error);
+    }
+};
+
+
+    useEffect(() => {
+      fetchComplaint();
+    }, []);
+
+
   return (
     <div className="flex bg-gray-100  w-full h-full">
       <Sidebar />
@@ -245,7 +275,7 @@ const CreateComplaint = () => {
             </thead>
 
             <tbody>
-              {data.map((item, index) => (
+              {complaint.map((item, index) => (
                 <tr key={index} className="border-t border-gray-200">
                   <td className="px-4 py-3 flex items-center space-x-3">
                     <img
@@ -253,50 +283,50 @@ const CreateComplaint = () => {
                       alt="avatar"
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>{item.Complainername}</span>
+                    <span>{item.Complainer_name}</span>
                   </td>
                   <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">
-                    {item.Complaintname}
+                    {item.Complaint_name}
                   </td>
 
                   <td className="p-3 pt-2 ps-5 hidden sm:table-cell text-gray-600">
-                    {item.description}
+                    {item.Description}
                   </td>
                   <td className="p-3 pt-2 ps-3 d-flex hidden sm:table-cell text-gray-600">
-                    {" "}
+                    {/* {" "}
                     <img
-                      src={unitImages[item.unit]}
-                      alt={item.unit}
+                      src={unitImages[item.Wing]}
+                      alt={item.Wing}
                       width="25"
                       height="25"
                       className="rounded-full"
-                    />
-                    {item.unit}
+                    /> */}
+             <span style={{color:"rgba(86, 120, 233, 1)",fontWeight:"700",marginRight:"8px"}}> { item.Wing } </span> {" "+item.Unit}
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden lg:table-cell text-gray-600">
                     <Badge
                       className={
-                        item.priority === "High"
+                        item.Priority === "High"
                           ? "bg-[#E74C3C] text-white" // High priority: Red background, white text
-                          : item.priority === "Medium"
+                          : item.Priority === "Medium"
                           ? "bg-[#5678E9] text-white" // Medium priority: Blue background, white text
                           : "bg-[#39973D] text-white" // Low priority: Green background, white text
                       }
                     >
-                      {item.priority}
+                      {item.Priority}
                     </Badge>
                   </td>
                   <td className="p-3 pt-2 ps-3 hidden md:table-cell text-gray-600">
                   <Badge
                     className={
-                      item.status === 'Open'
+                      item.Status === 'Open'
                         ? 'bg-[#5678E91A] text-blue-800'
-                        : item.status === 'Pending'
+                        : item.Status === 'Pending'
                         ? 'bg-[#FFC3131A] text-warning'
                         : 'bg-[#39973D1A] text-green-800'
                     }
                   >
-                    {item.status}
+                    {item.Status}
                   </Badge>
                   </td>
 
@@ -334,6 +364,7 @@ const CreateComplaint = () => {
           <CreateTracking
             isOpen={isCreateProtocolOpen}
             onClose={closeCreateProtocolModal}
+            fetchComplaint={fetchComplaint}
           />
         )}
         {isEditModalOpen && selectedProtocolForView && (
@@ -341,6 +372,7 @@ const CreateComplaint = () => {
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             protocol={selectedProtocolForView}
+            fetchComplaint={fetchComplaint}
           />
         )}
         {isViewModalOpen && selectedProtocolForView && (
@@ -356,6 +388,7 @@ const CreateComplaint = () => {
             onCancel={closeDeleteModal}
             protocol={selectedProtocolForDelete}
             onDelete={() => handleDelete(selectedProtocolForDelete.id)} // Pass the ID of the protocol to delete
+            fetchComplaint={fetchComplaint}
           />
         )}
       </div>

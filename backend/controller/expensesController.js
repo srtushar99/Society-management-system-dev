@@ -30,70 +30,133 @@ const fs=require("fs")
 //     }
 // };
 
-exports.createExpense = async (req, res) => {
-    try {
+// exports.createExpense = async (req, res) => {
+//     try {
 
-        const {
-            Title,
-            Description,
-            Date,
-            Amount,
-            role,
-        } = req.body;
+//         const {
+//             Title,
+//             Description,
+//             Date,
+//             Amount,
+//             role,
+//         } = req.body;
                         
         
-               const uploadAndDeleteLocal = async (fileArray) => {
-                if (fileArray && fileArray[0]) {
-                    const filePath = fileArray[0].path;
-                    try {
-                        // Upload to Cloudinary
-                        const result = await cloudinary.uploader.upload(filePath);
-                        // Delete from local server
-                        fs.unlink(filePath, (err) => {
-                            if (err) console.error("Error deleting file from server:", err);
-                            else console.log("File deleted from server:", filePath);
-                        });
-                        return result.secure_url;
-                    } catch (error) {
-                        console.error("Error uploading to Cloudinary:", error);
-                        throw error;
-                    }
-                }
-                return '';
-            };
+//                const uploadAndDeleteLocal = async (fileArray) => {
+//                 if (fileArray && fileArray[0]) {
+//                     const filePath = fileArray[0].path;
+//                     try {
+//                         // Upload to Cloudinary
+//                         const result = await cloudinary.uploader.upload(filePath);
+//                         // Delete from local server
+//                         fs.unlink(filePath, (err) => {
+//                             if (err) console.error("Error deleting file from server:", err);
+//                             else console.log("File deleted from server:", filePath);
+//                         });
+//                         return result.secure_url;
+//                     } catch (error) {
+//                         console.error("Error uploading to Cloudinary:", error);
+//                         throw error;
+//                     }
+//                 }
+//                 return '';
+//             };
     
-            // Upload images to Cloudinary and delete local files
-            const Upload_Bill = await uploadAndDeleteLocal(req.files?.Upload_Bill);
+//             // Upload images to Cloudinary and delete local files
+//             const Upload_Bill = await uploadAndDeleteLocal(req.files?.Upload_Bill);
  
     
-        // Create a new owner document
-        const newExpenses = new Expenses({
+//         // Create a new owner document
+//         const newExpenses = new Expenses({
+//             Title,
+//             Description,
+//             Date,
+//             Amount,
+//             Upload_Bill,
+//             role:role || "resident",
+            
+//         });
+
+      
+//         await newExpenses.save();
+        
+//         // Send success response
+//        return res.status(201).json({
+//             success: true,
+//             message: "Expenses data added successfully",
+            
+//         });
+//     } catch (error) {
+//         console.error("Error adding expenses data:", error);
+//        return res.status(500).json({
+//             success: false,
+//             message: "Failed to add Expenses data"
+//         });
+//     }
+// };
+
+exports.createExpense = async (req, res) => {
+    try {
+        const { Title, Description, Date, Amount, role,  Original_FileName } = req.body;
+
+        // Function to upload and delete the file from the local server
+        const uploadAndDeleteLocal = async (fileArray) => {
+            if (fileArray && fileArray[0]) {
+                const filePath = fileArray[0].path;
+                try {
+                    const result = await cloudinary.uploader.upload(filePath);
+                    fs.unlink(filePath, (err) => {
+                        if (err) console.error("Error deleting file from server:", err);
+                        else console.log("File deleted from server:", filePath);
+                    });
+                    return result.secure_url;
+                } catch (error) {
+                    console.error("Error uploading to Cloudinary:", error);
+                    throw error;
+                }
+            }
+            return '';
+        };
+
+        console.log("Received Body:", req.body);
+       console.log("Received Files:", req.files);
+
+        const Upload_Bill = await uploadAndDeleteLocal(req.files?.Upload_Bill);
+
+        // Ensure the required fields are provided
+        if (!Title || !Description || !Date || !Amount || !Upload_Bill) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required, including Upload_Bill."
+            });
+        }
+
+        const newExpense = new Expenses({
             Title,
             Description,
             Date,
             Amount,
             Upload_Bill,
-            role:role || "resident",
-            
+            Original_FileName,
+            role: role || "resident",
         });
 
-      
-        await newExpenses.save();
-        
-        // Send success response
-       return res.status(201).json({
+        await newExpense.save();
+
+        return res.status(201).json({
             success: true,
-            message: "Expenses data added successfully",
-            
+            message: "Expense added successfully",
+            expense: newExpense,
         });
     } catch (error) {
-        console.error("Error adding expenses data:", error);
-       return res.status(500).json({
+        console.error("Error creating expense:", error);
+        return res.status(500).json({
             success: false,
-            message: "Failed to add Expenses data"
+            message: "Failed to add expense",
         });
     }
 };
+
 
 exports.GetAllExpenses= async(req,res)=>{
     try {
@@ -163,7 +226,7 @@ const uploadAndDeleteLocal = async (fileArray) => {
 
 exports.UpdateExpense = async (req, res) => {
     try {
-        const { Title, Description, Date, Amount, role } = req.body;
+        const { Title, Description, Date, Amount, role,  Original_FileName } = req.body;
 
         let uploadUrl;
         if (req.files?.Upload_Bill) {
@@ -178,6 +241,7 @@ exports.UpdateExpense = async (req, res) => {
                 Date,
                 Amount,
                 Upload_Bill: uploadUrl || req.body.Upload_Bill,
+                Original_FileName,
                 role: role || "resident",
             },
             { new: true } // Return updated document

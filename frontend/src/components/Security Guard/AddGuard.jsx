@@ -1,72 +1,63 @@
 import React, { useState, useRef, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Upload } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
-import timeIcon from "../../components/assets/Vector.png"; // Import your custom time icon
+import timeIcon from "../../components/assets/Vector.png";
+import moment from 'moment';
+import axiosInstance from '../Common/axiosInstance';
 
-const AddGuard = ({ isOpen, onClose }) => {
-  const [guardName, setGuardName] = useState("");
-  const [number, setNumber] = useState("");
-  const [shiftDate, setShiftDate] = useState(null); // Store as Date object
-  const [shiftTime, setShiftTime] = useState(null); // Store as dayjs object
-  const [selectShift, setSelectShift] = useState("");
+const AddGuard = ({ isOpen, onClose, fetchSecurityGuard }) => {
+  const [full_name, setfull_name] = useState("");
+  const [MailOrPhone, setMailOrPhone] = useState("");
+  const [shiftDate, setShiftDate] = useState(null);
+  const [time, settime] = useState("");
+  const [shift, setshift] = useState("");
   const [gender, setGender] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [Photo, setPhoto] = useState(null); // State to store the uploaded photo
+  const [profile_image, setprofileimage] = useState(null);
+  const [uploadprofileimage, setuploadprofileimage] = useState(null);
+  const [adharcard, setadhar_card] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
-  const timePickerRef = useRef(null); // Ref for the TimePicker
+  const timePickerRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const dropZoneRef = useRef(null);
 
-  // Regex for validation
   const nameRegex = /^[A-Za-z\s]+$/;
-  const numberRegex = /^[6789][0-9]{0,9}$/;
-  const shiftTimeRegex = /^[0-9]{2}:[0-9]{2}$/;
+  // const MailOrPhoneRegex = /^[6789][0-9]{0,9}$/;
+  const timeRegex = /^(?:[01]?\d|2[0-3]):[0-5]\d (AM|PM)$/;
 
-  // Form validation
   const isFormValid =
-    guardName &&
-    number &&
+    full_name &&
+    MailOrPhone &&
     shiftDate &&
-    shiftTime &&
-    selectShift &&
+    time &&
+    shift &&
     gender &&
-    nameRegex.test(guardName) &&
-    numberRegex.test(number) &&
-    shiftTimeRegex.test(shiftTime);
+    adharcard &&
+    nameRegex.test(full_name) &&
+    // nameRegex.test(MailOrPhone) &&
+    timeRegex.test(time);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isFormValid) {
-      console.log("Form Submitted", {
-        guardName,
-        number,
-        shiftDate,
-        shiftTime,
-        selectShift,
-        gender,
-        Photo, // Include the photo data in the form submission
-      });
-      // Handle form submission logic here
-    } else {
-      console.log("Form is invalid");
-    }
-  };
-
-  const handleDateChange = (date) => {
-    setShiftDate(date); // Store the selected date as a Date object
-    setIsCalendarOpen(false); // Close calendar after selecting a date
-  };
-
- 
-  const handleTimeChange = (value) => {
-    // Format the time using dayjs to ensure it matches HH:mm format
-    const timeString = value ? value.format("HH:mm") : "";
-    setShiftTime(timeString);
+  const ClearAllData = () => {
+    setfull_name("");
+    setMailOrPhone("");
+    setShiftDate(null);
+    settime("");
+    setshift("");
+    setGender("");
+    setprofileimage(null);
+    setuploadprofileimage(null);
+    setadhar_card(null);
+    setIsCalendarOpen(false);
   };
 
   const handleClose = () => {
@@ -74,21 +65,121 @@ const AddGuard = ({ isOpen, onClose }) => {
     navigate("/security-guard");
   };
 
+  const ColseData = () => {
+    handleClose();
+    ClearAllData();
+  };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isFormValid) {
+      try {
+        const formData = new FormData();
+        formData.append("full_name", full_name);
+        formData.append("MailOrPhone", MailOrPhone);
+        formData.append("date", moment(shiftDate).format('DD/MM/YYYY'));
+        formData.append("time", time);
+        formData.append("shift", shift);
+        formData.append("gender", gender);
+
+        if (uploadprofileimage) {
+          formData.append("profileimage", uploadprofileimage); 
+        }
+        if (adharcard) {
+          formData.append("adhar_card", adharcard); 
+        }
+
+        const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        if (response.status === 200) {
+          fetchSecurityGuard();
+          onClose();
+          ClearAllData();
+        }
+      } catch (error) {
+        console.error("Error creating Guard:", error.response || error.message);
+      }
+    } else {
+      console.log("Form is invalid");
+    }
+  };
+
+  const handleDateChange = (date) => {
+    setShiftDate(date);
+    setIsCalendarOpen(false);
+  };
+
+  const handleTimeChange = (value) => {
+    const formattedDate = dayjs(value);
+    const hour = formattedDate.hour();
+    const ampm = hour < 12 ? "AM" : "PM"; 
+    const timeString = formattedDate.format("HH:mm");
+    settime(`${timeString} ${ampm}`);
+  };
+
+
   const handleClickOutside = (e) => {
-    // Ignore clicks inside the modal and TimePicker
-    if (
-      modalRef.current &&
-      !modalRef.current.contains(e.target) &&
-      !timePickerRef.current.contains(e.target) && // Ensure TimePicker doesn't trigger closing
-      !datePickerRef.current.contains(e.target) && // Ensure DatePicker doesn't trigger closing
-      !e.target.closest('input') && // Ensure clicks on inputs don't trigger closing
-      !e.target.closest('select') // Ensure clicks on select fields don't trigger closing
-    ) {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
+        setIsCalendarOpen(false);
+      }
     }
   };
 
   const handleCalendarIconClick = () => {
     setIsCalendarOpen(!isCalendarOpen);
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setuploadprofileimage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setprofileimage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAadharCardChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+        setadhar_card(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setAadharCard(file);
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
   };
 
   useEffect(() => {
@@ -98,32 +189,14 @@ const AddGuard = ({ isOpen, onClose }) => {
     };
   }, []);
 
-  // Handle photo upload
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result); // Set the photo as the base64 encoded string
-      };
-      reader.readAsDataURL(file); // Read the selected file as a Data URL
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div
-      ref={modalRef}
-      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4"
-    >
-      <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
+      <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg" ref={modalRef}>
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">Add Security</span>
-          <button
-            className="text-gray-600 hover:text-gray-800"
-            onClick={handleClose}
-          >
+          <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -131,31 +204,24 @@ const AddGuard = ({ isOpen, onClose }) => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Photo Upload */}
           <div>
-            <div className="d-flex">
-              {/* Circle container for the photo */}
-              <div className="border bg-[#F4F4F4]  rounded-full w-[50px] h-[50px]  flex justify-center items-center">
-                {Photo ? (
-                  <img
-                    src={Photo}
-                    alt="Guard"
-                    className="w-[50px] h-[50px] object-cover rounded-full"
-                  />
+            <div className="flex items-center">
+              <div className="border bg-[#F4F4F4] rounded-full w-[50px] h-[50px] flex justify-center items-center">
+                {profile_image ? (
+                  <img src={profile_image} alt="Guard" className="w-[50px] h-[50px] object-cover rounded-full" />
                 ) : (
                   <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
                 )}
               </div>
-              {/* Button to upload photo */}
               <button
                 type="button"
                 className="ml-5 text-blue-500 no-underline"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("photoInput").click()}
               >
                 Add Photo
               </button>
             </div>
-            {/* Hidden file input */}
             <input
-              id="fileInput"
+              id="photoInput"
               type="file"
               accept="image/*"
               onChange={handlePhotoChange}
@@ -170,46 +236,47 @@ const AddGuard = ({ isOpen, onClose }) => {
             </label>
             <input
               type="text"
-              placeholder="Enter Guard Name"
-              value={guardName}
+              placeholder="Enter Full Name"
+              value={full_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setGuardName(value);
-                }
-              }}
-              className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-            />
-          </div>
-
-          {/* Guard Number */}
-          <div>
-            <label className="block text-left font-medium text-[#202224] mb-1">
-              Phone Number<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="+91"
-              value={number}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (numberRegex.test(value) || value === "") {
-                  setNumber(value);
+                  setfull_name(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          <div className="d-flex">
-            <div>
+          {/* Phone MailOrPhone */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+            MailOrPhone<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={MailOrPhone}
+              onChange={(e) => {
+                const value = e.target.value;
+                // if (nameRegex.test(value) || value === "") {
+                if (!!value) {
+                  setMailOrPhone(value);
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            />
+          </div>
+
+          {/* Gender and Shift */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Gender<span className="text-red-500">*</span>
               </label>
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                className="w-[190px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -217,82 +284,142 @@ const AddGuard = ({ isOpen, onClose }) => {
               </select>
             </div>
 
-            {/* Shift Date */}
-            <div>
-              <label className="block ml-6 text-left font-medium text-[#202224] mb-1">
+            <div className="w-1/2">
+              <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift<span className="text-red-500">*</span>
               </label>
               <select
-                value={selectShift}
-                onChange={(e) => setSelectShift(e.target.value)}
-                className="w-[190px] ml-5 px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                value={shift}
+                onChange={(e) => setshift(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               >
                 <option value="">Select Shift</option>
-                <option value="Morning">Day</option>
+                <option value="Day">Day</option>
                 <option value="Night">Night</option>
               </select>
             </div>
           </div>
 
-          {/* Shift Time */}
+          {/* Date and Time */}
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift Date<span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center relative" ref={datePickerRef}>
+              <div className="flex items-center relative">
                 <DatePicker
                   selected={shiftDate}
                   onChange={handleDateChange}
-                  className="w-[170px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
-                  placeholderText="Select a date"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                  placeholderText="Select Date"
                   dateFormat="dd/MM/yyyy"
                   autoComplete="off"
                   open={isCalendarOpen}
                 />
                 <i
-                  className="fa-solid fa-calendar-days absolute right-10 text-[#202224] cursor-pointer"
+                  className="fa-solid fa-calendar-days absolute right-3 text-[#202224] cursor-pointer"
                   onClick={handleCalendarIconClick}
                 />
               </div>
             </div>
 
-            <div className="w-1/2 relative">
+            <div className="w-1/2">
               <label className="block text-left font-medium text-[#202224] mb-1">
                 Shift Time<span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center relative" ref={timePickerRef}>
-                <TimePicker
-                  value={shiftTime ? dayjs(shiftTime, "HH:mm") : null}
+                {/* <TimePicker
+                  value={time ? dayjs(time, "HH:mm") : null}
                   format="HH:mm"
-                  suffixIcon={<img src={timeIcon} alt="Time Icon" />}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
+                  suffixIcon={<img src={timeIcon} alt="Time" />}
+                  className="w-full border border-gray-300 rounded-lg"
                   popupClassName="custom-time-picker-popup"
                   onChange={handleTimeChange}
-                />
-              </div>
+                /> */}
+                <TimePicker
+                value={time ? dayjs(time, "HH:mm") : null}
+                onChange={handleTimeChange}
+                format="HH:mm"
+                suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              />
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-2">
+          {/* Aadhar Card Upload */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+              Upload Aadhar Card<span className="text-red-500">*</span>
+            </label>
+            <div
+              ref={dropZoneRef}
+              className={`border-2 border-dashed rounded-lg p-4 text-center ${
+                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleAadharCardChange}
+                className="hidden"
+                accept=".jpg,.jpeg,.png,.pdf"
+              />
+              {adharcard ? (
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-sm text-gray-600">{adharcard.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setadhar_card(null);
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-4">
             <button
               type="button"
-              className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
-              onClick={handleClose}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
+              onClick={ColseData}
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
+              className={`flex-1 px-4 py-2 rounded-lg ${
                 isFormValid
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                  : "bg-[#F6F8FB] text-[#202224]"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
-              {isFormValid ? "Save" : "Create"}
+              Create
             </button>
           </div>
         </form>

@@ -262,9 +262,9 @@ const Resident = () => {
                       <img
                         src={item.Name === "-" ? Avatar : AvatarImage}
                         alt="avatar"
-                        className="w-8 h-8 rounded-full"
+                        className="w-8 h-8 rounded-full flex"
                       />
-                      <span>{item.Name}</span>
+                      <span >{item.Name}</span>
                     </td>
                     <td className="p-3 pt-2 ps-3 hidden sm:table-cell text-gray-600">
                       <img

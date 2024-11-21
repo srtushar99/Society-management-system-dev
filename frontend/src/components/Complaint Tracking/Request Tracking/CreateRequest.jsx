@@ -2,52 +2,88 @@ import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker"; 
+import axiosInstance from "../../Common/axiosInstance";
+import moment from "moment";
 
-const CreateRequest = ({ isOpen, onClose }) => {  
+const CreateRequest = ({ isOpen, onClose, fetchRequestTracking }) => {  
   // State for the input fields
-  const [Requestername, setRequestername] = useState(""); 
-  const [Requestname, setRequestname] = useState(""); 
-  const [wing, setWing] = useState(""); 
-  const [unit, setUnit] = useState(""); 
-  const [priority, setPriority] = useState("High");
-  const [status, setStatus] = useState("Open");
-  const [requestDate, setRequestDate] = useState(new Date()); // Initialize with current date
+  const [Requester_name, setRequester_name] = useState(""); 
+  const [Request_name, setRequest_name] = useState(""); 
+  const [Description, setDescription] = useState(""); 
+  const [Wing, setWing] = useState(""); 
+  const [Unit, setUnit] = useState(""); 
+  const [Priority, setPriority] = useState("High");
+  const [Status, setStatus] = useState("Open");
+  const [Request_date, setRequest_date] = useState(null); // Initialize with current date
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const modalRef = useRef(null);
+
+  const ClearAllData = () => {
+    setRequester_name("");
+    setRequest_name("");
+    setDescription("");
+    setWing("");
+    setUnit("");
+    setPriority("High");
+    setStatus("Open");
+    setRequest_date(null);
+  };
 
   // Regex for validation
   const nameRegex = /^[A-Za-z\s]+$/; // Validate names with only letters and spaces
   const unitRegex = /^[0-9]+$/; // Validate unit with only numbers
   const wingRegex = /^[A-Za-z\s]+$/; // Validate wing with only alphabets
+  const descriptionRegex = /^[A-Za-z\s]+$/; // Validate description with letters and spaces only
 
   // Form validation
   const isFormValid =
-    Requestername &&
-    Requestname &&
-    wing &&
-    unit &&
-    requestDate && // Ensure requestDate is filled
-    nameRegex.test(Requestername) &&
-    nameRegex.test(Requestname) &&
-    wingRegex.test(wing) &&
-    unitRegex.test(unit);
+    Requester_name &&
+    Request_name &&
+    Wing &&
+    Unit &&
+    Description &&
+    Request_date && // Ensure Request_date is filled
+    nameRegex.test(Requester_name) &&
+    nameRegex.test(Request_name) &&
+    wingRegex.test(Wing) &&
+    descriptionRegex.test(Description) &&
+    unitRegex.test(Unit);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      console.log("Form Submitted", {
-        Requestername,
-        Requestname,
-        wing,
-        unit,
-        priority,
-        status,
-        requestDate, // Log request date
-      });
-      // Handle form submission logic here
+      const RequestTrackingData = {
+       Requester_name,
+       Request_name,
+       Request_date,
+       Description,
+       Wing,
+       Unit,
+       Priority,
+       Status
+      };
+
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/requests/addrequest",
+          RequestTrackingData
+        );
+        if (response.status===201) {
+          console.log("Successfully saved:", response.data);
+          fetchRequestTracking();
+          onClose(); 
+          ClearAllData();
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating Complaint:", error);
+      }
     } else {
       console.log("Form is invalid");
     }
@@ -67,7 +103,7 @@ const CreateRequest = ({ isOpen, onClose }) => {
   };
 
   const handleDateChange = (date) => {
-    setRequestDate(date); // Update requestDate when the user selects a date
+    setRequest_date(date); // Update Request_date when the user selects a date
     setIsCalendarOpen(false); // Close the calendar after date selection
   };
 
@@ -107,11 +143,11 @@ const CreateRequest = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Requester Name"
-              value={Requestername}
+              value={Requester_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setRequestername(value);
+                  setRequester_name(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
@@ -125,14 +161,32 @@ const CreateRequest = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Request Name"
-              value={Requestname}
+              value={Request_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setRequestname(value);
+                  setRequest_name(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+              Description<span className="text-red-500">*</span>
+            </label>
+            <textarea
+              placeholder="Enter Description"
+              value={Description}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (descriptionRegex.test(value) || value === "") {
+                  setDescription(value);
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] resize-none"
             />
           </div>
 
@@ -143,7 +197,7 @@ const CreateRequest = ({ isOpen, onClose }) => {
             </label>
             <div className="flex items-center relative">
               <DatePicker
-                selected={requestDate} // Pass the correct state to DatePicker
+                selected={Request_date} // Pass the correct state to DatePicker
                 onChange={handleDateChange}
                 className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                 placeholderText="Select a date"
@@ -166,7 +220,7 @@ const CreateRequest = ({ isOpen, onClose }) => {
               </label>
               <input
                 type="text"
-                value={wing}
+                value={Wing}
                 onChange={(e) => {
                   const value = e.target.value;
                   if (wingRegex.test(value) || value === "") {
@@ -182,7 +236,7 @@ const CreateRequest = ({ isOpen, onClose }) => {
               </label>
               <input
                 type="text"
-                value={unit}
+                value={Unit}
                 onChange={(e) => {
                   const value = e.target.value;
                   if (unitRegex.test(value) || value === "") {
@@ -204,39 +258,39 @@ const CreateRequest = ({ isOpen, onClose }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FE512E] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="High"
-                  checked={priority === "High"}
+                  checked={Priority === "High"}
                   onChange={() => setPriority("High")}
-                  className={`w-4 h-4 border-2 ${priority === "High" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
+                  className={`w-4 h-4 border-2 ${Priority === "High" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span className={`ml-2 text-sm ${priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>High</span>
+                <span className={`ml-2 text-sm ${Priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>High</span>
               </label>
 
               {/* Medium Priority */}
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FFEB3B] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Medium"
-                  checked={priority === "Medium"}
+                  checked={Priority === "Medium"}
                   onChange={() => setPriority("Medium")}
-                  className={`w-4 h-4 border-2 ${priority === "Medium" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
+                  className={`w-4 h-4 border-2 ${Priority === "Medium" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span className={`ml-2 text-sm ${priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Medium</span>
+                <span className={`ml-2 text-sm ${Priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Medium</span>
               </label>
 
               {/* Low Priority */}
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#4CAF50] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Low"
-                  checked={priority === "Low"}
+                  checked={Priority === "Low"}
                   onChange={() => setPriority("Low")}
-                  className={`w-4 h-4 border-2 ${priority === "Low" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
+                  className={`w-4 h-4 border-2 ${Priority === "Low" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span className={`ml-2 text-sm ${priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Low</span>
+                <span className={`ml-2 text-sm ${Priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Low</span>
               </label>
             </div>
           </div>
@@ -251,39 +305,39 @@ const CreateRequest = ({ isOpen, onClose }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Open"
-                  checked={status === "Open"}
+                  checked={Status === "Open"}
                   onChange={() => setStatus("Open")}
-                  className={`w-4 h-4 border-2 ${status === "Open" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#4CAF50]"}`}
+                  className={`w-4 h-4 border-2 ${Status === "Open" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#4CAF50]"}`}
                 />
-                <span className={`ml-2 text-sm ${status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Open</span>
+                <span className={`ml-2 text-sm ${Status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Open</span>
               </label>
 
               {/* Pending Status */}
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Pending"
-                  checked={status === "Pending"}
+                  checked={Status === "Pending"}
                   onChange={() => setStatus("Pending")}
-                  className={`w-4 h-4 border-2 ${status === "Pending" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#FFEB3B]"}`}
+                  className={`w-4 h-4 border-2 ${Status === "Pending" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#FFEB3B]"}`}
                 />
-                <span className={`ml-2 text-sm ${status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Pending</span>
+                <span className={`ml-2 text-sm ${Status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Pending</span>
               </label>
 
               {/* Solve Status */}
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Solve"
-                  checked={status === "Solve"}
+                  checked={Status === "Solve"}
                   onChange={() => setStatus("Solve")}
-                  className={`w-4 h-4 border-2 ${status === "Solve" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#F44336]"}`}
+                  className={`w-4 h-4 border-2 ${Status === "Solve" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#F44336]"}`}
                 />
-                <span className={`ml-2 text-sm ${status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Solve</span>
+                <span className={`ml-2 text-sm ${Status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Solve</span>
               </label>
             </div>
           </div>

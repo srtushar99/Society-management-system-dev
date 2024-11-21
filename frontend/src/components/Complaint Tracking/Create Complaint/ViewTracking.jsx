@@ -11,8 +11,9 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png";// Import useNavigate for redirection
+import moment from 'moment';
 
-const ViewTracking = ({ protocol, onClose }) => {
+const ViewTracking = ({ isOpen, onClose, protocol }) => {
   if (!protocol) return null; // Ensure complaint exists
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -85,8 +86,8 @@ const ViewTracking = ({ protocol, onClose }) => {
               className="w-16 h-16 rounded-full object-cover"
             />
             <div>
-              <h2 className="font-semibold text-lg text-gray-900">{protocol.Complainername}</h2>
-              <p className="text-gray-500 text-sm">Aug 5, 2024</p>
+              <h2 className="font-semibold text-lg text-gray-900">{protocol.Complainer_name}</h2>
+              <p className="text-gray-500 text-sm">{moment(protocol.createdAt).format("MMM D, YYYY")}</p>
           
             </div>
           </div>
@@ -95,42 +96,43 @@ const ViewTracking = ({ protocol, onClose }) => {
           <div className="space-y-6">
             <div>
               <h3 className="text-gray-500 text-sm mb-1">Request Name</h3>
-              <p className="font-medium text-gray-900">{protocol.Complaintname}</p>
+              <p className="font-medium text-gray-900">{protocol.Complaint_name}</p>
             </div>
 
             <div>
               <h3 className="text-gray-500 text-sm mb-1">Description</h3>
-              <p className="font-medium text-gray-900">{protocol.description}</p>
+              <p className="font-medium text-gray-900">{protocol.Description}</p>
             </div>
 
             {/* Wing, Unit, Priority, Status on the same line */}
             <div className="grid grid-cols-4 gap-x-1 gap-y-1">
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Wing</h3>
-                <img
+                {/* <img
                   src={unitImageSrc}
                   alt="Unit Icon"
                   className="w-6 ml-2 h-6 rounded-full object-cover"
-                />
+                /> */}
+                <p className="font-medium text-gray-900">{protocol.Wing}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Unit</h3>
-                <p className="font-medium text-gray-900">{protocol.unit || "N/A"}</p>
+                <p className="font-medium text-gray-900">{protocol.Unit || "N/A"}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1 ml-2">Priority</h3>
                 <Badge
                       className={
-                        protocol.priority === "High"
+                        protocol.Priority === "High"
                           ? "bg-[#E74C3C] text-white" // High priority: Red background, white text
-                          : protocol.priority === "Medium"
+                          : protocol.Priority === "Medium"
                           ? "bg-[#5678E9] text-white" // Medium priority: Blue background, white text
                           : "bg-[#39973D] text-white"
                       }
                     >
-                      {protocol.priority}
+                      {protocol.Priority}
                     </Badge>
               </div>
 
@@ -139,14 +141,14 @@ const ViewTracking = ({ protocol, onClose }) => {
             
                 <Badge
                     className={
-                      protocol.status === 'Open'
+                      protocol.Status === 'Open'
                         ? 'bg-[#5678E91A] text-blue-800'
-                        : protocol.status === 'Pending'
+                        : protocol.Status === 'Pending'
                         ? 'bg-[#FFC3131A] text-warning'
                         : 'bg-[#39973D1A] text-green-800'
                     }
                   >
-                    {protocol.status}
+                    {protocol.Status}
                   </Badge>
                
               </div>

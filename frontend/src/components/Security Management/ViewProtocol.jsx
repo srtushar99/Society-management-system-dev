@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const ViewProtocol = ({ isOpen, onClose, protocol }) => {
     if (!isOpen || !protocol) return null;
   
@@ -15,20 +17,20 @@ const ViewProtocol = ({ isOpen, onClose, protocol }) => {
           <div className="border-[1px] border-gray-300 mt-2"></div>
           <div className="mt-4">
             <p className="text-[#A7A7A7] mb-1">Title</p>
-            <p>{protocol.title}</p>
+            <p>{!!protocol.Title ? protocol.Title : ""}</p>
           </div>
           <div className="mt-4">
             <p className="text-[#A7A7A7] mb-1">Description</p>
-            <p>{protocol.description}</p>
+            <p>{!!protocol.Description ? protocol.Description : ""}</p>
           </div>
           <div className="mt-4 flex justify-start">
             <div>
               <p className="text-[#A7A7A7] mb-1">Date</p>
-              <p>{protocol.date}</p>
+              <p>{!!protocol.Date ? moment(protocol.Date).format('DD/MM/YYYY') : ""}</p>
             </div>
             <div className="ml-10">
               <p className="text-[#A7A7A7]  mb-1">Time</p>
-              <p className="">{protocol.time}</p>
+              <p className="">{!!protocol.Time ? protocol.Time : ""}</p>
             </div>
           </div>
         </div>

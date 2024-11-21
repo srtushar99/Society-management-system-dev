@@ -11,12 +11,15 @@ import FIcon from "../../assets/F.png";
 import GIcon from "../../assets/G.png";
 import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png"; // Import useNavigate for redirection
+import moment from 'moment';
 
-const ViewRequest = ({ protocol, onClose }) => {
+const ViewRequest = ({ isOpen, onClose, protocol }) => {
   if (!protocol) return null; // Ensure complaint exists
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate(); // Hook to handle redirection
+
+  // Function to determine badge colors for priority and status
 
   // Define images for each unit
   const unitImages = {
@@ -39,30 +42,27 @@ const ViewRequest = ({ protocol, onClose }) => {
     navigate("/requesttracking"); // Redirect to the requesttracking page
   };
 
-  // Badge component for displaying priority and status
   const Badge = ({ children, className }) => (
     <span
-      className={`px-2 py-2 pe-10 text-xs font-semibold ${className}`}
-      style={{
-        borderRadius: "15px",
-        minWidth: "80px",
-        textAlign: "center",
+      className={`px-2 py-2  pe-10 text-xs font-semibold ${className}`} // Added px-4 to give consistent padding
+      style={{ 
+        borderRadius: "15px", 
+       // Ensure it's displayed as an inline-block
+        minWidth: "80px", // Set a minimum width to ensure consistency
+        textAlign: "center" // Center text within the badge
       }}
     >
       {children}
     </span>
   );
-
-  const handleConfirmClose = () => {
-    setIsConfirmationOpen(false); // Close confirmation modal
   
-  };
+
+
 
   const handleCancelClose = () => {
     setIsConfirmationOpen(false); // Close confirmation modal without closing the main modal
   };
-
-  // Set the image for the unit based on protocol.unit
+ 
   const unitImageSrc = unitImages[protocol.unit] || "/fallback-avatar.png"; 
 
   return (
@@ -84,12 +84,12 @@ const ViewRequest = ({ protocol, onClose }) => {
           <div className="flex items-center gap-4 mb-8">
             <img
               src={AvatarImage}
-              alt={protocol.Complainername}
+              alt={protocol.Requester_name}
               className="w-16 h-16 rounded-full object-cover"
             />
             <div>
-              <h2 className="font-semibold text-lg text-gray-900">{protocol.Requestername}</h2>
-              <p className="text-gray-500 text-sm">Aug 5, 2024</p>
+              <h2 className="font-semibold text-lg text-gray-900">{protocol.Requester_name}</h2>
+              <p className="text-gray-500 text-sm">{moment(protocol.createdAt).format("MMM D, YYYY")}</p>
             </div>
           </div>
 
@@ -97,42 +97,43 @@ const ViewRequest = ({ protocol, onClose }) => {
           <div className="space-y-6">
             <div>
               <h3 className="text-gray-500 text-sm mb-1">Request Name</h3>
-              <p className="font-medium text-gray-900">{protocol.Requestname}</p>
+              <p className="font-medium text-gray-900">{protocol.Request_name}</p>
             </div>
 
             <div>
               <h3 className="text-gray-500 text-sm mb-1">Description</h3>
-              <p className="font-medium text-gray-900">{protocol.description}</p>
+              <p className="font-medium text-gray-900">{protocol.Description}</p>
             </div>
 
             {/* Wing, Unit, Priority, Status on the same line */}
             <div className="grid grid-cols-4 gap-x-1 gap-y-1">
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Wing</h3>
-                <img
+                {/* <img
                   src={unitImageSrc}
                   alt="Unit Icon"
                   className="w-6 ml-2 h-6 rounded-full object-cover"
-                />
+                /> */}
+                 <p className="font-medium text-gray-900">{protocol.Wing}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Unit</h3>
-                <p className="font-medium text-gray-900">{protocol.unit || "N/A"}</p>
+                <p className="font-medium text-gray-900">{protocol.Unit || "N/A"}</p>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1 ml-2">Priority</h3>
                 <Badge
                   className={
-                    protocol.priority === "High"
+                    protocol.Priority === "High"
                       ? "bg-[#E74C3C] text-white" // High priority: Red background, white text
-                      : protocol.priority === "Medium"
+                      : protocol.Priority === "Medium"
                       ? "bg-[#5678E9] text-white" // Medium priority: Blue background, white text
                       : "bg-[#39973D] text-white"
                   }
                 >
-                  {protocol.priority}
+                  {protocol.Priority}
                 </Badge>
               </div>
 
@@ -140,14 +141,14 @@ const ViewRequest = ({ protocol, onClose }) => {
                 <h3 className="text-gray-500 text-sm mb-1 ml-2">Status</h3>
                 <Badge
                   className={
-                    protocol.status === "Open"
+                    protocol.Status === "Open"
                       ? "bg-[#5678E91A] text-blue-800"
-                      : protocol.status === "Pending"
+                      : protocol.Status === "Pending"
                       ? "bg-[#FFC3131A] text-warning"
                       : "bg-[#39973D1A] text-green-800"
                   }
                 >
-                  {protocol.status}
+                  {protocol.Status}
                 </Badge>
               </div>
             </div>

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import DatePicker from "react-datepicker";
-
+import axiosInstance from '../Common/axiosInstance';
 import moment from 'moment';
 
-const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
+const Editfacility = ({ isOpen, onClose, FacilityData, fetchFacility }) => {
   // States to hold form values
-  const [facilityName, setFacilityName] = useState(""); // Facility Name
-  const [description, setDescription] = useState(""); // Description
+  const [Facility_name, setFacility_name] = useState(""); // Facility Name
+  const [Description, setDescription] = useState(""); // Description
   const [date, setDate] = useState(null); // Schedule Service Date
-  const [remindBefore, setRemindBefore] = useState(""); // Remind Before (dropdown)
+  const [Remind_Before, setRemind_Before] = useState(""); // Remind Before (dropdown)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
 
   // Regular expressions for validation
@@ -18,17 +18,17 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
 
   // Check if the form is valid
   const isFormValid =
-    facilityName &&
-    description &&
+    Facility_name &&
+    Description &&
     date &&
-    remindBefore &&
-    nameRegex.test(facilityName);
+    Remind_Before &&
+    nameRegex.test(Facility_name);
 
   const ClearAllData = () => {
-    setFacilityName("");
+    setFacility_name("");
     setDescription("");
     setDate(null);
-    setRemindBefore(""); 
+    setRemind_Before(""); 
     setIsCalendarOpen(false);
   };
 
@@ -47,7 +47,7 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
   const handleFacilityNameChange = (e) => {
     const value = e.target.value;
     if (nameRegex.test(value)) {
-      setFacilityName(value);
+      setFacility_name(value);
     }
   };
 
@@ -56,7 +56,7 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
   };
 
   const handleRemindBeforeChange = (e) => {
-    setRemindBefore(e.target.value);
+    setRemind_Before(e.target.value);
   };
 
   const handleDateChange = (date) => {
@@ -68,17 +68,17 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      const formattedDate = moment(date).toISOString();
+      const Date = moment(date).toISOString();
       const newFacilityData = {
-        facilityName,
-        description,
-        date: formattedDate,
-        remindBefore
+        Facility_name,
+        Description,
+        Date,
+        Remind_Before
       };
       try {
-        const response = await axiosInstance.put(`/v2/facility/updatefacility/${noteData._id}`, newFacilityData);
+        const response = await axiosInstance.put(`/v2/facility/updatefacility/${FacilityData._id}`, newFacilityData);
         if (response.data) {
-          fetchNote(); 
+          fetchFacility(); 
           onClose(); 
         } else {
           console.error("Error saving data:", response.message || "Something went wrong.");
@@ -94,13 +94,13 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
   };
 
   useEffect(() => {
-    if (isOpen && noteData) {
-      setFacilityName(noteData.facilityName || "Parking Facilities");
-      setDescription(noteData.description || "");
-      setDate(noteData.date ? new Date(noteData.date) : null); // Ensure date is in correct format
-      setRemindBefore(noteData.remindBefore || "1 day");
+    if (isOpen && FacilityData) {
+      setFacility_name(FacilityData.Facility_name || " ");
+      setDescription(FacilityData.Description || " ");
+      setDate(FacilityData.Date ? new Date(FacilityData.Date) : null); // Ensure date is in correct format
+      setRemind_Before(FacilityData.Remind_Before || " ");
     }
-  }, [isOpen, noteData]);
+  }, [isOpen, FacilityData]);
 
   if (!isOpen) return null;
 
@@ -123,7 +123,7 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
             <input
               type="text"
               placeholder="Enter Facility Name"
-              value={facilityName}
+              value={Facility_name}
               onChange={handleFacilityNameChange} 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -136,7 +136,7 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
             </label>
             <textarea
               placeholder="Enter Description"
-              value={description}
+              value={Description}
               onChange={handleDescriptionChange} 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] h-22 resize-none"
             />
@@ -171,7 +171,7 @@ const Editfacility = ({ isOpen, onClose, noteData, fetchNote }) => {
               Remind Before<span className="text-red-500">*</span>
             </label>
             <select
-              value={remindBefore}
+              value={Remind_Before}
               onChange={handleRemindBeforeChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             >

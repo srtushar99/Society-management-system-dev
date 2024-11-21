@@ -73,6 +73,47 @@ exports.Registration = async (req, res) => {
 
 // Login Page
 
+// exports.login = async (req, res) => {
+//   try {
+//     const { emailOrPhone, password } = req.body;
+
+//     if (!emailOrPhone || !password) {
+//       return res.status(400).json({ success: false, message: "All fields are required" });
+//     }
+
+//     if (!/^\d+$/.test(emailOrPhone) && !/\S+@\S+\.\S+/.test(emailOrPhone)) {
+//       return res.status(400).json({ success: false, message: "Invalid email or phone format" });
+//     }
+
+//     const user = await User.findOne({
+//       $or: [
+//         { Email_Address: emailOrPhone },
+//         { Phone_Number: emailOrPhone }
+//       ]
+//     });
+
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "Invalid credentials" });
+//     }
+
+//     const isPasswordCorrect = await bcryptjs.compare(password, user.Password);
+   
+//     if (!isPasswordCorrect) {
+//       return res.status(400).json({ success: false, message: "Invalid credentials" });
+//     }
+
+//     generateTokenAndSetCookie(user._id, res);
+//     res.status(200).json({
+//       success: true,
+//       message: "Login successful! Welcome back.",
+//     });
+//   } catch (error) {
+//     console.log("Error in login controller", error.message);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// };
+
+
 exports.login = async (req, res) => {
   try {
     const { emailOrPhone, password } = req.body;
@@ -81,34 +122,38 @@ exports.login = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
+    // Validate email or phone format
     if (!/^\d+$/.test(emailOrPhone) && !/\S+@\S+\.\S+/.test(emailOrPhone)) {
       return res.status(400).json({ success: false, message: "Invalid email or phone format" });
     }
 
+    // Find user by email or phone
     const user = await User.findOne({
-      $or: [
-        { Email_Address: emailOrPhone },
-        { Phone_Number: emailOrPhone }
-      ]
+      $or: [{ Email_Address: emailOrPhone }, { Phone_Number: emailOrPhone }],
     });
 
     if (!user) {
       return res.status(404).json({ success: false, message: "Invalid credentials" });
     }
 
+    // Verify password
     const isPasswordCorrect = await bcryptjs.compare(password, user.Password);
-   
+
     if (!isPasswordCorrect) {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
 
-    generateTokenAndSetCookie(user._id, res);
+    // Generate token and set it in cookies
+    const token = generateTokenAndSetCookie(user, res);
+
+    // Return response with token
     res.status(200).json({
       success: true,
       message: "Login successful! Welcome back.",
+      token, // Optional: Return the token in the response as well (if needed for frontend)
     });
   } catch (error) {
-    console.log("Error in login controller", error.message);
+    console.error("Error in login controller:", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

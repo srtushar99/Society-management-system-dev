@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; 
 import NotificationIcon from "../assets/notification-bing.png";
 import AvatarImage from "../assets/Avatar.png";
@@ -6,6 +6,8 @@ import AvatarImage from "../assets/Avatar.png";
 import Sidebar from "../Sidebar/Sidebar";
 import CreateFacility from "./CreateFacility";
 import Editfacility from "./Editfacility";
+import axiosInstance from '../Common/axiosInstance';
+import moment from 'moment';
 import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
 
 
@@ -14,52 +16,8 @@ const Facilities = () => {
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false); // Manage CreateNote modal visibility
   const [isEditNoteOpen, setIsEditNoteOpen] = useState(false); // Manage EditNote modal visibility
   const [selectedNote, setSelectedNote] = useState(null); // Store selected note for editing
+  const [facility, setFacility] = useState([]);
 
-  // Static data for cards (without API call)
-  const cards = [
-    {
-      id: 1,
-      title: "Parking Facilities",
-      date: "01/07/2024",
-      description:
-        "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.  ",
-    },
-    {
-      id: 2,
-      title: "Community Center",
-      date: "01/07/2024",
-      description:
-        " The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.  ",
-    },
-    {
-      id: 3,
-      title: "Swimming Pool",
-      date: "01/07/2024",
-      description:
-        "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.  ",
-    },
-    {
-      id: 4,
-      title: "Parks and Green Spaces",
-      date: "01/07/2024",
-      description:
-        " The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in. ",
-    },
-    {
-      id: 5,
-      title: "Wi-Fi and Connectivity",
-      date: "01/07/2024",
-      description:
-        " The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in. ",
-    },
-    {
-      id: 6,
-      title: "Pet-Friendly Facilities",
-      date: "01/07/2024",
-      description:
-        "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in. ",
-    },
-  ];
 
   // Toggle dropdown menu visibility
   const toggleDropdown = (index) => {
@@ -91,6 +49,25 @@ const Facilities = () => {
     setIsEditNoteOpen(false); // Close the modal
     setSelectedNote(null); // Clear selected note data
   };
+
+
+   // Fetch Facility from the API
+   const fetchFacility = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/facility/');
+        // console.log(response.data.facilities);
+        if(response.status === 200){
+          setFacility(response.data.facilities); 
+        }
+      } catch (error) {
+        console.error('Error fetching Facility:', error);
+      }
+    };
+
+    useEffect(() => {
+      fetchFacility();
+    }, []);
+
 
   return (
     <div className="flex w-full h-screen bg-gray-100">
@@ -131,14 +108,14 @@ const Facilities = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-3">
-              {cards.map((card, index) => (
+              {facility.map((card, index) => (
                 <div
-                  key={card.id}
+                  key={!!card._id ? card._id : " "}
                   className="bg-white rounded-lg shadow-md overflow-hidden relative"
                 >
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
                     <span className="font-semibold">
-                      {card.title}
+                      {!!card.Facility_name ? card.Facility_name : ""}
                     </span>
                     <div className="flex items-center gap-2">
                       <i
@@ -166,7 +143,7 @@ const Facilities = () => {
                         Upcoming Schedule Service Date
                       </h3>
                       <span className="text-sm text-[#202224]">
-                        {card.date}
+                        {!!card.Date ? moment(card.Date).format('DD/MM/YYYY') : " "}
                       </span>
                     </div>
 
@@ -174,7 +151,7 @@ const Facilities = () => {
                       Description
                     </h3>
                     <p className="text-sm text-gray-500">
-                      {card.description}
+                      {!!card.Description ? card.Description : ""}
                     </p>
                   </div>
                 </div>
@@ -188,13 +165,15 @@ const Facilities = () => {
       <CreateFacility
         isOpen={isCreateNoteOpen}
         onClose={closeCreateNoteModal}
+        fetchFacility={fetchFacility}
       />
 
       {/* EditFacility Modal */}
       <Editfacility
         isOpen={isEditNoteOpen}
         onClose={closeEditNoteModal}
-        noteData={selectedNote}
+        FacilityData={selectedNote}
+        fetchFacility={fetchFacility}
       />
     </div>
   );

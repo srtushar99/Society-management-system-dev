@@ -12,25 +12,29 @@ import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png"; // Import useNavigate for redirection
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axiosInstance from '../../Common/axiosInstance';
 
-const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
+const EditRequest = ({ isOpen, onClose, protocol, fetchRequestTracking }) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   // Rename state to avoid name conflict with the prop
   const [formData, setFormData] = useState({
-    Requestername: "", // Changed
-    Requestname: "",  // Changed
-    unit: "",
-    priority: "",
-    status: "",
-    Date: new Date(), // Default to the current date
+    Requester_name: "",
+    Request_name: "",
+    Description: "",
+    Request_date: "",
+    Wing: "",
+    Unit: "",
+    Priority: "",
+    Status: "",
   });
 
   // Check if the form is valid
   const isFormValid =
-    formData.Requestername &&  // Changed
-    formData.Requestname &&    // Changed
-    formData.unit &&
-    formData.Date;
+    formData.Requester_name &&  // Changed
+    formData.Request_name &&    // Changed
+    formData.Unit &&
+    formData.Wing &&
+    formData.Request_date;
 
   const unitImages = {
     1001: [AIcon],
@@ -48,7 +52,6 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
 
   useEffect(() => {
     if (isOpen && protocol) {
-      // Safely set form data if the protocol prop is provided
       setFormData(protocol);
     }
   }, [isOpen, protocol]);
@@ -57,49 +60,16 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Validate alphabet-only fields
-    if (
-      name === "Requestername" ||  // Changed
-      name === "Requestname"  // Changed
-    ) {
-      const regex = /^[A-Za-z\s]*$/;
-      if (regex.test(value) || value === "") {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    }
-
-    // Validate numeric unit
-    if (name === "unit") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value) || value === "") {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    }
-
-    // Update other fields without restriction
-    if (
-      name !== "Requestername" &&   // Changed
-      name !== "Requestname" &&     // Changed
-      name !== "unit"
-    ) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleDateChange = (date) => {
     setFormData((prev) => ({
       ...prev,
-      Date: date, // Update the date in the state when selected
+      Request_date: date, // Update the date in the state when selected
     }));
     setIsCalendarOpen(false); // Close the calendar after date selection
   };
@@ -109,11 +79,21 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
   };
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onSave(formData); // Pass the form data to the onSave function
-      onClose(); // Close modal
+      try {
+        const response = await axiosInstance.put(`/v2/requests/updaterequest/${protocol._id}`, formData);
+        if(!!response.data){
+          fetchRequestTracking(); 
+          onClose(); 
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
     }
   };
 
@@ -142,8 +122,8 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
             </label>
             <input
               type="text"
-              name="Requestername" // Changed
-              value={formData.Requestername} // Changed
+              name="Requester_name" // Changed
+              value={formData.Requester_name} // Changed
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -156,8 +136,22 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
             </label>
             <input
               type="text"
-              name="Requestname" // Changed
-              value={formData.Requestname} // Changed
+              name="Request_name" // Changed
+              value={formData.Request_name} // Changed
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-left font-medium text-gray-700 mb-1">
+              Description<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="Description"
+              value={formData.Description}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
@@ -168,7 +162,7 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               Request Date
             </label>
             <DatePicker
-              selected={formData.Date}
+              selected={formData.Request_date}
               onChange={handleDateChange}
               className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               dateFormat="dd/MM/yyyy"
@@ -189,15 +183,13 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="block text-left font-medium text-gray-700 mb-1">
                 Wing<span className="text-red-500">*</span>
               </label>
-              <p className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]">
-                <img
-                  src={unitImages[formData.unit]}
-                  alt={formData.unit}
-                  width="25"
-                  height="25"
-                  className="rounded-lg"
-                />
-              </p>
+              <input
+                type="text"
+                name="Wing"
+                value={formData.Wing}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              />
             </div>
             <div>
               <label className="block text-left font-medium text-gray-700 mb-1">
@@ -205,8 +197,8 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               </label>
               <input
                 type="text"
-                name="unit"
-                value={formData.unit}
+                name="Unit"
+                value={formData.Unit}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
@@ -223,19 +215,19 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FE512E] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="High"
-                  checked={formData.priority === "High"}
+                  checked={formData.Priority === "High"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "High"
+                    formData.Priority === "High"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   High
@@ -246,19 +238,19 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FFEB3B] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Medium"
-                  checked={formData.priority === "Medium"}
+                  checked={formData.Priority === "Medium"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "Medium"
+                    formData.Priority === "Medium"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Medium
@@ -269,19 +261,19 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#4CAF50] rounded-[10px]">
                 <input
                   type="radio"
-                  name="priority"
+                  name="Priority"
                   value="Low"
-                  checked={formData.priority === "Low"}
+                  checked={formData.Priority === "Low"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.priority === "Low"
+                    formData.Priority === "Low"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#D3D3D3]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Low
@@ -300,19 +292,19 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Open"
-                  checked={formData.status === "Open"}
+                  checked={formData.Status === "Open"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Open"
+                    formData.Status === "Open"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#4CAF50]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Open
@@ -323,19 +315,19 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Pending"
-                  checked={formData.status === "Pending"}
+                  checked={formData.Status === "Pending"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Pending"
+                    formData.Status === "Pending"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#FFEB3B]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Pending
@@ -346,19 +338,19 @@ const EditRequest = ({ isOpen, onClose, protocol, onSave }) => {
               <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
-                  name="status"
+                  name="Status"
                   value="Solve"
-                  checked={formData.status === "Solve"}
+                  checked={formData.Status === "Solve"}
                   onChange={handleChange}
                   className={`w-4 h-4 border-2 ${
-                    formData.status === "Solve"
+                    formData.Status === "Solve"
                       ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                       : "border-[#F44336]"
                   }`}
                 />
                 <span
                   className={`ml-2 text-sm ${
-                    formData.status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"
+                    formData.Status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"
                   }`}
                 >
                   Solve

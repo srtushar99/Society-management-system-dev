@@ -15,6 +15,11 @@ const RequestSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    Description: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     Wing:{
         type:String,
         required:true

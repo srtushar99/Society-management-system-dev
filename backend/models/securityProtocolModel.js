@@ -1,26 +1,22 @@
 const mongoose = require('mongoose');
 
-const OtherIncomeSchema = new mongoose.Schema({
-    title: {
+const securityProtoclSchema = new mongoose.Schema({
+    Title: {
         type: String,
         required: true,
         trim: true,
     },
-    date: {
-        type: Date,
-        required: true,
-    },
-    dueDate: {
-        type: Date,
-        required: true,
-    },
-    description: {
+    Description: {
         type: String,
         required: true,
         trim: true,
     },
-    amount: {
-        type: Number,
+    Date: {
+        type: Date,
+        required: true,
+    },
+    Time: {
+        type: String,
         required: true,
     },
     role: {
@@ -32,6 +28,6 @@ const OtherIncomeSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-const OtherIncome = mongoose.model('OtherIncome', OtherIncomeSchema);
+const SecurityProtocol = mongoose.model('SecurityProtocol', securityProtoclSchema);
 
-module.exports = OtherIncome;
+module.exports = SecurityProtocol;

@@ -4,29 +4,32 @@ const path = require('path');
 // Configure storage for Multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './uploads'); // Destination for storing files
+        cb(null, './uploads'); 
     },
     filename: (req, file, cb) => {
-        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`); // Unique filename
+
+        const originalName = path.basename(file.originalname, path.extname(file.originalname)).replace(/\s+/g, '_');
+        const uniqueSuffix = `${Date.now()}`;
+        cb(null, `${originalName}-${uniqueSuffix}${path.extname(file.originalname)}`);
     }
 });
 
-// Initialize Multer with limits
+// Initialize Multer with limits and updated file filter
 const upload = multer({
     storage,
     limits: {
-        fileSize: 10 * 1024 * 1024 // Limit file size to 10MB
+        fileSize: 10 * 1024 * 1024 
     },
     fileFilter: (req, file, cb) => {
-        // Check for allowed file types (PDF and JPG only)
-        const filetypes = /pdf|jpg/;
+
+        const filetypes = /pdf|jpg|jpeg|png|gif/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = file.mimetype === 'application/pdf' || file.mimetype === 'image/jpeg';
+        const mimetype = file.mimetype === 'application/pdf' || file.mimetype.startsWith('image/');
 
         if (mimetype && extname) {
             cb(null, true);
         } else {
-            cb(new Error('Error: Only PDF and JPG files are allowed!')); // Handle error for wrong file type
+            cb(new Error('Error: Only PDF, JPG, PNG, and GIF files are allowed!')); 
         }
     }
 });

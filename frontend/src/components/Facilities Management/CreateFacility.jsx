@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 import Notification from "./Notification"; // Import Notification component
-
-const CreateFacility = ({ isOpen, onClose }) => {
+import axiosInstance from '../Common/axiosInstance';
+const CreateFacility = ({ isOpen, onClose, fetchFacility }) => {
   // State for the input fields
-  const [facilityName, setFacilityName] = useState("");
-  const [description, setDescription] = useState("");
+  const [Facility_name, setFacility_name] = useState("");
+  const [Description, setDescription] = useState("");
   const [date, setDate] = useState(null);
-  const [remindBefore, setRemindBefore] = useState("");
+  const [Remind_Before, setRemind_Before] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false); // Show notification after form submission
   const [notificationData, setNotificationData] = useState(null); // To store notification data
+
+  const datePickerRef = useRef(null);
 
   // Regular expressions for validation
   const nameRegex = /^[A-Za-z\s]+$/;
@@ -22,18 +24,18 @@ const CreateFacility = ({ isOpen, onClose }) => {
 
   // Check if all fields are filled and valid
   const isFormValid =
-    facilityName &&
-    description &&
+    Facility_name &&
+    Description &&
     date &&
-    remindBefore &&
-    nameRegex.test(facilityName) &&
-    descriptionRegex.test(description);
+    Remind_Before &&
+    nameRegex.test(Facility_name) &&
+    descriptionRegex.test(Description);
 
   const ClearAllData = () => {
-    setFacilityName("");
+    setFacility_name("");
     setDescription("");
     setDate(null);
-    setRemindBefore("");
+    setRemind_Before("");
     setIsCalendarOpen(false);
   };
 
@@ -43,38 +45,47 @@ const CreateFacility = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      const formattedDate = moment(date).format('YYYY-MM-DD');
-      const noteData = {
-        facilityName,
-        description,
-        date: formattedDate,
-        remindBefore
+      const Date = moment(date).format('YYYY-MM-DD');
+      const FacilityData = {
+        Facility_name,
+        Description,
+        Date,
+        Remind_Before
       };
 
       try {
-        // Simulating success (no axios here, replace with actual API call if needed)
-        console.log("Successfully saved:", noteData);
+       // Send data to the backend API using axios
+       const response = await axiosInstance.post(
+        "/v2/facility/addfacility",
+        FacilityData
+      );
+
+      if (response.status===201) {
+        console.log("Successfully saved:", response.data);
+        fetchFacility();
+        onClose(); 
+        ClearAllData();
 
         // Set the notification data
         setNotificationData({
           title: "Facility Created Successfully",
           time: moment().format("MM/DD/YYYY hh:mm A"),
           timeAgo: "Just now",
-          name: facilityName,
+          name: Facility_name,
           scheduleDate: moment(date).format("MM/DD/YYYY")
         });
 
-        // Display success notification
         setShowNotification(true);
-
-         // Hide the notification after 5 seconds
          setTimeout(() => {
            setShowNotification(false); // Hide the notification
           //  navigate("/dashboard"); // Redirect to the notifications page
-         }, 5000); // 5000ms = 5 seconds
+         }, 5000); 
 
-        // Clear form fields after successful submission
-        ClearAllData();
+         console.log("Successfully saved:", FacilityData);
+      } else {
+        const errorData = await response.json();
+        console.error("Error saving number:", errorData.message || "Something went wrong.");
+      }
       } catch (error) {
         console.error("Error creating facility:", error);
       }
@@ -88,6 +99,11 @@ const CreateFacility = ({ isOpen, onClose }) => {
     navigate("/Facility-Management"); // Redirect to the dashboard when modal is closed
   };
 
+  const ClosePopup = () => {
+    ClearAllData();
+    handleClose();
+  };
+
   const handleDateChange = (date) => {
     setDate(date);
     setIsCalendarOpen(false);
@@ -96,6 +112,21 @@ const CreateFacility = ({ isOpen, onClose }) => {
   const handleCalendarIconClick = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
+
+  const handleClickOutside = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
+        setIsCalendarOpen(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!isOpen) return null; // Don't render anything if the modal is closed
 
@@ -121,11 +152,11 @@ const CreateFacility = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Facility Name"
-              value={facilityName}
+              value={Facility_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setFacilityName(value);
+                  setFacility_name(value);
                 }
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
@@ -140,7 +171,7 @@ const CreateFacility = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter description"
-              value={description}
+              value={Description}
               onChange={(e) => {
                 const value = e.target.value;
                 if (descriptionRegex.test(value) || value === "") {
@@ -156,7 +187,7 @@ const CreateFacility = ({ isOpen, onClose }) => {
             <label className="block text-left font-medium text-gray-700 mb-1">
               Schedule Service Date
             </label>
-            <div className="flex items-center">
+            <div className="flex items-center relative" ref={datePickerRef}>
               <DatePicker
                 selected={date}
                 onChange={handleDateChange}
@@ -179,8 +210,8 @@ const CreateFacility = ({ isOpen, onClose }) => {
               Remind Before
             </label>
             <select
-              value={remindBefore}
-              onChange={(e) => setRemindBefore(e.target.value)}
+              value={Remind_Before}
+              onChange={(e) => setRemind_Before(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             >
               <option value="">Select option</option>
@@ -196,7 +227,7 @@ const CreateFacility = ({ isOpen, onClose }) => {
             <button
               type="button"
               className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              onClick={handleClose}
+              onClick={ClosePopup}
             >
               Cancel
             </button>

@@ -1,29 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, Trash2, Upload } from "lucide-react"; // Make sure Trash2 is imported
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-
+import axiosInstance from '../../Common/axiosInstance';
+import moment from 'moment';
+import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
 dayjs.extend(customParseFormat);
 
-const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
+const EditExpense = ({ isOpen, onClose, expense, fetchExpense }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(null); // Initialize date as null
   const [amount, setAmount] = useState(""); // Initialize amount as empty string
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State for calendar visibility
+  const [bill, setBill] = useState(null); // State for the uploaded bill
+  const [billName, setBillName] = useState(""); // State for the bill name
+
+  const [isbill, setbill] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const [fileName, setFileName] = useState("");
+  const [fileSize, setFileSize] = useState("");
 
   const modalRef = useRef(null);
   const datePickerRef = useRef(null);
+  const fileInputRef = useRef(null); // Reference for file input
+  const dropZoneRef = useRef(null);
 
   const navigate = useNavigate();
 
   const titleRegex = /^[A-Za-z\s]*$/;
   const descriptionRegex = /^[A-Za-z\s]*$/;
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
   const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/; // Regex to validate numeric values with optional decimals
 
   const isFormValid =
@@ -33,18 +44,50 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
     amount &&
     titleRegex.test(title) &&
     descriptionRegex.test(description) &&
-    dateRegex.test(date) &&
     amountRegex.test(amount);
+
+
+    const processUploadBill = async (url) => {
+      const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+      try {
+        const response = await axios.head(url);
+        const fileSizeBytes = response.headers["content-length"];
+        const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+        setFileName(extractedFileName);
+        setFileSize(`${fileSizeMB} MB`);
+      } catch (error) {
+        console.error("Error fetching file metadata:", error.message);
+        setFileName(extractedFileName);
+        setFileSize("Unknown");
+      }
+    };
+
+
+    useEffect(() => {
+      if (expense && expense.Upload_Bill) {
+        processUploadBill(expense.Upload_Bill);
+      }
+    }, [expense]);
 
   // Effect for setting initial state when the modal is opened
   useEffect(() => {
     if (isOpen && expense) {
-      setTitle(expense.title || "");
-      setDescription(expense.description || "");
-      setDate(expense.date ? new Date(expense.date) : null); // Convert string date to Date object
-      setAmount(expense.amount || "1000"); // Set the initial amount if provided
+      setTitle(expense.Title || "");
+      setDescription(expense.Description || "");
+      setDate(expense.Date ? new Date(expense.Date) : null); // Convert string date to Date object
+      setAmount(expense.Amount || "1000"); // Set the initial amount if provided
+      // setBill(expense.bill || null); // Set initial bill if available
+      setBill(
+        expense.Upload_Bill
+          ? {
+              name: fileName,
+              size: fileSize,
+            }
+          : null
+      );
+      setBillName(!!expense.Original_FileName ? expense.Original_FileName : ""); // Set the bill name if available
     }
-  }, [isOpen, expense]);
+  }, [isOpen, expense, fileName, fileSize]);
 
   // Handle form inputs
   const handleTitleChange = (e) => {
@@ -73,13 +116,55 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isFormValid) {
-      onSave({ title, description, date, amount });
-      onClose();
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setBill(file);
+      setBillName(file.name); // Set the name of the uploaded file
     }
   };
+
+  const handleDeleteBill = () => {
+    setBill(null);
+    setBillName(""); // Reset bill name
+    fileInputRef.current.value = ""; // Reset the file input field
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isFormValid) {
+      try {
+        const formData = new FormData();
+        formData.append("Title", title);
+        formData.append("Description", description);
+        formData.append("Date", moment(date).toISOString());
+        formData.append("Amount", amount);
+        
+        if (!isbill) {
+          formData.append("Upload_Bill", expense.Upload_Bill); 
+          formData.append("Original_FileName", billName);
+        }else{
+          formData.append("Upload_Bill", bill.file);
+          formData.append("Original_FileName", bill.file.name);
+        }
+
+
+        const response = await axiosInstance.put(`/v2/expenses/updateexpenses/${expense._id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if(!!response.data){
+          fetchExpense(); 
+          onClose(); 
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving:", errorData.message || "Something went wrong.");
+        }
+      } catch (err) {
+        console.error(error);
+      }
+    }
+  };
+
 
   const handleClose = () => {
     onClose();
@@ -97,6 +182,39 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
       if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
         setIsCalendarOpen(false); // Close calendar if clicked outside
       }
+    }
+  };
+
+
+  const handleUploadBillChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+       setbill(true);
+       setBill({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => setIsDragging(false);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleUploadBillChange({ target: { files: [file] } });
     }
   };
 
@@ -187,6 +305,102 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
             </div>
           </div>
 
+          {/* File Upload Section */}
+          <div style={{ position: "relative" }}>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+              Upload Bill<span className="text-red-500">*</span>
+            </label>
+            <div className="flex justify-center items-center border-2 border-dashed border-gray-300 rounded-lg  py-4">
+              <div className="text-center">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  id="fileInput"
+                  ref={fileInputRef} // Assign ref to the input field
+                />
+                <label htmlFor="fileInput" className="text-blue-500 cursor-pointer">
+                  <i className="fa fa-upload mb-2 text-2xl"></i>
+                  <p>Upload a file or drag and drop</p>
+                  <p className="text-gray-400 text-sm">PNG, JPG, GIF up to 10MB</p>
+                </label>
+              </div>
+            </div>
+            {bill && (
+              <div className="flex items-center mt-2" style={{ position: "absolute", top: "50%", left: "5%" }}>
+                <p className="text-sm text-success py-4 pt-5 ps-4 mx-5 me-2">{billName}</p>
+                <button
+                  type="button"
+                  onClick={handleDeleteBill}
+                  className="text-gray-600 hover:text-gray-800"
+                  style={{ fontSize: "28px" }}
+                >
+                  <Trash2 className="h-4 w-4 mt-2" />
+                </button>
+              </div>
+            )}
+          </div>
+
+
+          {/* Upload Bill */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+            Upload Bill<span className="text-red-500">*</span>
+            </label>
+            <div
+              ref={dropZoneRef}
+              className={`border-2 border-dashed rounded-lg p-4 text-center ${
+                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleUploadBillChange}
+                className="hidden"
+                accept=".jpg,.jpeg,.png,.pdf"
+              />
+              {bill ? (
+                <div className="flex items-center justify-between p-2">
+                  <span className="text-sm text-gray-600">{bill.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBill(null);
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+
+
           <div className="flex gap-4 pt-4">
             <button
               type="button"
@@ -199,7 +413,6 @@ const EditExpense = ({ isOpen, onClose, expense, onSave }) => {
             <button
               type="submit"
               className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-              disabled={!isFormValid}
             >
               Save
             </button>

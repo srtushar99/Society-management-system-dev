@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
+import { useNavigate } from "react-router-dom"; 
+import "react-datepicker/dist/react-datepicker.css"; 
+import moment from 'moment';
+import axiosInstance from '../Common/axiosInstance';
 
-const CreateProtocol = ({ isOpen, onClose }) => {
-  // State for the input fields
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+const CreateProtocol = ({ isOpen, onClose, fetchSecurityProtocols }) => {
+  const [Title, setTitle] = useState("");
+  const [Description, setDescription] = useState("");
   
 
   // Regular expressions for validation
@@ -16,16 +16,48 @@ const CreateProtocol = ({ isOpen, onClose }) => {
 
   // Check if all fields are filled and valid
   const isFormValid =
-    title &&
-    description &&
- 
-    titleRegex.test(title) &&
-    descriptionRegex.test(description);
+    Title &&
+    Description &&
+    titleRegex.test(Title) &&
+    descriptionRegex.test(Description);
 
-  const handleSubmit = (e) => {
+
+    const ClearAllData = () => {
+      setTitle("");
+      setDescription("");
+    };
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      console.log("Form Submitted", { title, description, date });
+      const Date = moment().format('YYYY-MM-DD');
+      const Time = moment().format('hh:mm A');
+      const securityprotocolData = {
+        Title,
+        Description,
+        Date,
+        Time
+      };
+
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/securityprotocol/addsecurityprotocol",
+          securityprotocolData
+        );
+        if (response.status===201) {
+          console.log("Successfully saved:", response.data);
+          fetchSecurityProtocols();
+          onClose(); 
+          ClearAllData();
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating announcement:", error);
+      }
     } else {
       console.log("Form is invalid");
     }
@@ -63,7 +95,7 @@ const CreateProtocol = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter Title"
-              value={title}
+              value={Title}
               onChange={(e) => {
                 const value = e.target.value;
              
@@ -83,7 +115,7 @@ const CreateProtocol = ({ isOpen, onClose }) => {
             <textarea
               type="text"
               placeholder="Enter description"
-              value={description}
+              value={Description}
               onChange={(e) => {
                 const value = e.target.value;
                 // Allow only alphabetic input for description

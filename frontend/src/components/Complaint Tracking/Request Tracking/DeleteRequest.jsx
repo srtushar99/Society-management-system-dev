@@ -1,12 +1,18 @@
 import React from 'react';
+import axiosInstance from '../../Common/axiosInstance';
 
-const DeleteRequst = ({ isOpen, protocol, onDelete, onCancel }) => {
+const DeleteRequst = ({ isOpen, protocol, onDelete, onCancel, fetchRequestTracking }) => {
   // If the modal isn't open, return null (don't render anything)
   if (!isOpen) return null;
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (protocol && onDelete) {
-      onDelete(protocol); // Call the onDelete function passed from parent
+      const response = await axiosInstance.delete(`/v2/requests/deleterequest/${protocol._id}`);
+      if (response.status === 200) {
+        onDelete(protocol); 
+        onCancel();
+        fetchRequestTracking();
+      }
     }
     onCancel(); // Close the modal after deletion
   };

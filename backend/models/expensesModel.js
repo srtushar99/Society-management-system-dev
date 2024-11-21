@@ -16,12 +16,15 @@ const expensesSchema = new mongoose.Schema({
         required: true,
     },
     Amount: {
-        type: Number,
+        type: String,
         required: true,
     },
     Upload_Bill:{
         type: String,
         required:true
+    },
+    Original_FileName:{
+        type: String
     },
     role: {
         type: String,

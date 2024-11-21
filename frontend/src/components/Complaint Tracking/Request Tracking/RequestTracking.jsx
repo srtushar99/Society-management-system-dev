@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../Sidebar/Sidebar";
 import NotificationIcon from "../../assets/notification-bing.png";
@@ -18,7 +18,8 @@ import CreateRequst from "./CreateRequest";
 import EditRequest from "./EditRequest";
 import ViewRequest from "./ViewRequest";
 import DeleteRequst from "./DeleteRequest";
-
+import axiosInstance from '../../Common/axiosInstance';
+import moment from "moment";
 
 const initialData = [
   {
@@ -154,8 +155,8 @@ const RequestTracking = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Add state for Delete Protocol modal
   const [selectedProtocolForView, setSelectedProtocolForView] = useState(null);
-  const [selectedProtocolForDelete, setSelectedProtocolForDelete] =
-    useState(null); // State for protocol to delete
+  const [selectedProtocolForDelete, setSelectedProtocolForDelete] = useState(null); // State for protocol to delete
+  const [RequestTracking, setRequestTracking] = useState([]);
 
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
@@ -180,7 +181,7 @@ const RequestTracking = () => {
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
+    setRequestTracking(RequestTracking.filter((item) => item._id !== id)); // Update the state to remove the deleted protocol
 
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
@@ -200,6 +201,28 @@ const RequestTracking = () => {
     </span>
   );
   
+
+
+  // Fetch fetch Request Tracking from the API
+  const fetchRequestTracking = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/requests/');
+        console.log(response.data);
+        if(response.status === 200){
+          setRequestTracking(response.data.requests); 
+        }
+       
+    } catch (error) {
+        console.error('Error fetching RequestTracking:', error);
+    }
+};
+
+
+    useEffect(() => {
+      fetchRequestTracking();
+    }, []);
+
+
   return (
     <div className="flex bg-gray-100  w-full h-full">
       <Sidebar />
@@ -258,7 +281,7 @@ const RequestTracking = () => {
             </thead>
 
             <tbody>
-              {data.map((item, index) => (
+              {RequestTracking.map((item, index) => (
                 <tr key={index} className="border-t border-gray-200">
                   <td className="px-4 py-3 flex items-center space-x-3">
                     <img
@@ -266,52 +289,52 @@ const RequestTracking = () => {
                       alt="avatar"
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>{item.Requestername}</span>
+                    <span>{item.Requester_name}</span>
                   </td>
                   <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">
-                    {item.Requestname}
+                    {item.Request_name}
                   </td>
 
                   <td className="p-3 pt-2 ps-5 hidden sm:table-cell text-gray-600">
-                    {item.description}
+                    {!!item.Description ? item.Description : "No Description"}
                   </td><td className="p-3 pt-2 ps-1 hidden sm:table-cell text-gray-600">
-                    {item.Date}
+                    {moment(item.Request_date).format("DD/MM/YYYY")}
                   </td>
-                  <td className="p-3 pt-2 ps-3 d-flex hidden sm:table-cell text-gray-600">
-                    {" "}
+                  <td className="py-3   d-flex hidden sm:table-cell text-gray-600">
+                    {/* {" "}
                     <img
                       src={unitImages[item.unit]}
                       alt={item.unit}
                       width="25"
                       height="25"
                       className="rounded-full"
-                    />
-                    {item.unit}
+                    /> */}
+                   <span className=" px-2  mb-3" style={{color:"rgba(86, 120, 233, 1)",backgroundColor:"rgba(86, 120, 233, 0.1)",borderRadius:"50%",fontWeight:"700",marginRight:"5px"}}> { item.Wing } </span> {" "+item.Unit}
                   </td>
                   <td className="p-3 pt-2 ps-5 hidden lg:table-cell text-gray-600">
                     <Badge
                       className={
-                        item.priority === "High"
+                        item.Priority === "High"
                           ? "bg-[#E74C3C] text-white" // High priority: Red background, white text
-                          : item.priority === "Medium"
+                          : item.Priority === "Medium"
                           ? "bg-[#5678E9] text-white" // Medium priority: Blue background, white text
                           : "bg-[#39973D] text-white" // Low priority: Green background, white text
                       }
                     >
-                      {item.priority}
+                      {item.Priority}
                     </Badge>
                   </td>
                   <td className="p-3 pt-2 ps-3 hidden md:table-cell text-gray-600">
                   <Badge
                     className={
-                      item.status === 'Open'
+                      item.Status === 'Open'
                         ? 'bg-[#5678E91A] text-blue-800'
-                        : item.status === 'Pending'
+                        : item.Status === 'Pending'
                         ? 'bg-[#FFC3131A] text-warning'
                         : 'bg-[#39973D1A] text-green-800'
                     }
                   >
-                    {item.status}
+                    {item.Status}
                   </Badge>
                   </td>
 
@@ -349,6 +372,7 @@ const RequestTracking = () => {
           <CreateRequst
             isOpen={isCreateProtocolOpen}
             onClose={closeCreateProtocolModal}
+            fetchRequestTracking={fetchRequestTracking}
           />
         )}
         {isEditModalOpen && selectedProtocolForView && (
@@ -356,6 +380,7 @@ const RequestTracking = () => {
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             protocol={selectedProtocolForView}
+            fetchRequestTracking={fetchRequestTracking}
           />
         )}
         {isViewModalOpen && selectedProtocolForView && (
@@ -371,6 +396,7 @@ const RequestTracking = () => {
             onCancel={closeDeleteModal}
             protocol={selectedProtocolForDelete}
             onDelete={() => handleDelete(selectedProtocolForDelete.id)} // Pass the ID of the protocol to delete
+            fetchRequestTracking={fetchRequestTracking}
           />
         )}
       </div>
