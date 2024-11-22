@@ -8,10 +8,35 @@ const Tenante = require('../models/tenantModel');
 exports.addTenante = async (req, res) => {
     try {
 
-        function generatePassword(length= 6){
-              const Password= crypto.randomInt(0, Math.pow(10,length)).toString();
-              return Password.padStart(length,"0")
+      function generatePassword(length = 9) {
+        // Define sets of characters
+        const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const numbers = '0123456789';
+        const specialChar = '@'; // Fixed special character
+    
+        // Ensure length is at least 3 (for alphabet@number format)
+        if (length < 3) {
+            throw new Error('Password length must be at least 3 for this format');
         }
+    
+        // Generate random alphabet
+        const randomAlphabet = alphabets[crypto.randomInt(0, alphabets.length)];
+        // Generate random number
+        const randomNumber = numbers[crypto.randomInt(0, numbers.length)];
+    
+        // Remaining characters (if length > 3)
+        let remainingChars = '';
+        const remainingLength = length - 2; // Subtract the fixed alphabet and number
+        const allCharacters = alphabets + numbers;
+    
+        for (let i = 0; i < remainingLength; i++) {
+            const randomIndex = crypto.randomInt(0, allCharacters.length);
+            remainingChars += allCharacters[randomIndex];
+        }
+    
+        return randomAlphabet + specialChar + randomNumber + remainingChars;
+    }
+         
         const {
             Owner_Full_name,
             Owner_Phone,
