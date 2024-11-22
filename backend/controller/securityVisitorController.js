@@ -1,6 +1,9 @@
 const Visitor = require("../models/securityVisitorModel");
 const moment = require('moment');
 
+
+//add visitor
+
 exports.CreateVisitor = async (req, res) => {
   try {
     const { visitor_Name, number, date, wing, unit, time } = req.body;
@@ -46,7 +49,6 @@ exports.CreateVisitor = async (req, res) => {
     });
   }
 };
-
 
 //get complaint
 exports.GetAllVisitor = async (req, res) => {

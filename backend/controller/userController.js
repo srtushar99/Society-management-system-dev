@@ -10,7 +10,7 @@ const Guard = require("../models/securityGuardModel");
 const { hash } = require("../utils/hashpassword");
 const { compare } = require("../utils/compare");
 const fs = require("fs");
-const { cloudinary } = require("../utils/cloudinary");
+const cloudinary = require("../utils/cloudinary");
 const OTP_EXPIRATION_TIME = 60 * 1000; 
 
 
@@ -152,7 +152,7 @@ exports.login = async (req, res) => {
     }
 
     // Generate JWT token and set cookie
-    const token = generateTokenAndSetCookie(account._id, res);
+    generateTokenAndSetCookie(account._id, res);
 
     // Exclude password and send success response
     const { Password, ...safeUserDetails } = account._doc || account;
@@ -160,8 +160,8 @@ exports.login = async (req, res) => {
       success: true,
       message: "Logged in successfully",
       user: safeUserDetails,
-      token: token
     });
+
   } catch (error) {
     console.error("Error during login:", error.message);
     return res.status(500).json({
@@ -330,7 +330,7 @@ exports.SendOtp = async (req, res) => {
     } else {
       // Send OTP via SMS
       // await twilioClient.messages.create({
-      //   body: Your forgot password OTP is ${otp},
+      //   body: `Your forgot password OTP is ${otp}`,
       //   to: EmailOrPhone,
       //   from: process.env.TWILIO_PHONE_NUMBER,
       // });
@@ -434,25 +434,6 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-// exports.editProfile = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-
-//     const updatedUser = await User.findByIdAndUpdate(
-//       userId,
-//       { $set: req.body },
-//       { new: true, runValidators: true } 
-//     );
-
-//     if (!updatedUser) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-
-//     res.status(200).json({ message: 'Profile updated successfully', data: updatedUser });
-//   } catch (err) {
-//     res.status(500).json({ message: 'Server error', error: err.message });
-//   }
-// };
 
 exports.editProfile = async (req, res) => {
   try {

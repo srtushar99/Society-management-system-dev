@@ -76,6 +76,8 @@ app.use('/api/v2/alert', alertRoute);
 
 
 
+
+
   app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });

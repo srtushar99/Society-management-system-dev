@@ -345,3 +345,6 @@ exports.updateTenantData = async (req, res) => {
       });
     }
   };
+  
+
+

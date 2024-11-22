@@ -3,10 +3,10 @@ const Request = require('../models/requestTrackingModel');
 // Create a new request
 exports.createRequest = async (req, res) => {
     try {
-        const { Requester_name, Request_name, Request_date, Description, Wing, Unit, Priority, Status, role } = req.body;
+        const { Requester_name, Request_name, Request_date,Description, Wing, Unit, Priority, Status, role } = req.body;
 
         // Check if all required fields are provided
-        if (!Requester_name || !Request_name || !Request_date || !Description || !Wing || !Unit || !Priority || !Status) {
+        if (!Requester_name || !Request_name || !Request_date|| !Description || !Wing || !Unit || !Priority || !Status) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
@@ -58,13 +58,13 @@ exports.updateRequest = async (req, res) => {
         const { Requester_name, Request_name, Request_date, Description, Wing, Unit, Priority, Status, role } = req.body;
 
         // Check if all required fields are provided for the update
-        if (!Requester_name || !Request_name || !Request_date || !Description || !Wing || !Unit || !Priority || !Status) {
+        if (!Requester_name || !Request_name || !Request_date|| !Description || !Wing || !Unit || !Priority || !Status) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
         const request = await Request.findByIdAndUpdate(
             req.params.id,
-            { Requester_name, Request_name, Request_date, Description, Wing, Unit, Priority, Status, role },
+            { Requester_name, Request_name, Request_date,Description, Wing, Unit, Priority, Status, role },
             { new: true, runValidators: true }
         );
 

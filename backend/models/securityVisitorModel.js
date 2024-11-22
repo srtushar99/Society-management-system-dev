@@ -23,6 +23,7 @@ const visitorschema= new Schema({
     },
    time: {
     type: String,
+    required:true
     // default: function() {
     //   const now = new Date();
     //   const hours = now.getHours();
@@ -31,7 +32,6 @@ const visitorschema= new Schema({
     //   const formattedHours = hours % 12 || 12; 
     //   return `${formattedHours}:${minutes} ${ampm}`;
     // }
-    required:true
   }
 },{timestamps:true})
 

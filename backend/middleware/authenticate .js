@@ -30,20 +30,6 @@ exports.authenticate = async (req, res, next) => {
     
     req.user = user;
     next();
-  // const authHeader = req.headers['authorization'];
-  //   const token = authHeader && authHeader.split(' ')[1];
-
-  //   if (token == null) {
-  //       return res.status(401).json({ success: false, message: 'Authorization denied, no token provided' });
-  //   }
-
-  //   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-  //       if (err) {
-  //           return res.status(403).json({ success: false, message: 'Invalid token' });
-  //       }
-  //       req.user = user;
-  //       next();
-  //   });
   } catch (error) {
     console.error("Authentication error:", error.message);
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
@@ -76,3 +62,4 @@ exports.IsSecurity = (req, res, next) => {
       return res.status(403).json({ success: false, message: "You are not authorized to access this resource" });
     }
   };
+  
