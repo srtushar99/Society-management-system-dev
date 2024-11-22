@@ -81,7 +81,7 @@ const tenantschema= new Schema({
         vehicle_name: { type: String, required: true },
         vehicle_number: { type: String, required: true }
     }],
-    password: {  // Add this field to store the hashed password
+    Password: {  // Add this field to store the hashed password
         type: String,
         required: true
     },
@@ -97,7 +97,16 @@ const tenantschema= new Schema({
     UnitStatus:{
         type:String,
         default:"Occupied"
-    }
+    },
+    otp: {
+        type: String,
+    },
+    otpExpiration: {
+        type: Date,
+        default: Date.now,
+        get: (otpExpiration) => otpExpiration.getTime(),
+        set: (otpExpiration) => new Date(otpExpiration),
+    },
     
 },{timestamps:true})
 const Tenante = model("Tenante",tenantschema)

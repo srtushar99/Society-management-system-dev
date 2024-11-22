@@ -10,8 +10,8 @@ exports.addOwnerData = async (req, res) => {
     try {
 
         function generatePassword(length= 6){
-              const password= crypto.randomInt(0, Math.pow(10,length)).toString();
-              return password.padStart(length,"0")
+              const Password= crypto.randomInt(0, Math.pow(10,length)).toString();
+              return Password.padStart(length,"0")
         }
         const {
             Full_name,
@@ -28,10 +28,10 @@ exports.addOwnerData = async (req, res) => {
             Resident_status,
             UnitStatus
         } = req.body;
-               const password=  generatePassword();
-               console.log(password);
+               const Password=  generatePassword();
+               console.log(Password);
 
-               const hashpassword= await hash(password)
+               const hashpassword= await hash(Password)
                
         
                const uploadAndDeleteLocal = async (fileArray) => {
@@ -110,7 +110,7 @@ exports.addOwnerData = async (req, res) => {
             role:role || "resident",
             Resident_status:Resident_status || "Owner",
             UnitStatus:UnitStatus || "Occupied",
-            password: hashpassword
+            Password: hashpassword
             
         });  
 
@@ -121,7 +121,7 @@ exports.addOwnerData = async (req, res) => {
         await senData(
             newOwner.Email_address,
             "Registration Successful - Login Details",
-            `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a resident. Your login details are as follows:\n\nUsername: ${newOwner.Email_address}\nPassword: <b> ${password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
+            `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a resident. Your login details are as follows:\n\nUsername: ${newOwner.Email_address}\nPassword: <b> ${Password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
         );
    
        

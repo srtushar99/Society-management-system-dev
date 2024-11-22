@@ -11,7 +11,7 @@ const visitorschema= new Schema({
     },
     date:{
         type:Date,
-        default:Date.now()
+        required:true
     },
     wing:{
         type:String,
@@ -23,14 +23,15 @@ const visitorschema= new Schema({
     },
    time: {
     type: String,
-    default: function() {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      const ampm = hours >= 12 ? "PM" : "AM";
-      const formattedHours = hours % 12 || 12; 
-      return `${formattedHours}:${minutes} ${ampm}`;
-    }
+    // default: function() {
+    //   const now = new Date();
+    //   const hours = now.getHours();
+    //   const minutes = now.getMinutes().toString().padStart(2, "0");
+    //   const ampm = hours >= 12 ? "PM" : "AM";
+    //   const formattedHours = hours % 12 || 12; 
+    //   return `${formattedHours}:${minutes} ${ampm}`;
+    // }
+    required:true
   }
 },{timestamps:true})
 

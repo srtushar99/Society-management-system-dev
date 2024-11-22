@@ -2,72 +2,145 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { Calendar, Clock } from 'lucide-react';
 import './add-visitor-modal.css';
+import DatePicker from "react-datepicker";
+import { TimePicker } from "antd";
+import dayjs from "dayjs";
+import timeIcon from "../../components/assets/Vector.png";
+import moment from 'moment';
+import axiosInstance from '../Common/axiosInstance';
 
-const AddVisitorModal = ({ show, onHide, onSave }) => {
-  const [formData, setFormData] = useState({
-    visitorName: '',
-    wing: '',
-    unit: '',
-    date: '',
-    time: '',
-  });
+const AddVisitorModal = ({ show, onHide,onVisitorAdded }) => {
+  
+  const [visitor_Name, setvisitor_Name] = useState("");
+  const [number, setnumber] = useState("");
+  const [date, setdate] = useState(null);
+  const [time, settime] = useState("");
+  const [wing, setwing] = useState("");
+  const [unit, setunit] = useState("");
 
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  useEffect(() => {
-    if (show) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [show]);
+  const ClearAllData = () => {
+    setvisitor_Name("");
+    setnumber("");
+    setdate(null);
+    settime("");
+    setwing("");
+    setunit("");
+    setIsCalendarOpen(false);
+  };
 
-  useEffect(() => {
-    // Check if all fields are non-empty for enabling the Save button
-    const isValid = formData.visitorName && formData.wing && formData.unit && formData.date && formData.time;
-    setIsFormValid(isValid);
-  }, [formData]);
+  const onCancel = () =>{
+    onHide();
+    ClearAllData();
+  }
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.visitorName.trim()) {
-      newErrors.visitorName = 'Visitor name is required';
+    if (!visitor_Name.trim()) {
+      newErrors.visitor_Name = 'Visitor name is required';
     }
-    if (!formData.wing.trim()) {
+    if (!wing.trim()) {
       newErrors.wing = 'Wing is required';
     }
-    if (!formData.unit.trim()) {
+    if (!unit.trim()) {
       newErrors.unit = 'Unit is required';
     }
-    if (!formData.date) {
+    if (!date) {
       newErrors.date = 'Date is required';
     }
-    if (!formData.time) {
+    if (!time) {
       newErrors.time = 'Time is required';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleDateChange = (date) => {
+    setdate(date);
+    setIsCalendarOpen(false);
+  };
+
+  const handleTimeChange = (value) => {
+    const formattedDate = dayjs(value);
+    const hour = formattedDate.hour();
+    const ampm = hour < 12 ? "AM" : "PM"; 
+    const timeString = formattedDate.format("HH:mm");
+    settime(`${timeString} ${ampm}`);
+  };
+
+
+  const handleCalendarIconClick = () => {
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
     if (validateForm()) {
-      onSave(formData);
-      onHide();
-      setFormData({
-        visitorName: '',
-        wing: '',
-        unit: '',
-        date: '',
-        time: '',
-      });
-      setErrors({});
+      const AddData = {
+        visitor_Name,
+        number,
+        wing,
+        unit,
+        date:moment(date).format("DD/MM/YYYY"),
+        time,
+      };
+      try {
+        // Send data to the backend API using axios
+        const response = await axiosInstance.post(
+          "/v2/Visitor/addvisitor",
+          AddData
+        );
+        if (response.status===200) {
+          console.log("Successfully saved:", response.data);
+          onHide(); 
+          ClearAllData();
+          onVisitorAdded();
+          setErrors({});
+        } else {
+          const errorData = await response.json();
+          console.error("Error saving:", errorData.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Error creating :", error);
+      }
+    } else {
+      console.log("Form is invalid");
     }
   };
+
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
+          setIsCalendarOpen(false);
+        }
+      }
+    };
+  
+    if (show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = 'unset';
+    };
+  }, [show]);
+  
+  useEffect(() => {
+    const isValid = visitor_Name && wing && unit && date && time;
+    setIsFormValid(isValid);
+  }, [visitor_Name, wing, unit, date, time]);
+
 
   return (
     <Modal show={show} onHide={onHide} backdrop="static" dialogClassName="visitor-modal mt-5 pt-5">
@@ -81,13 +154,42 @@ const AddVisitorModal = ({ show, onHide, onSave }) => {
             <Form.Control
               type="text"
               placeholder="Enter Name"
-              value={formData.visitorName}
-              onChange={(e) => setFormData({ ...formData, visitorName: e.target.value })}
-              isInvalid={!!errors.visitorName}
+              value={visitor_Name}
+              // onChange={(e) => setFormData({ ...formData, visitor_Name: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value;
+                // if (nameRegex.test(value) || value === "") {
+                if (!!value) {
+                  setvisitor_Name(value);
+                }
+              }}
+              isInvalid={!!errors.visitor_Name}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.visitorName}
+              {errors.visitor_Name}
             </Form.Control.Feedback>
+          </div>
+
+          {/* Phone MailOrPhone */}
+          <div>
+            <label className="block text-left font-medium text-[#202224] mb-1">
+            MailOrPhone<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Enter MailOrPhone"
+              value={number}
+              //onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+              // value={MailOrPhone}
+              onChange={(e) => {
+                const value = e.target.value;
+                // if (nameRegex.test(value) || value === "") {
+                if (!!value) {
+                  setnumber(value);
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+            />
           </div>
 
           <div className="input-row mb-4">
@@ -98,8 +200,15 @@ const AddVisitorModal = ({ show, onHide, onSave }) => {
               <Form.Control
                 type="text"
                 placeholder="Enter Wing"
-                value={formData.wing}
-                onChange={(e) => setFormData({ ...formData, wing: e.target.value })}
+                value={wing}
+                // onChange={(e) => setFormData({ ...formData, wing: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // if (nameRegex.test(value) || value === "") {
+                  if (!!value) {
+                    setwing(value);
+                  }
+                }}
                 isInvalid={!!errors.wing}
               />
               <Form.Control.Feedback type="invalid">
@@ -113,8 +222,15 @@ const AddVisitorModal = ({ show, onHide, onSave }) => {
               <Form.Control
                 type="text"
                 placeholder="Enter Unit"
-                value={formData.unit}
-                onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                value={unit}
+                // onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // if (nameRegex.test(value) || value === "") {
+                  if (!!value) {
+                    setunit(value);
+                  }
+                }}
                 isInvalid={!!errors.unit}
               />
               <Form.Control.Feedback type="invalid">
@@ -123,7 +239,45 @@ const AddVisitorModal = ({ show, onHide, onSave }) => {
             </div>
           </div>
 
-          <div className="input-row mb-4">
+
+          {/* Date and Time */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <label className="block text-left font-medium text-[#202224] mb-1">
+                Shift Date<span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center relative">
+                <DatePicker
+                  selected={date}
+                  onChange={handleDateChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                  placeholderText="Select Date"
+                  dateFormat="dd/MM/yyyy"
+                  autoComplete="off"
+                  open={isCalendarOpen}
+                />
+                <i
+                  className="fa-solid fa-calendar-days absolute right-3 text-[#202224] cursor-pointer"
+                  onClick={handleCalendarIconClick}
+                />
+              </div>
+            </div>
+
+            <div className="w-1/2">
+              <label className="block text-left font-medium text-[#202224] mb-1">
+                Shift Time<span className="text-red-500">*</span>
+              </label>
+                <TimePicker
+                value={time ? dayjs(time, "HH:mm") : null}
+                onChange={handleTimeChange}
+                format="HH:mm"
+                suffixIcon={<img src={timeIcon} alt="Time Icon" />} // Custom time icon
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+              />
+            </div>
+          </div>
+
+          {/* <div className="input-row mb-4">
             <div className="form-field">
               <Form.Label>
                 Date<span className="text-danger">*</span>
@@ -164,10 +318,10 @@ const AddVisitorModal = ({ show, onHide, onSave }) => {
                 {errors.time}
               </Form.Control.Feedback>
             </div>
-          </div>
+          </div> */}
 
           <div className="button-row py-2">
-            <Button variant="light" onClick={onHide} className="cancel-btn">
+            <Button variant="light" onClick={onCancel} className="cancel-btn">
               Cancel
             </Button>
             <Button

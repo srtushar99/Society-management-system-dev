@@ -1,51 +1,53 @@
 const Visitor = require("../models/securityVisitorModel");
+const moment = require('moment');
 
-//add visitor
-exports.CreateVisitor= async (req,res)=>{
+exports.CreateVisitor = async (req, res) => {
   try {
-      const {visitor_Name , number , date , wing, unit, time}=req.body
-      if (
-          !visitor_Name ||
-          !number ||
-          !wing ||
-          !unit 
-        ) {
-          return res.status(400).json({
-            success: false,
-            message: "All fields are required",
-          });
-        }
-  
-        const visitor= new Visitor({
-          visitor_Name,
-          number,
-          date,
-          wing,
-          unit, 
-          time
-        })
-        await visitor.save()
-        if(!visitor){
-          return res.status(400).json({
-              success: false,
-              message: "Something went wrong",
-          })
-        }
-  
-        return res.status(400).json({
-          success: false,
-          message: "Visitor Successfully Added",
-      })
-  
-  } catch (error) {
-    console.log(error);
-    
-    return res.status(500).json({
+    const { visitor_Name, number, date, wing, unit, time } = req.body;
+
+    if (!visitor_Name || !number || !wing || !unit) {
+      return res.status(400).json({
         success: false,
-        message: "Internal server error",
-    })
+        message: "All fields are required",
+      });
+    }
+
+    // Parse the date with Moment.js
+    const formattedDate = moment(date, 'DD/MM/YYYY', true).toDate();
+
+    // Check if the date is valid
+    if (!moment(date, 'DD/MM/YYYY', true).isValid()) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid date format. Please use DD/MM/YYYY.",
+      });
+    }
+
+    const visitor = new Visitor({
+      visitor_Name,
+      number,
+      date: formattedDate,
+      wing,
+      unit,
+      time,
+    });
+
+    await visitor.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Visitor successfully added",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
-}
+};
+
+
 //get complaint
 exports.GetAllVisitor = async (req, res) => {
     try {

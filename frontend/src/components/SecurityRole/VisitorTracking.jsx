@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Nav, Button, Table, Dropdown } from "react-bootstrap";
 import { Bell, ChevronDown, Plus, LogOut } from "lucide-react";
@@ -6,6 +6,8 @@ import "./visitor-tracking.css";
 import AvatarImage from "../assets/Avatar.png";
 import AddVisitorModal from "./AddVisitorModal";
 import NotificationIcon from '../assets/notification-bing.png';
+import moment from 'moment';
+import axiosInstance from '../Common/axiosInstance';
 
 const visitors = [
   {
@@ -112,16 +114,44 @@ const visitors = [
 const VisitorTracking = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [VisitorTrackings, setVisitorTrackings] = useState([]);
   const navigate = useNavigate();
 
-  const handleSaveVisitor = (visitorData) => {
-    console.log(visitorData);
-  };
-
   const handleLogout = () => {
-   
     navigate("/");
   };
+
+
+    // Fetch Visitor Tracking from the API
+    const fetchVisitorTracking = async () => {
+      try {
+        console.log('Token in localStorage:', localStorage.getItem('authToken'));
+          const response = await axiosInstance.get('/v2/Visitor/');
+          console.log(response.data);
+          if(response.status === 200){
+           setVisitorTrackings(response.data.data); 
+          }
+         
+      } catch (error) {
+        if (error.response) {
+          console.error('Error Response:', error.response.data);
+        } else if (error.request) {
+          console.error('No Response from Server:', error.request);
+        } else {
+          console.error('Unexpected Error:', error.message);
+        }
+      }
+  };
+
+
+  const handleVisitorAdded = () => {
+    fetchVisitorTracking();
+  };
+
+  useEffect(() => {
+    fetchVisitorTracking();
+  }, []);
+
 
   return (
     <div className="d-flex min-vh-100">
@@ -252,7 +282,7 @@ const VisitorTracking = () => {
               <AddVisitorModal
                 show={showAddModal}
                 onHide={() => setShowAddModal(false)}
-                onSave={handleSaveVisitor}
+                onVisitorAdded={handleVisitorAdded}
               />
             </div>
             <Table hover className="mb-0 mx-3" style={{ width: "97%" }}>
@@ -266,29 +296,29 @@ const VisitorTracking = () => {
                 </tr>
               </thead>
               <tbody>
-                {visitors.map((visitor) => (
-                  <tr key={visitor.id}>
+                {VisitorTrackings.map((visitor) => (
+                  <tr key={visitor._id}>
                     <td>
                       <div className="d-flex align-items-center">
-                        <img
+                        {/* <img
                           src={AvatarImage}
                           alt={visitor.name}
                           className="rounded-circle me-2"
                           width={40}
                           height={40}
-                        />
-                        {visitor.name}
+                        /> */}
+                        {!!visitor.visitor_Name ? visitor.visitor_Name : ""}
                       </div>
                     </td>
-                    <td>{visitor.phone}</td>
-                    <td>{visitor.date}</td>
+                    <td>{!!visitor.number ? visitor.number : ""}</td>
+                    <td>{!!visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
                     <td>
-                      <span className={`unit-badge unit-${visitor.unit.code.toLowerCase()}`}>
-                        {visitor.unit.code}
+                      <span className={`unit-badge unit-${visitor.wing.toLowerCase()}`}>
+                        {!!visitor.wing ? visitor.wing : ""}
                       </span>
-                      {visitor.unit.number}
+                      {!!visitor.unit ? visitor.unit :""}
                     </td>
-                    <td>{visitor.time}</td>
+                    <td>{!!visitor.time ? visitor.time : ""}</td>
                   </tr>
                 ))}
               </tbody>

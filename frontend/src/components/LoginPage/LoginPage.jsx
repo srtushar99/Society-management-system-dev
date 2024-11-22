@@ -46,7 +46,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/v1/login', {
-        emailOrPhone: email,
+        EmailOrPhone: email,
         password: password,
       });
 
@@ -54,14 +54,25 @@ const LoginPage = () => {
         navigate('/dashboard');
       }
       
-      if (response.data.token) {
-        console.log('Token received:', response.data.token);
-        localStorage.setItem('authToken', response.data.token);
-       
+      if (response.data.success) {
+        // Store token in localStorage
+        const token = response.data.token;
+        console.log('Token received:', token);
+        localStorage.setItem('authToken', token);
+  
+        // Store email if "Remember Me" is checked
+        if (rememberMe) {
+          localStorage.setItem('savedEmail', email);
+        } else {
+          localStorage.removeItem('savedEmail');
+        }
+        
+        // Navigate to dashboard
         navigate('/dashboard');
       } else {
         setErrorMessage(response.data.message || 'Login failed. Please try again.');
       }
+      
     } catch (error) {
       if (error.response) {
         console.error('Error response:', error.response.data);
