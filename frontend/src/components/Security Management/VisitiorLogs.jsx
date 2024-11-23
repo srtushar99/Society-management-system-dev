@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';  // Ensure Sidebar is imported
 import AvatarImage from "../assets/Avatar.png";
@@ -12,8 +12,8 @@ import GIcon from "../assets/G.png";
 import HIcon from "../assets/H.png"; 
 import IIcon from "../assets/I.png"; 
 import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
-
-
+import moment from 'moment';
+import axiosInstance from '../Common/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import NoNotification from '../Dashboard/Notification/NoNotification';
 import NotificationModal from '../Dashboard/Notification/NotificationModal';
@@ -48,6 +48,8 @@ const unitImages = {
 
 const VisitorLogs = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [VisitorTrackings, setVisitorTrackings] = useState([]);
+
   const navigate = useNavigate(); // Initialize the navigate function
 
   const notifications = [
@@ -101,13 +103,37 @@ const VisitorLogs = () => {
   };
 
 
+  // Fetch Visitor Tracking from the API
+  const fetchVisitorTracking = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/Visitor/');
+        if(response.status === 200){
+         setVisitorTrackings(response.data.data); 
+        }
+       
+    } catch (error) {
+      if (error.response) {
+        console.error('Error Response:', error.response.data);
+      } else if (error.request) {
+        console.error('No Response from Server:', error.request);
+      } else {
+        console.error('Unexpected Error:', error.message);
+      }
+    }
+};
+
+
+useEffect(() => {
+  fetchVisitorTracking();
+}, []);
+
+
   return (
     <div className="flex bg-gray-100 w-full h-full">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         
         <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md"style={{padding:"35px 10px"}}>
-         
           <div className="flex items-center space-x-2 text-gray-600">
             <Link to="/dashboard" className="text-[#A7A7A7] no-underline ms-4 font-semibold">
               Home
@@ -115,9 +141,6 @@ const VisitorLogs = () => {
             <span className="text-gray-400"> &gt; </span>
             <span className="font-semibold text-[#5678E9]">Visitor Logs</span>
           </div>
-
-
-         
         </header>
 
         <div className="ps-6 pe-6 w-full">
@@ -137,22 +160,25 @@ const VisitorLogs = () => {
                 </tr>
               </thead>
               <tbody>
-                {visitors.map((visitor, index) => (
+                {VisitorTrackings.map((visitor, index) => (
                   <tr key={index} className="border-t border-gray-200">
                     <td className="p-3 pt-3 pb-2 flex items-center">
-                      <img
+                      {/* <img
                         src={AvatarImage} 
                         alt="visitor avatar"
                         className="w-10 h-10 rounded-full mr-3"
-                      />
-                      <span className="text-gray-700 font-medium">{visitor.name}</span>
+                      /> */}
+                      <span className="text-gray-700 font-medium">{!!visitor.visitor_Name ? visitor.visitor_Name : ""}</span>
                     </td>
-                    <td className="pt-3 hidden sm:table-cell text-gray-600">{visitor.phone}</td>
-                    <td className="pt-3 hidden md:table-cell text-gray-600">{visitor.date}</td>
-                    <td className="pt-3 hidden lg:table-cell text-gray-600 d-flex ml-10" >  {unitImages[visitor.unit]?.map((img, idx) => (
-                        <img key={idx} src={img} alt={`Unit ${visitor.unit}`} className="w-6 h-6 mr-2" />
-                      ))}{visitor.unit}</td>
-                    <td className="pt-3 hidden xl:table-cell text-gray-600 ml-10">{visitor.time}</td>
+                    <td className="pt-3 hidden sm:table-cell text-gray-600">{!!visitor.number ? visitor.number : ""}</td>
+                    <td className="pt-3 hidden md:table-cell text-gray-600">{!!visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
+                    <td className="pt-3 hidden lg:table-cell text-gray-600 d-flex ml-10">
+                    <span className={`unit-badge unit-${visitor.wing.toLowerCase()}`}>
+                        {!!visitor.wing ? visitor.wing : ""}
+                      </span>
+                      {!!visitor.unit ? visitor.unit :""}
+                    </td>
+                    <td className="pt-3 hidden xl:table-cell text-gray-600 ml-10">{!!visitor.time ? visitor.time : ""}</td>
                   </tr>
                 ))}
               </tbody>

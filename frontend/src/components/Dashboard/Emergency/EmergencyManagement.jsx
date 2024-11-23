@@ -3,34 +3,62 @@ import { Container, Row, Col, Form, Button, Nav } from 'react-bootstrap';
 import { Bell, ChevronDown, LogOut, ChevronRight } from 'lucide-react';
 import './emergency-management.css';
 import AvatarImage from '../../assets/Avatar.png';
-
+import axiosInstance from '../../Common/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import NotificationIcon from '../../assets/notification-bing.png';
 
 const EmergencyManagement = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    alertType: '',
-    description: '',
-  });
-  const [isFormValid, setIsFormValid] = useState(false);
+  // const [formData, setFormData] = useState({
+  //   alert_type: '',
+  //   description: '',
+  // });
+  const [alert_type, setalert_type] = useState("");
+  const [description, setdescription] = useState("");
+  const [isFormValid, setIsFormValid] = useState(true);
 
-  // Check form validity whenever formData changes
-  const handleInputChange = (field, value) => {
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, [field]: value };
-      const isValid = updatedData.alertType && updatedData.description.trim();
-      setIsFormValid(isValid);
-      return updatedData;
-    });
+
+  const ClearAllData = () => {
+    setalert_type("");
+    setdescription("");
   };
 
-  const handleSubmit = (e) => {
+  // // Check form validity whenever formData changes
+  // const handleInputChange = (field, value) => {
+  //   setFormData((prevData) => {
+  //    // const updatedData = { ...prevData, [field]: value };
+  //     const isValid = alert_type && description.trim();
+  //     setIsFormValid(isValid);
+  //     return updatedData;
+  //   });
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isFormValid) {
-      // Submit form data here
-      console.log("Form submitted", formData);
+    // if (isFormValid) {
+    //   // Submit form data here
+    //   console.log("Form submitted", formData);
+    // }
+    const AddData = {
+      alert_type,
+      description,
+    };
+    try {
+      // Send data to the backend API using axios
+      const response = await axiosInstance.post(
+        "/v2/alert/addalert",
+        AddData
+      );
+      if (response.status===201) {
+        ClearAllData();
+        setIsFormValid(false);
+      } else {
+        const errorData = await response.json();
+        console.error("Error saving:", errorData.message || "Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Error creating :", error);
     }
   };
 
@@ -159,15 +187,23 @@ const EmergencyManagement = () => {
                     </Form.Label>
                     <Form.Select
                       className="form-control"
-                      value={formData.alertType}
-                      onChange={(e) => handleInputChange('alertType', e.target.value)}
+                      value={alert_type}
+                      // onChange={(e) => handleInputChange('alert_type', e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (!!value) {
+                          setalert_type(value);
+                        }
+                      }}
                       required
                     >
                       <option value="">Select Alert</option>
-                      <option value="fire">Fire Emergency</option>
-                      <option value="medical">Medical Emergency</option>
-                      <option value="security">Security Threat</option>
-                      <option value="natural">Natural Disaster</option>
+                      <option value="Emergency">Emergency</option>
+                      <option value="Warning">Warning</option>
+                      <option value="Fire Alarm">Fire Alarm</option>
+                      <option value="Earth Quack">Earth Quack</option>
+                      <option value="High Winds">High Winds</option>
+                      <option value="Thunder">Thunder</option>
                     </Form.Select>
                   </Form.Group>
 
@@ -179,8 +215,14 @@ const EmergencyManagement = () => {
                       as="textarea"
                       rows={4}
                       placeholder="An emergency description typically refers to a detailed account or explanation of an emergency situation."
-                      value={formData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      value={description}
+                      // onChange={(e) => handleInputChange('description', e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (!!value) {
+                          setdescription(value);
+                        }
+                      }}
                       required
                     />
                   </Form.Group>
