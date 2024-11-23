@@ -22,10 +22,15 @@ const ResidentSidebar = () => {
   const location = useLocation();
 
   useEffect(() => {
+    
     const path = location.pathname.split('/')[1];
     setActiveLink(path || 'ResidentDashboard');
-    
-    if (['AccessForums', 'Polls', 'CommunitiesDiscussion'].includes(path)) {
+     if (location.pathname === '/residentsidebar') {
+      navigate('/ResidentDashboard');
+      return;
+    }
+
+    else if (['AccessForums', 'Polls', 'CommunitiesDiscussion'].includes(path)) {
       setActiveLink('Community');
       setCommunityActive(path);
       setShowCommunityDropdown(true);
@@ -34,7 +39,7 @@ const ResidentSidebar = () => {
       setPaymentActive(path);
       setShowPaymentDropdown(true);
     }
-  }, [location]);
+  }, [location,navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -179,16 +184,16 @@ const ResidentSidebar = () => {
 
         <Nav className="flex-column">
           <div style={{ position: "relative" }}>
-            <div style={getIndicatorStyle("dashboard")}></div>
+            <div style={getIndicatorStyle("ResidentDashboard")}></div>
             <Link
               to="/ResidentDashboard"
-              style={getLinkStyle("dashboard")}
-              onClick={() => handleLinkClick("dashboard", "/ResidentDashboard")}
+              style={getLinkStyle("ResidentDashboard")}
+              onClick={() => handleLinkClick("ResidentDashboard", "/ResidentDashboard")}
             >
               <img
                 src={DashboardIcon}
-                style={getIconStyle("dashboard")}
-                alt="Dashboard"
+                style={getIconStyle("ResidentDashboard")}
+                alt="ResidentDashboard"
               />
               Dashboard
             </Link>
@@ -288,7 +293,7 @@ const ResidentSidebar = () => {
                       alignItems: "center",
                     }}
                   >
-                    Communities Discussion
+                    Communities Discuss
                   </div>
                 </Dropdown.Item>
               </Dropdown.Menu>
