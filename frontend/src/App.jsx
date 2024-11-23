@@ -40,11 +40,15 @@ import PersonalDetail from './components/Resident Role/Personal Detail/PersonalD
 import AccessForums from './components/Resident Role/Comunity/Access Forums/AccessForums';
 import Polls from './components/Resident Role/Comunity/Polls/Polls';
 import CommunitiesDiscussion from './components/Resident Role/Comunity/Communities Discussion/CommunitiesDiscussion';
-import ServiceAndComplaint from './components/Resident Role/Service And Complaint/ServiceAndComplaint';
+// import ServiceAndComplaint from './components/Resident Role/Service And Complaint/ServiceAndComplaint';
 import MaintenanceInvoices from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceInvoices';
 import OtherIncomeInvoice from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeInvoice';
 import SecurityProtocols from './components/Resident Role/Security Protocols/SecurityProtocols';
-import EventsParticipation from './components/Resident Role/Events Participation/EventsParticipation';
+import EventsParticipation from './components/Resident Role/Events Participation/Event Participate/EventsParticipation';
+import Complain from './components/Dashboard/ComplainList/Complain';
+import ComplainSubmission from './components/Resident Role/Service And Complaint/Complaint Submission/ComplainSubmission';
+import RequestSubmission from './components/Resident Role/Service And Complaint/Request Submission/RequestSubmission';
+import Activity from './components/Resident Role/Events Participation/Activity Participate/Activity';
 
 
 
@@ -98,11 +102,13 @@ function App() {
             <Route path="AccessForums" element={<AccessForums/>} />
             <Route path="Polls" element={<Polls/>} />
             <Route path="CommunitiesDiscussion" element={<CommunitiesDiscussion/>} />
-            <Route path="ServiceAndComplaint" element={<ServiceAndComplaint/>} />
+            <Route path="/complain" element={<ComplainSubmission/>} />
+            <Route path="/Request" element={<RequestSubmission/>} />
             <Route path="MaintenanceInvoices" element={<MaintenanceInvoices/>} />
             <Route path="OtherIncomeInvoice" element={<OtherIncomeInvoice/>} />
             <Route path="SecurityProtocols" element={<SecurityProtocols/>} />
-            <Route path="EventsParticipation" element={<EventsParticipation/>} />
+            <Route path="/EventsParticipation" element={<EventsParticipation/>} />
+            <Route path="/activity" element={<Activity/>} />
             
         </Routes>
     );
