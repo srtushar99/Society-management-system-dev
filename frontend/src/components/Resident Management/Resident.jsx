@@ -175,13 +175,19 @@ const Resident = () => {
     setSelectedResident(item); 
     setMemberCount(item.Member); 
     setVehicleCount(item.Vehicle); 
+  
     if (item.ResidentStatus === "Owner") {
-      navigate("/editowner", { state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } });
+      navigate("/editowner", { 
+        state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } 
+      });
     } else if (item.ResidentStatus === "Tenant") {
-      navigate("/edittenant", { state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } });
+      navigate("/edittenant", { 
+        state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } 
+      });
     }
   };
 
+  
 
   const openViewModal = (item) => {
     setSelectedResident(item);

@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 import NotificationIcon from "../assets/notification-bing.png";
 import AvatarImage from "../assets/Avatar.png";
 // Import EditNote component
 import Sidebar from "../Sidebar/Sidebar";
 import CreateFacility from "./CreateFacility";
 import Editfacility from "./Editfacility";
-import axiosInstance from '../Common/axiosInstance';
-import moment from 'moment';
-import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
-
+import axiosInstance from "../Common/axiosInstance";
+import moment from "moment";
+import HeaderBaner from "../Dashboard/Header/HeaderBaner";
 
 const Facilities = () => {
   const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
@@ -17,7 +16,6 @@ const Facilities = () => {
   const [isEditNoteOpen, setIsEditNoteOpen] = useState(false); // Manage EditNote modal visibility
   const [selectedNote, setSelectedNote] = useState(null); // Store selected note for editing
   const [facility, setFacility] = useState([]);
-
 
   // Toggle dropdown menu visibility
   const toggleDropdown = (index) => {
@@ -50,24 +48,22 @@ const Facilities = () => {
     setSelectedNote(null); // Clear selected note data
   };
 
-
-   // Fetch Facility from the API
-   const fetchFacility = async () => {
+  // Fetch Facility from the API
+  const fetchFacility = async () => {
     try {
-        const response = await axiosInstance.get('/v2/facility/');
-        // console.log(response.data.facilities);
-        if(response.status === 200){
-          setFacility(response.data.facilities); 
-        }
-      } catch (error) {
-        console.error('Error fetching Facility:', error);
+      const response = await axiosInstance.get("/v2/facility/");
+      // console.log(response.data.facilities);
+      if (response.status === 200) {
+        setFacility(response.data.facilities);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching Facility:", error);
+    }
+  };
 
-    useEffect(() => {
-      fetchFacility();
-    }, []);
-
+  useEffect(() => {
+    fetchFacility();
+  }, []);
 
   return (
     <div className="flex w-full h-screen bg-gray-100">
@@ -84,11 +80,13 @@ const Facilities = () => {
               Home
             </Link>
             <span className="text-gray-400"> &gt; </span>
-            <span className="font-semibold text-[#5678E9]">Facility Management</span>
+            <span className="font-semibold text-[#5678E9]">
+              Facility Management
+            </span>
           </div>
 
           {/* Notifications and Profile Section */}
-      <HeaderBaner/>
+          <HeaderBaner />
         </header>
 
         {/* Facility Management Section */}
@@ -143,7 +141,9 @@ const Facilities = () => {
                         Upcoming Schedule Service Date
                       </h3>
                       <span className="text-sm text-[#202224]">
-                        {!!card.Date ? moment(card.Date).format('DD/MM/YYYY') : " "}
+                        {!!card.Date
+                          ? moment(card.Date).format("DD/MM/YYYY")
+                          : " "}
                       </span>
                     </div>
 

@@ -25,8 +25,8 @@ import CreateComplaint from './components/Complaint Tracking/Create Complaint/Cr
 import RequestTracking from './components/Complaint Tracking/Request Tracking/RequestTracking';
 import SecurityGuard from './components/Security Guard/SecurityGuard';
 import Resident from './components/Resident Management/Resident';
-import Owner from './components/Resident Management/Owner';
-import Tenant from './components/Resident Management/Tenant';
+import OwnerPage from './components/Resident Management/OwnerPage';
+import TenantPage from './components/Resident Management/TenantPage';
 import VacatePage from './components/Resident Management/VacatePage';
  import EditOwner from './components/Resident Management/EditOwner';
  import EditTenant from './components/Resident Management/EditTenant';
@@ -60,11 +60,12 @@ function App() {
             <Route path="/securityprotocol" element={<SecurityProtocol />} />
             <Route path="/security-guard" element={<SecurityGuard/>} />
             <Route path="/Resident-Manegement" element={<Resident/>} />
-            <Route path="/Owner" element={<Owner/>} />
+            <Route path="/ownerpage" element={<OwnerPage/>} />
             <Route path="/vacate" element={<VacatePage />} />
-            <Route path="/tenant" element={<Tenant/>} />
+            <Route path="/tenantpage" element={<TenantPage/>} />
            <Route path="/editowner" element={<EditOwner/>} /> 
            <Route path="/edittenant" element={<EditTenant/>} /> 
+       
       
          
             {/* // <Routes path="/securitygaurd" element={<SecurityGuardTable />} />  */}

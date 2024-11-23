@@ -3,9 +3,8 @@
   scrollbar-width: light; /* Firefox */
 }
 
-/* For WebKit browsers (Chrome, Safari) */
 .scrollbar-thin::-webkit-scrollbar {
-  width: 5px; /* Width of the scrollbar */
+  width: 5px; 
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
@@ -14,6 +13,36 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background-color: #f0f0f0; /* Change this to your desired track color */
-  border-radius: 10px; /* Rounded corners */
+  background-color: #f0f0f0; 
+  border-radius: 10px
+}
+
+
+
+.Content{
+  width: 300px;
+  text-align: center;
+}
+
+/* Designing for scroll-bar */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: gainsboro;
+  border-radius: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

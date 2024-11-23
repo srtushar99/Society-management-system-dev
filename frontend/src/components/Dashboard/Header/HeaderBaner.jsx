@@ -62,7 +62,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center v-screen justify-between px-6 bg-white sm:ms-[50px] h-[60px] flex-wrap md:flex-nowrap">
+    <header className="flex items-center v-screen justify-between px-2 bg-white sm:ms-[50px] h-[60px] flex-wrap md:flex-nowrap">
       {/* Search Bar Section */}
     
 
@@ -70,7 +70,7 @@ const Header = () => {
       <div className="flex items-center space-x-4 sm:space-x-6">
         {/* Notification Icon */}
         <button
-          className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
+          className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border  border-gray-300"
           onClick={() => setIsModalOpen(true)} // Open the modal
         >
           <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />

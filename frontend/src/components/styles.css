@@ -15,6 +15,17 @@
         width: 100%; /* Make columns full-width on smaller screens */
     }
   }
+
+  @media screen and (max-width: 1024px)  {
+    .col-md-3{
+      width: 100%;
+    }
+}
+
+@media screen and (min-width: 1024px) and (max-height: 1310px) {
+    /* Laptop */
+}
+
   body{
     background-color: #F8F9FA;
   }
