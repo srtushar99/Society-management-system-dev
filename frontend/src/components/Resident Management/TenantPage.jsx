@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Assuming you have this component
 import Sidebar from "../Sidebar/Sidebar";
 
-const Tenant = () => {
-  const [activeButton, setActiveButton] = useState("tenant");
+const TenantPage = () => {
+  const [activeButton, setActiveButton] = useState("tenantpage");
   const [formData, setFormData] = useState({
     photo :"",
     ownerName: "",
@@ -270,9 +270,9 @@ const Tenant = () => {
         <div className="lg:mt-[10px] ml-[300px] bg">
           <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
             <Link
-              to="/owner"
+              to="/ownerpage"
               className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
-                activeButton === "owner"
+                activeButton === "ownerpage"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
@@ -280,9 +280,9 @@ const Tenant = () => {
               Owner
             </Link>
             <Link
-              to="/tenant"
+              to="/tenantpage"
               className={`w-full lg:h-[50px] sm:w-[150px]  px-4 py-3 rounded-top no-underline ${
-                activeButton === "tenant"
+                activeButton === "tenantpage"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
@@ -782,4 +782,4 @@ const Tenant = () => {
   );
 };
 
-export default Tenant;
+export default TenantPage;
