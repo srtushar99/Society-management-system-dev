@@ -33,6 +33,18 @@ import VacatePage from './components/Resident Management/VacatePage';
 import VisitorTracking from './components/SecurityRole/VisitorTracking';
 import AddVisitorModal from './components/SecurityRole/AddVisitorModal';
 import EmergencyManagement from './components/Dashboard/Emergency/EmergencyManagement';
+import ResidentSidebar from './components/Resident Role/Resident Sidebar/ResidentSidebar';
+import ResidentHeader from './components/Resident Role/Resident Header/ResidentHeader';
+import ResidentDashboard from './components/Resident Role/Dashboard/residentDashboard';
+import PersonalDetail from './components/Resident Role/Personal Detail/PersonalDetail';
+import AccessForums from './components/Resident Role/Comunity/Access Forums/AccessForums';
+import Polls from './components/Resident Role/Comunity/Polls/Polls';
+import CommunitiesDiscussion from './components/Resident Role/Comunity/Communities Discussion/CommunitiesDiscussion';
+import ServiceAndComplaint from './components/Resident Role/Service And Complaint/ServiceAndComplaint';
+import MaintenanceInvoices from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceInvoices';
+import OtherIncomeInvoice from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeInvoice';
+import SecurityProtocols from './components/Resident Role/Security Protocols/SecurityProtocols';
+import EventsParticipation from './components/Resident Role/Events Participation/EventsParticipation';
 
 
 
@@ -77,7 +89,19 @@ function App() {
             <Route path="/addvisitor" element={<AddVisitorModal/>} />
             <Route path="/emergency" element={<EmergencyManagement/>} />
             
-            
+
+            <Route path="/residentsidebar" element={<ResidentSidebar/>} />
+            <Route path="/residentheader" element={<ResidentHeader/>} />
+            <Route path="ResidentDashboard" element={<ResidentDashboard/>} />
+            <Route path="PersonalDetail" element={<PersonalDetail/>} />
+            <Route path="AccessForums" element={<AccessForums/>} />
+            <Route path="Polls" element={<Polls/>} />
+            <Route path="CommunitiesDiscussion" element={<CommunitiesDiscussion/>} />
+            <Route path="ServiceAndComplaint" element={<ServiceAndComplaint/>} />
+            <Route path="MaintenanceInvoices" element={<MaintenanceInvoices/>} />
+            <Route path="OtherIncomeInvoice" element={<OtherIncomeInvoice/>} />
+            <Route path="SecurityProtocols" element={<SecurityProtocols/>} />
+            <Route path="EventsParticipation" element={<EventsParticipation/>} />
             
         </Routes>
     );
