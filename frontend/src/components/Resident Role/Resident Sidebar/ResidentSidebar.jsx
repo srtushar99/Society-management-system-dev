@@ -303,14 +303,14 @@ const ResidentSidebar = () => {
           <div style={{ position: "relative" }}>
             <div style={getIndicatorStyle("ServiceAndComplaint")}></div>
             <Link
-              to="/ServiceAndComplaint"
-              style={getLinkStyle("ServiceAndComplaint")}
-              onClick={() => handleLinkClick("ServiceAndComplaint", "/ServiceAndComplaint")}
+              to="/complain"
+              style={getLinkStyle("complain")}
+              onClick={() => handleLinkClick("complain", "/complain")}
             >
               <img
                 src={FacilitiesIcon}
-                style={getIconStyle("ServiceAndComplaint")}
-                alt="ServiceAndComplaint"
+                style={getIconStyle("complain")}
+                alt="complain"
               />
              Service And Complaint
             </Link>
@@ -395,7 +395,7 @@ const ResidentSidebar = () => {
           </div>
 
           <div style={{ position: "relative" }}>
-            <div style={getIndicatorStyle("EventsParticipation")}></div>
+            <div style={getIndicatorStyle("EventsParticipation",)}></div>
             <Link
               to="/EventsParticipation"
               style={getLinkStyle("EventsParticipation")}
