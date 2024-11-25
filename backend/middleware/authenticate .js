@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Guard = require("../models/securityGuardModel");
+const Owner = require('../models/ownerModel');
+const Tenante = require('../models/tenantModel');
 
 exports.authenticate = async (req, res, next) => {
   try {
@@ -21,10 +23,16 @@ exports.authenticate = async (req, res, next) => {
   if (!user) {
     user = await Guard.findById(decoded.userId);
   }
+  if (!user) {
+    user = await Owner.findById(decoded.userId);
+  }
+  if (!user) {
+    user = await Tenante.findById(decoded.userId);
+  }
 
   
   if (!user) {
-    return res.status(404).json({ success: false, message: 'User or Guard not found' });
+    return res.status(404).json({ success: false, message: 'User not found' });
   }
 
     
@@ -35,6 +43,39 @@ exports.authenticate = async (req, res, next) => {
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
 };
+// exports.authenticate = async (req, res, next) => {
+//   try {
+    
+//     const token = req.cookies['Society-Management'] || req.headers.authorization?.split(' ')[1];
+
+//     if (!token) {
+//       return res.status(401).json({ success: false, message: 'Authorization denied, no token provided' });
+//     }
+
+    
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+   
+//     let user = await User.findById(decoded.userId);
+
+ 
+//   if (!user) {
+//     user = await Guard.findById(decoded.userId);
+//   }
+
+  
+//   if (!user) {
+//     return res.status(404).json({ success: false, message: 'User or Guard not found' });
+//   }
+
+    
+//     req.user = user;
+//     next();
+//   } catch (error) {
+//     console.error("Authentication error:", error.message);
+//     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
+//   }
+// };
 
 
 exports.IsResident = (req, res, next) => {
