@@ -300,4 +300,39 @@ exports.fetchUserPendingMaintenance = async (req, res) => {
     }
   };
   
+//get done maintannace 
+
+exports.getResidentsWithCompletedPayments = async (req, res) => {
+    try {
+
+      const maintenanceRecords = await Maintenance.find({
+        "ResidentList.paymentStatus": "done",
+      }).populate("ResidentList.resident");
    
+      const filteredRecords = maintenanceRecords.map((record) => {
+        const completedResidents = record.ResidentList.filter(
+          (resident) => resident.paymentStatus === "done"
+        );
+  
+        console.log(
+          `Filtered Residents for Maintenance ID ${record._id}:`,
+          completedResidents
+        );
+ 
+        return { ...record._doc, ResidentList: completedResidents }; // Spread _doc for cleaner response
+      });
+  
+      // Return filtered records
+      return res.status(200).json({
+        success: true,
+        Maintenance: filteredRecords,
+      });
+    } catch (error) {
+      console.error("Error fetching residents with completed payments:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching residents with completed payments",
+      });
+    }
+  };
+  

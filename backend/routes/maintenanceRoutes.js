@@ -1,4 +1,4 @@
-const { CheckMaintenancePassword, CreateMaintenance, GetMaintenance, changePaymentDetails, fetchUserPendingMaintenance,   } = require("../controller/maintenanceController");
+const { CheckMaintenancePassword, CreateMaintenance, GetMaintenance, changePaymentDetails, fetchUserPendingMaintenance, getResidentsWithCompletedPayments,   } = require("../controller/maintenanceController");
 const { authenticate } = require("../middleware/authenticate ");
 const router=require("express").Router();
 
@@ -16,5 +16,8 @@ router.put('/:maintenanceId/resident/payment', authenticate,changePaymentDetails
 
 //FindByIdUserAndMaintance
 router.get("/getuserandMaintance",authenticate,fetchUserPendingMaintenance)
+
+//get done maintannace
+router.get("/donemaintannace", getResidentsWithCompletedPayments)
 
 module.exports=router
