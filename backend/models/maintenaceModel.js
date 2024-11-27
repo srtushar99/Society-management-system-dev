@@ -1,5 +1,5 @@
-const mongoose = require("mongoose"); // Import mongoose
-const { Schema, model } = mongoose; // Destructure Schema and model from mongoose
+const mongoose = require("mongoose"); 
+const { Schema, model } = mongoose; 
 
 const maintenanceschema = new Schema({
     Maintenance_Amount: {
@@ -22,12 +22,12 @@ const maintenanceschema = new Schema({
         {
             resident: {
                 type: mongoose.SchemaTypes.ObjectId,
-                refPath: 'ResidentList.residentType', // Corrected to point to the right field
+                refPath: 'ResidentList.residentType', 
                 required: true,
             },
             residentType: {
                 type: String,
-                enum: ["Owner", "Tenante"], // Correct spelling if needed
+                enum: ["Owner", "Tenante"], 
             },
             paymentStatus: {
                 type: String,
