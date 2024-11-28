@@ -13,12 +13,9 @@ exports.authenticate = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Authorization denied, no token provided' });
     }
 
-    
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
    
     let user = await User.findById(decoded.userId);
-
  
   if (!user) {
     user = await Guard.findById(decoded.userId);
@@ -29,12 +26,10 @@ exports.authenticate = async (req, res, next) => {
   if (!user) {
     user = await Tenante.findById(decoded.userId);
   }
-
   
   if (!user) {
     return res.status(404).json({ success: false, message: 'User not found' });
   }
-
     
     req.user = user;
     next();
