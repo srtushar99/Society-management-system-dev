@@ -1,85 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../Sidebar/Sidebar"; // Ensure Sidebar is imported
 import AvatarImage from "../../assets/Avatar.png";
-
+import moment from 'moment';
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 import { useNavigate } from "react-router-dom";
 import ResidentSidebar from "../Resident Sidebar/ResidentSidebar";
+import axiosInstance from '../../Common/axiosInstance';
 
-const securityprotocol = [
-  {
-    title: "Cameron Williamson",
-    description: "A visual representation your spending categories.",
-    date: "11/02/2024",
-    time: "2:45 PM",
-  },
-  {
-    title: "Darrell Steward",
-    description: "Securing critica government systems.",
-    date: "12/02/2024",
-    time: "3:00 PM",
-  },
-  {
-    title: "Courtney Henry",
-    description: "Implementing surveillan public spaces.",
-    date: "13/02/2024",
-    time: "4:30 PM",
-  },
-  {
-    title: "Kathryn Murphy",
-    description: "Tailor the dashboard to your unique financial.",
-    date: "14/02/2024",
-    time: "6:45 PM",
-  },
-  {
-    title: "Kathryn Murphy",
-    description: "Expenses will way sense for you.",
-    date: "15/02/2024",
-    time: "2:45 PM",
-  },
-  {
-    title: "Arlene McCoy",
-    description: "Helping you identify where your money  going",
-    date: "16/02/2024",
-    time: "5:45 PM",
-  },
-  {
-    title: "Eleanor Pena",
-    description: "Simply navigate through the different sections.",
-    date: "17/02/2024",
-    time: "4:45 PM",
-  },
-  {
-    title: "Brooklyn Simmons",
-    description: " Expenses will becomea way that makes sense.",
-    date: "18/02/2024",
-    time: "3:45 PM",
-  },
-  {
-    title: "Wade Warren",
-    description: "Implementing surveillan public spaces.",
-    date: "19/02/2024",
-    time: "9:45 PM",
-  },
-  {
-    title: "Jane Cooper",
-    description: " Expenses will becomea way that makes sense.",
-    date: "20/02/2024",
-    time: "3:45 PM",
-  },
-  {
-    title: "Esther Howard",
-    description: "A visual representation your spending categories.",
-    date: "21/02/2024",
-    time: "9:45 PM",
-  },
-];
 
 const SecurityProtocols = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate(); // Initialize the navigate function
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
+  const [SecurityProtocols, setSecurityProtocols] = useState([]);
 
   const notifications = [
     {
@@ -136,6 +70,28 @@ const SecurityProtocols = () => {
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+
+
+  // Fetch Security Protocols from the API
+  const fetchSecurityProtocols = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/securityprotocol/');
+        console.log(response.data);
+        if(response.status === 200){
+         setSecurityProtocols(response.data.data); 
+        }
+       
+    } catch (error) {
+        console.error('Error fetching Security Protocols:', error);
+    }
+};
+
+
+useEffect(() => {
+  fetchSecurityProtocols();
+}, []);
+
 
   return (
     <div className="flex bg-gray-100 w-full h-full">
@@ -248,26 +204,25 @@ const SecurityProtocols = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {securityprotocol.map((security, index) => (
+                    {SecurityProtocols.map((security, index) => (
                       <tr key={index} className="border-t border-gray-200">
                         <td className=" p-3  pt-3 pb-2 flex items-center whitespace-nowrap">
                           <span className="text-[#4F4F4F] inline ">
-                            {security.title}
+                            {security.Title}
                           </span>
                         </td>
                         <td className="text-[#4F4F4F]  whitespace-nowrap">
                           <span className="text-[#4F4F4F] mr-[190px]">
-                            {security.description}
+                            {security.Description}
                           </span>
                         </td>
                         <td className="  text-[#4F4F4F]  ">
                           <span className="text-[#4F4F4F] mr-[200px] text-sm sm:text-base">
-                            {security.time}{" "}
-                            <span className="inline">{security.amPm}</span>
+                            {security.Time}
                           </span>
                         </td>
                         <td className="pt-3 text-[#4F4F4F] ">
-                          {security.date}
+                          {!!security.Date ? moment(security.Date).format('DD/MM/YYYY') : " "}
                         </td>
                       </tr>
                     ))}
