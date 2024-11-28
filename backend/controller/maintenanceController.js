@@ -314,10 +314,6 @@ exports.getResidentsWithCompletedPayments = async (req, res) => {
           (resident) => resident.paymentStatus === "done"
         );
   
-        console.log(
-          `Filtered Residents for Maintenance ID ${record._id}:`,
-          completedResidents
-        );
  
         return { ...record._doc, ResidentList: completedResidents }; // Spread _doc for cleaner response
       });

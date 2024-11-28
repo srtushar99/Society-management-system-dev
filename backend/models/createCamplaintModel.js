@@ -34,11 +34,15 @@ const CamplaintSchema = new mongoose.Schema({
         required:true,
         enum: ['Open', 'Pending', 'Solve']
     },
-    role: {
-        type: String,
-        enum: ['admin', 'resident', 'security'], 
-        default: 'resident' 
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'createdByType', 
+        require:true
     },
+    createdByType: {
+        type: String, 
+        enum: ['Owner', 'Tenante',"User"] 
+    }
 }, {
     timestamps: true 
 });

@@ -3,7 +3,7 @@ const Request = require('../models/requestTrackingModel');
 // Create a new request
 exports.createRequest = async (req, res) => {
     try {
-        const { Requester_name, Request_name, Request_date,Description, Wing, Unit, Priority, Status, role } = req.body;
+        const { Requester_name, Request_name, Request_date,Description, Wing, Unit, Priority, Status} = req.body;
 
         // Check if all required fields are provided
         if (!Requester_name || !Request_name || !Request_date|| !Description || !Wing || !Unit || !Priority || !Status) {
@@ -17,9 +17,11 @@ exports.createRequest = async (req, res) => {
             Description,
             Wing,
             Unit,
-            Priority,
-            Status,
-            role,
+            Priority: Priority || "Medium",
+            Status: Status || "Open",
+            createdBy: req.user._id, 
+            createdByType: req.user.type, 
+            
         });
 
         await request.save();
@@ -32,25 +34,44 @@ exports.createRequest = async (req, res) => {
 // Get all requests
 exports.getAllRequests = async (req, res) => {
     try {
-        const requests = await Request.find();
-        res.status(200).json({ message: 'Requests retrieved successfully', requests });
+      const request = await Request.find({})
+        .populate("createdBy", "profileImage") 
+        .sort({ wing: 1, unit: 1 }); 
+  
+      return res.status(200).json({
+        success: true,
+        data: request,
+      });
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving requests', error });
+      console.error("Error fetching request:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching request",
+      });
     }
-};
+  };
 
 // Get a request by ID
+
 exports.getRequestById = async (req, res) => {
     try {
-        const request = await Request.findById(req.params.id);
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
-        res.status(200).json({ message: 'Request retrieved successfully', request });
-    } catch (error) {
-        res.status(500).json({ message: 'Error retrieving request', error });
-    }
-};
+        const requestid=req.params.id
+        const request= await Request.findById(requestid)
+          .populate("createdBy", "profileImage") 
+          .sort({ wing: 1, unit: 1 }); 
+          
+        return res.status(200).json({
+          success: true,
+          data: request,
+        });
+      } catch (error) {
+        console.error("Error fetching request:", error);
+        return res.status(500).json({
+          success: false,
+          message: "Error fetching request",
+        });
+      }
+    };
 
 // Update a request by ID
 exports.updateRequest = async (req, res) => {
@@ -90,3 +111,33 @@ exports.deleteRequest = async (req, res) => {
         res.status(500).json({ message: 'Error deleting request', error });
     }
 };
+
+//Login user adding Complaint
+exports.getUserRequest = async (req, res) => {
+    try {
+      const loggedInUserId = req.user.id;
+      const userType = req.user.type; 
+  
+      const income = await Request.find({
+        createdBy: loggedInUserId,
+        createdByType: userType
+      })
+      .populate({
+        path: "createdBy",
+        select: "name profileImage", 
+      })
+     
+      console.log("User's income:", income);
+  
+      return res.status(200).json({
+        success: true,
+        data: income,
+      });
+    } catch (error) {
+      console.error("Error fetching income:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching income",
+      });
+    }
+  };
