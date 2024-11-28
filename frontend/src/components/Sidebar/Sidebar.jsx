@@ -37,6 +37,15 @@ const Sidebar = () => {
     else if (path === 'otherincome') {
       setActiveLink('Financial-Manegement');
     }
+    
+    else if (path === 'edittenant') {
+      setActiveLink('Resident-Manegement');
+    }
+
+    else if (path === 'editowner') {
+      setActiveLink('Resident-Manegement');
+    }
+
     else if (path === 'createcomplaint' || path === 'requesttracking') {
       setActiveLink('Complaint-Tracking');
       setComplaintsActive(path);

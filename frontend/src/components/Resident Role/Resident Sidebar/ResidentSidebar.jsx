@@ -29,12 +29,25 @@ const ResidentSidebar = () => {
       navigate('/ResidentDashboard');
       return;
     }
+    else if (path === 'EventsParticipation') {
+      setActiveLink('EventsParticipation');
+    }
+    else if (path === 'activity') {
+      setActiveLink('EventsParticipation');
+    }
+
+    else if (path === 'Request') {
+      setActiveLink('complain');
+    }
+    else if (path === 'MaintenanceTable') {
+      setActiveLink('PaymentPortal');
+    }
 
     else if (['AccessForums', 'Polls', 'CommunitiesDiscussion'].includes(path)) {
       setActiveLink('Community');
       setCommunityActive(path);
       setShowCommunityDropdown(true);
-    } else if (['MaintenanceInvoices', 'OtherIncomeInvoice'].includes(path)) {
+    } else if (['MaintenanceInvoices', 'OtherIncomeInvoice',].includes(path)) {
       setActiveLink('PaymentPortal');
       setPaymentActive(path);
       setShowPaymentDropdown(true);

@@ -159,6 +159,7 @@ const EventsParticipation = () => {
       <ResidentSidebar />
       <div className="flex-1 flex flex-col">
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
