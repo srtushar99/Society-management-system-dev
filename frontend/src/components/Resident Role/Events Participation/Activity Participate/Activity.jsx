@@ -273,61 +273,64 @@ const Activity = () => {
             </h1>
             <div />
             <div className="overflow-x-auto sm:overflow-y-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                <div className="Content">
-              <table className="2xl:w-[1560px]  border border-gray-200  rounded-table ">
-                <thead
-                  className=" relative lg:w-[1560px]"
-                  style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
-                >
-                  <tr className="text-left text-sm  font-semibold ">
-                    <th className="2xl:p-3 p-2 text-[#202224]">
-                      {" "}
-                      Participator Name
-                    </th>
-                    <th className="2xl:p-3 p-2 ps-5 text-[#202224]">Description</th>
-                    <th className="2xl:p-1 p-2  ">Event Time</th>
-                    <th className="2xl:p-3 p-2  ">Event Date</th>
-                    <th className="2xl:p-3 p-2  ">Event Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activity.map((activity, index) => (
-                    <tr key={index} className="border-t border-gray-200">
-                      <td className="2xl:p-4 p-3 mr-44 pt-3 pb-2 flex items-center whitespace-nowrap ">
-                        <img
-                          src={AvatarImage}
-                          alt="visitor avatar"
-                          className="w-10 h-10 rounded-full mr-3"
-                        />
-                        <span className="text-gray-700 font-medium">
-                          {activity.name}
-                        </span>
-                      </td>
-                      <td className="text-[#4F4F4F]  whitespace-nowrap">
-                        <span className="text-[#4F4F4F] mr-[120px]">
-                          {activity.description}
-                        </span>
-                      </td>
-                      <td className="  text-[#4F4F4F]  ">
-                        <span className="text-[#4F4F4F] mr-[100px] text-sm sm:text-base">
-                          {activity.time}{" "}
-                          <span className="inline">{activity.amPm}</span>
-                        </span>
-                      </td>
-                      <td className="pt-3  mr-10  text-[#4F4F4F] ">
-                        <span className="text-[#4F4F4F] mr-[100px]   ">
-                          {activity.date}
-                        </span>
-                      </td>
-                      <td className="pt-3 sm:table-cell whitespace-nowrap  text-gray-600">
-                        <span className="text-[#4F4F4F]   mr-[20px]  ">
-                          {activity.eventName}
-                        </span>
-                      </td>
+              <div className="Content">
+                <table className="2xl:w-[1560px]  border border-gray-200  rounded-table ">
+                  <thead
+                    className=" relative lg:w-[1560px]"
+                    style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
+                  >
+                    <tr className="text-left text-sm  font-semibold ">
+                      <th className="2xl:p-3 p-2  text-[#202224]">
+                        {" "}
+                        Participator Name
+                      </th>
+                      <th className="2xl:p-3 p-2 ps-5 text-[#202224]">
+                        Description
+                      </th>
+                      <th className="2xl:p-1 p-2  ps-5  whitespace-nowrap ">Event Time</th>
+                      <th className="2xl:p-3 p-2 ps-5  whitespace-nowrap">Event Date</th>
+                      <th className="2xl:p-3 p-2  ps-5  whitespace-nowrap">Event Name</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {activity.map((activity, index) => (
+                      <tr key={index} className="border-t border-gray-200">
+                        <td className="2xl:p-4 p-3 mr-44 pt-3 pb-2 flex items-center whitespace-nowrap ">
+                          <img
+                            src={AvatarImage}
+                            alt="visitor avatar"
+                            className="w-10 h-10 rounded-full mr-3"
+                          />
+                          <span className="text-gray-700 font-medium">
+                            {activity.name}
+                          </span>
+                        </td>
+                        <td className="text-[#4F4F4F] text-left whitespace-nowrap">
+                          <span className="text-[#4F4F4F]">
+                            {activity.description}
+                          </span>
+                        </td>
+
+                        <td className="  text-[#4F4F4F]  text-center">
+                          <span className="text-[#4F4F4F] text-sm sm:text-base">
+                            {activity.time}{" "}
+                            <span className="inline">{activity.amPm}</span>
+                          </span>
+                        </td>
+                        <td className="pt-3  mr-10 text-center  text-[#4F4F4F] ">
+                          <span className="text-[#4F4F4F]   ">
+                            {activity.date}
+                          </span>
+                        </td>
+                        <td className="pt-3 sm:table-cell whitespace-nowrap text-center text-gray-600">
+                          <span className="text-[#4F4F4F]   ">
+                            {activity.eventName}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

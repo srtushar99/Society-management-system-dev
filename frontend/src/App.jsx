@@ -36,7 +36,7 @@ import EmergencyManagement from './components/Dashboard/Emergency/EmergencyManag
 import ResidentSidebar from './components/Resident Role/Resident Sidebar/ResidentSidebar';
 import ResidentHeader from './components/Resident Role/Resident Header/ResidentHeader';
 import ResidentDashboard from './components/Resident Role/Dashboard/residentDashboard';
-import PersonalDetail from './components/Resident Role/Personal Detail/PersonalDetail';
+import PersonalDetail from './components/Resident Role/Personal Detail/PersonalOwner';
 import AccessForums from './components/Resident Role/Comunity/Access Forums/AccessForums';
 import Polls from './components/Resident Role/Comunity/Polls/Polls';
 import CommunitiesDiscussion from './components/Resident Role/Comunity/Communities Discussion/CommunitiesDiscussion';
@@ -51,6 +51,8 @@ import RequestSubmission from './components/Resident Role/Service And Complaint/
 import Activity from './components/Resident Role/Events Participation/Activity Participate/Activity';
 import Viewmaintenence from './components/Resident Role/Payment Portal/Maintenance Invoices/Viewmaintenence';
 import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
+import PersonalTenant from './components/Resident Role/Personal Detail/PersonalTenant';
+import UpdateMaintenance from './components/Dashboard/Notification/UpdateMaintenance';
 
 
 
@@ -101,12 +103,15 @@ function App() {
             <Route path="/residentheader" element={<ResidentHeader/>} />
             <Route path="ResidentDashboard" element={<ResidentDashboard/>} />
             <Route path="PersonalDetail" element={<PersonalDetail/>} />
+            <Route path="TenantDetail" element={<PersonalTenant/>} />
             <Route path="AccessForums" element={<AccessForums/>} />
             <Route path="Polls" element={<Polls/>} />
             <Route path="CommunitiesDiscussion" element={<CommunitiesDiscussion/>} />
             <Route path="/complain" element={<ComplainSubmission/>} />
             
             <Route path="/Request" element={<RequestSubmission/>} />
+    
+
             <Route path="MaintenanceInvoices" element={<MaintenanceInvoices/>} />
             <Route path="OtherIncomeInvoice" element={<OtherIncomeInvoice/>} />
             <Route path="SecurityProtocols" element={<SecurityProtocols/>} />

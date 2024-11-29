@@ -85,7 +85,7 @@ const Chart = () => {
   };
 
   return (
-    <div className="h-[240px] sm:h-[240px]  pe-1  sm:w-[730px] md:h-[240px] lg:w-[760px] md:ms-[880px] sm:ml-[310px] lg:ml-[0px] xl:ml-[290px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
+    <div className="h-[240px] sm:h-[240px]  pe-1  sm:w-[730px] md:h-[240px] lg:w-[780px] md:ms-[880px] sm:ml-[310px] lg:ml-[0px] xl:ml-[290px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
       <Card className="me-2">
         <CardHeader>
           <CardTitle>Total Balance</CardTitle>
