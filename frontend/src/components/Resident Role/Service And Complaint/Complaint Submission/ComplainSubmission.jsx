@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // Import Sidebar and HeaderBaner components
@@ -8,6 +8,8 @@ import CreateComplain from "./CreateComplain";
 import DeleteComplain from "./DeleteComplain";
 import "../../../Sidebar/sidebar.css";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
+import moment from "moment";
+import axiosInstance from '../../../Common/axiosInstance';
 
 const ComplainSubmission = () => {
   const [activeButton, setActiveButton] = useState("complain");
@@ -15,6 +17,7 @@ const ComplainSubmission = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
+  const [complaint, setComplaint] = useState([]);
 
   // Static data for complaints
   const Complaint = [
@@ -78,6 +81,14 @@ const ComplainSubmission = () => {
     setSelectedComplaint(null); // Clear the selected complaint
   };
 
+  const handleDelete = (id) => {
+    // Logic to delete the protocol from the data
+    // setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
+    setComplaint(complaint.filter((item) => item._id !== id)); 
+    // Close the delete modal after the protocol is deleted
+    closeDeleteModal();
+  };
+
   // Open CreateComplaint modal
   const handleCreateNoteClick = () => {
     setIsCreateNoteOpen(true); // Open the CreateComplaint modal
@@ -92,6 +103,28 @@ const ComplainSubmission = () => {
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+
+
+  // Fetch fetchComplaint from the API
+  const fetchComplaint = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/complaint/find/getusercomplaint');
+        console.log(response.data);
+        if(response.status === 200){
+          setComplaint(response.data.data); 
+        }
+       
+    } catch (error) {
+        console.error('Error fetching Important Numbers:', error);
+    }
+};
+
+
+    useEffect(() => {
+      fetchComplaint();
+    }, []);
+
 
   return (
     <div className="d-flex w-100 h-100 bg-light">
@@ -184,14 +217,14 @@ const ComplainSubmission = () => {
 
             {/* Responsive Grid for Complaints */}
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Complaint.map((card) => (
+              {complaint.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm">
                     <div
                       className="card-header text-white d-flex justify-content-between align-items-center"
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{card.Facility_name || ""}</span>
+                      <span className="">{card.Complaint_name}</span>
                       <div className="dropdown">
                         <button
                           className="btn btn-light btn-sm"
@@ -221,7 +254,7 @@ const ComplainSubmission = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between mb-2">
                         <p className="text-[#4F4F4F]">Request Date</p>
-                        <span className="text-[#202224]">01/07/2024</span>
+                        <span className="text-[#202224]">{!!card.createdAt ? moment(card.createdAt).format("DD/MM/YYYY") : " "}</span>
                       </div>
 
                       <div className="d-flex justify-content-between mb-2">
@@ -230,7 +263,7 @@ const ComplainSubmission = () => {
                           className="bg-[#5678E91A] p-2 rounded-2xl text-[#5678E9]"
                           style={{ width: "60px" }}
                         >
-                          Open
+                          {card.Status}
                         </span>
                       </div>
 
@@ -251,18 +284,17 @@ const ComplainSubmission = () => {
       <CreateComplain
         isOpen={isCreateNoteOpen}
         onClose={closeCreateNoteModal}
+        fetchComplaint={fetchComplaint}
       />
 
       {/* Delete Complaint Modal */}
       {isDeleteModalOpen && selectedComplaint && (
         <DeleteComplain
           isOpen={isDeleteModalOpen}
-          complain={selectedComplaint}
-          onDelete={() => {
-            // Logic for handling the deletion (you could call an API here to delete the complaint)
-            closeDeleteModal(); // Close the modal after deletion
-          }}
           onCancel={closeDeleteModal}
+          complain={selectedComplaint}
+          onDelete={() => handleDelete(selectedComplaint.id)} // Pass the ID of the protocol to delete
+          fetchComplaint={fetchComplaint}
         />
       )}
     </div>

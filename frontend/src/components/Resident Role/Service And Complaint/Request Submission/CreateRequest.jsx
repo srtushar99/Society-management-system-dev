@@ -3,81 +3,82 @@ import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../Common/axiosInstance";
 import DatePicker from "react-datepicker";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 
-const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
+const CreateRequest = ({ isOpen, onClose, fetchRequestTracking }) => {
   // State for the input fields
-  const [Complainer_name, setComplainer_name] = useState("");
-  const [Complaint_name, setComplaint_name] = useState("");
-  const [Wing, setWing] = useState("");
-  const [Unit, setUnit] = useState("");
+  const [Requester_name, setRequester_name] = useState(""); 
+  const [Request_name, setRequest_name] = useState(""); 
+  const [Description, setDescription] = useState(""); 
+  const [Wing, setWing] = useState(""); 
+  const [Unit, setUnit] = useState(""); 
   const [Priority, setPriority] = useState("High");
   const [Status, setStatus] = useState("Open");
+  const [Request_date, setRequest_date] = useState(null); // Initialize with current date
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [Date, setDate] = useState(null); // Define Date state to store selected date
-
-  const datePickerRef = useRef(null);
 
   const modalRef = useRef(null);
 
-  // Regex for validation
-  const nameRegex = /^[A-Za-z\s]+$/;
-  const unitRegex = /^[0-9]+$/;
-  const wingRegex = /^[A-Za-z\s]+$/;
-
-  // Form validation
-  const isFormValid =
-    Complainer_name &&
-    Complaint_name &&
-    Wing &&
-    Unit &&
-    nameRegex.test(Complainer_name) &&
-    nameRegex.test(Complaint_name) &&
-    wingRegex.test(Wing) &&
-    unitRegex.test(Unit);
-
-  const navigate = useNavigate();
-
   const ClearAllData = () => {
-    setComplainer_name("");
-    setComplaint_name("");
+    setRequester_name("");
+    setRequest_name("");
+    setDescription("");
     setWing("");
     setUnit("");
     setPriority("High");
     setStatus("Open");
-    setDate(null);
+    setRequest_date(null);
   };
+
+  // Regex for validation
+  const nameRegex = /^[A-Za-z\s]+$/; // Validate names with only letters and spaces
+  const unitRegex = /^[0-9]+$/; // Validate unit with only numbers
+  const wingRegex = /^[A-Za-z\s]+$/; // Validate wing with only alphabets
+  const descriptionRegex = /^[A-Za-z\s]+$/; // Validate description with letters and spaces only
+
+  // Form validation
+  const isFormValid =
+    Requester_name &&
+    Request_name &&
+    Wing &&
+    Unit &&
+    Description &&
+    Request_date && // Ensure Request_date is filled
+    nameRegex.test(Requester_name) &&
+    nameRegex.test(Request_name) &&
+    wingRegex.test(Wing) &&
+    descriptionRegex.test(Description) &&
+    unitRegex.test(Unit);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      const ComplaintData = {
-        Complainer_name,
-        Complaint_name,
-        Wing,
-        Unit,
-        Priority,
-        Status,
-        Date,
+      const RequestTrackingData = {
+       Requester_name,
+       Request_name,
+       Request_date,
+       Description,
+       Wing,
+       Unit,
+       Priority,
+       Status
       };
 
       try {
+        // Send data to the backend API using axios
         const response = await axiosInstance.post(
-          "/v2/complaint/addcomplaint",
-          ComplaintData
+          "/v2/requests/addrequest",
+          RequestTrackingData
         );
-        if (response.status === 201) {
+        if (response.status===201) {
           console.log("Successfully saved:", response.data);
-          fetchComplaint();
-          onClose();
+          fetchRequestTracking();
+          onClose(); 
           ClearAllData();
         } else {
           const errorData = await response.json();
-          console.error(
-            "Error saving number:",
-            errorData.message || "Something went wrong."
-          );
+          console.error("Error saving number:", errorData.message || "Something went wrong.");
         }
       } catch (error) {
         console.error("Error creating Complaint:", error);
@@ -87,40 +88,30 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
     }
   };
 
-  const handleDateChange = (Date) => {
-    setDate(Date);
-    setIsCalendarOpen(false);
-  };
-
-  // Handle Calendar icon click
-  const handleCalendarIconClick = () => {
-    setIsCalendarOpen(!isCalendarOpen);
-  };
-
   const handleClose = () => {
-    if (onClose) onClose();
-    navigate("/request");
-    ClearAllData();
+    if (onClose) onClose(); // Close the modal
+    navigate("/requesttracking"); // Redirect to complaints tracking page
   };
 
   const handleClickOutside = (e) => {
+    // Check if the click was outside the modal
     if (modalRef.current && !modalRef.current.contains(e.target)) {
+      // Close the modal if clicked outside
       handleClose();
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
-        if (
-          datePickerRef.current &&
-          !datePickerRef.current.contains(e.target)
-        ) {
-          setIsCalendarOpen(false);
-        }
-      }
-    };
+  const handleDateChange = (date) => {
+    setRequest_date(date); // Update Request_date when the user selects a date
+    setIsCalendarOpen(false); // Close the calendar after date selection
+  };
 
+  const handleCalendarIconClick = () => {
+    setIsCalendarOpen(!isCalendarOpen); // Toggle the visibility of the calendar
+  };
+
+  // Add event listener for clicks outside the modal
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -132,23 +123,18 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
   return (
     <div
       ref={modalRef}
-      className="fixed inset-0 2xl:flex 2xl:justify-center  items-center bg-black bg-opacity-50 2x:z-50 p-4"
+      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4"
     >
-      <div className="bg-white  2xl:mx-auto mt-20 p-6 rounded-lg shadow-lg">
+      <div className="bg-white max-w-lg sm:max-w-md mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-2xl font-bold text-[#202224]">
-            Create Request
-          </span>
-          <button
-            className="text-gray-600 hover:text-gray-800"
-            onClick={handleClose}
-          >
+          <span className="text-2xl font-bold text-[#202224]">Create Request</span>
+          <button className="text-gray-600 hover:text-gray-800" onClick={handleClose}>
             <X className="h-6 w-6" />
           </button>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Complainer Name */}
+      
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
               Requester Name<span className="text-red-500">*</span>
@@ -156,14 +142,14 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
             <input
               type="text"
               placeholder="Enter Requester Name"
-              value={Complainer_name}
+              value={Requester_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setComplainer_name(value);
+                  setRequester_name(value);
                 }
               }}
-              className="2xl:w-[400px] w-full sm:w-[200px]  px-3 py-2 border border-gray-300 rounded-lg text-[#202224] text-sm sm:text-base"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
@@ -174,41 +160,60 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
             <input
               type="text"
               placeholder="Enter Request Name"
-              value={Complaint_name}
+              value={Request_name}
               onChange={(e) => {
                 const value = e.target.value;
                 if (nameRegex.test(value) || value === "") {
-                  setComplaint_name(value);
+                  setRequest_name(value);
                 }
               }}
-              className="2xl:w-[400px] w-full sm:w-[200px]   px-3 py-2 border border-gray-300 rounded-lg text-[#202224] text-sm sm:text-base"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
             />
           </div>
 
-          <div className="">
+          {/* Description */}
+          <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
-              Request Date<span className="text-red-500">*</span>
+              Description<span className="text-red-500">*</span>
             </label>
-            <div className="flex items-center relative" ref={datePickerRef}>
+            <textarea
+              placeholder="Enter Description"
+              value={Description}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (descriptionRegex.test(value) || value === "") {
+                  setDescription(value);
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] resize-none"
+            />
+          </div>
+
+          {/* Request Date */}
+          <div className="">
+            <label className="block text-left font-medium text-gray-700 mb-1">
+              Request Date
+            </label>
+            <div className="flex items-center relative">
               <DatePicker
-                selected={Date}
+                selected={Request_date} // Pass the correct state to DatePicker
                 onChange={handleDateChange}
-                className="w-full sm:w-[200px] md:w-[250px] lg:w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
+                className="w-[400px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                 placeholderText="Select a date"
-                dateFormat="MM/dd/yyyy"
+                dateFormat="dd/MM/yyyy"
                 autoComplete="off"
                 open={isCalendarOpen}
               />
               <i
-                className="fa-solid fa-calendar-days absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#202224] cursor-pointer"
+                className="fa-solid fa-calendar-days absolute right-3 text-[#202224] cursor-pointer"
                 onClick={handleCalendarIconClick}
               />
             </div>
           </div>
 
-          {/* Wing and Unit */}
-          <div className="flex gap-4">
-            <div className="flex-1">
+          {/* Wing */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
               <label className="block text-left font-medium text-gray-700 mb-1">
                 Wing<span className="text-red-500">*</span>
               </label>
@@ -221,10 +226,10 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
                     setWing(value);
                   }
                 }}
-                className="w-full sm:w-[200px] 2xl:w-[190px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] text-sm sm:text-base"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
             </div>
-            <div className="flex-1">
+            <div>
               <label className="block text-left font-medium text-gray-700 mb-1">
                 Unit<span className="text-red-500">*</span>
               </label>
@@ -237,7 +242,7 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
                     setUnit(value);
                   }
                 }}
-                className="w-full sm:w-[200px] 2xl:w-[190px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] text-sm sm:text-base"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
               />
             </div>
           </div>
@@ -247,74 +252,44 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
             <label className="block text-left font-medium text-gray-700 mb-1">
               Priority<span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-1 w-full">
+            <div className="flex gap-6 w-full">
               {/* High Priority */}
-              <label className="flex items-center 2xl:w-[113px] sm:w-[40px] 2xl:h-[41px] px-[15px] py-[10px] gap-[5px] border border-[#FE512E] rounded-[10px]">
+              <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FE512E] rounded-[10px]">
                 <input
                   type="radio"
                   name="Priority"
                   value="High"
                   checked={Priority === "High"}
                   onChange={() => setPriority("High")}
-                  className={`2xl:w-4  h-4 border-2 ${
-                    Priority === "High"
-                      ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                      : "border-[#D3D3D3]"
-                  }`}
+                  className={`w-4 h-4 border-2 ${Priority === "High" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span
-                  className={`2xl:ml-2 text-sm ${
-                    Priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"
-                  }`}
-                >
-                  High
-                </span>
+                <span className={`ml-2 text-sm ${Priority === "High" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>High</span>
               </label>
 
               {/* Medium Priority */}
-              <label className="flex items-center 2xl:w-[113px] h-[41px] px-[15px] py-[10px] gap-[5px] border border-[#FFEB3B] rounded-[10px]">
+              <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#FFEB3B] rounded-[10px]">
                 <input
                   type="radio"
                   name="Priority"
                   value="Medium"
                   checked={Priority === "Medium"}
                   onChange={() => setPriority("Medium")}
-                  className={`2xl:w-4 h-4 border-2 ${
-                    Priority === "Medium"
-                      ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                      : "border-[#D3D3D3]"
-                  }`}
+                  className={`w-4 h-4 border-2 ${Priority === "Medium" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span
-                  className={`2xl:ml-2 text-sm ${
-                    Priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"
-                  }`}
-                >
-                  Medium
-                </span>
+                <span className={`ml-2 text-sm ${Priority === "Medium" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Medium</span>
               </label>
 
               {/* Low Priority */}
-              <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[5px] border border-[#4CAF50] rounded-[10px]">
+              <label className="flex items-center w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border border-[#4CAF50] rounded-[10px]">
                 <input
                   type="radio"
                   name="Priority"
                   value="Low"
                   checked={Priority === "Low"}
                   onChange={() => setPriority("Low")}
-                  className={`2xl:w-4 h-4 border-2 ${
-                    Priority === "Low"
-                      ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                      : "border-[#D3D3D3]"
-                  }`}
+                  className={`w-4 h-4 border-2 ${Priority === "Low" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#D3D3D3]"}`}
                 />
-                <span
-                  className={`2xl:ml-2 text-sm ${
-                    Priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"
-                  }`}
-                >
-                  Low
-                </span>
+                <span className={`ml-2 text-sm ${Priority === "Low" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Low</span>
               </label>
             </div>
           </div>
@@ -324,100 +299,70 @@ const CreateRequest = ({ isOpen, onClose, fetchComplaint }) => {
             <label className="block text-left font-medium text-gray-700 mb-1">
               Status<span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-1 w-full">
+            <div className="flex gap-6 w-full">
               {/* Open Status */}
-              <label className="flex items-center border rounded 2xl:-[113px] 2xl:h-[41px]  px-[15px] py-[10px] gap-[5px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
+              <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
                   name="Status"
                   value="Open"
                   checked={Status === "Open"}
                   onChange={() => setStatus("Open")}
-                  className={`2xl:w-4 2xl:h-4 border-2 ${
-                    Status === "Open"
-                      ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                      : "border-[#4CAF50]"
-                  }`}
+                  className={`w-4 h-4 border-2 ${Status === "Open" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#4CAF50]"}`}
                 />
-                <span
-                  className={`2xl:ml-2 text-sm ${
-                    Status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"
-                  }`}
-                >
-                  Open
-                </span>
+                <span className={`ml-2 text-sm ${Status === "Open" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Open</span>
               </label>
 
               {/* Pending Status */}
-              <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[5px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
+              <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
                   name="Status"
                   value="Pending"
                   checked={Status === "Pending"}
                   onChange={() => setStatus("Pending")}
-                  className={`2xl:w-4 h-4 border-2 ${
-                    Status === "Pending"
-                      ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                      : "border-[#FFEB3B]"
-                  }`}
+                  className={`w-4 h-4 border-2 ${Status === "Pending" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#FFEB3B]"}`}
                 />
-                <span
-                  className={`2xl:ml-2 text-sm ${
-                    Status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"
-                  }`}
-                >
-                  Pending
-                </span>
+                <span className={`ml-2 text-sm ${Status === "Pending" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Pending</span>
               </label>
 
               {/* Solve Status */}
-              <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] 2xl:gap-[5px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
+              <label className="flex items-center border rounded w-[113px] h-[41px] px-[15px] py-[10px] gap-[10px] border-t border-l border-r border-transparent rounded-tl-[10px] opacity-100">
                 <input
                   type="radio"
                   name="Status"
                   value="Solve"
                   checked={Status === "Solve"}
                   onChange={() => setStatus("Solve")}
-                  className={`2xl:w-4 h-4 border-2 ${
-                    Status === "Solve"
-                      ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                      : "border-[#F44336]"
-                  }`}
+                  className={`w-4 h-4 border-2 ${Status === "Solve" ? "border-transparent bg-gradient-to-r from-[#FE512E] to-[#F09619]" : "border-[#F44336]"}`}
                 />
-                <span
-                  className={`2xl:ml-2 text-sm ${
-                    Status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"
-                  }`}
-                >
-                  Solve
-                </span>
+                <span className={`ml-2 text-sm ${Status === "Solve" ? "text-[#202224]" : "text-[#D3D3D3]"}`}>Solve</span>
               </label>
             </div>
           </div>
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-2">
-  <button
-    type="button"
-    className="w-full sm:w-[200px] 2xl:w-[190px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] text-sm sm:text-base"
-    onClick={handleClose}
-  >
-    Cancel
-  </button>
+            <button
+              type="button"
+              className="w-full sm:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
 
-  <button
-    type="submit"
-    className={`w-full sm:w-[200px] 2xl:w-[190px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] text-sm sm:text-base ${
-      isFormValid
-        ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-        : "bg-[#F6F8FB] text-[#202224]"
-    }`}
-    disabled={!isFormValid}
-  >
-    Create
-  </button>
-</div>
+            <button
+              type="submit"
+              className={`w-full sm:w-[48%] px-4 py-2 rounded-lg ${
+                isFormValid
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+                  : "bg-[#F6F8FB] text-[#202224]"
+              }`}
+              disabled={!isFormValid}
+            >
+              {isFormValid ? "Save" : "Create"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -58,7 +58,6 @@ const CreateComplain = ({ isOpen, onClose, fetchComplaint }) => {
        Priority,
        Status
       };
-
       try {
         const response = await axiosInstance.post(
           "/v2/complaint/addcomplaint",

@@ -209,7 +209,7 @@ const RequestTracking = () => {
         const response = await axiosInstance.get('/v2/requests/');
         console.log(response.data);
         if(response.status === 200){
-          setRequestTracking(response.data.requests); 
+          setRequestTracking(response.data.data); 
         }
        
     } catch (error) {

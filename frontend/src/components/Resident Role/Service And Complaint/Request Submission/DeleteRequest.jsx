@@ -1,20 +1,19 @@
 import React from 'react';
 import axiosInstance from '../../../Common/axiosInstance';
 
-const DeleteRequest = ({ isOpen, complain, onDelete, onCancel }) => {
+const DeleteRequest = ({ isOpen, complain, onDelete, onCancel, fetchRequestTracking }) => {
   if (!isOpen || !complain ) return null;
 
   const handleDelete = async () => {
-    try {
-      const response = await axiosInstance.delete(`/v2/complaint/deletecomplaint/${complain._id}`);
+    if (complain && onDelete) {
+      const response = await axiosInstance.delete(`/v2/requests/deleterequest/${complain._id}`);
       if (response.status === 200) {
-        onDelete(complain); // Trigger onDelete after successful deletion
-        onCancel(); // Close modal after deleting
-        fetchComplaint(); // Re-fetch the updated complaints list
+        onDelete(complain); 
+        onCancel();
+        fetchRequestTracking();
       }
-    } catch (error) {
-      console.error("Error deleting complaint:", error);
     }
+    onCancel(); // Close the modal after deletion
   };
 
   const handleCancel = () => {

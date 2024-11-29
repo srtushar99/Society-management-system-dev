@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import HeaderBaner from "../../../Dashboard/Header/HeaderBaner";
@@ -6,6 +6,8 @@ import "../../../Sidebar/sidebar.css";
 import DeleteRequest from "./DeleteRequest";
 import CreateRequest from "./CreateRequest";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
+import moment from "moment";
+import axiosInstance from '../../../Common/axiosInstance';
 
 const RequestSubmission = () => {
   const [activeButton, setActiveButton] = useState("request");
@@ -13,6 +15,8 @@ const RequestSubmission = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false); // Add state for search visibility
+  const [RequestTracking, setRequestTracking] = useState([]);
+
 
   // Static data for complaints
   const Request = [
@@ -76,6 +80,13 @@ const RequestSubmission = () => {
     setSelectedComplaint(null); // Clear the selected complaint
   };
 
+  const handleDelete = (id) => {
+    // Logic to delete the protocol from the data
+    setRequestTracking(RequestTracking.filter((item) => item._id !== id)); // Update the state to remove the deleted protocol
+    // Close the delete modal after the protocol is deleted
+    closeDeleteModal();
+  };
+
   // Open CreateComplaint modal
   const handleCreateNoteClick = () => {
     setIsCreateNoteOpen(true); // Open the CreateComplaint modal
@@ -90,6 +101,27 @@ const RequestSubmission = () => {
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+
+   // Fetch fetch Request Tracking from the API
+   const fetchRequestTracking = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/requests//find/getuserrequest');
+        console.log(response.data);
+        if(response.status === 200){
+          setRequestTracking(response.data.data); 
+        }
+       
+    } catch (error) {
+        console.error('Error fetching RequestTracking:', error);
+    }
+};
+
+
+    useEffect(() => {
+      fetchRequestTracking();
+    }, []);
+
 
   return (
     <div className="d-flex w-100 h-100 bg-light">
@@ -178,7 +210,7 @@ const RequestSubmission = () => {
             </div>
 
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3 ">
-              {Request.map((card) => (
+              {RequestTracking.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm">
                     <div
@@ -186,7 +218,7 @@ const RequestSubmission = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <span className=" text-sm sm:text-base">
-                        {card.Facility_name || ""}
+                        {card.Request_name || ""}
                       </span>
                       <div className="dropdown">
                         <button
@@ -220,7 +252,7 @@ const RequestSubmission = () => {
                           Request Date
                         </p>
                         <span className="text-[#202224] text-sm sm:text-base">
-                          {card.Date || "No date available"}
+                          {moment(card.Request_date).format("DD/MM/YYYY")}
                         </span>
                       </div>
                       <div className="d-flex justify-content-between mb-2">
@@ -229,7 +261,7 @@ const RequestSubmission = () => {
                           className="bg-[#5678E91A] p-2 rounded-2xl text-[#5678E9]"
                           style={{ width: "60px" }}
                         >
-                          Open
+                          {card.Status}
                         </span>
                       </div>
 
@@ -247,18 +279,16 @@ const RequestSubmission = () => {
       </div>
 
       {/* Create Complaint Modal */}
-      <CreateRequest isOpen={isCreateNoteOpen} onClose={closeCreateNoteModal} />
+      <CreateRequest isOpen={isCreateNoteOpen} onClose={closeCreateNoteModal} fetchRequestTracking={fetchRequestTracking} />
 
       {/* Delete Complaint Modal */}
       {isDeleteModalOpen && selectedComplaint && (
         <DeleteRequest
           isOpen={isDeleteModalOpen}
-          complain={selectedComplaint}
-          onDelete={() => {
-            // Logic for handling the deletion (you could call an API here to delete the complaint)
-            closeDeleteModal(); // Close the modal after deletion
-          }}
           onCancel={closeDeleteModal}
+          complain={selectedComplaint}
+          onDelete={() => handleDelete(selectedComplaint.id)}
+          fetchRequestTracking={fetchRequestTracking}
         />
       )}
     </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import axiosInstance from '../../../Common/axiosInstance';
 
-const DeleteComplain = ({ isOpen, complain, onDelete, onCancel }) => {
+const DeleteComplain = ({ isOpen, onCancel, complain, onDelete, fetchComplaint }) => {
   if (!isOpen || !complain ) return null;
 
   const handleDelete = async () => {
