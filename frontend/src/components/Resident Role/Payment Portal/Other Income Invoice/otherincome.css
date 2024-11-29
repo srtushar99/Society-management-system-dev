@@ -1,0 +1,80 @@
+.bt{
+  background-color: rgba(254, 81, 46, 1)rgba(240, 150, 25, 1);
+}
+  .payment-method-modal .modal-content {
+    border-radius: 1rem;
+    border: none;
+  }
+  
+  .payment-option {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .payment-option:hover {
+    background-color: rgba(13, 110, 253, 0.04);
+  }
+  
+  .payment-icon {
+    color: #6c757d;
+  }
+  
+  .form-check-input:checked {
+    background-color: rgba(254, 81, 46, 1);
+    border: rgba(254, 81, 46, 1);
+  }
+  
+  .btn {
+    font-weight: 500;
+    border-radius: 0.5rem;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(to right, #f97316, #ef4444);
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(to right, #ea580c, #dc2626);
+  }
+  
+  .btn-light {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+  }
+  
+  .btn-light:hover {
+    background: #e9ecef;
+  }
+  
+  /* Additional styles for the main component */
+  .bg-gradient-to-r {
+    background: linear-gradient(to right, #f97316, #ef4444);
+  }
+  
+  .from-orange-500 {
+    --tw-gradient-from: #f97316;
+  }
+  
+  .to-red-500 {
+    --tw-gradient-to: #ef4444;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+  
+  .shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .hover\:shadow-lg:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .transition-shadow {
+    transition-property: box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  
