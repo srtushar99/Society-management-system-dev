@@ -9,168 +9,176 @@ const Tenante = require('../models/tenantModel');
 // add owner data
 
 exports.addOwnerData = async (req, res) => {
-    try {
+  try {
+      // Generate a secure password
+      function generatePassword(length = 9) {
+          const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+          const numbers = '0123456789';
+          const specialChar = '@';
 
-        function generatePassword(length = 9) {
+          if (length < 3) {
+              throw new Error('Password length must be at least 3 for this format');
+          }
 
-            const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-            const numbers = '0123456789';
-            const specialChar = '@';
+          const randomAlphabet = alphabets[crypto.randomInt(0, alphabets.length)];
+          const randomNumber = numbers[crypto.randomInt(0, numbers.length)];
 
-            if (length < 3) {
-                throw new Error('Password length must be at least 3 for this format');
-            }
-        
-            const randomAlphabet = alphabets[crypto.randomInt(0, alphabets.length)];
+          let remainingChars = '';
+          const remainingLength = length - 2;
+          const allCharacters = alphabets + numbers;
 
-            const randomNumber = numbers[crypto.randomInt(0, numbers.length)];
-        
-            let remainingChars = '';
-            const remainingLength = length - 2; 
-            const allCharacters = alphabets + numbers;
-        
-            for (let i = 0; i < remainingLength; i++) {
-                const randomIndex = crypto.randomInt(0, allCharacters.length);
-                remainingChars += allCharacters[randomIndex];
-            }
-        
-            return randomAlphabet + specialChar + randomNumber + remainingChars;
-        }
-             
-        const {
-            Full_name,
-            Phone_number,
-            Email_address,
-            Age,
-            Gender,
-            Wing,
-            Unit,
-            Relation,
-            Member_Counting,
-            Vehicle_Counting,
-            role,
-            Resident_status,
-            UnitStatus
-        } = req.body;
-               const Password=  generatePassword();
-               console.log(Password);
+          for (let i = 0; i < remainingLength; i++) {
+              const randomIndex = crypto.randomInt(0, allCharacters.length);
+              remainingChars += allCharacters[randomIndex];
+          }
 
-               const hashpassword= await hash(Password)
-               
-        
-               const uploadAndDeleteLocal = async (fileArray) => {
-                if (fileArray && fileArray[0]) {
-                    const filePath = fileArray[0].path;
-                    try {
-                        // Upload to Cloudinary
-                        const result = await cloudinary.uploader.upload(filePath);
-                        // Delete from local server
-                        fs.unlink(filePath, (err) => {
-                            if (err) console.error("Error deleting file from server:", err);
-                            else console.log("File deleted from server:", filePath);
-                        });
-                        return result.secure_url;
-                    } catch (error) {
-                        console.error("Error uploading to Cloudinary:", error);
-                        throw error;
-                    }
-                }
-                return '';
-            };
-    
-            // Upload images to Cloudinary and delete local files
-            const profileImage = await uploadAndDeleteLocal(req.files?.profileImage);
-            const Adhar_front = await uploadAndDeleteLocal(req.files?.Adhar_front);
-            const Adhar_back = await uploadAndDeleteLocal(req.files?.Adhar_back);
-            const Address_proof = await uploadAndDeleteLocal(req.files?.Address_proof);
-            const Rent_Agreement = await uploadAndDeleteLocal(req.files?.Rent_Agreement);
+          return randomAlphabet + specialChar + randomNumber + remainingChars;
+      }
 
-            if (
-                !Full_name ||
-                !Phone_number ||
-                !Email_address ||
-                !Age ||
-                !Gender ||
-                !Wing ||
-                !Unit ||
-                !Relation ||
-                !Member_Counting ||
-                !Vehicle_Counting ||
-                !profileImage ||
-                !Adhar_front ||
-                !Adhar_back ||
-                !Address_proof ||
-                !Rent_Agreement 
-              ) {
-                return res.status(400).json({
-                  success: false,
-                  message: "All fields are required",
-                });
+      const {
+          Full_name,
+          Phone_number,
+          Email_address,
+          Age,
+          Gender,
+          Wing,
+          Unit,
+          Relation,
+          Member_Counting,
+          Vehicle_Counting,
+          role,
+          Resident_status,
+          UnitStatus,
+      } = req.body;
+
+      const Password = generatePassword();
+      const hashpassword = await hash(Password);
+
+      // Upload and delete local file logic
+      const uploadAndDeleteLocal = async (fileArray) => {
+          if (fileArray && fileArray[0]) {
+              const filePath = fileArray[0].path;
+              try {
+                  // Upload to Cloudinary
+                  const result = await cloudinary.uploader.upload(filePath);
+                  // Delete from local server
+                  fs.unlink(filePath, (err) => {
+                      if (err) console.error("Error deleting file from server:", err);
+                      else console.log("File deleted from server:", filePath);
+                  });
+                  return result.secure_url;
+              } catch (error) {
+                  console.error("Error uploading to Cloudinary:", error);
+                  throw error;
               }
-              const existingWing = await Owner.findOne({ Wing, Unit });
-        if (existingWing) {
-            return res.status(400).json({
-                success: false,
-                message: "An  Wing and Unit already exists.",
-            });
-        }
-    
-        // Create a new owner document
-        const newOwner = new Owner({
-            profileImage,
-            Full_name,
-            Phone_number,  
-            Email_address,
-            Age,
-            Gender,
-            Wing,
-            Unit,
-            Relation,
-            Adhar_front,
-            Adhar_back,
-            Address_proof,
-            Rent_Agreement,
-            role:role || "resident",
-            Resident_status:Resident_status || "Owner",
-            UnitStatus:UnitStatus || "Occupied",
-            Password: hashpassword
-            
-        });  
+          }
+          return '';
+      };
 
-        await newOwner.save();
+      // Upload images to Cloudinary
+      const profileImage = await uploadAndDeleteLocal(req.files?.profileImage);
+      const Adhar_front = await uploadAndDeleteLocal(req.files?.Adhar_front);
+      const Adhar_back = await uploadAndDeleteLocal(req.files?.Adhar_back);
+      const Address_proof = await uploadAndDeleteLocal(req.files?.Address_proof);
+      const Rent_Agreement = await uploadAndDeleteLocal(req.files?.Rent_Agreement);
 
-        await senData(
-            newOwner.Email_address,
-            "Registration Successful - Login Details",
-            `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a resident. Your login details are as follows:\n\nUsername: ${newOwner.Email_address}\nPassword: <b> ${Password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
-        );
-   
-        if (Member_Counting) {
-            await Owner.updateOne(
-                { _id: newOwner._id },
-                { $push: { Member_Counting: { $each: Member_Counting } } }
-            );
-        }
+      // Validate required fields
+      if (
+          !Full_name ||
+          !Phone_number ||
+          !Email_address ||
+          !Age ||
+          !Gender ||
+          !Wing ||
+          !Unit ||
+          !Relation ||
+          !profileImage ||
+          !Adhar_front ||
+          !Adhar_back ||
+          !Address_proof ||
+          !Rent_Agreement
+      ) {
+          return res.status(400).json({
+              success: false,
+              message: "All fields are required",
+          });
+      }
 
-        if (Vehicle_Counting) {
-            await Owner.updateOne(
-                { _id: newOwner._id },
-                { $push: { Vehicle_Counting: { $each: Vehicle_Counting } } }
-            );
-        }
+      // Check if Wing and Unit already exist
+      const existingWing = await Owner.findOne({ Wing, Unit });
+      if (existingWing) {
+          return res.status(400).json({
+              success: false,
+              message: "A resident with this Wing and Unit already exists.",
+          });
+      }
 
-       return res.status(201).json({
-            success: true,
-            message: "Owner data added successfully",
-            
-        });
-    } catch (error) {
-        console.error("Error adding owner data:", error);
-       return res.status(500).json({
-            success: false,
-            message: "Failed to add owner data"
-        });
-    }
+      // Parse Member_Counting and Vehicle_Counting
+      let parsedMembers = [];
+      let parsedVehicles = [];
+
+      try {
+          parsedMembers = Member_Counting ? JSON.parse(Member_Counting) : [];
+          parsedVehicles = Vehicle_Counting ? JSON.parse(Vehicle_Counting) : [];
+      } catch (error) {
+          return res.status(400).json({
+              success: false,
+              message: "Invalid JSON format for Member_Counting or Vehicle_Counting.",
+          });
+      }
+
+      // Validate parsed data
+      if (!Array.isArray(parsedMembers) || !Array.isArray(parsedVehicles)) {
+          return res.status(400).json({
+              success: false,
+              message: "Member_Counting and Vehicle_Counting must be arrays.",
+          });
+      }
+
+      // Create a new owner document
+      const newOwner = new Owner({
+          profileImage,
+          Full_name,
+          Phone_number,
+          Email_address,
+          Age,
+          Gender,
+          Wing,
+          Unit,
+          Relation,
+          Adhar_front,
+          Adhar_back,
+          Address_proof,
+          Rent_Agreement,
+          role: role || "resident",
+          Resident_status: Resident_status || "Owner",
+          UnitStatus: UnitStatus || "Occupied",
+          Password: hashpassword,
+          Member_Counting: parsedMembers,
+          Vehicle_Counting: parsedVehicles,
+      });
+
+      await newOwner.save();
+
+      // Send email with credentials
+      await senData(
+          newOwner.Email_address,
+          "Registration Successful - Login Details",
+          `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a resident. Your login details are as follows:\n\nUsername: ${newOwner.Email_address}\nPassword: <b>${Password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
+      );
+
+      // Success response
+      return res.status(201).json({
+          success: true,
+          message: "Owner data added successfully",
+      });
+  } catch (error) {
+      console.error("Error adding owner data:", error);
+      return res.status(500).json({
+          success: false,
+          message: "Failed to add owner data",
+      });
+  }
 };
 
 // get all owner
@@ -234,11 +242,13 @@ exports.GetByIdResident = async (req, res) => {
         Resident_Status: resident.Resident_status,
         profileImage: resident.profileImage,
         Full_name: resident.Full_name,
+        Phone_number: resident.Phone_number,
         Email_address: resident.Email_address,
-        Unit: resident.Unit,
-        Wing: resident.Wing,
         Age: resident.Age,
         Gender: resident.Gender,
+        Unit: resident.Unit,
+        Wing: resident.Wing,
+        Relation: resident.Relation,
         Adhar_front: resident.Adhar_front,
         Address_proof: resident.Address_proof,
         Owner_Full_name: resident.Owner_Full_name,
@@ -276,7 +286,7 @@ exports.GetByIdResident = async (req, res) => {
     }
   };
 
-  // delete by id residenet
+// delete by id residenet
 
 exports.DeleteByIdResident = async (req, res) => {
     try {
@@ -357,7 +367,9 @@ exports.GetAllResidents = async (req, res) => {
       });
     }
   };
-  
+
+// update owner data
+
 exports.updateOwnerData = async (req, res) => {
     try {
       const {
@@ -378,10 +390,6 @@ exports.updateOwnerData = async (req, res) => {
   
       const { id } = req.params; 
       
-  
-      
-      
-  
       // Function to upload files to Cloudinary and delete from local
       const uploadAndDeleteLocal = async (fileArray) => {
         if (fileArray && fileArray[0]) {
@@ -481,3 +489,4 @@ exports.updateOwnerData = async (req, res) => {
     }
   };
   
+
