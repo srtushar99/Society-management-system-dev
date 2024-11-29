@@ -222,50 +222,6 @@ exports.GetAllOwner = async (req, res) => {
         });
     }
 };
-// //get by  id owner resident
-// exports.GetByIdOwnerResident = async (req, res) => {
-//     try {
-//         // Fetch the owner by ID
-//         const owner = await Owner.findById(req.params.id);
-        
-//         // Check if the owner was found
-//         if (!owner) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "No data found, ID is incorrect"
-//             });
-//         }
-        
-//         // Structure the data to return
-//         const ownerData = {
-//             profileImage: owner.profileImage,
-//             Full_name: owner.Full_name,
-//             Email_address: owner.Email_address,
-//             Unit: owner.Unit,
-//             Wing: owner.Wing,
-//             Age: owner.Age,
-//             Gender: owner.Gender,
-//             Adhar_front: owner.Adhar_front,
-//             Address_proof: owner.Address_proof,
-//             Phone_number: owner.Phone_number,
-//             Member_Counting_Total: owner.Member_Counting,
-//             Vehicle_Counting_Total: owner.Vehicle_Counting
-//         };
-
-//         // Return the response with the owner's data
-//         return res.status(200).json({
-//             success: true,
-//             Owner: ownerData
-//         });
-//     } catch (error) {
-//         console.error("Error fetching owner data:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Error fetching owner data"
-//         });
-//     }
-// };
-//find by id Tenate
 
 exports.GetByIdResident = async (req, res) => {
     try {
