@@ -225,61 +225,64 @@ exports.GetAllOwner = async (req, res) => {
 
 exports.GetByIdResident = async (req, res) => {
     try {
-        
-        let resident = await Tenante.findById(req.params.id);
-
-        
-        if (!resident) {
-            resident = await Owner.findById(req.params.id);
-        }
-
-       
-        if (!resident) {
-            return res.status(400).json({
-                success: false,
-                message: "No data found, ID is incorrect"
-            });
-        }
-
-        
-        const residentData = {
-            profileImage: resident.profileImage,
-            Full_name: resident.Full_name,
-            Email_address: resident.Email_address,
-            Unit: resident.Unit,
-            Wing: resident.Wing,
-            Age: resident.Age,
-            Gender: resident.Gender,
-            Adhar_front: resident.Adhar_front,
-            Address_proof: resident.Address_proof,
-            Owner_Full_name: resident.Owner_Full_name,
-            Owner_Phone: resident.Owner_Phone,
-            Owner_Address: resident.Owner_Address,
-            Member_Counting_Total: resident.Member_Counting ? resident.Member_Counting.length : 0,
-            Member_Counting: resident.Member_Counting || [],
-            Vehicle_Counting_Total: resident.Vehicle_Counting ? resident.Vehicle_Counting.length : 0,
-            Vehicle_Counting: resident.Vehicle_Counting || [],
-            
-            ...(resident.Owner_Full_name ? {
-                Owner_Full_name: resident.Owner_Full_name,
-                Owner_Phone: resident.Owner_Phone,
-                Owner_Address: resident.Owner_Address,
-            } : {})
-        };
-
-        // Return the response with the resident's data
-        return res.status(200).json({
-            success: true,
-            Resident: residentData
+      let resident = await Tenante.findById(req.params.id);
+  
+      if (!resident) {
+        resident = await Owner.findById(req.params.id);
+      }
+  
+      if (!resident) {
+        return res.status(400).json({
+          success: false,
+          message: "No data found, ID is incorrect",
         });
+      }
+  
+      const residentData = {
+        Resident_Status: resident.Resident_status,
+        profileImage: resident.profileImage,
+        Full_name: resident.Full_name,
+        Email_address: resident.Email_address,
+        Unit: resident.Unit,
+        Wing: resident.Wing,
+        Age: resident.Age,
+        Gender: resident.Gender,
+        Adhar_front: resident.Adhar_front,
+        Address_proof: resident.Address_proof,
+        Owner_Full_name: resident.Owner_Full_name,
+        Owner_Phone: resident.Owner_Phone,
+        Owner_Address: resident.Owner_Address,
+        Member_Counting_Total: resident.Member_Counting
+          ? resident.Member_Counting.length
+          : 0,
+        Member_Counting: resident.Member_Counting || [],
+        Vehicle_Counting_Total: resident.Vehicle_Counting
+          ? resident.Vehicle_Counting.length
+          : 0,
+        Vehicle_Counting: resident.Vehicle_Counting || [],
+  
+        ...(resident.Owner_Full_name
+          ? {
+              Owner_Full_name: resident.Owner_Full_name,
+              Owner_Phone: resident.Owner_Phone,
+              Owner_Address: resident.Owner_Address,
+            }
+          : {}),
+      };
+  
+      // Return the response with the resident's data
+      return res.status(200).json({
+        success: true,
+        Resident: residentData,
+      });
     } catch (error) {
-        console.error("Error fetching resident data:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching resident data"
-        });
+      console.error("Error fetching resident data:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching resident data",
+      });
     }
-};
+  };
 exports.DeleteByIdResident = async (req, res) => {
     try {
         

@@ -139,8 +139,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    console.log("Comparing password:", password);
-    console.log("Stored password:", account.Password);
 
     const isPasswordValid = await compare(password, account.Password); 
 
