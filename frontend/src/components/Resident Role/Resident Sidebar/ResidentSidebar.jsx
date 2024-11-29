@@ -37,8 +37,9 @@ const ResidentSidebar = () => {
     }
 
     else if (path === 'Request') {
-      setActiveLink('complain');
+      setActiveLink('ServiceAndComplaint');
     }
+   
     else if (path === 'MaintenanceTable') {
       setActiveLink('PaymentPortal');
     }
