@@ -6,28 +6,27 @@ const senData = require('../config/nodemailer');
 const { hash } = require('../utils/hashpassword');
 const Tenante = require('../models/tenantModel');
 
+// add owner data
+
 exports.addOwnerData = async (req, res) => {
     try {
 
         function generatePassword(length = 9) {
-            // Define sets of characters
+
             const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
             const numbers = '0123456789';
-            const specialChar = '@'; // Fixed special character
-        
-            // Ensure length is at least 3 (for alphabet@number format)
+            const specialChar = '@';
+
             if (length < 3) {
                 throw new Error('Password length must be at least 3 for this format');
             }
         
-            // Generate random alphabet
             const randomAlphabet = alphabets[crypto.randomInt(0, alphabets.length)];
-            // Generate random number
+
             const randomNumber = numbers[crypto.randomInt(0, numbers.length)];
         
-            // Remaining characters (if length > 3)
             let remainingChars = '';
-            const remainingLength = length - 2; // Subtract the fixed alphabet and number
+            const remainingLength = length - 2; 
             const allCharacters = alphabets + numbers;
         
             for (let i = 0; i < remainingLength; i++) {
@@ -131,7 +130,6 @@ exports.addOwnerData = async (req, res) => {
             Adhar_back,
             Address_proof,
             Rent_Agreement,
-            // cloudinary_id: result.public_id,
             role:role || "resident",
             Resident_status:Resident_status || "Owner",
             UnitStatus:UnitStatus || "Occupied",
@@ -139,9 +137,7 @@ exports.addOwnerData = async (req, res) => {
             
         });  
 
-      
         await newOwner.save();
-        
 
         await senData(
             newOwner.Email_address,
@@ -149,29 +145,20 @@ exports.addOwnerData = async (req, res) => {
             `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a resident. Your login details are as follows:\n\nUsername: ${newOwner.Email_address}\nPassword: <b> ${Password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
         );
    
-       
-
-       
-       
-        // Handle Member Counting
         if (Member_Counting) {
-            const members = JSON.parse(Member_Counting);
             await Owner.updateOne(
                 { _id: newOwner._id },
-                { $push: { Member_Counting: { $each: members } } }
+                { $push: { Member_Counting: { $each: Member_Counting } } }
             );
         }
 
-        // Handle Vehicle Counting
         if (Vehicle_Counting) {
-            const vehicles = JSON.parse(Vehicle_Counting);
             await Owner.updateOne(
                 { _id: newOwner._id },
-                { $push: { Vehicle_Counting: { $each: vehicles } } }
+                { $push: { Vehicle_Counting: { $each: Vehicle_Counting } } }
             );
         }
 
-        // Send success response
        return res.status(201).json({
             success: true,
             message: "Owner data added successfully",
@@ -185,9 +172,12 @@ exports.addOwnerData = async (req, res) => {
         });
     }
 };
+
+// get all owner
+
 exports.GetAllOwner = async (req, res) => {
     try {
-        // Fetch all owners sorted by Wing and Unit
+
         const owners = await Owner.find().sort({ Wing: 1, Unit: 1 });
 
         if (!owners || owners.length === 0) {
@@ -222,6 +212,8 @@ exports.GetAllOwner = async (req, res) => {
         });
     }
 };
+
+// get by id resident 
 
 exports.GetByIdResident = async (req, res) => {
     try {
@@ -283,6 +275,9 @@ exports.GetByIdResident = async (req, res) => {
       });
     }
   };
+
+  // delete by id residenet
+
 exports.DeleteByIdResident = async (req, res) => {
     try {
         
@@ -316,70 +311,53 @@ exports.DeleteByIdResident = async (req, res) => {
     }
 };
 
+// get all residenet=
 exports.GetAllResidents = async (req, res) => {
     try {
-       
-        const tenants = await Tenante.find().sort({ Wing: 1, Unit: 1 });
-        const owners = await Owner.find().sort({ Wing: 1, Unit: 1 });
 
-        
-        if ((!tenants || tenants.length === 0) && (!owners || owners.length === 0)) {
-            return res.status(400).json({
-                success: false,
-                message: "No data found "
-            });
+      const [tenants, owners] = await Promise.all([
+        Tenante.find(),
+        Owner.find()
+      ]);
+  
+      if (!tenants.length && !owners.length) {
+        return res.status(400).json({
+          success: false,
+          message: "No residents found.",
+        });
+      }
+  
+      const formatResidentData = (resident) => ({
+        ...resident._doc,
+        Member_Counting_Total: resident.Member_Counting?.length || 0,
+        Vehicle_Counting_Total: resident.Vehicle_Counting?.length || 0,
+      });
+  
+      const allResidents = [
+        ...tenants.map(formatResidentData),
+        ...owners.map(formatResidentData),
+      ];
+  
+      allResidents.sort((a, b) => {
+        if (a.Wing === b.Wing) {
+          return a.Unit - b.Unit;
         }
-
-        // Map each to the desired format
-        const tenantData = tenants.map(tenant => ({
-            id:tenant._id,
-            profileImage: tenant.profileImage,
-            Full_name: tenant.Full_name,
-            Unit: tenant.Unit,
-            Wing: tenant.Wing,
-            UnitStatus: tenant.UnitStatus,
-            Resident_status: tenant.Resident_status,
-            Phone_number: tenant.Phone_number,
-            Member_Counting_Total: tenant.Member_Counting ? tenant.Member_Counting.length : 0,
-            Vehicle_Counting_Total: tenant.Vehicle_Counting ? tenant.Vehicle_Counting.length : 0,
-            
-        }));
-
-        const ownerData = owners.map(owner => ({
-            id:owner._id,
-            profileImage: owner.profileImage,
-            Full_name: owner.Full_name,
-            Unit: owner.Unit,
-            Wing: owner.Wing,
-            UnitStatus: owner.UnitStatus,
-            Resident_status: owner.Resident_status,
-            Phone_number: owner.Phone_number,
-            Member_Counting_Total: owner.Member_Counting ? owner.Member_Counting.length : 0,
-            Vehicle_Counting_Total: owner.Vehicle_Counting ? owner.Vehicle_Counting.length : 0,
-            
-        }));
-
-        
-        const allResidents = [...tenantData, ...ownerData].sort((a, b) => {
-            if (a.Wing === b.Wing) {
-                return a.Unit - b.Unit;
-            }
-            return a.Wing.localeCompare(b.Wing);
-        });
-
-        // Respond with the combined data
-        return res.json({
-            success: true,
-            Residents: allResidents
-        });
+        return a.Wing.localeCompare(b.Wing)
+      });
+  
+      return res.json({
+        success: true,
+        Residents: allResidents,
+      });
     } catch (error) {
-        console.error("Error fetching residents:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to retrieve residents data"
-        });
+      console.error("Error fetching residents:", error.message);
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while retrieving residents data.",
+      });
     }
-};
+  };
+  
 exports.updateOwnerData = async (req, res) => {
     try {
       const {
@@ -503,5 +481,3 @@ exports.updateOwnerData = async (req, res) => {
     }
   };
   
-
-//find by id owner
