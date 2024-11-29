@@ -289,12 +289,12 @@ const EventsParticipation = () => {
                       <th className="2xl:p-3 p-2  text-[#202224]">
                         Participator Name
                       </th>
-                      <th className="2xl:p-3 p-2 text-[#202224]">
+                      <th className="2xl:p-3 p-2 ps-5 text-[#202224]">
                         Description
                       </th>
-                      <th className="2xl:p-1 p-2 xl:table-cell">Event Time</th>
-                      <th className="2xl:p-3 p-2 md:table-cell">Event Date</th>
-                      <th className="2xl:p-2 p-2  sm:table-cell">Event Name</th>
+                      <th className="2xl:p-1 p-2 ps-5 whitespace-nowrap">Event Time</th>
+                      <th className="2xl:p-3 p-2 ps-5 whitespace-nowrap ">Event Date</th>
+                      <th className="2xl:p-2 p-2  ps-5 whitespace-nowrap">Event Name</th>
                     </tr>
                   </thead>
                   <tbody className="sm:overflow-y-auto sm:h-[300px] ">
@@ -310,24 +310,24 @@ const EventsParticipation = () => {
                             {event.name}
                           </span>
                         </td>
-                        <td className="text-[#4F4F4F] mr-10 whitespace-nowrap">
-                          <span className="text-[#4F4F4F] mr-[120px]">
+                        <td className="text-[#4F4F4F] text-left mr-10 whitespace-nowrap">
+                          <span className="text-[#4F4F4F] ">
                             {event.description}
                           </span>
                         </td>
-                        <td className="text-[#4F4F4F]">
-                          <span className="text-[#4F4F4F] mr-[100px] text-sm sm:text-base">
+                        <td className="text-[#4F4F4F] text-center ">
+                          <span className="text-[#4F4F4F]  text-sm sm:text-base">
                             {event.time}{" "}
                             <span className="inline">{event.amPm}</span>
                           </span>
                         </td>
-                        <td className="pt-3 mr-10 text-[#4F4F4F]">
-                          <span className="text-[#4F4F4F] mr-[100px]">
+                        <td className="pt-3 mr-10 text-center text-[#4F4F4F]">
+                          <span className="text-[#4F4F4F] ">
                             {event.date}
                           </span>
                         </td>
-                        <td className="pt-3 sm:table-cell whitespace-nowrap text-gray-600">
-                          <span className="text-[#4F4F4F] mr-[20px]">
+                        <td className="pt-3 sm:table-cell text-center whitespace-nowrap text-gray-600">
+                          <span className="text-[#4F4F4F] ">
                             {event.eventName}
                           </span>
                         </td>

@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import plus from "../../assets/add-square.png"; 
+import plus from "../../assets/add-square.png";
 import AddNumber from "./AddNumber";
 import EditNumber from "./EditNumber";
-import DeleteNumber from "./DeleteNumber"; 
-import '../Maintenance/scrollbar.css'; 
+import DeleteNumber from "./DeleteNumber";
+import '../Maintenance/scrollbar.css';
 import '../../Sidebar/sidebar.css';
-import axiosInstance from '../../Common/axiosInstance'; 
-import { useEffect  } from 'react';
 
 const ContactsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [contactToEdit, setContactToEdit] = useState(null);
-  const [contactToDelete, setContactToDelete] = useState(null); 
-  const [contacts, setContacts] = useState([]);
- 
+  const [contactToDelete, setContactToDelete] = useState(null);
+  const [contacts, setContacts] = useState([
+    { fullName: 'John Doe', phoneNumber: '1234567890', work: 'Manager' },
+    { fullName: 'Jane Smith', phoneNumber: '0987654321', work: 'Engineer' },
+    { fullName: 'Bob Johnson', phoneNumber: '1122334455', work: 'Designer' },
+    { fullName: 'Alice Williams', phoneNumber: '2233445566', work: 'Developer' },
+  ]);
 
   // Open the modal to add a contact
   const handleAddContact = () => {
@@ -47,27 +49,10 @@ const ContactsPage = () => {
     setContactToDelete(null);
   };
 
-       // Fetch Important Numbers from the API
-      const fetchImportantNumbers = async () => {
-        try {
-            const response = await axiosInstance.get('/v2/important-numbers/');
-            // console.log(response.data);
-            setContacts(response.data.data); 
-        } catch (error) {
-            console.error('Error fetching Important Numbers:', error);
-        }
-    };
-
-
-    useEffect(() => {
-      fetchImportantNumbers();
-    }, []);
-
-
   return (
     <div
-      className="rounded-lg shadow-md  lg:ml-6 sm:w-[390px] bg-white lg:w-[360px] lg:h-[380px]"
-      style={{ height: "405px" }}
+      className="rounded-lg shadow-md  2xl:ml-2 2xl:mt-1 mt-[170px] sm:w-[390px] bg-white 2xl:w-[380px] 2xl:h-[400px]"
+
     >
       <div className="flex justify-between items-center mb-4 px-3 pt-3">
         <h2 className="text-xl font-semibold">Important Numbers</h2>
@@ -127,13 +112,13 @@ const ContactsPage = () => {
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 contactData={contactToEdit}
-                fetchImportantNumbers={fetchImportantNumbers}
+                setContacts={setContacts} // Pass setContacts to allow adding/editing contacts
               />
             ) : (
               <AddNumber
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                fetchImportantNumbers={fetchImportantNumbers}
+                setContacts={setContacts} // Pass setContacts to allow adding new contacts
               />
             )}
           </div>
