@@ -81,7 +81,7 @@ const tenantschema= new Schema({
         vehicle_name: { type: String, required: true },
         vehicle_number: { type: String, required: true }
     }],
-    Password: {  // Add this field to store the hashed password
+    Password: {  
         type: String,
         required: true
     },
