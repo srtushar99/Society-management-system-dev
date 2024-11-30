@@ -4,7 +4,7 @@ import NotificationImage from "../../assets/ellipse 1092.png";
 import MoneysImage from "../../assets/moneys.png";
 import DoneImage from "../../assets/done.png";
 import NoNotification from "./NoNotification"; 
-import UpdateMaintenance from "./UpdateMaintenance"; 
+import UpdateMaintenance from "../../Resident Role/Dashboard/Notification Panel/UpdateMaintenance"; 
 
 const NotificationModal = ({ isOpen, onClose, notifications }) => {
   const [isNoNotificationOpen, setIsNoNotificationOpen] = useState(false);
@@ -19,8 +19,9 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
     newStatus[index] = status;
     setNotificationStatus(newStatus);
 
-    if (notifications[index].index === 3 && status === "Accepted") {
-      setIsUpdateMaintenanceOpen(true); 
+    // If the notification is the one with index 3 and the status is "Accepted", open the UpdateMaintenance modal
+    if (index === 2 && status === "Accepted") {
+      setIsUpdateMaintenanceOpen(true); // Open the modal
     }
   };
 
@@ -127,16 +128,10 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
                               ? "bg-[#5678E9] text-white"
                               : "bg-transparent text-[#202224]"
                           }`}
-                          style={{
-                            backgroundColor:
-                              notificationStatus[index] === "Accepted"
-                                ? "#5678E9"
-                                : "transparent",
-                            color:
-                              notificationStatus[index] === "Accepted"
-                                ? "white"
-                                : "#202224",
-                          }}
+                          style={notificationStatus[index] === "Accepted" ? {
+                            backgroundColor: "#5678E9",
+                            color: "white"
+                          } : {}}
                           onClick={() => handleStatusChange(index, "Accepted")} 
                         >
                           Accept
@@ -148,16 +143,10 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
                               ? "bg-[#5678E9] text-white"
                               : "bg-transparent text-[#202224]"
                           }`}
-                          style={{
-                            backgroundColor:
-                              notificationStatus[index] === "Declined"
-                                ? "#5678E9"
-                                : "transparent",
-                            color:
-                              notificationStatus[index] === "Declined"
-                                ? "white"
-                                : "#202224",
-                          }}
+                          style={notificationStatus[index] === "Declined" ? {
+                            backgroundColor: "#5678E9",
+                            color: "white"
+                          } : {}}
                           onClick={() => handleStatusChange(index, "Declined")}
                         >
                           Decline

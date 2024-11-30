@@ -52,7 +52,7 @@ import Activity from './components/Resident Role/Events Participation/Activity P
 import Viewmaintenence from './components/Resident Role/Payment Portal/Maintenance Invoices/Viewmaintenence';
 import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
 import PersonalTenant from './components/Resident Role/Personal Detail/PersonalTenant';
-import UpdateMaintenance from './components/Dashboard/Notification/UpdateMaintenance';
+// import UpdateMaintenance from './components/Resident Role/Dashboard/Notification Panel/UpdateMaintenance';
 
 
 
