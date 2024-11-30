@@ -8,6 +8,7 @@ import "./otherincome.css";
 const OtherIncomeInvoice = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
 
   const handleViewInvoiceClick = () => {
     setShowInvoiceModal(true);
@@ -17,7 +18,7 @@ const OtherIncomeInvoice = () => {
     setShowInvoiceModal(false);
   };
 
-  const handlePayNowClick = () => {
+  const handleOpenPaymentModal = () => {
     setShowPaymentModal(true);
   };
 
@@ -25,24 +26,24 @@ const OtherIncomeInvoice = () => {
     setShowPaymentModal(false);
   };
 
-  const handleCardDetailsOpen = () => {
-    setShowPaymentModal(false); // Close the payment method modal
-    setShowCardDetailsModal(true);
+  const handleOpenCardDetailsModal = () => {
+    setShowPaymentModal(false); // Close payment modal
+    setShowCardDetailsModal(true); // Open card details modal
   };
 
   const handleCloseCardDetailsModal = () => {
     setShowCardDetailsModal(false);
-  };  
+  };
 
   // Disable background scrolling when a modal is open
   useEffect(() => {
-    if (showInvoiceModal || showPaymentModal) {
+    if (showInvoiceModal || showPaymentModal || showCardDetailsModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
     return () => (document.body.style.overflow = "auto"); // Cleanup
-  }, [showInvoiceModal, showPaymentModal]);
+  }, [showInvoiceModal, showPaymentModal, showCardDetailsModal]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -87,7 +88,10 @@ const OtherIncomeInvoice = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {[...Array(4)].map((_, index) => (
-                <MaintenanceCard key={index} handlePayNowClick={handlePayNowClick} />
+                <MaintenanceCard
+                  key={index}
+                  handlePayNowClick={handleOpenPaymentModal}
+                />
               ))}
             </div>
           </section>
@@ -96,7 +100,15 @@ const OtherIncomeInvoice = () => {
 
       {/* Modals */}
       <InvoiceModal show={showInvoiceModal} handleClose={handleCloseInvoiceModal} />
-      <PaymentModal show={showPaymentModal} handleClose={handleClosePaymentModal} />
+      <PaymentModal
+        show={showPaymentModal}
+        handleClose={handleClosePaymentModal}
+        handleNext={handleOpenCardDetailsModal}
+      />
+      <CardDetailsModal
+        show={showCardDetailsModal}
+        handleClose={handleCloseCardDetailsModal}
+      />
     </div>
   );
 };
@@ -124,7 +136,7 @@ const MaintenanceCard = ({ handlePayNowClick }) => {
       </div>
 
       <button
-        onClick={handlePayNowClick} 
+        onClick={handlePayNowClick}
         className="w-full mt-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-shadow"
       >
         Pay Now
@@ -230,7 +242,7 @@ const InvoiceModal = ({ show, handleClose }) => {
   );
 };
 
-const PaymentModal = ({ show, handleClose }) => {
+const PaymentModal = ({ show, handleClose ,handleNext}) => {
   const [selectedMethod, setSelectedMethod] = useState("");
 
   const paymentMethods = [
@@ -281,7 +293,16 @@ const PaymentModal = ({ show, handleClose }) => {
         </div>
       </Modal.Body>
       
-        
+        {/* <Button variant="light" onClick={handleClose} className="col-6 py-2">
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          className="col-6 py-2"
+          disabled={!selectedMethod}
+        >
+          Pay Now
+          </Button> */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               type="button"
@@ -292,8 +313,8 @@ const PaymentModal = ({ show, handleClose }) => {
             </button>
 
             <button
-            
               type="submit"
+              onClick={handleNext}
               className={`w-full sm:w-[43%]  py-2 rounded-lg ${selectedMethod
                 ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" // Apply gradient if form is valid
                 : "bg-[#F6F8FB] text-[#202224]" // Default color if form is not valid
@@ -308,6 +329,7 @@ const PaymentModal = ({ show, handleClose }) => {
     </Modal>  
   );
 };
+
 
 const CardDetailsModal = ({ show, handleClose }) => {
   const [cardDetails, setCardDetails] = useState({
@@ -324,66 +346,92 @@ const CardDetailsModal = ({ show, handleClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Payment processed:", cardDetails);
-    handleClose(); // Close the modal after submission
+    console.log("Card Details Submitted:", cardDetails);
+    handleClose(); // Close modal on submit
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      backdrop="static"
+      centered
+      className="card-details-modal"
+      style={{position:"fixed",top:"0%"}}
+    >
       <Modal.Header closeButton>
-        <Modal.Title>Card Details</Modal.Title>
+        <Modal.Title className="fw-semibold">Card Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Card Name</label>
+          <div className="mb-3">
+            <label>Cardholder Name*</label>
             <input
               type="text"
               name="cardName"
               value={cardDetails.cardName}
               onChange={handleChange}
+              className="form-control"
               required
             />
           </div>
-          <div className="form-group">
-            <label>Card Number</label>
+          <div className="mb-3">
+            <label>Card Number*</label>
             <input
               type="text"
               name="cardNumber"
               value={cardDetails.cardNumber}
               onChange={handleChange}
+              className="form-control"
               required
             />
           </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Expiry Date</label>
+          <div className="row ">
+            <div className="col">
+              <label>Expiry Date*</label>
               <input
                 type="text"
                 name="expiryDate"
                 value={cardDetails.expiryDate}
                 onChange={handleChange}
+                className="form-control"
                 required
+                style={{width:"153px ",margin:"0 0 0 -10px"}}
+                
               />
             </div>
-            <div className="form-group">
-              <label>CVV</label>
+            <div className="col ">
+              <label>CVV*</label>
               <input
                 type="text"
                 name="cvv"
                 value={cardDetails.cvv}
                 onChange={handleChange}
+                className="form-control"
                 required
+                style={{width:"155px ",margin:"0 -20px 0 0"}}
               />
             </div>
           </div>
-          <button type="submit" className="submit-btn">
-            Pay Now
-          </button>
+          <div className="d-flex justify-content-between gap-3 mt-4">
+            <button
+              type="button"
+              className="btn btn-light w-50"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary w-50"
+            >
+              Pay Now
+            </button>
+          </div>
         </form>
       </Modal.Body>
     </Modal>
   );
-};
+};  
 
 export default OtherIncomeInvoice;

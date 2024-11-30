@@ -22,7 +22,7 @@ const LoginPage = () => {
   }, []);
 
   // Email and password validation
-  const validateEmail = (email) => email.endsWith('@gmail.com');
+  const validateEmail = (email) => email.endsWith('@.com');
   const validatePassword = (password) => password.length >= 8;
 
   // Login handler
