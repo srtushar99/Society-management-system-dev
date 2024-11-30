@@ -96,7 +96,7 @@ useEffect(() => {
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
-              to="/dashboard"
+              to="/residentDashboard"
               className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
@@ -122,36 +122,39 @@ useEffect(() => {
                     className="relative"
                     style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                   >
-                    <tr className="text-left text-sm font-semibold">
+                     <tr className="text-left text-sm font-semibold">
                       <th className="ps-4 text-[#202224] ">Title</th>
                       <th className="ps-5 text-[#202224] ">Description</th>
                       <th className=" text-center p-2 ">Date</th>
                       <th className=" text-center ">Time</th>
                     </tr>
+
                   </thead>
                   <tbody>
                     {SecurityProtocols.map((security, index) => (
                       <tr key={index} className="border-t border-gray-200">
-                        <td className=" p-3  pt-3 pb-2 flex items-center whitespace-nowrap">
-                          <span className="text-[#4F4F4F] inline ">
-                            {security.Title}
-                          </span>
-                        </td>
-                        <td className="text-[#4F4F4F]  whitespace-nowrap">
-                          <span className="text-[#4F4F4F] mr-[190px]">
-                            {security.Description}
-                          </span>
-                        </td>
-                        <td className="  text-[#4F4F4F]  ">
-                          <span className="text-[#4F4F4F] mr-[200px] text-sm sm:text-base">
-                            {security.Time}
-                          </span>
-                        </td>
+                      <td className="p-2 pt-3 pb-2 flex items-center whitespace-nowrap">
+                        <span className="text-[#4F4F4F] inline">
+                          {security.title}
+                        </span>
+                      </td>
+                      <td className="text-[#4F4F4F] text-left whitespace-nowrap">
+                        <span className="text-[#4F4F4F] ">
+                          {security.description}
+                        </span>
+                      </td>
+                      <td className="text-[#4F4F4F] text-center">
+                        <span className="text-[#4F4F4F]  text-sm sm:text-base">
+                          {security.time}{" "}
+                          <span className="inline">{security.amPm}</span>
+                        </span>
+                      </td>
 
-                        <td className="pt-3 text-[#4F4F4F] ">
-                          {!!security.Date ? moment(security.Date).format('DD/MM/YYYY') : " "}
-                        </td>
-                      </tr>
+                      <td className="pt-3 text-[#4F4F4F] ">
+                        {security.date}
+                      </td>
+                    </tr>
+
                     ))}
                   </tbody>
                 </table>

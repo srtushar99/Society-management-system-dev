@@ -163,7 +163,7 @@ const EventsParticipation = () => {
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
-              to="/dashboard"
+              to="/residentDashboard"
               className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home

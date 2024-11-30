@@ -38,7 +38,7 @@ const AddResident = ({ isOpen, onClose, complainData, onSave }) => {
       if (formData.status === "Vacate") {
         setVacateModalOpen(true); // Open Vacate modal if "Vacate" is selected
       } else {
-        navigate("/owner");
+        navigate("/ownerpage");
       }
     }
   };
