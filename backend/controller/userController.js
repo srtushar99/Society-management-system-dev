@@ -150,13 +150,15 @@ exports.login = async (req, res) => {
     }
 
     // Generate JWT token and set cookie
-    generateTokenAndSetCookie(account._id, res);
+    // generateTokenAndSetCookie(account._id, res);
+    const token = generateTokenAndSetCookie(account, res);
 
     // Exclude password and send success response
     const { Password, ...safeUserDetails } = account._doc || account;
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
+      token: token,
       user: safeUserDetails,
     });
 

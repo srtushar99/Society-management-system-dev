@@ -125,7 +125,7 @@ const VisitorTracking = () => {
     // Fetch Visitor Tracking from the API
     const fetchVisitorTracking = async () => {
       try {
-        console.log('Token in localStorage:', localStorage.getItem('authToken'));
+        console.log('Token in localStorage:', localStorage.getItem('Society-Management'));
           const response = await axiosInstance.get('/v2/Visitor/');
           console.log(response.data);
           if(response.status === 200){

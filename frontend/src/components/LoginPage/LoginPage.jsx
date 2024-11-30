@@ -5,6 +5,7 @@ import axios from 'axios';
 import Group1000005849 from '../assets/Group 1000005849.png'; // Background image path
 import LeftSection from '../Leftside/LeftSection'; // Left section component path
 import './LoginPage.css'; // Custom styles
+import axiosInstance from '../Common/axiosInstance';
 
 const LoginPage = () => {
   // State variables
@@ -22,7 +23,8 @@ const LoginPage = () => {
   }, []);
 
   // Email and password validation
-  const validateEmail = (email) => email.endsWith('@gmail.com');
+  // const validateEmail = (email) => email.endsWith('@gmail.com');
+  const validateEmail = (email) => email.endsWith('@swiftrut.com');
   const validatePassword = (password) => password.length >= 8;
 
   // Login handler
@@ -45,20 +47,27 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/login', {
+      // const response = await axios.post('http://localhost:5000/api/v1/login', {
+      //   EmailOrPhone: email,
+      //   password: password,
+      // });
+      const loginData = {
         EmailOrPhone: email,
-        password: password,
-      });
-
-      if(response.data.success){
-        navigate('/dashboard');
-      }
+          password: password
+      };
+      const response = await axiosInstance.post(
+        "/v1/login",
+        loginData
+      );
+      // if(response.data.success){
+      //   navigate('/dashboard');
+      // }
       
       if (response.data.success) {
         // Store token in localStorage
         const token = response.data.token;
         console.log('Token received:', token);
-        localStorage.setItem('authToken', token);
+        localStorage.setItem('Society-Management', token);
   
         // Store email if "Remember Me" is checked
         if (rememberMe) {
@@ -67,8 +76,13 @@ const LoginPage = () => {
           localStorage.removeItem('savedEmail');
         }
         
-        // Navigate to dashboard
-        navigate('/dashboard');
+        if(response.data.user.role == "resident"){
+          navigate('/ResidentDashboard');
+        }else if(response.data.user.role == "security"){
+          navigate('/visitorTracking');
+        }else if(response.data.user.role == "admin"){
+          navigate('/dashboard');
+        }
       } else {
         setErrorMessage(response.data.message || 'Login failed. Please try again.');
       }
