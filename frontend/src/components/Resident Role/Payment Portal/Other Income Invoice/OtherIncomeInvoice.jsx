@@ -4,11 +4,13 @@ import Header from "../../../Dashboard/Header/HeaderBaner";
 import { Modal, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./otherincome.css";
+import PayNow from "../Maintenance Invoices/Paynow";
 
 const OtherIncomeInvoice = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
+  const [isPayNowOpen, setIsPayNowOpen] = useState(false); // isOpen state for PayNow modal
 
   const handleViewInvoiceClick = () => {
     setShowInvoiceModal(true);
@@ -18,32 +20,40 @@ const OtherIncomeInvoice = () => {
     setShowInvoiceModal(false);
   };
 
-  const handleOpenPaymentModal = () => {
-    setShowPaymentModal(true);
+  // const handleOpenPaymentModal = () => {
+  //   setShowPaymentModal(true);
+  // };
+
+  // const handleClosePaymentModal = () => {
+  //   setShowPaymentModal(false);
+  // };
+
+  // const handleOpenCardDetailsModal = () => {
+  //   setShowPaymentModal(false); // Close payment modal
+  //   setShowCardDetailsModal(true); // Open card details modal
+  // };
+
+  // const handleCloseCardDetailsModal = () => {
+  //   setShowCardDetailsModal(false);
+  // };
+
+  const handleOpenPayNow = () => {
+    setIsPayNowOpen(true); // Open PayNow modal
   };
 
-  const handleClosePaymentModal = () => {
-    setShowPaymentModal(false);
-  };
-
-  const handleOpenCardDetailsModal = () => {
-    setShowPaymentModal(false); // Close payment modal
-    setShowCardDetailsModal(true); // Open card details modal
-  };
-
-  const handleCloseCardDetailsModal = () => {
-    setShowCardDetailsModal(false);
+  const handleClosePayNow = () => {
+    setIsPayNowOpen(false); // Close PayNow modal
   };
 
   // Disable background scrolling when a modal is open
   useEffect(() => {
-    if (showInvoiceModal || showPaymentModal || showCardDetailsModal) {
+    if (showInvoiceModal || showPaymentModal || showCardDetailsModal || isPayNowOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
     return () => (document.body.style.overflow = "auto"); // Cleanup
-  }, [showInvoiceModal, showPaymentModal, showCardDetailsModal]);
+  }, [showInvoiceModal, showPaymentModal, showCardDetailsModal, isPayNowOpen]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -90,7 +100,7 @@ const OtherIncomeInvoice = () => {
               {[...Array(4)].map((_, index) => (
                 <MaintenanceCard
                   key={index}
-                  handlePayNowClick={handleOpenPaymentModal}
+                  handlePayNowClick={handleOpenPayNow} // Update to open PayNow modal
                 />
               ))}
             </div>
@@ -100,15 +110,15 @@ const OtherIncomeInvoice = () => {
 
       {/* Modals */}
       <InvoiceModal show={showInvoiceModal} handleClose={handleCloseInvoiceModal} />
-      <PaymentModal
-        show={showPaymentModal}
-        handleClose={handleClosePaymentModal}
-        handleNext={handleOpenCardDetailsModal}
-      />
-      <CardDetailsModal
-        show={showCardDetailsModal}
-        handleClose={handleCloseCardDetailsModal}
-      />
+      
+      {/* PayNow Modal */}
+      {isPayNowOpen && (
+        <PayNow
+          totalAmount={1000} // Replace with actual total amount
+          onClose={handleClosePayNow}
+          onPaymentSuccess={() => {}}
+        />
+      )}
     </div>
   );
 };
@@ -241,197 +251,5 @@ const InvoiceModal = ({ show, handleClose }) => {
     </Modal>
   );
 };
-
-const PaymentModal = ({ show, handleClose ,handleNext}) => {
-  const [selectedMethod, setSelectedMethod] = useState("");
-
-  const paymentMethods = [
-    { id: "mastercard", name: "Master Card", icon: "bi-credit-card-2-front" },
-    { id: "visa", name: "Visa Card", icon: "bi-credit-card" },
-    { id: "cash", name: "Cash Payment", icon: "bi-cash" },
-  ];
-
-  return (
-    <Modal
-      show={show}
-      onHide={handleClose}
-      backdrop="static"
-      centered
-      className="payment-method-modal"
-      style={{position:"fixed",top:"0%"}}
-    >
-      <Modal.Header closeButton className="border-0 pb-0">
-        <Modal.Title className="fw-semibold">Payment Method</Modal.Title>
-      </Modal.Header>
-      <Modal.Body className="pt-2">
-        <div className="d-flex flex-column gap-2">
-          {paymentMethods.map((method) => (
-            <div
-              key={method.id}
-              className={`payment-option p-3 rounded-3 border ${
-                selectedMethod === method.id ? "border-success" : "border-gray-200"
-              }`}
-              onClick={() => setSelectedMethod(method.id)}
-              role="button"
-            >
-              <div className="d-flex align-items-center gap-3">
-                <div className="payment-icon">
-                  <i className={`bi ${method.icon} fs-4`}></i>
-                </div>
-                <span className="flex-grow-1">{method.name}</span>
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    checked={selectedMethod === method.id}
-                    onChange={() => setSelectedMethod(method.id)}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Modal.Body>
-      
-        {/* <Button variant="light" onClick={handleClose} className="col-6 py-2">
-          Cancel
-        </Button>
-        <Button
-          variant="primary"
-          className="col-6 py-2"
-          disabled={!selectedMethod}
-        >
-          Pay Now
-          </Button> */}
-        <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <button
-              type="button"
-              className="w-full sm:w-[43%] ms-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              onClick={handleClose} 
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              onClick={handleNext}
-              className={`w-full sm:w-[43%]  py-2 rounded-lg ${selectedMethod
-                ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" // Apply gradient if form is valid
-                : "bg-[#F6F8FB] text-[#202224]" // Default color if form is not valid
-                }`}
-              disabled={!selectedMethod}
-            >
-              Pay Now
-            </button>
-          </div>
-
-      
-    </Modal>  
-  );
-};
-
-
-const CardDetailsModal = ({ show, handleClose }) => {
-  const [cardDetails, setCardDetails] = useState({
-    cardName: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCardDetails((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Card Details Submitted:", cardDetails);
-    handleClose(); // Close modal on submit
-  };
-
-  return (
-    <Modal
-      show={show}
-      onHide={handleClose}
-      backdrop="static"
-      centered
-      className="card-details-modal"
-      style={{position:"fixed",top:"0%"}}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title className="fw-semibold">Card Details</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label>Cardholder Name*</label>
-            <input
-              type="text"
-              name="cardName"
-              value={cardDetails.cardName}
-              onChange={handleChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label>Card Number*</label>
-            <input
-              type="text"
-              name="cardNumber"
-              value={cardDetails.cardNumber}
-              onChange={handleChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="row ">
-            <div className="col">
-              <label>Expiry Date*</label>
-              <input
-                type="text"
-                name="expiryDate"
-                value={cardDetails.expiryDate}
-                onChange={handleChange}
-                className="form-control"
-                required
-                style={{width:"153px ",margin:"0 0 0 -10px"}}
-                
-              />
-            </div>
-            <div className="col ">
-              <label>CVV*</label>
-              <input
-                type="text"
-                name="cvv"
-                value={cardDetails.cvv}
-                onChange={handleChange}
-                className="form-control"
-                required
-                style={{width:"155px ",margin:"0 -20px 0 0"}}
-              />
-            </div>
-          </div>
-          <div className="d-flex justify-content-between gap-3 mt-4">
-            <button
-              type="button"
-              className="btn btn-light w-50"
-              onClick={handleClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary w-50"
-            >
-              Pay Now
-            </button>
-          </div>
-        </form>
-      </Modal.Body>
-    </Modal>
-  );
-};  
 
 export default OtherIncomeInvoice;

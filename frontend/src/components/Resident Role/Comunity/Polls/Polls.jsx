@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import HeaderBaner from "../../../Dashboard/Header/HeaderBaner";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
 import Avatar from "../../../assets/Avatar.png";
-import radio from "../../../assets/Frame 1000005288.png";
 import AddPolls from "./AddPolls";
 import yes from "./images/Frame 1000005280.png";
 import no from "./images/Frame 1000005285.png";
@@ -46,14 +45,33 @@ const Polls = () => {
       votes: { Yes: 75, No: 40 },
       timestamp: "01/07/2024, 10:00 AM",
     },
-    // Additional polls (same format)...
+    // Add more polls here if needed
   ]);
+
+  const [selectedVotes, setSelectedVotes] = useState(
+    Array(pollsData.length).fill(null)
+  ); // Track selected option
 
   const handleVote = (index, option) => {
     setPollsData((prevData) => {
-      const updatedPolls = [...prevData];
-      updatedPolls[index].votes[option] += 1;
-      return updatedPolls;
+      return prevData.map((poll, pollIndex) => {
+        if (pollIndex === index) {
+          const updatedVotes = { ...poll.votes };
+          const previousVote = selectedVotes[index];
+          if (previousVote && previousVote !== option) {
+            updatedVotes[previousVote] = (updatedVotes[previousVote] || 1) - 1;
+          }
+          updatedVotes[option] = (updatedVotes[option] || 0) + 1;
+          return { ...poll, votes: updatedVotes };
+        }
+        return poll;
+      });
+    });
+
+    setSelectedVotes((prev) => {
+      const updatedVotes = [...prev];
+      updatedVotes[index] = option;
+      return updatedVotes;
     });
   };
 
@@ -77,7 +95,11 @@ const Polls = () => {
           </div>
 
           {/* Search Button */}
-          <div className={`d-block ml-auto d-sm-none p-2 rounded-lg ${isSearchVisible ? "border-none" : "border border-[#D3D3D3]"}`}>
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
             {!isSearchVisible ? (
               <button
                 onClick={() => setIsSearchVisible(true)}
@@ -127,7 +149,8 @@ const Polls = () => {
                   <button
                     onClick={() => setShowAddPolls(true)}
                     style={{
-                      background: "linear-gradient(90deg, #FE512E 0%, #F09619 100%)",
+                      background:
+                        "linear-gradient(90deg, #FE512E 0%, #F09619 100%)",
                       color: "white",
                       padding: "10px 20px",
                       borderRadius: "8px",
@@ -143,34 +166,53 @@ const Polls = () => {
                   {pollsData.map((poll, index) => {
                     const totalVotes = poll.votes.Yes + poll.votes.No;
                     return (
-                      <div key={index} className="bg-white rounded-lg shadow-md p-3">
+                      <div
+                        key={index}
+                        className="bg-white rounded-lg shadow-md p-3"
+                      >
                         <div className="border-b mb-3 text-[#F4F4F4]">
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center">
-                              <img src={poll.author.avatar} alt={poll.author.name} className="w-10 h-10 rounded-full mr-3" />
+                              <img
+                                src={poll.author.avatar}
+                                alt={poll.author.name}
+                                className="w-10 h-10 rounded-full mr-3"
+                              />
                               <div className="flex flex-col">
-                                <span className="fs-6 2xl:font-bold text-[#5678E9]" style={{ fontSize: "18px" }}>
+                                <span
+                                  className="fs-6 2xl:font-bold text-[#5678E9]"
+                                  style={{ fontSize: "18px" }}
+                                >
                                   {poll.author.name}
                                 </span>
-                                <span className="text-[#202224]" style={{ fontSize: "12px" }}>
+                                <span
+                                  className="text-[#202224]"
+                                  style={{ fontSize: "12px" }}
+                                >
                                   {poll.pollType}
                                 </span>
                               </div>
                             </div>
                             <div className="flex items-center bg-[#6E8EF9] 2xl:w-[60px] rounded-2xl">
                               <i className="fa-solid fa-eye text-[#FFFFFF] ml-3"></i>
-                              <span className="fs-6 text-[#FFFFFF] font-bold ml-1 mr-2" style={{ fontSize: "18px" }}>
+                              <span
+                                className="fs-6 text-[#FFFFFF] font-bold ml-1 mr-2"
+                                style={{ fontSize: "18px" }}
+                              >
                                 {poll.author.view}
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        <p className="text-sm font-bold sm:fs-[10px]" style={{ fontSize: "16px" }}>
+                        <p
+                          className="text-sm font-bold sm:fs-[10px]"
+                          style={{ fontSize: "16px" }}
+                        >
                           {poll.question}
                         </p>
 
-            
+                        {/* Voting Options */}
                         {["Yes", "No"].map((option) => (
                           <div key={option} className="mb-2">
                             <div className="flex items-center">
@@ -179,23 +221,40 @@ const Polls = () => {
                                 id={`${option}-option-${index}`}
                                 name={`poll-${index}`}
                                 className="mr-2"
-                                onClick={() => handleVote(index, option)}
+                                checked={selectedVotes[index] === option} // Bind input state
+                                onChange={() => handleVote(index, option)} // Handle vote change
                               />
-                              <label htmlFor={`${option}-option-${index}`} className="flex-grow">
+                              <label
+                                htmlFor={`${option}-option-${index}`}
+                                className="flex-grow"
+                              >
                                 {option}
                               </label>
-                              <img src={option === "Yes" ? yes : no} alt={option} />
+                              <img
+                                src={option === "Yes" ? yes : no}
+                                alt={option}
+                              />
                               <span className="ml-2">{poll.votes[option]}</span>
                             </div>
                             <div className="bg-blue-100 h-2 rounded-full mt-1">
                               <div
-                                className={`h-2 rounded-full ${option === "Yes" ? "bg-[#39973D]" : "bg-[#E74C3C]"}`}
-                                style={{ width: `${(poll.votes[option] / totalVotes) * 100}%` }}
+                                className={`h-2 rounded-full ${
+                                  option === "Yes"
+                                    ? "bg-[#39973D]"
+                                    : "bg-[#E74C3C]"
+                                }`}
+                                style={{
+                                  width: `${
+                                    (poll.votes[option] / totalVotes) * 100
+                                  }%`,
+                                }}
                               ></div>
                             </div>
                           </div>
                         ))}
-                        <p className="flex justify-end text-sm text-gray-500">{poll.timestamp}</p>
+                        <p className="flex justify-end text-sm text-gray-500">
+                          {poll.timestamp}
+                        </p>
                       </div>
                     );
                   })}
@@ -207,7 +266,12 @@ const Polls = () => {
       </div>
 
       {/* Conditionally render AddPolls */}
-      {showAddPolls && <AddPolls isOpen={showAddPolls} onClose={() => setShowAddPolls(false)} />}
+      {showAddPolls && (
+        <AddPolls
+          isOpen={showAddPolls}
+          onClose={() => setShowAddPolls(false)}
+        />
+      )}
     </div>
   );
 };

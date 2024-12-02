@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import axiosInstance from "../../../Common/axiosInstance";
 
 // Image assets for payment methods
-import masterCardImage from "./Images/Frame.png";
-import visaCardImage from "./Images/Group 1000004336.png";
-import cashPaymentImage from "./Images/moneys.png";
+import masterCardImage from "../../Dashboard/Notification Panel/Images/Frame.png";
+import visaCardImage from "../../Dashboard/Notification Panel/Images/Group 1000004336.png";
+import cashPaymentImage from "../../Dashboard/Notification Panel/Images/moneys.png";
 
 // Import the CardDetails modal
-import CardDetails from "./CardDetails"; // Ensure this file exists
+import CardDetails from "../../Dashboard/Notification Panel/CardDetails"; // Ensure this file exists
 
 const PayNow = ({ totalAmount, onClose, onPaymentSuccess }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(""); // Store selected payment method
@@ -50,7 +50,7 @@ const PayNow = ({ totalAmount, onClose, onPaymentSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center  bg-opacity-50 z-50 p-4">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-4">
       <div className="bg-white w-full sm:max-w-md mx-auto p-6 rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <span className="text-2xl font-bold text-[#202224]">

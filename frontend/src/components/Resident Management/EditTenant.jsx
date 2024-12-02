@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Assuming you have this component
 import Sidebar from "../Sidebar/Sidebar";
-import Avatar from '../assets/Avatar.png'
+import Avatar from "../assets/Avatar.png";
 
 const staticMembers = [
   {
@@ -55,7 +55,6 @@ const staticMembers = [
   },
 ];
 
-
 const staticVehicles = [
   {
     vehicleType: "4-wheeler",
@@ -78,10 +77,14 @@ const EditTenant = () => {
   const location = useLocation();
   const { ownerData } = location.state || {}; // Get the owner data from state
   const navigate = useNavigate();
-  const { existingData, memberCount = 0, vehicleCount = 0 } = location.state || {};
+  const {
+    existingData,
+    memberCount = 1,
+    vehicleCount = 2,
+  } = location.state || {};
 
   const [formData, setFormData] = useState({
-    photo :"",
+    photo: "",
     ownerName: "Arlene McCoy",
     ownerPhone: "+91 9575225165",
     address: "C-101,Dhara Arcade , Mota Varacha Surat.",
@@ -94,35 +97,63 @@ const EditTenant = () => {
     unit: existingData?.UnitNumber || "1003",
     relation: existingData?.Relation || "Friend",
     memberCount: memberCount,
-    memberDetails: [],
+    memberDetails: staticMembers.slice(0, memberCount),
     vehicleCount: vehicleCount,
-    vehicleDetails: [],
+    vehicleDetails: staticVehicles.slice(0, vehicleCount),
   });
   const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
     if (existingData) {
       // Check if MemberDetails and VehicleDetails are defined and are arrays
-      const memberDetails = Array.isArray(existingData.MemberDetails) ? existingData.MemberDetails : [];
-      const vehicleDetails = Array.isArray(existingData.VehicleDetails) ? existingData.VehicleDetails : [];
-  
+      const memberDetails = Array.isArray(existingData.MemberDetails)
+        ? existingData.MemberDetails
+        : [];
+      const vehicleDetails = Array.isArray(existingData.VehicleDetails)
+        ? existingData.VehicleDetails
+        : [];
+
       // Initialize member details with static data or existing data
-      const initialMemberDetails = Array.from({ length: formData.memberCount }, (_, index) => ({
-        memberName: memberDetails[index]?.memberName || staticMembers[index]?.memberName || "",
-        Number: memberDetails[index]?.Number || staticMembers[index]?.Number || "",
-        email: memberDetails[index]?.email || staticMembers[index]?.email || "",
-        age: memberDetails[index]?.age || staticMembers[index]?.age || "",
-        gender: memberDetails[index]?.gender || staticMembers[index]?.gender || "",
-        relation: memberDetails[index]?.relation || staticMembers[index]?.relation || "",
-      }));
-  
+      const initialMemberDetails = Array.from(
+        { length: formData.memberCount },
+        (_, index) => ({
+          memberName:
+            memberDetails[index]?.memberName ||
+            staticMembers[index]?.memberName ||
+            "",
+          Number:
+            memberDetails[index]?.Number || staticMembers[index]?.Number || "",
+          email:
+            memberDetails[index]?.email || staticMembers[index]?.email || "",
+          age: memberDetails[index]?.age || staticMembers[index]?.age || "",
+          gender:
+            memberDetails[index]?.gender || staticMembers[index]?.gender || "",
+          relation:
+            memberDetails[index]?.relation ||
+            staticMembers[index]?.relation ||
+            "",
+        })
+      );
+
       // Initialize vehicle details with static data or existing data
-      const initialVehicleDetails = Array.from({ length: formData.vehicleCount }, (_, index) => ({
-        vehicleType: vehicleDetails[index]?.vehicleType || staticVehicles[index]?.vehicleType || "",
-        vehicleName: vehicleDetails[index]?.vehicleName || staticVehicles[index]?.vehicleName || "",
-        vehicleNumber: vehicleDetails[index]?.vehicleNumber || staticVehicles[index]?.vehicleNumber || "",
-      }));
-  
+      const initialVehicleDetails = Array.from(
+        { length: formData.vehicleCount },
+        (_, index) => ({
+          vehicleType:
+            vehicleDetails[index]?.vehicleType ||
+            staticVehicles[index]?.vehicleType ||
+            "",
+          vehicleName:
+            vehicleDetails[index]?.vehicleName ||
+            staticVehicles[index]?.vehicleName ||
+            "",
+          vehicleNumber:
+            vehicleDetails[index]?.vehicleNumber ||
+            staticVehicles[index]?.vehicleNumber ||
+            "",
+        })
+      );
+
       setFormData((prevData) => ({
         ...prevData,
         memberDetails: initialMemberDetails,
@@ -182,9 +213,8 @@ const EditTenant = () => {
 
     if (name === "email") {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)$/;
-    if (value !== "" && !emailRegex.test(value)) return; 
+      if (value !== "" && !emailRegex.test(value)) return;
     }
-    
 
     if (name === "age") {
       const regex = /^(?:[1-9][0-9]?|1[01])$/; // Allows only numbers 1-99
@@ -236,8 +266,6 @@ const EditTenant = () => {
       vehicleDetails: updatedVehicleDetails,
     }));
   };
-
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -354,19 +382,43 @@ const EditTenant = () => {
         </header>
 
         <div className="lg:mt-[10px] ml-[300px] bg">
-           <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
-            <Link to="/editowner" className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${activeButton === "editowner" ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#202224]"}`}>Owner</Link>
-            <Link to="/edittenant" className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${activeButton === "edittenant" ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#202224]"}`}>Tenant</Link>
+          <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
+            <Link
+              to={activeButton === "edittenant" ? "#" : "/editowner"} 
+              onClick={(e) => {
+                if (activeButton === "edittenant") {
+                  e.preventDefault(); 
+                }
+              }}
+              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-t-md no-underline transition-all ${
+                activeButton === "edittenant"
+                  ? "pointer-events-none opacity-50 cursor-not-allowed bg-gray-300 text-gray-500" 
+                  : activeButton === "editowner"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]" 
+                  : "bg-[#FFFFFF] text-[#202224]"
+              }`}
+            >
+              Owner
+            </Link>
+            <Link
+              to="/edittenant"
+              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
+                activeButton === "edittenant"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
+                  : "bg-[#FFFFFF] text-[#202224]"
+              }`}
+            >
+              Tenant
+            </Link>
           </div>
         </div>
 
-        <div className=" w-[1500px]  mt-2 mb-5 ml-[340px]  ">
+        <div className=" w-[1500px]  mt-3 mb-5 ml-[340px]  ">
           <div
             onSubmit={handleSubmit}
             className="flex bg-white  w-[1500px] mb-2 rounded-e-md mx-auto p-6"
           >
             <div className="flex flex-col sm:flex-row gap-4 w-full">
-           
               <div className="flex-1">
                 <label className="block text-gray-700 font-medium">
                   Owner Full Name<span className="text-red-500">*</span>
@@ -395,7 +447,6 @@ const EditTenant = () => {
                 />
               </div>
               {/* Owner Email */}
-        
 
               {/* Owner Address */}
               <div className="flex-1">
