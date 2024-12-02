@@ -34,7 +34,7 @@ const pollSchema = new mongoose.Schema({
   },
   createdByType: {
     type: String,
-    enum: ['Owner', 'Tenante'],
+    enum: ['Owner', 'Tenant'],
   }
 }, { timestamps: true });
 

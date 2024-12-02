@@ -92,7 +92,7 @@ const tenantschema= new Schema({
     },
     Resident_status:{
         type:String,
-        default:"Tenante",
+        default:"Tenant",
     },
     UnitStatus:{
         type:String,
@@ -109,5 +109,5 @@ const tenantschema= new Schema({
     },
     
 },{timestamps:true})
-const Tenante = model("Tenante",tenantschema)
-module.exports=Tenante;
+const Tenant = model("Tenant",tenantschema)
+module.exports=Tenant;

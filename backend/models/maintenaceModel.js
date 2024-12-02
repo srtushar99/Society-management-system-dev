@@ -27,7 +27,7 @@ const maintenanceschema = new Schema({
             },
             residentType: {
                 type: String,
-                enum: ["Owner", "Tenante"], 
+                enum: ["Owner", "Tenant"], 
             },
             paymentStatus: {
                 type: String,

@@ -3,11 +3,11 @@ const fs=require("fs")
 const crypto= require("crypto");
 const senData = require('../config/nodemailer');
 const { hash } = require('../utils/hashpassword');
-const Tenante = require('../models/tenantModel');
+const Tenant = require('../models/tenantModel');
 
-// add tenante
+// add Tenant
 
-exports.addTenante = async (req, res) => {
+exports.addTenant = async (req, res) => {
   try {
       // Function to generate a random password
       function generatePassword(length = 9) {
@@ -98,7 +98,7 @@ exports.addTenante = async (req, res) => {
       }
 
       // Check if Wing and Unit already exist
-      const existingWing = await Tenante.findOne({ Wing, Unit });
+      const existingWing = await Tenant.findOne({ Wing, Unit });
       if (existingWing) {
           return res.status(400).json({
               success: false,
@@ -111,7 +111,7 @@ exports.addTenante = async (req, res) => {
       const parsedVehicleCounting = Vehicle_Counting ? JSON.parse(Vehicle_Counting) : [];
 
       // Create a new tenant document
-      const newTenant = new Tenante({
+      const newTenant = new Tenant({
           Owner_Full_name,
           Owner_Phone,
           Owner_Address,
@@ -159,11 +159,11 @@ exports.addTenante = async (req, res) => {
   }
 };
 
-// get all tenante
-exports.GetAllTenante= async(req,res)=>{
+// get all Tenant
+exports.GetAllTenant= async(req,res)=>{
     try {
         // Fetch all owners sorted by Wing and Unit
-        const owners = await Tenante.find().sort({ Wing: 1, Unit: 1 });
+        const owners = await Tenant.find().sort({ Wing: 1, Unit: 1 });
 
         if (!owners || owners.length === 0) {
             return res.status(400).json({
@@ -190,15 +190,15 @@ exports.GetAllTenante= async(req,res)=>{
             Owner: ownerCounts
         });
     } catch (error) {
-        console.error("Error fetching owner Tenante:", error);
+        console.error("Error fetching owner Tenant:", error);
         return res.status(500).json({
             success: false,
-            message: "Failed to retrieve Tenante data"
+            message: "Failed to retrieve Tenant data"
         });
     }
 }
 
-// update tenante
+// update Tenant
 
 exports.updateTenantData = async (req, res) => {
     try {
@@ -274,7 +274,7 @@ exports.updateTenantData = async (req, res) => {
       }
   
       
-      const existingTenant = await Tenante.findOne({ Wing, Unit });
+      const existingTenant = await Tenant.findOne({ Wing, Unit });
       if (existingTenant && existingTenant._id.toString() !== id) {
         return res.status(400).json({
           success: false,
@@ -283,7 +283,7 @@ exports.updateTenantData = async (req, res) => {
       }
   
      
-      const tenant = await Tenante.findById(id);
+      const tenant = await Tenant.findById(id);
       if (!tenant) {
         return res.status(404).json({
           success: false,

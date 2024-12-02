@@ -4,7 +4,7 @@ const fs=require("fs")
 const crypto= require("crypto");
 const senData = require('../config/nodemailer');
 const { hash } = require('../utils/hashpassword');
-const Tenante = require('../models/tenantModel');
+const Tenant = require('../models/tenantModel');
 
 // add owner data
 
@@ -225,7 +225,7 @@ exports.GetAllOwner = async (req, res) => {
 
 exports.GetByIdResident = async (req, res) => {
     try {
-      let resident = await Tenante.findById(req.params.id);
+      let resident = await Tenant.findById(req.params.id);
   
       if (!resident) {
         resident = await Owner.findById(req.params.id);
@@ -291,7 +291,7 @@ exports.GetByIdResident = async (req, res) => {
 exports.DeleteByIdResident = async (req, res) => {
     try {
         
-        let resident = await Tenante.findByIdAndDelete(req.params.id);
+        let resident = await Tenant.findByIdAndDelete(req.params.id);
 
         
         if (!resident) {
@@ -326,7 +326,7 @@ exports.GetAllResidents = async (req, res) => {
     try {
 
       const [tenants, owners] = await Promise.all([
-        Tenante.find(),
+        Tenant.find(),
         Owner.find()
       ]);
   
