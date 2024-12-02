@@ -91,7 +91,7 @@ const Anouncement = [
 ];
 
 const PersonalOwner = () => {
-  const [activeButton, setActiveButton] = useState("PersonalDetail");
+  const [activeButton, setActiveButton] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
   const [residentById, setResidentById] = useState([]);
   const [address_proofSize, setAddress_proofSize] = useState("");
@@ -100,6 +100,8 @@ const PersonalOwner = () => {
   const [address_proofName, setAddress_proofName] = useState("");
   const [announcement, setAnnouncement] = useState([]);
   const [pendingMaintenance, setPendingMaintenance] = useState([]);
+  const [dueMaintenance, setDueMaintenance] = useState([]);
+  // const [isOwner, setIsOwner] = useState(false);
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -163,6 +165,14 @@ const PersonalOwner = () => {
         setResidentById(response.data.Resident);
         processAdhar_proof(response.data.Resident.Adhar_front);
         processAddress_proof(response.data.Resident.Address_proof);
+        if(response.data.Resident.Resident_Status == "Owner"){
+          // setIsOwner(true);
+          setActiveButton("PersonalDetail");
+          navigator('/PersonalDetail')
+        }else{
+          // setIsOwner(false);
+          navigator('/TenantDetail')
+        }
       }
     } catch (error) {
       console.error("Error fetching GetByIdResident:", error);
@@ -171,10 +181,14 @@ const PersonalOwner = () => {
 
   
   const fetchPendingMaintenance = async () => {
+    const currentDate = new Date();
     try {
       const response = await axiosInstance.get(`/v2/maintenance/getuserandMaintance`);
       if (response.status === 200) {
         setPendingMaintenance(response.data.Maintenance);
+        const futureData = response.data.Maintenance.filter((item) => new Date(item.DueDate) > currentDate);
+        console.log(futureData);
+        
       }
     } catch (error) {
       console.error("Error fetching PendingMaintenance:", error);
@@ -248,9 +262,9 @@ const PersonalOwner = () => {
         <main className="flex-grow-1 rounded border bg-light">
           <div className="2xl:mt-[10px] 2xl:ml-[30px]">
             <div className="mt-5 2xl:px-3 ">
-              <Link
+
+              {/* {isOwner ? <Link
                 to="/PersonalDetail"
-                // onClick={() => handleButtonClick("PersonalDetail")}
                 className={`w-full lg:h-[50px] sm:w-[100px] no-underline px-[70px] py-3 rounded-t-md transition-all ${
                   activeButton === "PersonalDetail"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
@@ -259,7 +273,7 @@ const PersonalOwner = () => {
               >
                 Owner
               </Link>
-
+                 :
               <Link
                 to="/TenantDetail"
                 className={`w-full lg:h-[50px] sm:w-[200px] px-[70px] py-3 rounded-t-md no-underline transition-all ${
@@ -269,7 +283,19 @@ const PersonalOwner = () => {
                 }`}
               >
                 Tenant
+              </Link>} */}
+
+             <Link
+                to="/PersonalDetail"
+                className={`w-full lg:h-[50px] sm:w-[100px] no-underline px-[70px] py-3 rounded-t-md transition-all ${
+                  activeButton === "PersonalDetail"
+                    ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
+                    : "bg-[#FFFFFF] text-[#202224]"
+                }`}
+              >
+                Owner
               </Link>
+
             </div>
           </div>
           <div className="d-flex 2xl:w-[1550px] sm:w-[200px] 2xl:ml-[40px] mt-1 bg-white rounded">

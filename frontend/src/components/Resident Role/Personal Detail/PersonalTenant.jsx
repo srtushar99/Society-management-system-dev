@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import gallary from "../../assets/gallery.png";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 import profile from "../../assets/Group 1000004173.png";
 import "../../Sidebar/sidebar.css";
 import ResidentSidebar from "../Resident Sidebar/ResidentSidebar";
+import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
+import moment from "moment";
+import axiosInstance from '../../Common/axiosInstance';
 
 const staticMembers = [
   {
@@ -112,40 +116,15 @@ const staticVehicles = [
   },
 ];
 
-const Anouncement = [
-  {
-    Name: "Community Initiatives",
-    Date: "01/02/2024",
-    Time: "10:15 AM",
-    description:
-      "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-  },
-  {
-    Name: "Community Initiatives",
-    Date: "01/02/2024",
-    Time: "10:15 AM",
-    description:
-      "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-  },
-  {
-    Name: "Community Initiatives",
-    Date: "01/02/2024",
-    Time: "10:15 AM",
-    description:
-      "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-  },
-  {
-    Name: "Community Initiatives",
-    Date: "01/02/2024",
-    Time: "10:15 AM",
-    description:
-      "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-  },
-];
-
 const PersonalTenant = () => {
-  const [activeButton, setActiveButton] = useState("TenantDetail");
+  const [activeButton, setActiveButton] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
+  const [announcement, setAnnouncement] = useState([]);
+  const [residentById, setResidentById] = useState([]);
+  const [address_proofSize, setAddress_proofSize] = useState("");
+  const [adhar_proofSize, setAdhar_proofSize] = useState("");
+  const [adhar_proofName, setAdhar_proofName] = useState("");
+  const [address_proofName, setAddress_proofName] = useState("");
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -155,6 +134,87 @@ const PersonalTenant = () => {
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+
+  const fetchAnnouncement = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/annoucement/');
+        if (response.status === 200) {
+          setAnnouncement(response.data.announcements); 
+        }
+      } catch (error) {
+        console.error('Error fetching Announcement:', error);
+      }
+    };
+
+
+    const processAddress_proof = async (url) => {
+      try {
+        const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+        const response = await axios.head(url);
+        const fileSizeBytes = response.headers['content-length'];
+        const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+        setAddress_proofName(extractedFileName);
+        setAddress_proofSize(fileSizeMB);
+      } catch (error) {
+        console.error("Error fetching file metadata:", error.message);
+        setAddress_proofSize("Unknown");
+        setAddress_proofName("Unknown");
+      }
+    };
+  
+  
+    const processAdhar_proof = async (url) => {
+      try {
+        const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+        const response = await axios.head(url);
+        const fileSizeBytes = response.headers['content-length'];
+        const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+        setAdhar_proofName(extractedFileName);
+        setAdhar_proofSize(fileSizeMB);
+      } catch (error) {
+        console.error("Error fetching file metadata:", error.message);
+        setAdhar_proofSize("Unknown");
+        setAdhar_proofName("Unknown");
+      }
+    };
+
+    const fetchGetByIdResident = async (UserToken) => {
+      try {
+        const response = await axiosInstance.get(`/v2/resident/owner/${UserToken.userId}`);
+        if (response.status === 200) {
+          setResidentById(response.data.Resident);
+          processAdhar_proof(response.data.Resident.Adhar_front);
+          processAddress_proof(response.data.Resident.Address_proof);
+          if(response.data.Resident.Resident_Status == "Owner"){
+            // setIsOwner(true);
+            setActiveButton("PersonalDetail");
+            navigator('/PersonalDetail')
+          }else{
+            // setIsOwner(false);
+            setActiveButton("TenantDetail");
+            navigator('/TenantDetail')
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching GetByIdResident:", error);
+      }
+    };
+
+    useEffect(() => {
+      const token = localStorage.getItem('Society-Management');
+      if (token) {
+        try {
+          const decodedToken = jwtDecode(token); 
+          fetchGetByIdResident(decodedToken); 
+          fetchAnnouncement();
+          // fetchPendingMaintenance();
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+      }
+    }, []);
+
 
   return (
     <div className="d-flex w-100 h-100 bg-light">
@@ -208,7 +268,7 @@ const PersonalTenant = () => {
         <main className="flex-grow-1 rounded border bg-light    ">
           <div className="2xl:mt-[10px] 2xl:ml-[30px] ">
             <div className="mt-5 2xl:px-3 ">
-              <Link
+              {/* <Link
                 to="/PersonalDetail"
                 className={`w-full lg:h-[50px] sm:w-[200px] no-underline px-[70px] py-3 rounded-t-md transition-all ${
                   activeButton === "PersonalDetail"
@@ -217,7 +277,7 @@ const PersonalTenant = () => {
                 }`}
               >
                 Owner
-              </Link>
+              </Link> */}
 
               <Link
                 to="/TenantDetail"
@@ -261,7 +321,7 @@ const PersonalTenant = () => {
                 {/* Profile Image */}
                 <div className="rounded-full flex">
                   <img
-                    src={profile}
+                    src={!!residentById.profileImage ? residentById.profileImage : profile}
                     alt="Profile Image"
                     className="2xl:w-[150px] w-[70px] h-[70px] 2xl:h-[150px] object-cover"
                   />
@@ -269,7 +329,7 @@ const PersonalTenant = () => {
                     <span className="text-xl text-[#202224] 2xl:flex-nowrap">
                       Full Name
                     </span>
-                    <span className="text-gray-700">Arlene McCoy</span>
+                    <span className="text-gray-700">{!!residentById.Full_name ? residentById.Full_name : " "}</span>
                   </div>
                 </div>
 
@@ -278,41 +338,41 @@ const PersonalTenant = () => {
                 <div className="2xl:flex  2xl:ml-12">
                   <div className="flex flex-col">
                     <span className="text-xl text-[#202224]">Phone Number</span>
-                    <span className="text-gray-700">+91 99130 44537</span>
+                    <span className="text-gray-700">{!!residentById.Phone_number ? residentById.Phone_number : " "}</span>
                   </div>
                   <div className="flex flex-col mt-2">
                     <span className="text-xl text-[#202224]">
                       Email Address
                     </span>
                     <span className="text-gray-700">
-                      ArleneMcCoy25@gmail.com
+                    {!!residentById.Email_address ? residentById.Email_address : " "}
                     </span>
                   </div>
                   <div className="2xl:flex">
                     <div className="flex flex-col mt-2 2xl:ml-12">
                       <span className="text-xl text-[#202224]">Gender</span>
-                      <span className="text-gray-700">Male</span>
+                      <span className="text-gray-700">{!!residentById.Gender ? residentById.Gender : " "}</span>
                     </div>
                   {/* <div className="flex mt-4 2xl:ml-12"> */}
                     <div className="flex flex-col">
                       <span className="text-xl text-[#202224]">Age</span>
-                      <span className="text-gray-700">20</span>
+                      <span className="text-gray-700">{!!residentById.Age ? residentById.Age : " "}</span>
                     </div>
 
                     <div className="flex flex-col">
                       <span className="text-xl text-[#202224]">Relation</span>
-                      <span className="text-gray-700">Father</span>
+                      <span className="text-gray-700">{!!residentById.Relation ? residentById.Relation : " "}</span>
                     </div>
                   </div>
                   </div>
                   <div className="2xl:flex flex">
                   <div className="flex flex-col">
                     <span className="text-xl text-[#202224]">Wing</span>
-                    <span className="text-gray-700">A</span>
+                    <span className="text-gray-700">{!!residentById.Wing ? residentById.Wing : " "}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xl text-[#202224]">Unit</span>
-                    <span className="text-gray-700">1001</span>
+                    <span className="text-gray-700">{!!residentById.Unit ? residentById.Unit : " "}</span>
                   </div>
                 </div>
             
@@ -322,20 +382,21 @@ const PersonalTenant = () => {
                     {/* First File */}
                     <div className="bg-white rounded-lg shadow-md p-1">
                       <a
-                        href="link-to-view-file-or-action"
+                        href={!!residentById.Address_proof ? residentById.Address_proof : " "}
+                        target="_blank"
                         className="flex items-center w-full no-underline"
                       >
                         <div className="w-10 h-10 rounded-full flex items-center justify-center">
                           <img
-                            src={gallary}
+                            src={!!residentById.Address_proof ? residentById.Address_proof : " "}
                             className="h-6 w-6 text-gray-500"
                           />
                         </div>
                         <div className="ml-4">
                           <span className="text-[#202224]">
-                            Syncfusion Essential Adharcard Front Side.JPG
+                          {address_proofName}
                           </span>
-                          <p className="text-gray-600">3.5 MB</p>
+                          <p className="text-gray-600">{address_proofSize}</p>
                         </div>
                       </a>
                     </div>
@@ -343,20 +404,21 @@ const PersonalTenant = () => {
                     {/* Second File */}
                     <div className="bg-white rounded-lg mt-2 shadow-md p-1">
                       <a
-                        href="link-to-view-file-or-action"
+                       href={!!residentById.Adhar_front ? residentById.Adhar_front : " "}
+                        target="_blank"
                         className="flex items-center w-full no-underline"
                       >
                         <div className="w-10 h-10 rounded-full flex items-center justify-center">
                           <img
-                            src={gallary}
+                            src={!!residentById.Adhar_front ? residentById.Adhar_front : " "}
                             className="h-6 w-6 text-gray-500"
                           />
                         </div>
                         <div className="ml-4">
                           <span className="text-[#202224]">
-                            Syncfusion Essential Adharcard Back Side.JPG
+                          {adhar_proofName}
                           </span>
-                          <p className="text-gray-600">3.2 MB</p>
+                          <p className="text-gray-600">{adhar_proofSize}</p>
                         </div>
                       </a>
                     </div>
@@ -367,41 +429,41 @@ const PersonalTenant = () => {
           </div>
 
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px] mt-3 bg-white p-4 rounded">
-            <span className="">Member : (04)</span>
+            <span className="">Member : {!!residentById.Member_Counting ? "("+residentById.Member_Counting_Total+")" : "00"}</span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {staticMembers.map((card) => (
+            {residentById.Member_Counting?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
                       className="card-header text-white "
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{card.memberName || ""}</span>
+                      <span className="">{!!card.Full_name ? card.Full_name : ""}</span>
                     </div>
 
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Email</span>
-                        <span className="">{card.email || ""}</span>
+                        <span className="">{!!card.Email_address ? card.Email_address : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Number</span>
-                        <span className="">{card.Number || ""}</span>
+                        <span className="">{!!card.Phone_number ? card.Phone_number : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Age</span>
-                        <span className="">{card.age || ""}</span>
+                        <span className="">{!!card.Age ? card.Age : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Gender</span>
-                        <span className="">{card.gender || ""}</span>
+                        <span className="">{!!card.Gender ? card.Gender : ""}</span>
                       </div>
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Relation</span>
-                        <span className="">{card.relation || ""}</span>
+                        <span className="">{!!card.Relation ? card.Relation : ""}</span>
                       </div>
                     </div>
                   </div>
@@ -410,27 +472,27 @@ const PersonalTenant = () => {
             </div>
           </div>
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px] mt-3 bg-white p-4 rounded">
-            <span className="">Vehicle : (04)</span>
+            <span className="">Vehicle : {!!residentById.Vehicle_Counting ? "("+residentById.Vehicle_Counting_Total+")" : "00"}</span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {staticVehicles.map((card) => (
+            {residentById.Vehicle_Counting?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm">
                     <div
                       className="card-header text-white d-flex justify-content-between align-items-center"
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{card.vehicleType || ""}</span>
+                      <span className="">{!!card.vehicle_type ? card.vehicle_type : ""}</span>
                     </div>
 
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
-                        <span className="text-[#4F4F4F] mb-2">Email</span>
-                        <span className="">{card.vehicleName || ""}</span>
+                      <span className="text-[#4F4F4F] mb-2">Vehicle Name</span>
+                      <span className="">{!!card.vehicle_name ? card.vehicle_name : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
-                        <span className="text-[#4F4F4F] mb-2">Number</span>
-                        <span className="">{card.vehicleNumber || ""}</span>
+                      <span className="text-[#4F4F4F] mb-2">Vehicle Number</span>
+                      <span className="">{!!card.vehicle_number ? card.vehicle_number : ""}</span>
                       </div>
                     </div>
                   </div>
@@ -641,7 +703,7 @@ const PersonalTenant = () => {
               Announcement Details
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Anouncement.map((card) => (
+              {announcement?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
@@ -649,7 +711,7 @@ const PersonalTenant = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{card.Name || ""}</span>
+                        <span class="">{!!card.Announcement_Title ? card.Announcement_Title : ""}</span>
                       </div>
                     </div>
 
@@ -658,19 +720,19 @@ const PersonalTenant = () => {
                         <span className="text-[#4F4F4F] mb-2">
                           Announcement Date
                         </span>
-                        <span className="">{card.Date || ""}</span>
+                        <span className="">{!!card.Announcement_Date ? moment(card.Announcement_Date).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">
                           Announcement Time
                         </span>
-                        <span className="">{card.Time || ""}</span>
+                        <span className="">{!!card.Announcement_Time ? card.Announcement_Time : ""}</span>
                       </div>
 
                       <div className=" ">
                         <span className="text-[#4F4F4F] mb-3">Description</span>
-                        <p className="mt-1">{card.description || ""}</p>
+                        <p className="mt-1">{!!card.Description ? card.Description : ""}</p>
                       </div>
                     </div>
                   </div>
@@ -678,6 +740,7 @@ const PersonalTenant = () => {
               ))}
             </div>
           </div>
+
         </main>
       </div>
     </div>
