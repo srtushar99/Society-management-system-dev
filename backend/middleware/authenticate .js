@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Guard = require("../models/securityGuardModel");
 const Owner = require('../models/ownerModel');
-const Tenante = require('../models/tenantModel');
+const Tenant = require('../models/tenantModel');
 
 exports.authenticate = async (req, res, next) => {
   try {
@@ -24,7 +24,7 @@ exports.authenticate = async (req, res, next) => {
     user = await Owner.findById(decoded.userId);
   }
   if (!user) {
-    user = await Tenante.findById(decoded.userId);
+    user = await Tenant.findById(decoded.userId);
   }
   
   if (!user) {

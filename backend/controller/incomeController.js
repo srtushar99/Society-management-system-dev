@@ -1,7 +1,7 @@
 const Income = require("../models/incomeModel");
 const moment = require('moment');
 const Owner = require("../models/ownerModel");
-const Tenante = require("../models/tenantModel");
+const Tenant = require("../models/tenantModel");
 
 // CreateIncome function
 exports.CreateIncome = async (req, res) => {
@@ -37,7 +37,7 @@ exports.CreateIncome = async (req, res) => {
         });
 
         const ownerData = await Owner.find();
-        const tenantData = await Tenante.find();
+        const tenantData = await Tenant.find();
     
         const residentList = [...ownerData, ...tenantData];
        

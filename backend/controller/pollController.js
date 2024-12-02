@@ -14,7 +14,7 @@ exports.createPoll = async (req, res) => {
 
     const userType = req.user?.Resident_status;
 
-    if (userType !== 'Owner' && userType !== 'Tenante') {
+    if (userType !== 'Owner' && userType !== 'Tenant') {
       return res.status(403).json({
         success: false,
         message: 'Unauthorized user type for creating a poll.',

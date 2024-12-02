@@ -41,7 +41,7 @@ const CamplaintSchema = new mongoose.Schema({
     },
     createdByType: {
         type: String, 
-        enum: ['Owner', 'Tenante',"User"] 
+        enum: ['Owner', 'Tenant',"User"] 
     }
 }, {
     timestamps: true 

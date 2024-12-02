@@ -5,7 +5,7 @@ const otpGenerator = require('otp-generator');
 const crypto = require("crypto");
 const senData = require("../config/nodemailer"); // Adjust the path accordingly
 const Owner = require("../models/ownerModel");
-const Tenante = require("../models/tenantModel");
+const Tenant = require("../models/tenantModel");
 const Guard = require("../models/securityGuardModel");
 const { hash } = require("../utils/hashpassword");
 const { compare } = require("../utils/compare");
@@ -120,7 +120,7 @@ exports.login = async (req, res) => {
     // Search for the account across all models
     const account =
       (await Owner.findOne(query)) ||
-      (await Tenante.findOne(query)) ||
+      (await Tenant.findOne(query)) ||
       (await User.findOne(query)) ||
       (await Guard.findOne(query));
 
@@ -210,7 +210,7 @@ exports.resetPassword = async (req, res) => {
       (await User.findOne({ Email: email })) ||
       (await Guard.findOne({ MailOrPhone: email })) ||
       (await Owner.findOne({ Email_address: email })) || 
-      (await Tenante.findOne({ Email_address: email }))
+      (await Tenant.findOne({ Email_address: email }))
 
 
     if (!account) {
@@ -297,7 +297,7 @@ exports.SendOtp = async (req, res) => {
         account = await Owner.findOne({ $or: [{ Email_address: EmailOrPhone }, { Phone: EmailOrPhone }] });
       }
       if (!account) {
-        account = await Tenante.findOne({ $or: [{ Email_address: EmailOrPhone }, { Phone: EmailOrPhone }] });
+        account = await Tenant.findOne({ $or: [{ Email_address: EmailOrPhone }, { Phone: EmailOrPhone }] });
       }
 
     if (!account) {
@@ -368,13 +368,13 @@ exports.verifyOtp = async (req, res) => {
         (await User.findOne({ Email_address: EmailOrPhone })) ||
         (await Guard.findOne({ MailOrPhone: EmailOrPhone })) ||
         (await Owner.findOne({ Email_address: EmailOrPhone })) ||
-        (await Tenante.findOne({ Email_address: EmailOrPhone }));
+        (await Tenant.findOne({ Email_address: EmailOrPhone }));
     } else {
       account =
         (await User.findOne({ Phone_Number: EmailOrPhone })) ||
         (await Guard.findOne({ MailOrPhone: EmailOrPhone })) ||
         (await Owner.findOne({ Phone_number: EmailOrPhone })) ||
-        (await Tenante.findOne({ Phone_number: EmailOrPhone }));
+        (await Tenant.findOne({ Phone_number: EmailOrPhone }));
     }
 
     if (!account) {

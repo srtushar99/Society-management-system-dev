@@ -21,13 +21,13 @@ const maintenanceschema = new Schema({
     ResidentList: [
         {
             resident: {
-                type: mongoose.SchemaTypes.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 refPath: 'ResidentList.residentType', 
                 required: true,
             },
             residentType: {
                 type: String,
-                enum: ["Owner", "Tenante"], 
+                enum: ["Owner", "Tenant"],
             },
             paymentStatus: {
                 type: String,
@@ -43,7 +43,7 @@ const maintenanceschema = new Schema({
                 type: Number,
                 default: 0,
             },
-        },
+        },    
     ],
 }, { timestamps: true });
 
