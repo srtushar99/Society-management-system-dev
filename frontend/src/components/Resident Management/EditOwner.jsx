@@ -79,8 +79,9 @@ const EditOwner = () => {
   const navigate = useNavigate();
   const {
     existingData,
-    memberCount = 0,
-    vehicleCount = 0,  } = location.state || {};
+    memberCount = 1,
+    vehicleCount = 3,
+  } = location.state || {};
 
   const [formData, setFormData] = useState({
     fullName: existingData?.Name || "Rachit",
@@ -92,9 +93,9 @@ const EditOwner = () => {
     unit: existingData?.UnitNumber || "1003",
     relation: existingData?.Relation || "Friend",
     memberCount: memberCount,
-    memberDetails: [],
+    memberDetails: staticMembers.slice(0, memberCount),
     vehicleCount: vehicleCount,
-    vehicleDetails: [],
+    vehicleDetails: staticVehicles.slice(0, vehicleCount),
   });
 
   const [photo, setPhoto] = useState(null);
@@ -319,7 +320,6 @@ const EditOwner = () => {
             <button
               onClick={() => {
                 handleButtonClick("editowner");
-       
               }}
               className={`w- lg:h-[50px] sm:w-[100px] px-4 py-3 rounded-t-md transition-all ${
                 activeButton === "editowner"
@@ -331,11 +331,17 @@ const EditOwner = () => {
             </button>
 
             <Link
-              to="/edittenant"
-              onClick={() => handleButtonClick("edittenant")}
+              to={activeButton === "editowner" ? "#" : "/edittenant"}
+              onClick={(e) => {
+                if (activeButton === "editowner") {
+                  e.preventDefault();
+                }
+              }}
               className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-t-md no-underline transition-all ${
-                activeButton === "edittenant"
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
+                activeButton === "editowner"
+                  ? "pointer-events-none opacity-50 cursor-not-allowed bg-gray-300 text-gray-500" 
+                  : activeButton === "edittenant"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]" 
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
             >
