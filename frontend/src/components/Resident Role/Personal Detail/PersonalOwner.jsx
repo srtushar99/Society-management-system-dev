@@ -8,42 +8,7 @@ import ResidentSidebar from "../Resident Sidebar/ResidentSidebar";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from '../../Common/axiosInstance';
 import axios from 'axios';
-
-const staticMembers = [
-  {
-    memberName: "Arlene McCoy",
-
-    Number: "9876543210",
-    email: "rachit@example.com",
-    age: "28",
-    gender: "male",
-    relation: "Self",
-  },
-  {
-    memberName: "Aditi",
-    Number: "9876543211",
-    email: "aditi@example.com",
-    age: "25",
-    gender: "female",
-    relation: "Spouse",
-  },
-  {
-    memberName: "Arjun",
-    Number: "9876543212",
-    email: "arjun@example.com",
-    age: "5",
-    gender: "male",
-    relation: "Son",
-  },
-  {
-    memberName: "Meera",
-    Number: "9876543213",
-    email: "meera@example.com",
-    age: "3",
-    gender: "female",
-    relation: "Daughter",
-  },
-];
+import moment from "moment";
 
 const Pending = [
   {
@@ -92,28 +57,7 @@ const Due = [
   },
 ];
 
-const staticVehicles = [
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Toyota Camry",
-    vehicleNumber: "ABC1234",
-  },
-  {
-    vehicleType: "2-wheeler",
-    vehicleName: "Honda Activa",
-    vehicleNumber: "XYZ5678",
-  },
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Ford Mustang",
-    vehicleNumber: "LMN9101",
-  },
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Ford Mustang",
-    vehicleNumber: "LMN9101",
-  },
-];
+
 
 const Anouncement = [
   {
@@ -154,6 +98,8 @@ const PersonalOwner = () => {
   const [adhar_proofSize, setAdhar_proofSize] = useState("");
   const [adhar_proofName, setAdhar_proofName] = useState("");
   const [address_proofName, setAddress_proofName] = useState("");
+  const [announcement, setAnnouncement] = useState([]);
+  const [pendingMaintenance, setPendingMaintenance] = useState([]);
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -163,6 +109,21 @@ const PersonalOwner = () => {
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+
+   // Fetch Announcement from the API
+   const fetchAnnouncement = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/annoucement/');
+        if (response.status === 200) {
+          setAnnouncement(response.data.announcements); 
+        }
+        
+      } catch (error) {
+        console.error('Error fetching Announcement:', error);
+      }
+    };
+
 
   const processAddress_proof = async (url) => {
     try {
@@ -197,7 +158,6 @@ const PersonalOwner = () => {
 
   const fetchGetByIdResident = async (UserToken) => {
     try {
-      console.log(UserToken);
       const response = await axiosInstance.get(`/v2/resident/owner/${UserToken.userId}`);
       if (response.status === 200) {
         setResidentById(response.data.Resident);
@@ -210,6 +170,17 @@ const PersonalOwner = () => {
   };
 
   
+  const fetchPendingMaintenance = async () => {
+    try {
+      const response = await axiosInstance.get(`/v2/maintenance/getuserandMaintance`);
+      if (response.status === 200) {
+        setPendingMaintenance(response.data.Maintenance);
+      }
+    } catch (error) {
+      console.error("Error fetching PendingMaintenance:", error);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('Society-Management');
     if (token) {
@@ -217,6 +188,8 @@ const PersonalOwner = () => {
         const decodedToken = jwtDecode(token); 
         // setUserTokenId(decodedToken);
         fetchGetByIdResident(decodedToken); 
+        fetchAnnouncement();
+        fetchPendingMaintenance();
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -319,7 +292,7 @@ const PersonalOwner = () => {
                   {/* Phone Number */}
                   <div className="flex flex-col">
                     <span className="text-xl text-[#202224]">Phone Number</span>
-                    <span className="text-gray-700">Baki</span>
+                    <span className="text-gray-700">{!!residentById.Phone_number ? residentById.Phone_number : " "}</span>
                   </div>
                   {/* Email Address */}
                   <div className="flex flex-col mt-2 sm:mt-0 ml-5">
@@ -351,7 +324,7 @@ const PersonalOwner = () => {
                   </div>
                   <div className="flex flex-col mb-4">
                     <span className="text-xl text-[#202224]">Relation</span>
-                    <span className="text-gray-700">Baki</span>
+                    <span className="text-gray-700">{!!residentById.Relation ? residentById.Relation : " "}</span>
                   </div>
                 </div>
 
@@ -417,39 +390,39 @@ const PersonalOwner = () => {
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px] mt-3 bg-white p-4 rounded">
             <span className="">Member : {!!residentById.Member_Counting ? "("+residentById.Member_Counting_Total+")" : "00"}</span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {staticMembers.map((card) => (
+              {residentById.Member_Counting?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
                       className="card-header text-white "
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{card.memberName || ""}</span>
+                      <span className="">{!!card.Full_name ? card.Full_name : ""}</span>
                     </div>
 
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Email</span>
-                        <span className="">{card.email || ""}</span>
+                        <span className="">{!!card.Email_address ? card.Email_address : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Number</span>
-                        <span className="">{card.Number || ""}</span>
+                        <span className="">{!!card.Phone_number ? card.Phone_number : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Age</span>
-                        <span className="">{card.age || ""}</span>
+                        <span className="">{!!card.Age ? card.Age : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Gender</span>
-                        <span className="">{card.gender || ""}</span>
+                        <span className="">{!!card.Gender ? card.Gender : ""}</span>
                       </div>
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Relation</span>
-                        <span className="">{card.relation || ""}</span>
+                        <span className="">{!!card.Relation ? card.Relation : ""}</span>
                       </div>
                     </div>
                   </div>
@@ -460,25 +433,25 @@ const PersonalOwner = () => {
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px] mt-3 bg-white p-4 rounded">
             <span className="">Vehicle : {!!residentById.Vehicle_Counting ? "("+residentById.Vehicle_Counting_Total+")" : "00"}</span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {staticVehicles.map((card) => (
+              {residentById.Vehicle_Counting?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm">
                     <div
                       className="card-header text-white d-flex justify-content-between align-items-center"
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{card.vehicleType || ""}</span>
+                      <span className="">{!!card.vehicle_type ? card.vehicle_type : ""}</span>
                     </div>
 
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
-                        <span className="text-[#4F4F4F] mb-2">Email</span>
-                        <span className="">{card.vehicleName || ""}</span>
+                        <span className="text-[#4F4F4F] mb-2">Vehicle Name</span>
+                        <span className="">{!!card.vehicle_name ? card.vehicle_name : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
-                        <span className="text-[#4F4F4F] mb-2">Number</span>
-                        <span className="">{card.vehicleNumber || ""}</span>
+                        <span className="text-[#4F4F4F] mb-2">Vehicle Number</span>
+                        <span className="">{!!card.vehicle_number ? card.vehicle_number : ""}</span>
                       </div>
                     </div>
                   </div>
@@ -556,7 +529,7 @@ const PersonalOwner = () => {
               Pending Maintanance
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Pending.map((card) => (
+              {pendingMaintenance?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
@@ -564,9 +537,9 @@ const PersonalOwner = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{card.Name || ""}</span>
+                        <span class="">{"Maintenance"}</span>
                         <span class="bg-[#FFFFFF1A] p-1 ps-3 pe-3 rounded-2xl">
-                          {card.status || ""}
+                          {"Pending"}
                         </span>
                       </div>
                     </div>
@@ -574,14 +547,14 @@ const PersonalOwner = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Bill Date</span>
-                        <span className="">{card.BillDate || ""}</span>
+                        <span className="">{!!card.createdAt ? moment(card.createdAt).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">
                           Pending Date
                         </span>
-                        <span className="">{card.pendingDate || ""}</span>
+                        <span className="">{!!card.DueDate ? moment(card.DueDate).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
@@ -589,7 +562,7 @@ const PersonalOwner = () => {
                           Maintanance Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                          {card.amount || ""}
+                          {!!card.Maintenance_Amount ? card.Maintenance_Amount : ""}
                         </span>
                       </div>
 
@@ -598,13 +571,13 @@ const PersonalOwner = () => {
                           Maintenance Penalty Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                          {card.penlatyamount || ""}
+                          {!!card.Penalty_Amount ? card.Penalty_Amount : ""}
                         </span>
                       </div>
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Grand Total</span>
                         <span className="text-[#39973D]">
-                          <span>{card.Total ? `₹${card.Total}` : ""}</span>
+                          <span>{!!card.Maintenance_Amount ? `₹${card.Maintenance_Amount + card.Penalty_Amount}` : ""}</span>
                         </span>
                       </div>
                       <div>
@@ -690,7 +663,7 @@ const PersonalOwner = () => {
               Announcement Details
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Anouncement.map((card) => (
+              {announcement?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
@@ -698,7 +671,7 @@ const PersonalOwner = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{card.Name || ""}</span>
+                        <span class="">{!!card.Announcement_Title ? card.Announcement_Title : ""}</span>
                       </div>
                     </div>
 
@@ -707,19 +680,19 @@ const PersonalOwner = () => {
                         <span className="text-[#4F4F4F] mb-2">
                           Announcement Date
                         </span>
-                        <span className="">{card.Date || ""}</span>
+                        <span className="">{!!card.Announcement_Date ? moment(card.Announcement_Date).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">
                           Announcement Time
                         </span>
-                        <span className="">{card.Time || ""}</span>
+                        <span className="">{!!card.Announcement_Time ? card.Announcement_Time : ""}</span>
                       </div>
 
                       <div className=" ">
                         <span className="text-[#4F4F4F] mb-3">Description</span>
-                        <p className="mt-1">{card.description || ""}</p>
+                        <p className="mt-1">{!!card.Description ? card.Description : ""}</p>
                       </div>
                     </div>
                   </div>
