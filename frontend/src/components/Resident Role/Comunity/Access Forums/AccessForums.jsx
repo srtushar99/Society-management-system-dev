@@ -5,11 +5,13 @@ import ResidentSidebar from '../../Resident Sidebar/ResidentSidebar';
 import { Link } from 'react-router-dom';
 import Header from '../../../Dashboard/Header/HeaderBaner';
 import AvatarImage from '../../../assets/Avatar.png';
-import './AccessForums.css'; // Import CSS file for custom scrollbar
+import './AccessForums.css';
+import EmojiPicker from 'emoji-picker-react';
 
 export default function AccessForums() {
   const [message, setMessage] = useState('');
-  const [selectedContact, setSelectedContact] = useState(null); // Track the selected contact
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const contacts = [
     { id: 1, name: "Michael John", lastMessage: "Hi, John! how are you?", time: "10:27", online: true },
@@ -20,7 +22,7 @@ export default function AccessForums() {
     { id: 6, name: "Cody Fisher", lastMessage: "Thank you for your order!", time: "7:00" }
   ];
 
-  const messages = {
+  const [messages, setMessages] = useState({
     1: [
       { id: 1, sender: "Michael John", content: "Hi there, How are you?", time: "9:20" },
       { id: 2, sender: "User", content: "Waiting for your reply. I have to travel long distance.", time: "9:22" }
@@ -28,21 +30,39 @@ export default function AccessForums() {
     4: [
       { id: 1, sender: "Arlene McCoy", content: "Hi there, How are you?", time: "9:20" },
       { id: 2, sender: "User", content: "Waiting for your reply. I have to travel long distance.", time: "9:22" },
-      { id: 3, sender: "Arlene McCoy", content: "Hi, I am coming there in few minutes. Please wait!", time: "9:30" },
-      { id: 4, sender: "Arlene McCoy", image: "https://media.istockphoto.com/id/534696671/photo/the-9k58-smerch-300mm-multiple-launch-rocket-system.jpg?s=612x612&w=0&k=20&c=GRF0jwT_xRvGAifU-ELkbXmmYp4k89OZO_DJUjZGP_c= ", time: "9:45" },
+      { id: 3, sender: "Arlene McCoy", content: "Hi, I am coming there in a few minutes. Please wait!", time: "9:30" },
+      { id: 4, sender: "Arlene McCoy", image: "https://media.istockphoto.com/id/534696671/photo/the-9k58-smerch-300mm-multiple-launch-rocket-system.jpg?s=612x612&w=0&k=20&c=GRF0jwT_xRvGAifU-ELkbXmmYp4k89OZO_DJUjZGP_c=", time: "9:45" },
       { id: 5, sender: "User", file: { name: "document.pdf", size: "2.3 MB" }, time: "10:00" }
     ]
-  };
+  });
 
   const handleContactClick = (contact) => {
     setSelectedContact(contact);
   };
 
+  const handleSendMessage = () => {
+    if (!message || !selectedContact) return;
+
+    const newMessage = {
+      id: Math.random(), // Temporary unique ID
+      sender: "User",
+      content: message,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setMessages({
+      ...messages,
+      [selectedContact.id]: [...(messages[selectedContact.id] || []), newMessage],
+    });
+
+    setMessage('');
+  };
+  const handleEmojiClick = (emoji) => {
+    setNewMessage((prev) => prev + emoji.emoji);
+  };
   return (
     <Container fluid className="bg-light h-100 p-0">
-      {/* Header */}
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-        {/* Breadcrumb Navigation */}
         <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
           <Link
             to="/ResidentDashboard"
@@ -60,17 +80,14 @@ export default function AccessForums() {
 
       <Row className="h-100">
         <div className='col-2'>
-          {/* Sidebar */}
           <Col md={2} className="border-end bg-white">
             <ResidentSidebar />
           </Col>
         </div>
 
-        {/* Main Chat Interface */}
         <div className='col-10 py-2'>
           <Col md={12} className="d-flex flex-column border py-5 mx-1" style={{ borderRadius: "10px" }}>
             <Row className="h-100 py-2">
-              {/* Contacts Sidebar */}
               <Col md={3} className="border-end bg-light">
                 <h5>Chat</h5>
                 <Form.Control type="text" placeholder="Search Here" className="mb-3" />
@@ -94,12 +111,10 @@ export default function AccessForums() {
                 </ListGroup>
               </Col>
 
-              {/* Chat Area */}
-              <Col md={8} className="d-flex flex-column bg-white ms-2 chat-area ">
-                {/* Chat Header */}
+              <Col md={8} className="d-flex flex-column bg-white ms-2 chat-area">
                 {selectedContact && (
                   <>
-                    <div className="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2  ">
+                    <div className="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
                       <div className="d-flex align-items-center gap-3 py-2">
                         <Image roundedCircle src={AvatarImage} alt={selectedContact.name} />
                         <div>
@@ -114,13 +129,12 @@ export default function AccessForums() {
                       </div>
                     </div>
 
-                    {/* Messages */}
                     <div className="flex-grow-1 overflow-auto mb-3 px-3 chat-messages">
                       {messages[selectedContact.id]?.map(msg => (
                         <div key={msg.id} className={`d-flex ${msg.sender === 'User' ? 'justify-content-end' : ''} mb-2`}>
-                          <div className={`p-2 rounded ${msg.sender === 'User' ? 'text-white' : 'bg-light'}`} style={{ backgroundColor: msg.sender === 'User' ? "#5678E9" : "white" }}>
+                          <div className={`p-2 rounded ${msg.sender === 'User' ? 'text-white bg-primary' : 'bg-light'}`}>
                             {msg.content && <div>{msg.content}</div>}
-                            {msg.image && <Image src={msg.image} style={{ width: "300px",height:"200px" }} className='img-fluid' rounded fluid />}
+                            {msg.image && <Image src={msg.image} style={{ width: "300px", height: "200px" }} className="img-fluid" rounded fluid />}
                             {msg.file && (
                               <div className="d-flex align-items-center gap-2">
                                 <span><strong>{msg.file.name}</strong> - {msg.file.size}</span>
@@ -134,13 +148,23 @@ export default function AccessForums() {
                   </>
                 )}
 
-                {/* Message Input */}
                 <Form className="d-flex align-items-center gap-2 border-top p-3">
-                  <Button variant="link"><FaSmile /></Button>
-                  <Form.Control type="text" placeholder="Type a message" value={message} onChange={(e) => setMessage(e.target.value)} />
+                  <Button variant="link"   ><FaSmile  alt="Emoji Picker" onClick={() => setShowEmojiPicker(!showEmojiPicker)}/> {showEmojiPicker && (
+        
+            <EmojiPicker onEmojiClick={handleEmojiClick} />
+        
+        )}</Button>
+                  <Form.Control
+                    type="text"
+                    placeholder="Type a message"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
                   <Button variant="link"><FaPaperclip /></Button>
-                  <Button variant="link"><FaMicrophone /></Button>
-                  <Button disabled={!message} variant="primary"><FaArrowRight /></Button>
+                  <Button variant="link" ><FaMicrophone /></Button>
+                  <Button variant="primary" onClick={handleSendMessage} disabled={!message}>
+                    <FaArrowRight />
+                  </Button>
                 </Form>
               </Col>
             </Row>
