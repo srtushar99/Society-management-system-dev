@@ -176,7 +176,6 @@ const Note = (card) => {
               </div>
             )}
           </div>
-
           <HeaderBaner />
         </header>
 
