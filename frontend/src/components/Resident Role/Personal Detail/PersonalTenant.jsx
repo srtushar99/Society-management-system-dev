@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import gallary from "../../assets/gallery.png";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
@@ -6,13 +6,13 @@ import profile from "../../assets/Group 1000004173.png";
 import "../../Sidebar/sidebar.css";
 import ResidentSidebar from "../Resident Sidebar/ResidentSidebar";
 import { jwtDecode } from "jwt-decode";
-import axios from 'axios';
+import axios from "axios";
 import moment from "moment";
-import axiosInstance from '../../Common/axiosInstance';
+import axiosInstance from "../../Common/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import PayNow from "../Payment Portal/Maintenance Invoices/Paynow";
 
-
-const PersonalTenant = () => {
+const PersonalTenant = ({ isOpen, onClose }) => {
   const [activeButton, setActiveButton] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
   const [announcement, setAnnouncement] = useState([]);
@@ -25,6 +25,8 @@ const PersonalTenant = () => {
   const [dueMaintenance, setDueMaintenance] = useState([]);
   const [totalMaintenance_Amount, setTotalMaintenance_Amount] = useState(0);
   const [totalPenalty_Amount, setTotalPenalty_Amount] = useState(0);
+  const [isPayNowOpen, setIsPayNowOpen] = useState(false);
+  const modalRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -32,113 +34,133 @@ const PersonalTenant = () => {
     setActiveButton(buttonType);
   };
 
-  // Toggle search input visibility
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+  const handleClose = () => {
+    if (onClose) onClose();
+  };
+  const handlePaymentSuccess = () => {
+    setIsPayNowOpen(false);
+    console.log("Payment successful!");
+    onClose();
+  };
 
+  const handlePayNow = () => {
+    console.log("Pay");
+    setIsPayNowOpen(true);
+  };
 
   const fetchAnnouncement = async () => {
     try {
-        const response = await axiosInstance.get('/v2/annoucement/');
-        if (response.status === 200) {
-          setAnnouncement(response.data.announcements); 
-        }
-      } catch (error) {
-        console.error('Error fetching Announcement:', error);
+      const response = await axiosInstance.get("/v2/annoucement/");
+      if (response.status === 200) {
+        setAnnouncement(response.data.announcements);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching Announcement:", error);
+    }
+  };
 
-
-    const fetchPendingMaintenance = async () => {
-      const currentDate = new Date();
-      try {
-        const response = await axiosInstance.get(`/v2/maintenance/getuserandMaintance`);
-        if (response.status === 200) {
-          const allMaintenance = response.data.Maintenance;
-          const futureData = allMaintenance.filter((item) => new Date(item.DueDate) >= currentDate);
-          const dueData = allMaintenance.filter((item) => new Date(item.DueDate) <= currentDate);
-          const totalMaintenance_Amount = futureData.reduce((sum, item) => sum + (item.Maintenance_Amount || 0), 0);
-          const totalPenalty_Amount = futureData.reduce((sum, item) => sum + (item.Penalty_Amount || 0), 0);
-          setTotalMaintenance_Amount(totalMaintenance_Amount);
-          setTotalPenalty_Amount(totalPenalty_Amount);
-          setPendingMaintenance(futureData);
-          setDueMaintenance(dueData);
-          
-        }
-      } catch (error) {
-        console.error("Error fetching PendingMaintenance:", error);
+  const fetchPendingMaintenance = async () => {
+    const currentDate = new Date();
+    try {
+      const response = await axiosInstance.get(
+        `/v2/maintenance/getuserandMaintance`
+      );
+      if (response.status === 200) {
+        const allMaintenance = response.data.Maintenance;
+        const futureData = allMaintenance.filter(
+          (item) => new Date(item.DueDate) >= currentDate
+        );
+        const dueData = allMaintenance.filter(
+          (item) => new Date(item.DueDate) <= currentDate
+        );
+        const totalMaintenance_Amount = futureData.reduce(
+          (sum, item) => sum + (item.Maintenance_Amount || 0),
+          0
+        );
+        const totalPenalty_Amount = futureData.reduce(
+          (sum, item) => sum + (item.Penalty_Amount || 0),
+          0
+        );
+        setTotalMaintenance_Amount(totalMaintenance_Amount);
+        setTotalPenalty_Amount(totalPenalty_Amount);
+        setPendingMaintenance(futureData);
+        setDueMaintenance(dueData);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching PendingMaintenance:", error);
+    }
+  };
 
+  const processAddress_proof = async (url) => {
+    try {
+      const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setAddress_proofName(extractedFileName);
+      setAddress_proofSize(fileSizeMB);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setAddress_proofSize("Unknown");
+      setAddress_proofName("Unknown");
+    }
+  };
 
-    const processAddress_proof = async (url) => {
-      try {
-        const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
-        const response = await axios.head(url);
-        const fileSizeBytes = response.headers['content-length'];
-        const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
-        setAddress_proofName(extractedFileName);
-        setAddress_proofSize(fileSizeMB);
-      } catch (error) {
-        console.error("Error fetching file metadata:", error.message);
-        setAddress_proofSize("Unknown");
-        setAddress_proofName("Unknown");
-      }
-    };
-  
-  
-    const processAdhar_proof = async (url) => {
-      try {
-        const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
-        const response = await axios.head(url);
-        const fileSizeBytes = response.headers['content-length'];
-        const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
-        setAdhar_proofName(extractedFileName);
-        setAdhar_proofSize(fileSizeMB);
-      } catch (error) {
-        console.error("Error fetching file metadata:", error.message);
-        setAdhar_proofSize("Unknown");
-        setAdhar_proofName("Unknown");
-      }
-    };
+  const processAdhar_proof = async (url) => {
+    try {
+      const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setAdhar_proofName(extractedFileName);
+      setAdhar_proofSize(fileSizeMB);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setAdhar_proofSize("Unknown");
+      setAdhar_proofName("Unknown");
+    }
+  };
 
-    const fetchGetByIdResident = async (UserToken) => {
-      try {
-        const response = await axiosInstance.get(`/v2/resident/owner/${UserToken.userId}`);
-        if (response.status === 200) {
-          setResidentById(response.data.Resident);
-          processAdhar_proof(response.data.Resident.Adhar_front);
-          processAddress_proof(response.data.Resident.Address_proof);
-          if(response.data.Resident.Resident_Status == "Owner"){
-            // setIsOwner(true);
-            setActiveButton("PersonalDetail");
-            // navigate("/PersonalDetail");
-          }else{
-            // setIsOwner(false);
-            setActiveButton("TenantDetail");
-            //  navigate("/TenantDetail");
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching GetByIdResident:", error);
-      }
-    };
-
-    useEffect(() => {
-      const token = localStorage.getItem('Society-Management');
-      if (token) {
-        try {
-          const decodedToken = jwtDecode(token); 
-          fetchGetByIdResident(decodedToken); 
-          fetchAnnouncement();
-          fetchPendingMaintenance();
-        } catch (error) {
-          console.error("Error decoding token:", error);
+  const fetchGetByIdResident = async (UserToken) => {
+    try {
+      const response = await axiosInstance.get(
+        `/v2/resident/owner/${UserToken.userId}`
+      );
+      if (response.status === 200) {
+        setResidentById(response.data.Resident);
+        processAdhar_proof(response.data.Resident.Adhar_front);
+        processAddress_proof(response.data.Resident.Address_proof);
+        if (response.data.Resident.Resident_Status == "Owner") {
+          // setIsOwner(true);
+          setActiveButton("PersonalDetail");
+          // navigate("/PersonalDetail");
+        } else {
+          // setIsOwner(false);
+          setActiveButton("TenantDetail");
+          //  navigate("/TenantDetail");
         }
       }
-    }, []);
+    } catch (error) {
+      console.error("Error fetching GetByIdResident:", error);
+    }
+  };
 
+  useEffect(() => {
+    const token = localStorage.getItem("Society-Management");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        fetchGetByIdResident(decodedToken);
+        fetchAnnouncement();
+        fetchPendingMaintenance();
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
 
   return (
     <div className="d-flex w-100 h-100 bg-light">
@@ -221,104 +243,155 @@ const PersonalTenant = () => {
               <p className="text-[#202224] " style={{ fontSize: "18px" }}>
                 Owner Name
               </p>
-              <span className="text-[#A7A7A7]">{!!residentById.Owner_Full_name ? residentById.Owner_Full_name : " "}</span>
+              <span className="text-[#A7A7A7]">
+                {!!residentById.Owner_Full_name
+                  ? residentById.Owner_Full_name
+                  : " "}
+              </span>
             </div>
             <div className="mr-10">
               <p className="text-[#202224] " style={{ fontSize: "18px" }}>
                 {" "}
                 Owner Phone
               </p>
-              <span className="text-[#A7A7A7]">{!!residentById.Owner_Phone ? residentById.Owner_Phone : " "}</span>
+              <span className="text-[#A7A7A7]">
+                {!!residentById.Owner_Phone ? residentById.Owner_Phone : " "}
+              </span>
             </div>
             <div>
               <p className="text-[#202224] " style={{ fontSize: "18px" }}>
                 Owner Address
               </p>
               <span className="text-[#A7A7A7]">
-              {!!residentById.Owner_Address ? residentById.Owner_Address : " "}
+                {!!residentById.Owner_Address
+                  ? residentById.Owner_Address
+                  : " "}
               </span>
             </div>
           </div>
           <div className="2xl:w-[1550px] sm:w-[200px] 2xl:ml-[40px] mt-1 bg-white rounded">
             <div className="p-4">
-              <div className="sm:flex">
+              <div className="sm:flex sm:flex-col 2xl:flex-row">
                 {/* Profile Image */}
-                <div className="rounded-full flex">
+                <div className="rounded-full flex sm:mb-4 ">
                   <img
-                    src={!!residentById.profileImage ? residentById.profileImage : profile}
+                    src={
+                      !!residentById.profileImage
+                        ? residentById.profileImage
+                        : profile
+                    }
                     alt="Profile Image"
-                    className="2xl:w-[150px] w-[70px] h-[70px] 2xl:h-[150px] object-cover"
+                    className="2xl:w-[160px] border-5 w-[80px] h-[70px] 2xl:h-[150px] rounded-full object-cover"
                   />
-                  <div className="flex flex-col ml-20">
-                    <span className="text-xl text-[#202224] 2xl:flex-nowrap">
-                      Full Name
-                    </span>
-                    <span className="text-gray-700">{!!residentById.Full_name ? residentById.Full_name : " "}</span>
+                  <div className="flex flex-col 2xl:ml-[50px] ml-10 sm:items-start sm:mt-2">
+                    <div className="flex flex-col mb-3 ">
+                      <span className="text-xl text-[#202224] whitespace-nowrap">
+                        Full Name
+                      </span>
+                      <span className="text-[#A7A7A7]">
+                        {!!residentById.Full_name
+                          ? residentById.Full_name
+                          : " "}
+                      </span>
+                    </div>
+                    <div className="flex flex-col  mt-2">
+                      <span className="text-xl text-[#202224]">Wing</span>
+                      <span className="text-[#A7A7A7]">
+                        {!!residentById.Wing ? residentById.Wing : " "}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Contact Information Section */}
+                <div className="2xl:ml-[100px]">
+                  <div className="2xl:flex mt-2">
+                    <div className="flex flex-row items-start space-x-10">
+                      <div className="flex flex-col">
+                        <span className="text-xl text-[#202224]">
+                          Phone Number
+                        </span>
+                        <span className="text-[#A7A7A7]">
+                          {!!residentById.Phone_number
+                            ? residentById.Phone_number
+                            : " "}
+                        </span>
+                      </div>
+                      </div>
+                      <div className="flex flex-col 2xl:ml-[100px] sm:mt-0">
+                        <span className="text-xl text-[#202224]">
+                          Email Address
+                        </span>
+                        <span className="text-[#A7A7A7]">
+                          {!!residentById.Email_address
+                            ? residentById.Email_address
+                            : " "}
+                        </span>
+                      </div>
 
-                <div className="2xl:flex  2xl:ml-12">
-                  <div className="flex flex-col">
-                    <span className="text-xl text-[#202224]">Phone Number</span>
-                    <span className="text-gray-700">{!!residentById.Phone_number ? residentById.Phone_number : " "}</span>
-                  </div>
-                  <div className="flex flex-col mt-2">
-                    <span className="text-xl text-[#202224]">
-                      Email Address
-                    </span>
-                    <span className="text-gray-700">
-                    {!!residentById.Email_address ? residentById.Email_address : " "}
-                    </span>
-                  </div>
-                  <div className="2xl:flex">
-                    <div className="flex flex-col mt-2 2xl:ml-12">
-                      <span className="text-xl text-[#202224]">Gender</span>
-                      <span className="text-gray-700">{!!residentById.Gender ? residentById.Gender : " "}</span>
+                     
+                      <div className="flex flex-col 2xl:ml-[40px] sm:mt-0">
+                        <span className="text-xl text-[#202224]">Gender</span>
+                        <span className="text-gray-700">
+                          {!!residentById.Gender ? residentById.Gender : " "}
+                        </span>
+                      </div>
                     </div>
-                  {/* <div className="flex mt-4 2xl:ml-12"> */}
-                    <div className="flex flex-col">
-                      <span className="text-xl text-[#202224]">Age</span>
-                      <span className="text-gray-700">{!!residentById.Age ? residentById.Age : " "}</span>
-                    </div>
+                    <div className="mt-6 sm:grid md:grid-cols-2 lg:grid-cols-4">
+                      <div className="flex flex-col mb-2">
+                        <span className="text-xl text-[#202224]">Age</span>
+                        <span className="text-gray-700">
+                          {!!residentById.Age ? residentById.Age : " "}
+                        </span>
+                      </div>
+                  
+                      <div className="flex flex-col 2xl:ml-[50px] mb-2">
+                        <span className="text-xl text-[#202224]">Unit</span>
+                        <span className="text-gray-700">
+                          {!!residentById.Unit ? residentById.Unit : " "}
+                        </span>
+                      </div>
 
-                    <div className="flex flex-col">
-                      <span className="text-xl text-[#202224]">Relation</span>
-                      <span className="text-gray-700">{!!residentById.Relation ? residentById.Relation : " "}</span>
+                      <div className="flex flex-col 2xl:ml-[120px] mb-4">
+                        <span className="text-xl text-[#202224]">Relation</span>
+                        <span className="text-gray-700">
+                          {!!residentById.Relation
+                            ? residentById.Relation
+                            : " "}
+                        </span>
+                      </div>
+                
                     </div>
-                  </div>
-                  </div>
-                  <div className="2xl:flex flex">
-                  <div className="flex flex-col">
-                    <span className="text-xl text-[#202224]">Wing</span>
-                    <span className="text-gray-700">{!!residentById.Wing ? residentById.Wing : " "}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xl text-[#202224]">Unit</span>
-                    <span className="text-gray-700">{!!residentById.Unit ? residentById.Unit : " "}</span>
-                  </div>
+             
                 </div>
-            
+           
+
                 {/* </div> */}
-                <div className="flex p-2 mt-4">
+                <div className="flex p-2 w-[400px] sm:flex-col ">
                   <div className="">
                     {/* First File */}
                     <div className="bg-white rounded-lg shadow-md p-1">
                       <a
-                        href={!!residentById.Address_proof ? residentById.Address_proof : " "}
+                        href={
+                          !!residentById.Address_proof
+                            ? residentById.Address_proof
+                            : " "
+                        }
                         target="_blank"
                         className="flex items-center w-full no-underline"
                       >
                         <div className="w-10 h-10 rounded-full flex items-center justify-center">
                           <img
-                            src={!!residentById.Address_proof ? residentById.Address_proof : " "}
+                            src={
+                              !!residentById.Address_proof
+                                ? residentById.Address_proof
+                                : " "
+                            }
                             className="h-6 w-6 text-gray-500"
                           />
                         </div>
                         <div className="ml-4">
                           <span className="text-[#202224]">
-                          {address_proofName}
+                            {address_proofName}
                           </span>
                           <p className="text-gray-600">{address_proofSize}</p>
                         </div>
@@ -328,19 +401,27 @@ const PersonalTenant = () => {
                     {/* Second File */}
                     <div className="bg-white rounded-lg mt-2 shadow-md p-1">
                       <a
-                       href={!!residentById.Adhar_front ? residentById.Adhar_front : " "}
+                        href={
+                          !!residentById.Adhar_front
+                            ? residentById.Adhar_front
+                            : " "
+                        }
                         target="_blank"
                         className="flex items-center w-full no-underline"
                       >
                         <div className="w-10 h-10 rounded-full flex items-center justify-center">
                           <img
-                            src={!!residentById.Adhar_front ? residentById.Adhar_front : " "}
+                            src={
+                              !!residentById.Adhar_front
+                                ? residentById.Adhar_front
+                                : " "
+                            }
                             className="h-6 w-6 text-gray-500"
                           />
                         </div>
                         <div className="ml-4">
                           <span className="text-[#202224]">
-                          {adhar_proofName}
+                            {adhar_proofName}
                           </span>
                           <p className="text-gray-600">{adhar_proofSize}</p>
                         </div>
@@ -353,27 +434,38 @@ const PersonalTenant = () => {
           </div>
 
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px] mt-3 bg-white p-4 rounded">
-            <span className="">Member : {!!residentById.Member_Counting ? "("+residentById.Member_Counting_Total+")" : "00"}</span>
+            <span className="">
+              Member :{" "}
+              {!!residentById.Member_Counting
+                ? "(" + residentById.Member_Counting_Total + ")"
+                : "00"}
+            </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-            {residentById.Member_Counting?.map((card) => (
+              {residentById.Member_Counting?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
                       className="card-header text-white "
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{!!card.Full_name ? card.Full_name : ""}</span>
+                      <span className="">
+                        {!!card.Full_name ? card.Full_name : ""}
+                      </span>
                     </div>
 
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Email</span>
-                        <span className="">{!!card.Email_address ? card.Email_address : ""}</span>
+                        <span className="">
+                          {!!card.Email_address ? card.Email_address : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Number</span>
-                        <span className="">{!!card.Phone_number ? card.Phone_number : ""}</span>
+                        <span className="">
+                          {!!card.Phone_number ? card.Phone_number : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
@@ -383,11 +475,15 @@ const PersonalTenant = () => {
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Gender</span>
-                        <span className="">{!!card.Gender ? card.Gender : ""}</span>
+                        <span className="">
+                          {!!card.Gender ? card.Gender : ""}
+                        </span>
                       </div>
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Relation</span>
-                        <span className="">{!!card.Relation ? card.Relation : ""}</span>
+                        <span className="">
+                          {!!card.Relation ? card.Relation : ""}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -396,27 +492,42 @@ const PersonalTenant = () => {
             </div>
           </div>
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px] mt-3 bg-white p-4 rounded">
-            <span className="">Vehicle : {!!residentById.Vehicle_Counting ? "("+residentById.Vehicle_Counting_Total+")" : "00"}</span>
+            <span className="">
+              Vehicle :{" "}
+              {!!residentById.Vehicle_Counting
+                ? "(" + residentById.Vehicle_Counting_Total + ")"
+                : "00"}
+            </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-            {residentById.Vehicle_Counting?.map((card) => (
+              {residentById.Vehicle_Counting?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm">
                     <div
                       className="card-header text-white d-flex justify-content-between align-items-center"
                       style={{ backgroundColor: "#5678E9" }}
                     >
-                      <span className="">{!!card.vehicle_type ? card.vehicle_type : ""}</span>
+                      <span className="">
+                        {!!card.vehicle_type ? card.vehicle_type : ""}
+                      </span>
                     </div>
 
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
-                      <span className="text-[#4F4F4F] mb-2">Vehicle Name</span>
-                      <span className="">{!!card.vehicle_name ? card.vehicle_name : ""}</span>
+                        <span className="text-[#4F4F4F] mb-2">
+                          Vehicle Name
+                        </span>
+                        <span className="">
+                          {!!card.vehicle_name ? card.vehicle_name : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
-                      <span className="text-[#4F4F4F] mb-2">Vehicle Number</span>
-                      <span className="">{!!card.vehicle_number ? card.vehicle_number : ""}</span>
+                        <span className="text-[#4F4F4F] mb-2">
+                          Vehicle Number
+                        </span>
+                        <span className="">
+                          {!!card.vehicle_number ? card.vehicle_number : ""}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -456,7 +567,9 @@ const PersonalTenant = () => {
                   className="rounded-r-lg lg:mt-10 my-auto"
                 ></div>
                 <p className="text-gray-500 text-sm">Maintenance Amount</p>
-                <p className="font-bold text-lg text-red-500">₹ {totalMaintenance_Amount}</p>
+                <p className="font-bold text-lg text-red-500">
+                  ₹ {totalMaintenance_Amount}
+                </p>
               </div>
 
               {/* Second Card */}
@@ -484,7 +597,9 @@ const PersonalTenant = () => {
                   className="rounded-r-lg lg:mt-10 my-auto"
                 ></div>
                 <p className="text-gray-500 text-sm">Penalty Amount</p>
-                <p className="font-bold text-lg text-red-500">₹ {totalPenalty_Amount}</p>
+                <p className="font-bold text-lg text-red-500">
+                  ₹ {totalPenalty_Amount}
+                </p>
               </div>
             </div>
           </div>
@@ -501,9 +616,9 @@ const PersonalTenant = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                      <span class="">{"Maintenance"}</span>
+                        <span class="">{"Maintenance"}</span>
                         <span class="bg-[#FFFFFF1A] p-1 ps-3 pe-3 rounded-2xl">
-                        {"Pending"}
+                          {"Pending"}
                         </span>
                       </div>
                     </div>
@@ -511,14 +626,22 @@ const PersonalTenant = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Bill Date</span>
-                        <span className="">{!!card.createdAt ? moment(card.createdAt).format("DD/MM/YYYY") : ""}</span>
+                        <span className="">
+                          {!!card.createdAt
+                            ? moment(card.createdAt).format("DD/MM/YYYY")
+                            : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">
                           Pending Date
                         </span>
-                        <span className="">{!!card.DueDate ? moment(card.DueDate).format("DD/MM/YYYY") : ""}</span>
+                        <span className="">
+                          {!!card.DueDate
+                            ? moment(card.DueDate).format("DD/MM/YYYY")
+                            : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
@@ -526,7 +649,9 @@ const PersonalTenant = () => {
                           Maintanance Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                        {!!card.Maintenance_Amount ? card.Maintenance_Amount : ""}
+                          {!!card.Maintenance_Amount
+                            ? card.Maintenance_Amount
+                            : ""}
                         </span>
                       </div>
 
@@ -535,13 +660,19 @@ const PersonalTenant = () => {
                           Maintenance Penalty Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                        {!!card.Penalty_Amount ? card.Penalty_Amount : ""}
+                          {!!card.Penalty_Amount ? card.Penalty_Amount : ""}
                         </span>
                       </div>
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Grand Total</span>
                         <span className="text-[#39973D]">
-                        <span>{!!card.Maintenance_Amount ? `₹${card.Maintenance_Amount + card.Penalty_Amount}` : ""}</span>
+                          <span>
+                            {!!card.Maintenance_Amount
+                              ? `₹${
+                                  card.Maintenance_Amount + card.Penalty_Amount
+                                }`
+                              : ""}
+                          </span>
                         </span>
                       </div>
                       <div>
@@ -551,6 +682,7 @@ const PersonalTenant = () => {
                             background:
                               "linear-gradient(90deg, #FE512E 0%, #F09619 100%)",
                           }}
+                          onClick={handlePayNow}
                         >
                           Pay Now
                         </button>
@@ -575,9 +707,9 @@ const PersonalTenant = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                      <span class="">{"Maintenance"}</span>
+                        <span class="">{"Maintenance"}</span>
                         <span class="bg-[#FFFFFF1A] p-1 ps-3 pe-3 rounded-2xl">
-                        {"Pending"}
+                          {"Pending"}
                         </span>
                       </div>
                     </div>
@@ -585,13 +717,19 @@ const PersonalTenant = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Date</span>
-                        <span className="">{!!card.DueDate ? moment(card.DueDate).format("DD/MM/YYYY") : ""}</span>
+                        <span className="">
+                          {!!card.DueDate
+                            ? moment(card.DueDate).format("DD/MM/YYYY")
+                            : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Amount</span>
                         <span className="text-[#E74C3C]">
-                        {!!card.Maintenance_Amount ? card.Maintenance_Amount : ""}
+                          {!!card.Maintenance_Amount
+                            ? card.Maintenance_Amount
+                            : ""}
                         </span>
                       </div>
 
@@ -600,7 +738,9 @@ const PersonalTenant = () => {
                           Due Maintenance Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                        {!!card.PenaltyDay ? card.PenaltyDay*card.Penalty_Amount : "00"}
+                          {!!card.PenaltyDay
+                            ? card.PenaltyDay * card.Penalty_Amount
+                            : "00"}
                         </span>
                       </div>
 
@@ -611,6 +751,7 @@ const PersonalTenant = () => {
                             background:
                               "linear-gradient(90deg, #FE512E 0%, #F09619 100%)",
                           }}
+                          onClick={handlePayNow}
                         >
                           Pay Now
                         </button>
@@ -635,7 +776,11 @@ const PersonalTenant = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{!!card.Announcement_Title ? card.Announcement_Title : ""}</span>
+                        <span class="">
+                          {!!card.Announcement_Title
+                            ? card.Announcement_Title
+                            : ""}
+                        </span>
                       </div>
                     </div>
 
@@ -644,19 +789,37 @@ const PersonalTenant = () => {
                         <span className="text-[#4F4F4F] mb-2">
                           Announcement Date
                         </span>
-                        <span className="">{!!card.Announcement_Date ? moment(card.Announcement_Date).format("DD/MM/YYYY") : ""}</span>
+                        <span className="">
+                          {!!card.Announcement_Date
+                            ? moment(card.Announcement_Date).format(
+                                "DD/MM/YYYY"
+                              )
+                            : ""}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">
                           Announcement Time
                         </span>
-                        <span className="">{!!card.Announcement_Time ? card.Announcement_Time : ""}</span>
+                        <span className="">
+                          {!!card.Announcement_Time
+                            ? card.Announcement_Time
+                            : ""}
+                        </span>
                       </div>
 
-                      <div className=" ">
-                        <span className="text-[#4F4F4F] mb-3">Description</span>
-                        <p className="mt-1">{!!card.Description ? card.Description : ""}</p>
+                      <div className="h-[100px]">
+                        <h3 className="text-sm text-[#4F4F4F] mb-2">
+                          Description:
+                        </h3>
+                        <div className="max-h-[80px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                          <span className="text-md text-[#202224] break-words leading-6">
+                            {!!card.Description
+                              ? card.Description
+                              : "No description available"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -664,9 +827,14 @@ const PersonalTenant = () => {
               ))}
             </div>
           </div>
-
         </main>
       </div>
+      {isPayNowOpen && (
+        <PayNow
+          onClose={() => setIsPayNowOpen(false)}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
+      )}
     </div>
   );
 };
