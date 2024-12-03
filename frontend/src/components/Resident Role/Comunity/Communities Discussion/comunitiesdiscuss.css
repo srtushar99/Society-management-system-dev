@@ -1,0 +1,38 @@
+/* Custom scrollbar for chat messages */
+.chat-messages {
+    max-height: 500px; /* Adjust height as needed */
+    overflow-y: auto;
+  }
+  
+  .contacts-sidebar {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  /* Style for scrollbar */
+  .chat-messages::-webkit-scrollbar, .contacts-sidebar::-webkit-scrollbar {
+    width: 4px;
+   
+  }
+  
+  .chat-messages::-webkit-scrollbar-track, .contacts-sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb, .contacts-sidebar::-webkit-scrollbar-thumb {
+    background:black;
+    border-radius: 4px;
+   
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb:hover, .contacts-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .d-none.d-sm-flex {
+      display: none !important;
+    }
+  }
+  
