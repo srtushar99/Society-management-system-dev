@@ -234,6 +234,37 @@ const ResidentSidebar = () => {
             </Link>
           </div>
 
+          <div style={{ position: "relative" }}>
+            <div style={getIndicatorStyle("ServiceAndComplaint")}></div>
+            <Link
+              to="/complain"
+              style={getLinkStyle("complain")}
+              onClick={() => handleLinkClick("complain", "/complain")}
+            >
+              <img
+                src={FacilitiesIcon}
+                style={getIconStyle("complain")}
+                alt="complain"
+              />
+             Service And Complaint
+            </Link>
+          </div>
+
+          <div style={{ position: "relative" }}>
+            <div style={getIndicatorStyle("EventsParticipation",)}></div>
+            <Link
+              to="/EventsParticipation"
+              style={getLinkStyle("EventsParticipation")}
+              onClick={() => handleLinkClick("EventsParticipation", "/EventsParticipation")}
+            >
+              <img
+                src={AnnouncementIcon}
+                style={getIconStyle("EventsParticipation")}
+                alt="EventsParticipation"
+              />
+             Events Participation
+            </Link>
+          </div>
           <div style={{ position: "relative", zIndex: "9898988" }}>
             <div style={getIndicatorStyle("Community")}></div>
             <Dropdown
@@ -314,21 +345,7 @@ const ResidentSidebar = () => {
             </Dropdown>
           </div>
 
-          <div style={{ position: "relative" }}>
-            <div style={getIndicatorStyle("ServiceAndComplaint")}></div>
-            <Link
-              to="/complain"
-              style={getLinkStyle("complain")}
-              onClick={() => handleLinkClick("complain", "/complain")}
-            >
-              <img
-                src={FacilitiesIcon}
-                style={getIconStyle("complain")}
-                alt="complain"
-              />
-             Service And Complaint
-            </Link>
-          </div>
+        
 
           <div style={{ position: "relative" }}>
             <div style={getIndicatorStyle("PaymentPortal")}></div>
@@ -408,21 +425,7 @@ const ResidentSidebar = () => {
             </Link>
           </div>
 
-          <div style={{ position: "relative" }}>
-            <div style={getIndicatorStyle("EventsParticipation",)}></div>
-            <Link
-              to="/EventsParticipation"
-              style={getLinkStyle("EventsParticipation")}
-              onClick={() => handleLinkClick("EventsParticipation", "/EventsParticipation")}
-            >
-              <img
-                src={AnnouncementIcon}
-                style={getIconStyle("EventsParticipation")}
-                alt="EventsParticipation"
-              />
-             Events Participation
-            </Link>
-          </div>
+        
         </Nav>
 
         <div style={{ marginTop: "auto" }}>
