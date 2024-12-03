@@ -102,6 +102,8 @@ const PersonalOwner = () => {
   const [announcement, setAnnouncement] = useState([]);
   const [pendingMaintenance, setPendingMaintenance] = useState([]);
   const [dueMaintenance, setDueMaintenance] = useState([]);
+  const [totalMaintenance_Amount, setTotalMaintenance_Amount] = useState(0);
+  const [totalPenalty_Amount, setTotalPenalty_Amount] = useState(0);
   // const [isOwner, setIsOwner] = useState(false);
 
 
@@ -192,10 +194,12 @@ const PersonalOwner = () => {
         const allMaintenance = response.data.Maintenance;
         const futureData = allMaintenance.filter((item) => new Date(item.DueDate) >= currentDate);
         const dueData = allMaintenance.filter((item) => new Date(item.DueDate) <= currentDate);
+        const totalMaintenance_Amount = futureData.reduce((sum, item) => sum + (item.Maintenance_Amount || 0), 0);
+        const totalPenalty_Amount = futureData.reduce((sum, item) => sum + (item.Penalty_Amount || 0), 0);
+        setTotalMaintenance_Amount(totalMaintenance_Amount);
+        setTotalPenalty_Amount(totalPenalty_Amount);
         setPendingMaintenance(futureData);
         setDueMaintenance(dueData);
-        console.log(futureData);
-        console.log(dueData);
         
       }
     } catch (error) {
@@ -524,8 +528,8 @@ const PersonalOwner = () => {
                   }}
                   className="rounded-r-lg lg:mt-10 my-auto"
                 ></div>
-                <p className="text-gray-500 text-sm">Penalty Amount</p>
-                <p className="font-bold text-lg text-red-500">₹ 500</p>
+                <p className="text-gray-500 text-sm">Maintenance Amount</p>
+                <p className="font-bold text-lg text-red-500">₹ {totalMaintenance_Amount}</p>
               </div>
 
               {/* Second Card */}
@@ -552,8 +556,8 @@ const PersonalOwner = () => {
                   }}
                   className="rounded-r-lg lg:mt-10 my-auto"
                 ></div>
-                <p className="text-gray-500 text-sm">Penalty Amount</p>
-                <p className="font-bold text-lg text-red-500">₹ 500</p>
+               <p className="text-gray-500 text-sm">Penalty Amount</p>
+               <p className="font-bold text-lg text-red-500">₹ {totalPenalty_Amount}</p>
               </div>
             </div>
           </div>
@@ -637,7 +641,7 @@ const PersonalOwner = () => {
               Due Maintanance
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {dueMaintenance.map((card) => (
+              {dueMaintenance?.map((card) => (
                 <div key={card._id} className="col mb-3 ">
                   <div className="card shadow-sm ">
                     <div

@@ -11,111 +11,6 @@ import moment from "moment";
 import axiosInstance from '../../Common/axiosInstance';
 import { useNavigate } from "react-router-dom";
 
-const staticMembers = [
-  {
-    memberName: "Arlene McCoy",
-
-    Number: "9876543210",
-    email: "rachit@example.com",
-    age: "28",
-    gender: "male",
-    relation: "Self",
-  },
-  {
-    memberName: "Aditi",
-    Number: "9876543211",
-    email: "aditi@example.com",
-    age: "25",
-    gender: "female",
-    relation: "Spouse",
-  },
-  {
-    memberName: "Arjun",
-    Number: "9876543212",
-    email: "arjun@example.com",
-    age: "5",
-    gender: "male",
-    relation: "Son",
-  },
-  {
-    memberName: "Meera",
-    Number: "9876543213",
-    email: "meera@example.com",
-    age: "3",
-    gender: "female",
-    relation: "Daughter",
-  },
-];
-
-const Pending = [
-  {
-    Name: "Maintenance",
-    status: "Pending",
-    BillDate: "11/01/2024",
-    pendingDate: "11/01/2024",
-    amount: "1000.00",
-    penlatyamount: "250.00",
-    Total: "1,250",
-  },
-  {
-    Name: "Maintenance",
-    status: "Pending",
-    BillDate: "11/01/2024",
-    pendingDate: "11/01/2024",
-    amount: "1000.00",
-    penlatyamount: "250.00",
-    Total: "1,250",
-  },
-  {
-    Name: "Maintenance",
-    status: "Pending",
-    BillDate: "11/01/2024",
-    pendingDate: "11/01/2024",
-    amount: "1000.00",
-    penlatyamount: "250.00",
-    Total: "1,250",
-  },
-];
-
-const Due = [
-  {
-    Name: "Maintenance",
-    status: "Pending",
-    Date: "11/01/2024",
-    amount: "1000.00",
-    Dueamount: "250.00",
-  },
-  {
-    Name: "Maintenance",
-    status: "Pending",
-    Date: "11/01/2024",
-    amount: "1000.00",
-    Dueamount: "250.00",
-  },
-];
-
-const staticVehicles = [
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Toyota Camry",
-    vehicleNumber: "ABC1234",
-  },
-  {
-    vehicleType: "2-wheeler",
-    vehicleName: "Honda Activa",
-    vehicleNumber: "XYZ5678",
-  },
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Ford Mustang",
-    vehicleNumber: "LMN9101",
-  },
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Ford Mustang",
-    vehicleNumber: "LMN9101",
-  },
-];
 
 const PersonalTenant = () => {
   const [activeButton, setActiveButton] = useState("");
@@ -126,7 +21,10 @@ const PersonalTenant = () => {
   const [adhar_proofSize, setAdhar_proofSize] = useState("");
   const [adhar_proofName, setAdhar_proofName] = useState("");
   const [address_proofName, setAddress_proofName] = useState("");
-
+  const [pendingMaintenance, setPendingMaintenance] = useState([]);
+  const [dueMaintenance, setDueMaintenance] = useState([]);
+  const [totalMaintenance_Amount, setTotalMaintenance_Amount] = useState(0);
+  const [totalPenalty_Amount, setTotalPenalty_Amount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -148,6 +46,28 @@ const PersonalTenant = () => {
         }
       } catch (error) {
         console.error('Error fetching Announcement:', error);
+      }
+    };
+
+
+    const fetchPendingMaintenance = async () => {
+      const currentDate = new Date();
+      try {
+        const response = await axiosInstance.get(`/v2/maintenance/getuserandMaintance`);
+        if (response.status === 200) {
+          const allMaintenance = response.data.Maintenance;
+          const futureData = allMaintenance.filter((item) => new Date(item.DueDate) >= currentDate);
+          const dueData = allMaintenance.filter((item) => new Date(item.DueDate) <= currentDate);
+          const totalMaintenance_Amount = futureData.reduce((sum, item) => sum + (item.Maintenance_Amount || 0), 0);
+          const totalPenalty_Amount = futureData.reduce((sum, item) => sum + (item.Penalty_Amount || 0), 0);
+          setTotalMaintenance_Amount(totalMaintenance_Amount);
+          setTotalPenalty_Amount(totalPenalty_Amount);
+          setPendingMaintenance(futureData);
+          setDueMaintenance(dueData);
+          
+        }
+      } catch (error) {
+        console.error("Error fetching PendingMaintenance:", error);
       }
     };
 
@@ -212,7 +132,7 @@ const PersonalTenant = () => {
           const decodedToken = jwtDecode(token); 
           fetchGetByIdResident(decodedToken); 
           fetchAnnouncement();
-          // fetchPendingMaintenance();
+          fetchPendingMaintenance();
         } catch (error) {
           console.error("Error decoding token:", error);
         }
@@ -301,21 +221,21 @@ const PersonalTenant = () => {
               <p className="text-[#202224] " style={{ fontSize: "18px" }}>
                 Owner Name
               </p>
-              <span className="text-[#A7A7A7]">Arlene McCoy</span>
+              <span className="text-[#A7A7A7]">{!!residentById.Owner_Full_name ? residentById.Owner_Full_name : " "}</span>
             </div>
             <div className="mr-10">
               <p className="text-[#202224] " style={{ fontSize: "18px" }}>
                 {" "}
                 Owner Phone
               </p>
-              <span className="text-[#A7A7A7]">+91 9575225165</span>
+              <span className="text-[#A7A7A7]">{!!residentById.Owner_Phone ? residentById.Owner_Phone : " "}</span>
             </div>
             <div>
               <p className="text-[#202224] " style={{ fontSize: "18px" }}>
                 Owner Address
               </p>
               <span className="text-[#A7A7A7]">
-                C-101,Dhara Arcade, Mota Varacha Surat.
+              {!!residentById.Owner_Address ? residentById.Owner_Address : " "}
               </span>
             </div>
           </div>
@@ -535,8 +455,8 @@ const PersonalTenant = () => {
                   }}
                   className="rounded-r-lg lg:mt-10 my-auto"
                 ></div>
-                <p className="text-gray-500 text-sm">Penalty Amount</p>
-                <p className="font-bold text-lg text-red-500">₹ 500</p>
+                <p className="text-gray-500 text-sm">Maintenance Amount</p>
+                <p className="font-bold text-lg text-red-500">₹ {totalMaintenance_Amount}</p>
               </div>
 
               {/* Second Card */}
@@ -564,7 +484,7 @@ const PersonalTenant = () => {
                   className="rounded-r-lg lg:mt-10 my-auto"
                 ></div>
                 <p className="text-gray-500 text-sm">Penalty Amount</p>
-                <p className="font-bold text-lg text-red-500">₹ 500</p>
+                <p className="font-bold text-lg text-red-500">₹ {totalPenalty_Amount}</p>
               </div>
             </div>
           </div>
@@ -573,7 +493,7 @@ const PersonalTenant = () => {
               Pending Maintanance
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Pending.map((card) => (
+              {pendingMaintenance?.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm ">
                     <div
@@ -581,9 +501,9 @@ const PersonalTenant = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{card.Name || ""}</span>
+                      <span class="">{"Maintenance"}</span>
                         <span class="bg-[#FFFFFF1A] p-1 ps-3 pe-3 rounded-2xl">
-                          {card.status || ""}
+                        {"Pending"}
                         </span>
                       </div>
                     </div>
@@ -591,14 +511,14 @@ const PersonalTenant = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Bill Date</span>
-                        <span className="">{card.BillDate || ""}</span>
+                        <span className="">{!!card.createdAt ? moment(card.createdAt).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">
                           Pending Date
                         </span>
-                        <span className="">{card.pendingDate || ""}</span>
+                        <span className="">{!!card.DueDate ? moment(card.DueDate).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
@@ -606,7 +526,7 @@ const PersonalTenant = () => {
                           Maintanance Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                          {card.amount || ""}
+                        {!!card.Maintenance_Amount ? card.Maintenance_Amount : ""}
                         </span>
                       </div>
 
@@ -615,13 +535,13 @@ const PersonalTenant = () => {
                           Maintenance Penalty Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                          {card.penlatyamount || ""}
+                        {!!card.Penalty_Amount ? card.Penalty_Amount : ""}
                         </span>
                       </div>
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Grand Total</span>
                         <span className="text-[#39973D]">
-                          <span>{card.Total ? `₹${card.Total}` : ""}</span>
+                        <span>{!!card.Maintenance_Amount ? `₹${card.Maintenance_Amount + card.Penalty_Amount}` : ""}</span>
                         </span>
                       </div>
                       <div>
@@ -647,7 +567,7 @@ const PersonalTenant = () => {
               Due Maintanance
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Due.map((card) => (
+              {dueMaintenance?.map((card) => (
                 <div key={card._id} className="col mb-3 ">
                   <div className="card shadow-sm ">
                     <div
@@ -655,9 +575,9 @@ const PersonalTenant = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{card.Name || ""}</span>
+                      <span class="">{"Maintenance"}</span>
                         <span class="bg-[#FFFFFF1A] p-1 ps-3 pe-3 rounded-2xl">
-                          {card.status || ""}
+                        {"Pending"}
                         </span>
                       </div>
                     </div>
@@ -665,13 +585,13 @@ const PersonalTenant = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Date</span>
-                        <span className="">{card.Date || ""}</span>
+                        <span className="">{!!card.DueDate ? moment(card.DueDate).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Amount</span>
                         <span className="text-[#E74C3C]">
-                          {card.amount || ""}
+                        {!!card.Maintenance_Amount ? card.Maintenance_Amount : ""}
                         </span>
                       </div>
 
@@ -680,7 +600,7 @@ const PersonalTenant = () => {
                           Due Maintenance Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                          {card.Dueamount || ""}
+                        {!!card.PenaltyDay ? card.PenaltyDay*card.Penalty_Amount : "00"}
                         </span>
                       </div>
 
