@@ -13,6 +13,7 @@ import HIcon from "../assets/H.png";
 import IIcon from "../assets/I.png"; 
 import HeaderBaner  from "../Dashboard/Header/HeaderBaner";
 import moment from 'moment';
+import "../Dashboard/Maintenance/scrollbar.css";
 import axiosInstance from '../Common/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import NoNotification from '../Dashboard/Notification/NoNotification';
@@ -49,8 +50,12 @@ const unitImages = {
 const VisitorLogs = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [VisitorTrackings, setVisitorTrackings] = useState([]);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
 
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate(); 
 
   const notifications = [
     {
@@ -97,9 +102,9 @@ const VisitorLogs = () => {
 
   const isNoNotifications = notifications.length === 0;
 
-  // Function to handle profile click and navigate to the EditProfile page
+
   const handleProfileClick = () => {
-    navigate('/edit-profile'); // This will navigate to the EditProfile page
+    navigate('/edit-profile');
   };
 
 
@@ -133,30 +138,64 @@ useEffect(() => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         
-        <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md"style={{padding:"35px 10px"}}>
-          <div className="flex items-center space-x-2 text-gray-600">
-            <Link to="/dashboard" className="text-[#A7A7A7] no-underline ms-4 font-semibold">
+      <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
+            <Link
+              to="/dashboard"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
+            >
               Home
             </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="font-semibold text-[#5678E9]">Visitor Logs</span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+            Visitor Logs
+            </span>
           </div>
+
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
         </header>
 
         <div className="ps-6 pe-6 w-full">
          
-          <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1560px] bg-white">
+          <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1590px] bg-white">
             <h1 className="p-3 text-3xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>
             <div />
-            <div className="overflow-x-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            <table className="min-w-full  border border-gray-200  rounded-table ">
+            <div className="overflow-x-auto h-[700px] rounded-2xl 2xl:ml-5 ml-2 mr-2  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className='Content'>
+            <table className="2xl:w-[1560px]  border border-gray-200  rounded-table ">
               <thead className=" relative lg:w-[1560px]" style={{ backgroundColor:"rgba(86, 120, 233, 0.1)", }} >
                 <tr className="text-left text-sm  font-semibold ">
-                  <th className="p-3 text-[#202224]">Visitor Name</th>
-                  <th className="p-3 hidden sm:table-cell">Phone Number</th>
-                  <th className="p-3 hidden md:table-cell">Date</th>
-                  <th className="p-3 hidden lg:table-cell">Unit Number</th>
-                  <th className="p-1 hidden xl:table-cell">Time</th>
+                  <th className="p-3 text-left  whitespace-nowrap text-[#202224]">Visitor Name</th>
+                  <th className="p-3 text-left whitespace-nowrap  sm:table-cell">Phone Number</th>
+                  <th className="p-3 text-center whitespace-nowrap  md:table-cell">Date</th>
+                  <th className="p-3 text-center whitespace-nowrap  lg:table-cell">Unit Number</th>
+                  <th className="p-1 text-center whitespace-nowrap  xl:table-cell">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,21 +207,23 @@ useEffect(() => {
                         alt="visitor avatar"
                         className="w-10 h-10 rounded-full mr-3"
                       /> */}
-                      <span className="text-gray-700 font-medium">{!!visitor.visitor_Name ? visitor.visitor_Name : ""}</span>
+                      <span className="text-gray-700 text-center whitespace-nowrap  font-medium">{!!visitor.visitor_Name ? visitor.visitor_Name : ""}</span>
                     </td>
-                    <td className="pt-3 hidden sm:table-cell text-gray-600">{!!visitor.number ? visitor.number : ""}</td>
-                    <td className="pt-3 hidden md:table-cell text-gray-600">{!!visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
-                    <td className="pt-3 hidden lg:table-cell text-gray-600 d-flex ml-10">
+                    <td className="pt-3 text-center whitespace-nowrap  sm:table-cell text-gray-600">{!!visitor.number ? visitor.number : ""}</td>
+                    <td className="pt-3 text-center whitespace-nowrap   md:table-cell text-gray-600">{!!visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
+                    <td className="pt-3 text-center whitespace-nowrap  lg:table-cell text-gray-600 d-flex ml-10">
                     <span className={`unit-badge unit-${visitor.wing.toLowerCase()}`}>
                         {!!visitor.wing ? visitor.wing : ""}
                       </span>
                       {!!visitor.unit ? visitor.unit :""}
                     </td>
-                    <td className="pt-3 hidden xl:table-cell text-gray-600 ml-10">{!!visitor.time ? visitor.time : ""}</td>
+                    <td className="pt-3  xl:table-cell text-gray-600 ml-10">{!!visitor.time ? visitor.time : ""}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            
+            </div>
           </div>
         </div>
       </div>

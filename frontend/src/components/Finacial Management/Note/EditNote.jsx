@@ -13,7 +13,8 @@ const EditNote = ({ isOpen, onClose, noteData, fetchNote }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
 
   // Regular expressions for validation
-  const titleRegex = /^[A-Za-z\s]*$/; // Only alphabets and spaces
+  const titleRegex = /^[A-Za-z\s]*$/; 
+  const descriptionRegex = /^[A-Za-z0-9\s,.;!?'"()-]*$/; 
 
   // Check if the form is valid
   const isFormValid =
@@ -21,6 +22,7 @@ const EditNote = ({ isOpen, onClose, noteData, fetchNote }) => {
     Description &&
     date &&
     titleRegex.test(Title)
+    descriptionRegex.test(Description)
 
     const ClearAllData = () => {
       setTitle("");
@@ -56,7 +58,7 @@ const EditNote = ({ isOpen, onClose, noteData, fetchNote }) => {
     if (descriptionRegex.test(value)) {
       setDescription(value);
     }
-  };
+  };;
 
  
   const handleDateChange = (date) => {
@@ -148,7 +150,7 @@ const EditNote = ({ isOpen, onClose, noteData, fetchNote }) => {
             <textarea
               placeholder="Enter Description"
               value={Description}
-              onChange={handleDescriptionChange} 
+              onChange={handleDescriptionChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] h-22 resize-none"
             />
           </div>
