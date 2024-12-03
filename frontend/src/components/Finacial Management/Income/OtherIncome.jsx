@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../../Sidebar/Sidebar";
 import { Link } from "react-router-dom";
-
-// import CreateAnnouncement from './CreateAnnouncement';
 import EditIncome from "./EditIncome";
 import DeleteIncome from "./Delete";
 import ViewIncome from "./ViewIncome";
@@ -29,48 +27,6 @@ const OtherIncome = () => {
     setIsSearchVisible(!isSearchVisible);
   };
 
-  const cards = [
-    {
-      id: 1,
-      title: "Ganesh Chaturthi",
-      AmountMember: "1500",
-      TotalMember: "12",
-      date: "01/07/2024",
-      DueDate: "10/07/2024",
-      description:
-        "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-    },
-    {
-      id: 2,
-      title: "Navratri",
-      AmountMember: "1500",
-      TotalMember: "12",
-      date: "01/07/2024",
-      DueDate: "10/07/2024",
-      description:
-        "The celebration of Navratri involves the installation of clay idols of Durga in Resident.",
-    },
-    {
-      id: 3,
-      title: "Diwali",
-      AmountMember: "1500",
-      TotalMember: "12",
-      date: "01/07/2024",
-      DueDate: "10/07/2024",
-      description:
-        "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-    },
-    {
-      id: 4,
-      title: "Ganesh Chaturthi",
-      AmountMember: "1500",
-      TotalMember: "12",
-      date: "01/07/2024",
-      DueDate: "10/07/2024",
-      description:
-        "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.",
-    },
-  ];
 
   // Refs for the dropdowns
   const dropdownRefs = useRef([]);

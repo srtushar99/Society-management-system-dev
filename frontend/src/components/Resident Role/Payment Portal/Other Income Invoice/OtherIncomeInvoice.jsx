@@ -5,12 +5,16 @@ import { Modal, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./otherincome.css";
 import PayNow from "../Maintenance Invoices/Paynow";
+import moment from "moment";
+import axiosInstance from '../../../Common/axiosInstance';
 
 const OtherIncomeInvoice = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
-  const [isPayNowOpen, setIsPayNowOpen] = useState(false); // isOpen state for PayNow modal
+  const [isPayNowOpen, setIsPayNowOpen] = useState(false); 
+  const [OtherIncome, setOtherIncome] = useState([]);
+
 
   const handleViewInvoiceClick = () => {
     setShowInvoiceModal(true);
@@ -20,30 +24,34 @@ const OtherIncomeInvoice = () => {
     setShowInvoiceModal(false);
   };
 
-  // const handleOpenPaymentModal = () => {
-  //   setShowPaymentModal(true);
-  // };
-
-  // const handleClosePaymentModal = () => {
-  //   setShowPaymentModal(false);
-  // };
-
-  // const handleOpenCardDetailsModal = () => {
-  //   setShowPaymentModal(false); // Close payment modal
-  //   setShowCardDetailsModal(true); // Open card details modal
-  // };
-
-  // const handleCloseCardDetailsModal = () => {
-  //   setShowCardDetailsModal(false);
-  // };
 
   const handleOpenPayNow = () => {
-    setIsPayNowOpen(true); // Open PayNow modal
+    setIsPayNowOpen(true); 
   };
 
   const handleClosePayNow = () => {
-    setIsPayNowOpen(false); // Close PayNow modal
+    setIsPayNowOpen(false); 
   };
+
+
+   // Fetch Other Income
+   const fetchOtherIncome = async () => {
+    try {
+      const response = await axiosInstance.get("/v2/income/");
+      console.log(response.data.Income);
+      if (response.status === 200) {
+        setOtherIncome(response.data.Income);
+      }
+    } catch (error) {
+      console.error("Error fetching Other Income:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchOtherIncome();
+  }, []);
+
 
   // Disable background scrolling when a modal is open
   useEffect(() => {
@@ -97,12 +105,36 @@ const OtherIncomeInvoice = () => {
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {[...Array(4)].map((_, index) => (
-                <MaintenanceCard
-                  key={index}
-                  handlePayNowClick={handleOpenPayNow} // Update to open PayNow modal
-                />
-              ))}
+              {OtherIncome.map((card, index) => (
+              <div  key={card._id} className="bg-white shadow-lg rounded-lg p-4">
+                <div className="d-flex justify-content-between items-center mb-4">
+                  <span className="font-semibold text-blue-600">Due Event Payment</span>
+                  <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs">
+                    Pending
+                  </span>
+                </div>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <div className="d-flex justify-content-between items-center">
+                    <span className="font-semibold">Event Name:</span>  {!!card.title ? card.title : ""}
+                  </div>
+                  <div className="d-flex justify-content-between items-center">
+                    <span className="font-semibold">Event Due Date:</span> {!!card.dueDate ? moment(card.dueDate).format("DD/MM/YYYY"): " "}
+                  </div>
+                  <div className="d-flex justify-content-between items-center">
+                    <span className="font-semibold">Amount:</span>
+                    <span style={{ color: "red" }}> ₹{!!card.amount ? card.amount : " "}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleOpenPayNow}
+                  className="w-full mt-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                >
+                  Pay Now
+                </button>
+              </div>
+            ))}
+
             </div>
           </section>
         </main>
@@ -123,37 +155,37 @@ const OtherIncomeInvoice = () => {
   );
 };
 
-const MaintenanceCard = ({ handlePayNowClick }) => {
-  return (
-    <div className="bg-white shadow-lg rounded-lg p-4">
-      <div className="d-flex justify-content-between items-center mb-4">
-        <span className="font-semibold text-blue-600">Due Event Payment</span>
-        <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs">
-          Pending
-        </span>
-      </div>
-      <div className="text-sm text-gray-600 space-y-1">
-        <div className="d-flex justify-content-between items-center">
-          <span className="font-semibold">Event Name:</span> Navratri
-        </div>
-        <div className="d-flex justify-content-between items-center">
-          <span className="font-semibold">Event Due Date:</span> 11/01/2024
-        </div>
-        <div className="d-flex justify-content-between items-center">
-          <span className="font-semibold">Amount:</span>
-          <span style={{ color: "red" }}>₹1000.00</span>
-        </div>
-      </div>
+// const MaintenanceCard = ({ handlePayNowClick }) => {
+//   return (
+//     <div className="bg-white shadow-lg rounded-lg p-4">
+//       <div className="d-flex justify-content-between items-center mb-4">
+//         <span className="font-semibold text-blue-600">Due Event Payment</span>
+//         <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs">
+//           Pending
+//         </span>
+//       </div>
+//       <div className="text-sm text-gray-600 space-y-1">
+//         <div className="d-flex justify-content-between items-center">
+//           <span className="font-semibold">Event Name:</span> Navratri
+//         </div>
+//         <div className="d-flex justify-content-between items-center">
+//           <span className="font-semibold">Event Due Date:</span> 11/01/2024
+//         </div>
+//         <div className="d-flex justify-content-between items-center">
+//           <span className="font-semibold">Amount:</span>
+//           <span style={{ color: "red" }}>₹1000.00</span>
+//         </div>
+//       </div>
 
-      <button
-        onClick={handlePayNowClick}
-        className="w-full mt-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-shadow"
-      >
-        Pay Now
-      </button>
-    </div>
-  );
-};
+//       <button
+//         onClick={handlePayNowClick}
+//         className="w-full mt-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-shadow"
+//       >
+//         Pay Now
+//       </button>
+//     </div>
+//   );
+// };
 
 const InvoiceModal = ({ show, handleClose }) => {
   return (

@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Sidebar from "../../Sidebar/Sidebar"; // Ensure Sidebar is imported
-import AvatarImage from "../../assets/Avatar.png";
 import moment from 'moment';
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
-import { useNavigate } from "react-router-dom";
 import ResidentSidebar from "../Resident Sidebar/ResidentSidebar";
 import axiosInstance from '../../Common/axiosInstance';
 
 
 const SecurityProtocols = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize the navigate function
-  const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
   const [SecurityProtocols, setSecurityProtocols] = useState([]);
 
   const notifications = [
@@ -56,16 +50,6 @@ const SecurityProtocols = () => {
       timeAgo: "32 Minutes ago",
     },
   ];
-
-  const handleClearAll = () => {
-    navigate("/no-notifications");
-  };
-
-  const isNoNotifications = notifications.length === 0;
-
-  const handleProfileClick = () => {
-    navigate("/edit-profile");
-  };
 
 
 
@@ -135,23 +119,22 @@ useEffect(() => {
                       <tr key={index} className="border-t border-gray-200">
                       <td className="p-2 pt-3 pb-2 flex items-center whitespace-nowrap">
                         <span className="text-[#4F4F4F] inline">
-                          {security.title}
+                          {!!security.Title ? security.Title : ""}
                         </span>
                       </td>
                       <td className="text-[#4F4F4F] text-left whitespace-nowrap">
                         <span className="text-[#4F4F4F] ">
-                          {security.description}
+                        {!!security.Description ? security.Description : ""}
                         </span>
                       </td>
                       <td className="text-[#4F4F4F] text-center">
                         <span className="text-[#4F4F4F]  text-sm sm:text-base">
-                          {security.time}{" "}
-                          <span className="inline">{security.amPm}</span>
+                          <span className="inline">{!!security.Time ? security.Time : ""}</span>
                         </span>
                       </td>
 
                       <td className="pt-3 text-[#4F4F4F] ">
-                        {security.date}
+                      {!!security.Date ? moment(security.Date).format("DD/MM/YYYY") : ""}
                       </td>
                     </tr>
 

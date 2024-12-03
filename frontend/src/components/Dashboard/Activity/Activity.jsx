@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import '../Maintenance/scrollbar.css';
 import '../../Sidebar/sidebar.css';
- // Ensure this path is correct
-
+import axiosInstance from "../../Common/axiosInstance";
 const Activity = () => {
   const activities = [
     {
@@ -47,6 +46,8 @@ const Activity = () => {
     },
   ];
 
+  const [announcement, setAnnouncement] = useState([]);
+
   const Select = ({ children, defaultValue, onChange }) => {
     return (
       <select
@@ -73,6 +74,26 @@ const Activity = () => {
     const selectedRange = event.target.value;
     console.log(selectedRange);
   };
+
+
+   // Fetch Announcement from the API
+   const fetchAnnouncement = async () => {
+    try {
+      const response = await axiosInstance.get("/v2/annoucement/");
+      if(response.status === 200){
+        setAnnouncement(response.data.announcements);
+      }
+      
+    } catch (error) {
+      console.error("Error fetching Announcement:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchAnnouncement();
+  }, []);
+
 
   return (
     <div className="border bg-white border-gray-300 rounded-lg mt-1 h-[300px] 2xl:ml-4 w-full sm:mt-5 2xl:w-[380px] sm:ml-4 ">
