@@ -22,7 +22,7 @@ const LoginPage = () => {
   }, []);
 
   // Email validation regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ ;
 
   // Email and password validation
   const validateEmail = (email) => emailRegex.test(email);
