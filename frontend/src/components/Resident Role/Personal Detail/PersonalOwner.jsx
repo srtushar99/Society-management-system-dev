@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import axiosInstance from '../../Common/axiosInstance';
 import axios from 'axios';
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const Pending = [
   {
@@ -103,6 +104,9 @@ const PersonalOwner = () => {
   const [dueMaintenance, setDueMaintenance] = useState([]);
   // const [isOwner, setIsOwner] = useState(false);
 
+
+  const navigate = useNavigate();
+
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
   };
@@ -168,10 +172,10 @@ const PersonalOwner = () => {
         if(response.data.Resident.Resident_Status == "Owner"){
           // setIsOwner(true);
           setActiveButton("PersonalDetail");
-          navigator('/PersonalDetail')
+          navigate("/PersonalDetail");
         }else{
           // setIsOwner(false);
-          navigator('/TenantDetail')
+          navigate("/TenantDetail");
         }
       }
     } catch (error) {
@@ -185,9 +189,13 @@ const PersonalOwner = () => {
     try {
       const response = await axiosInstance.get(`/v2/maintenance/getuserandMaintance`);
       if (response.status === 200) {
-        setPendingMaintenance(response.data.Maintenance);
-        const futureData = response.data.Maintenance.filter((item) => new Date(item.DueDate) > currentDate);
+        const allMaintenance = response.data.Maintenance;
+        const futureData = allMaintenance.filter((item) => new Date(item.DueDate) >= currentDate);
+        const dueData = allMaintenance.filter((item) => new Date(item.DueDate) <= currentDate);
+        setPendingMaintenance(futureData);
+        setDueMaintenance(dueData);
         console.log(futureData);
+        console.log(dueData);
         
       }
     } catch (error) {
@@ -629,7 +637,7 @@ const PersonalOwner = () => {
               Due Maintanance
             </span>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
-              {Due.map((card) => (
+              {dueMaintenance.map((card) => (
                 <div key={card._id} className="col mb-3 ">
                   <div className="card shadow-sm ">
                     <div
@@ -637,9 +645,9 @@ const PersonalOwner = () => {
                       style={{ backgroundColor: "#5678E9" }}
                     >
                       <div class="flex justify-between items-center">
-                        <span class="">{card.Name || ""}</span>
+                        <span class="">{"Maintenance"}</span>
                         <span class="bg-[#FFFFFF1A] p-1 ps-3 pe-3 rounded-2xl">
-                          {card.status || ""}
+                          {"Pending"}
                         </span>
                       </div>
                     </div>
@@ -647,13 +655,13 @@ const PersonalOwner = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Date</span>
-                        <span className="">{card.Date || ""}</span>
+                        <span className="">{!!card.DueDate ? moment(card.DueDate).format("DD/MM/YYYY") : ""}</span>
                       </div>
 
                       <div className="d-flex justify-content-between ">
                         <span className="text-[#4F4F4F] mb-2">Amount</span>
                         <span className="text-[#E74C3C]">
-                          {card.amount || ""}
+                          {!!card.Maintenance_Amount ? card.Maintenance_Amount : ""}
                         </span>
                       </div>
 
@@ -662,7 +670,7 @@ const PersonalOwner = () => {
                           Due Maintenance Amount
                         </span>
                         <span className="text-[#E74C3C]">
-                          {card.Dueamount || ""}
+                          {!!card.PenaltyDay ? card.PenaltyDay*card.Penalty_Amount : "00"}
                         </span>
                       </div>
 

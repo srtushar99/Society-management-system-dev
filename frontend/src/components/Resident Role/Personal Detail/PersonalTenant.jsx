@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 import moment from "moment";
 import axiosInstance from '../../Common/axiosInstance';
+import { useNavigate } from "react-router-dom";
 
 const staticMembers = [
   {
@@ -126,6 +127,9 @@ const PersonalTenant = () => {
   const [adhar_proofName, setAdhar_proofName] = useState("");
   const [address_proofName, setAddress_proofName] = useState("");
 
+
+  const navigate = useNavigate();
+
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
   };
@@ -189,11 +193,11 @@ const PersonalTenant = () => {
           if(response.data.Resident.Resident_Status == "Owner"){
             // setIsOwner(true);
             setActiveButton("PersonalDetail");
-            navigator('/PersonalDetail')
+            // navigate("/PersonalDetail");
           }else{
             // setIsOwner(false);
             setActiveButton("TenantDetail");
-            navigator('/TenantDetail')
+            //  navigate("/TenantDetail");
           }
         }
       } catch (error) {
