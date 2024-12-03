@@ -165,17 +165,20 @@ const Income = ({ color }) => {
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col ml-0 lg:ml-[290px]">
+      <div className="flex-1 flex flex-col  lg:ml-[290px]">
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
-          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[40px]  text-muted d-none d-sm-flex ">
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[30px]  text-muted d-none d-sm-flex ">
             <Link
               to="/Income"
-              className="text-[#A7A7A7] no-underline font-semibold"
+              className="text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <Link
               to="/memberlist"
               className=" text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
@@ -184,14 +187,14 @@ const Income = ({ color }) => {
             </Link>
             <span className="text-[#202224] fs-5 mx-2"> &gt; </span>
 
-            <span className="font-semibold text-[#5678E9]">
+            <span className=" text-[#5678E9]  font-weight-semibold text-sm sm:text-base">
               Financial Management
             </span>
           </div>
 
           {/* Search Icon (Visible only on small screens) */}
           <div
-            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+            className={` ml-auto d-sm-none p-2 rounded-lg ${
               isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
             }`}
           >
@@ -200,7 +203,7 @@ const Income = ({ color }) => {
                 onClick={toggleSearchVisibility}
                 className="text-muted bg-transparent border-0"
               >
-                <i className="fas fa-search"></i> {/* Search Icon */}
+                <i className="fas fa-search"></i> 
               </button>
             )}
             {isSearchVisible && (
@@ -212,6 +215,7 @@ const Income = ({ color }) => {
                 />
               </div>
             )}
+            
           </div>
 
           <HeaderBaner />
@@ -238,67 +242,65 @@ const Income = ({ color }) => {
           </div> */}
 
         <div className="flex flex-col sm:flex-row justify-between items-center 2xl:ml-5  lg:mt-7 2xl:w-[1590px] p-3 bg-white rounded-md">
-         <div className="2xl:flex space-x-4">
-           {/* First Card */}
-           <div
-             className="bg-[#FFFFFF] mb-10 p-3"
-             style={{
-               maxHeight: "70px",
-               width: "300px",
-               marginLeft: "15px",
-               borderRadius: "15px",
-               borderRight: "2px solid green",
-               borderTop: "2px solid green",
-               position: "relative",
-             }}
-           >
-             <div
-               style={{
-                 width: "5px",
-                 height: "46px",
-                 backgroundColor: "rgba(57, 151, 61, 0.5)",
-                 bottom: "50%",
-                 left: "0px",
-                 position: "absolute",
-                 top: "70%",
-               }}
-               className="rounded-r-lg lg:mt-10 my-auto"
-             ></div>
-             <p className="text-gray-500 text-sm">Penalty Amount</p>
-             <p className="font-bold text-lg text-[#39973D]">₹ 0</p>
-           </div>
+          <div className="2xl:flex space-x-4">
+            {/* First Card */}
+            <div
+              className="bg-[#FFFFFF] mb-10 p-3"
+              style={{
+                maxHeight: "70px",
+                width: "300px",
+                marginLeft: "15px",
+                borderRadius: "15px",
+                borderRight: "2px solid green",
+                borderTop: "2px solid green",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  width: "5px",
+                  height: "46px",
+                  backgroundColor: "rgba(57, 151, 61, 0.5)",
+                  bottom: "50%",
+                  left: "0px",
+                  position: "absolute",
+                  top: "70%",
+                }}
+                className="rounded-r-lg lg:mt-10 my-auto"
+              ></div>
+              <p className="text-gray-500 text-sm">Penalty Amount</p>
+              <p className="font-bold text-lg text-[#39973D]">₹ 0</p>
+            </div>
 
-           
+            {/* Second Card */}
+            <div
+              className="bg-[#FFFFFF] p-3"
+              style={{
+                maxHeight: "70px",
+                width: "300px",
+                borderRadius: "15px",
+                borderRight: "2px solid red",
+                borderTop: "2px solid red",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  width: "5px",
+                  height: "46px",
+                  backgroundColor: "rgba(231, 76, 60, 0.5)",
+                  bottom: "50%",
+                  left: "0px",
+                  position: "absolute",
+                  top: "70%",
+                }}
+                className="rounded-r-lg lg:mt-10 my-auto"
+              ></div>
+              <p className="text-gray-500 text-sm">Penalty Amount</p>
+              <p className="font-bold text-lg text-[#E74C3C]">₹ 0</p>
+            </div>
+          </div>
 
-           {/* Second Card */}
-           <div
-             className="bg-[#FFFFFF] p-3"
-             style={{
-               maxHeight: "70px",
-               width: "300px",
-               borderRadius: "15px",
-               borderRight: "2px solid red",
-               borderTop: "2px solid red",
-               position: "relative",
-             }}
-           >
-             <div
-               style={{
-                 width: "5px",
-                 height: "46px",
-                 backgroundColor: "rgba(231, 76, 60, 0.5)",
-                 bottom: "50%",
-                 left: "0px",
-                 position: "absolute",
-                 top: "70%",
-               }}
-               className="rounded-r-lg lg:mt-10 my-auto"
-             ></div>
-             <p className="text-gray-500 text-sm">Penalty Amount</p>
-             <p className="font-bold text-lg text-[#E74C3C]">₹ 0</p>
-           </div>
-         </div>
-         
           <button
             onClick={openPasswordModal}
             className="bg-gradient-to-r from-red-500 to-yellow-500 text-white font-bold py-2 px-4 rounded-md mt-4 sm:mt-0"
@@ -346,33 +348,21 @@ const Income = ({ color }) => {
                   <thead style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
                     <tr className=" text-gray-600 uppercase text-xs font-semibold">
                       <th className="ps-5 whitespace-nowrap py-2">Name</th>
-                      <th className="tex whitespace-nowrap">
-                        Unit Number
-                      </th>
-                      <th className="ps-5 whitespace-nowrap ">
-                        Date
-                      </th>
-                      <th className="2xl:ps-5 whitespace-nowrap ">
-                        Role
-                      </th>
+                      <th className="tex whitespace-nowrap">Unit Number</th>
+                      <th className="ps-5 whitespace-nowrap ">Date</th>
+                      <th className="2xl:ps-5 whitespace-nowrap ">Role</th>
                       <th className="text-center whitespace-nowrap ">
                         Phone Number
                       </th>
-                      <th className="text-center whitespace-nowrap ">
-                        Amount
-                      </th>
+                      <th className="text-center whitespace-nowrap ">Amount</th>
                       <th className="text-center whitespace-nowrap ">
                         Penalty
                       </th>
-                      <th className="text-center whitespace-nowrap ">
-                        Status
-                      </th>
+                      <th className="text-center whitespace-nowrap ">Status</th>
                       <th className="text-center whitespace-nowrap ">
                         Payment
                       </th>
-                      <th className="text-start whitespace-nowrap ">
-                        Action
-                      </th>
+                      <th className="text-start whitespace-nowrap ">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -402,7 +392,7 @@ const Income = ({ color }) => {
                           {row.unit}
                         </td>
                         <td className="ps-4 pe-3">{row.date}</td>
-                          {/* <div className="flex"> */}
+                        {/* <div className="flex"> */}
                         <td className="  ">
                           <span
                             className={` ps-2 rounded-lg flex ${
@@ -410,17 +400,22 @@ const Income = ({ color }) => {
                                 ? "bg-pink-100 text-pink-600"
                                 : "bg-blue-100 text-blue-600"
                             }`}
-                            >
+                          >
                             {row.role === "Tenant" ? (
-                              <FontAwesomeIcon icon={faUser} className="w-3 h-5 mr-2" />
+                              <FontAwesomeIcon
+                                icon={faUser}
+                                className="w-3 h-5 mr-2"
+                              />
                             ) : (
                               <img src={UserIcon} className="w-3 h-5 mr-2" />
                             )}
                             {row.role}
                           </span>
                         </td>
-                        
-                        <td className="px-4 py-3 text-center whitespace-nowrap">{row.phone}</td>
+
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                          {row.phone}
+                        </td>
                         <td className="px-4 py-3 text-green-600 text-center whitespace-nowrap">
                           {row.amount}
                         </td>
@@ -434,7 +429,7 @@ const Income = ({ color }) => {
                                 ? "bg-yellow-100 text-yellow-600"
                                 : "bg-green-100 text-green-600"
                             }`}
-                            style={{ width: "100px",  }}
+                            style={{ width: "100px" }}
                           >
                             {row.status === "Pending" ? (
                               <img
@@ -452,7 +447,7 @@ const Income = ({ color }) => {
                         </td>
                         <td className="ps-4 py-3">
                           <span
-                            style={{ width: "80px", }}
+                            style={{ width: "80px" }}
                             className={`px-2 py-1 rounded-full text-xs flex font-semibold ${
                               row.payment === "Online"
                                 ? "bg-blue-100 text-blue-600"

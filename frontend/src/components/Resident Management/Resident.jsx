@@ -168,6 +168,10 @@ const Resident = () => {
   const [selectedResident, setSelectedResident] = useState(null);
   const [memberCount, setMemberCount] = useState(1); // Default member count
   const [vehicleCount, setVehicleCount] = useState(1); // Default vehicle count
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
 
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
@@ -210,24 +214,49 @@ const Resident = () => {
     <div className="flex bg-gray-100 w-full h-full">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        <header
-          className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md"
-          style={{ padding: "35px 10px" }}
-        >
-          <div className="flex items-center space-x-2 text-gray-600">
+       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
             <Link
-              to="/Resident-Manegement"
-              className="text-[#A7A7A7] no-underline font-semibold ms-4 md:ml-20"
+              to="/dashboard"
+              className="text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="font-semibold text-[#5678E9]">
-              Resident Management
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+            Resident Management
             </span>
           </div>
+
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
           <HeaderBaner />
         </header>
+
 
         <div className="bg-[#FFFFFF] rounded-lg lg:ml-[320px] shadow-md lg:w-[1560px] mt-5">
           <div className="flex justify-between items-center mb-6 p-2 pt-4 ps-3">

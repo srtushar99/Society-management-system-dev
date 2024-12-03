@@ -10,7 +10,6 @@ import TimerIcon from '../../assets/timer.png';
 import VerifiedIcon from '../../assets/verified.png';
 import WalletIcon from '../../assets/wallet.png';
 import MoneysIcon from '../../assets/moneys.png';
-
 import AIcon from "../../assets/A.png"; 
 import BIcon from "../../assets/B.png"; 
 import CIcon from "../../assets/C.png"; 
@@ -22,13 +21,17 @@ import HIcon from "../../assets/H.png";
 import IIcon from "../../assets/I.png"; 
 import AddMaintenance from './AddMaintenance';
 import ViewMaintenance from './ViewMaintenance';
+import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 
 const MemberList = ({ color }) => {
     const [activeButton, setActiveButton] = useState('maintenance');
     const [isAddMaintenanceOpen, setIsAddMaintenanceOpen] = useState(false);
     const [isViewMaintenanceOpen, setIsViewMaintenanceOpen] = useState(false);
     const [selectedMaintenance, setSelectedMaintenance] = useState(null); // To hold the selected maintenance data
-
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
+    const toggleSearchVisibility = () => {
+      setIsSearchVisible(!isSearchVisible);
+    };
     const data = [
         {  unit: '1001', date: '10/02/2024', role: 'Owner', phone: '92524 34522', amount: '₹ 1000', payment: 'Cash' },
         {  unit: '1002', date: '11/02/2024', role: 'Tenant', phone: '92524 12365', amount: '₹ 1000', payment: 'Online' },
@@ -74,39 +77,67 @@ const MemberList = ({ color }) => {
         <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
             <Sidebar />
             <div className="flex-1 flex flex-col ml-0 lg:ml-[290px]">
-                <header className="flex justify-between items-center lg:px-5 bg-white lg:h-[60px] shadow-md">
-                    <div className="flex items-center space-x-2 text-gray-600 ml-4 md:ml-20">
-                        <Link to="/Income" className="text-[#A7A7A7] no-underline font-semibold">Home</Link>
-                        <span className="text-gray-400"> &gt; </span>
-                        <span className="font-semibold text-[#5678E9]">Maintenance Details</span>
-                    </div>
-                    <div className="flex items-center space-x-4 ">
-                        <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border border-gray-300">
-                            <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
-                        </button>
-                        <div className="flex items-center space-x-3 cursor-pointer">
-                            <img src={AvatarImage} alt="Profile Avatar" width="40" height="40" className="rounded-full" />
-                            <div className="hidden sm:flex flex-col items-start">
-                                <span className="font-medium text-sm mt-2">Moni Roy</span>
-                                <p className="text-xs text-gray-500">Admin</p>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+            <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[30px]  text-muted d-none d-sm-flex ">
+            <Link
+              to="/dashboard"
+              className="text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
+            >
+              Home
+            </Link>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
+          
+            <span className=" text-[#5678E9]  font-weight-semibold text-sm sm:text-base">
+            Maintenance Details
+            </span>
+          </div>
 
-                <div className="bg-gray-100 ps-4 pb-5 lg:mt-10">
-                    <div className="bg-white shadow-lg p-4 lg:w-[1560px] rounded border-gray-300">
-                        <div className="text-2xl font-bold text-gray-800 mb-4">Ganesh Chaturthi Participator Member List</div>
-                        <div className='overflow-y-auto'>
-                            <table className="w-full border-collapse text-sm text-left text-gray-600 rounded-top">
-                                <thead>
-                                    <tr className="bg-gray-100 text-gray-600 uppercase text-xs font-semibold">
-                                        <th className="px-5 py-3">Unit Number</th>
-                                        <th className="px-5 py-3">Payment Date</th>
-                                        <th className="px-5 py-3">Tnant/Owner Status</th>
-                                        <th className="px-5 py-3">Phone Number</th>
-                                        <th className="px-5 py-3">Amount</th>
-                                        <th className="px-5 py-3">Payment</th>
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
+        </header>
+
+                <div className="bg-gray-100 ps-4 pb-5 2xl:mt-10">
+                    <div className="bg-white shadow-lg p-4 lg:w-[1590px] rounded-lg border-gray-300">
+                        <div className="2xl:text-2xl font-bold  text-gray-800 mb-4">Ganesh Chaturthi Participator Member List</div>
+                        <div className='overflow-x-auto  h-[700px]  2xl:ml-2 ml-2 mr-2  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 rounded-2xl'>
+                            <div className='Content'>    
+                            <table className="2xl:w-[1520px]   text-sm text-left text-gray-600 rounded-top">
+                                <thead style={{ backgroundColor:"rgba(86, 120, 233, 0.1)", }}>
+                                    <tr className=" text-gray-600 uppercase text-xs font-semibold">
+                                        <th className="px-5 whitespace-nowrap py-3">Unit Number</th>
+                                        <th className="px-5 whitespace-nowrap py-3">Payment Date</th>
+                                        <th className="px-5 whitespace-nowrap py-3">Tnant/Owner Status</th>
+                                        <th className="px-5 whitespace-nowrap py-3">Phone Number</th>
+                                        <th className="px-5 whitespace-nowrap py-3">Amount</th>
+                                        <th className="px-5 whitespace-nowrap py-3">Payment</th>
                                        
                                     </tr>
                                 </thead>
@@ -147,6 +178,7 @@ const MemberList = ({ color }) => {
                                     ))}
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
