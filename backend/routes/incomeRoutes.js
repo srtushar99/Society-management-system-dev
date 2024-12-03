@@ -1,4 +1,4 @@
-const { CreateIncome, GetIncome, GetByIdIncome, DeleteIncome, UpdateIncome, updateResidentIncomePaymentMode, getCompletedIncomeRecords, fetchUserPendingIncome } = require("../controller/incomeController");
+const { CreateIncome, GetIncome, GetByIdIncome, DeleteIncome, UpdateIncome, updateResidentIncomePaymentMode, getCompletedIncomeRecords, fetchUserPendingIncome, GetTotalIncomeAmount } = require("../controller/incomeController");
 const { authenticate } = require("../middleware/authenticate ");
 
 const router=require("express").Router();
@@ -26,5 +26,9 @@ router.get("/done/completed-payments/", getCompletedIncomeRecords);
 
 //FindByIdUserAndMaintance
 router.get("/find/getuserandIncome",authenticate,fetchUserPendingIncome)
+
+
+// get total amount
+router.get('/income/total-amount', GetTotalIncomeAmount);
 
 module.exports=router

@@ -27,9 +27,10 @@ const chatSchema = new mongoose.Schema(
       type: String,
       required: true,                     
     },
-    media: {
-      type: String,                      
-    },
+    media: { type: [String], default: [] },
+    // media: {
+    //   type: String,                      
+    // },
     timestamp: {
       type: Date,
       default: Date.now,            

@@ -160,43 +160,57 @@ exports.addTenant = async (req, res) => {
 };
 
 // get all Tenant
-exports.GetAllTenant= async(req,res)=>{
-    try {
-        // Fetch all owners sorted by Wing and Unit
-        const owners = await Tenant.find().sort({ Wing: 1, Unit: 1 });
+exports.GetAllTenant = async (req, res) => {
+  try {
+      // Fetch all tenants sorted by Wing and Unit
+      const tenants = await Tenant.find().sort({ Wing: 1, Unit: 1 });
 
-        if (!owners || owners.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "No data found"
-            });
-        }
+      // Check if any tenants exist
+      if (!tenants || tenants.length === 0) {
+          return res.status(400).json({
+              success: false,
+              message: "No data found"
+          });
+      }
 
-        
-        const ownerCounts = owners.map(owner => ({
-            profileImage:owner.profileImage,
-            Full_name: owner.Full_name,
-            Unit: owner.Unit,
-            Wing: owner.Wing,
-            Resident_status: owner.Resident_status,
-            Phone_number: owner.Phone_number,
-            Member_Counting_Total: owner.Member_Counting ? owner.Member_Counting.length : 0,
-            Vehicle_Counting_Total: owner.Vehicle_Counting ? owner.Vehicle_Counting.length : 0
-        }));
+      // Extract full details of each tenant
+      const tenantDetails = tenants.map(tenant => ({
+          Owner_Full_name: tenant.Owner_Full_name,
+          Owner_Phone: tenant.Owner_Phone,
+          Owner_Address: tenant.Owner_Address,
+          profileImage: tenant.profileImage,
+          Full_name: tenant.Full_name,
+          Phone_number: tenant.Phone_number,
+          Email_address: tenant.Email_address,
+          Age: tenant.Age,
+          Gender: tenant.Gender,
+          Wing: tenant.Wing,
+          Unit: tenant.Unit,
+          Relation: tenant.Relation,
+          Resident_status: tenant.Resident_status,
+          UnitStatus: tenant.UnitStatus,
+          Adhar_front: tenant.Adhar_front,
+          Adhar_back: tenant.Adhar_back,
+          Address_proof: tenant.Address_proof,
+          Rent_Agreement: tenant.Rent_Agreement,
+          Member_Counting: tenant.Member_Counting,
+          Vehicle_Counting: tenant.Vehicle_Counting
+      }));
 
-        // Respond with only the counts
-        return res.json({
-            success: true,
-            Owner: ownerCounts
-        });
-    } catch (error) {
-        console.error("Error fetching owner Tenant:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to retrieve Tenant data"
-        });
-    }
-}
+      // Respond with all the details of the tenants
+      return res.json({
+          success: true,
+          tenants: tenantDetails
+      });
+  } catch (error) {
+      console.error("Error fetching tenant data:", error);
+      return res.status(500).json({
+          success: false,
+          message: "Failed to retrieve tenant data"
+      });
+  }
+};
+
 
 // update Tenant
 
