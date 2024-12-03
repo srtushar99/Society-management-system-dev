@@ -11,6 +11,7 @@ import CreateIncome from "./CreateIncome";
 import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 import axiosInstance from '../../Common/axiosInstance';
 import moment from 'moment';
+import "../../Dashboard/Maintenance/scrollbar.css";
 
 const OtherIncome = () => {
   const [activeButton, setActiveButton] = useState("otherIncome");
@@ -23,6 +24,10 @@ const OtherIncome = () => {
   const [noteToDelete, setNoteToDelete] = useState(null); 
   const [isSecurityProtocolOpen, setIsSecurityProtocolOpen] = useState(false); 
   const [OtherIncome, setOtherIncome] = useState([]);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
 
   const cards = [
     {
@@ -79,27 +84,27 @@ const OtherIncome = () => {
     }
   };
 
-  // Handle Edit, View, Delete click event
+
   const handleOptionClick = (option, card) => {
-    setActiveOption(option); // Set the active option clicked (Edit/View/Delete)
+    setActiveOption(option); 
     if (option === "edit") {
-      handleEditNoteClick(card); // Open Edit modal
+      handleEditNoteClick(card); 
     }
     if (option === "delete") {
-      setNoteToDelete(card); // Set the note to delete
-      setIsDeleteNoteOpen(true); // Open Delete modal
+      setNoteToDelete(card); 
+      setIsDeleteNoteOpen(true);
     }
     if (option === "view") {
-      setIsSecurityProtocolOpen(true); // Open SecurityProtocol modal
+      setIsSecurityProtocolOpen(true); 
     }
   };
 
-  // Open the CreateNote modal
+
   const handleCreateNoteClick = () => {
-    setIsCreateNoteOpen(true); // Open CreateNote modal
+    setIsCreateNoteOpen(true); 
   };
 
-  // Close the CreateNote modal
+
   const closeCreateNoteModal = () => {
     setIsCreateNoteOpen(false);
   };
@@ -109,36 +114,36 @@ const OtherIncome = () => {
     setActiveButton(buttonType);
   };
 
-  // Open the EditNote modal with selected card data
+ 
   const handleEditNoteClick = (note) => {
-    setSelectedNote(note); // Set the selected note for editing
-    setIsEditNoteOpen(true); // Open the EditNote modal
+    setSelectedNote(note); 
+    setIsEditNoteOpen(true); 
   };
 
-  // Close the EditNote modal
+
   const closeEditNoteModal = () => {
-    setIsEditNoteOpen(false); // Close the modal
-    setSelectedNote(null); // Clear selected note data
+    setIsEditNoteOpen(false); 
+    setSelectedNote(null); 
   };
 
-  // Close the DeleteNote modal
+
   const closeDeleteNoteModal = () => {
-    setIsDeleteNoteOpen(false); // Close the delete modal
-    setNoteToDelete(null); // Clear the note to delete
+    setIsDeleteNoteOpen(false); 
+    setNoteToDelete(null); 
   };
 
-  // Handle Delete Confirmation
+  
   const handleDeleteNote = (note) => {
-    setOtherIncome(OtherIncome.filter((card) => card._id !== note.id)); // Remove the deleted card from the list
-    closeDeleteNoteModal(); // Close the modal after deletion
+    setOtherIncome(OtherIncome.filter((card) => card._id !== note.id));
+    closeDeleteNoteModal(); 
   };
 
-  // Close the SecurityProtocol modal
+
   const closeSecurityProtocolModal = () => {
-    setIsSecurityProtocolOpen(false); // Close the SecurityProtocol modal
+    setIsSecurityProtocolOpen(false); 
   };
 
-  // Close the dropdown menu if clicked outside
+ 
   const handleClickOutside = (event) => {
     if (
       dropdownRefs.current &&
@@ -177,37 +182,63 @@ const OtherIncome = () => {
 
       <div className="flex-1 flex flex-col  ">
         {/* Header */}
-        <header className="flex justify-between  lg:ml-[290px] items-center px-5 bg-white h-[60px] shadow-md">
+        <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
-          <div className="flex items-center space-x-2 text-gray-600 ml-20 md:ml-20">
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
             <Link
               to="/dashboard"
-              className="text-[#A7A7A7] no-underline font-semibold"
+              className="text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-gray-400"> &gt; </span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
             <Link
               to="/memberlist"
-              className="text-[#A7A7A7] no-underline font-semibold"
+              className="text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
-              Maintenance
+          Maintenanance
             </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="font-semibold text-[#5678E9]">Other Income</span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+          Other Income
+            </span>
           </div>
 
-          {/* Notifications and Profile Section */}
-       <HeaderBaner/>
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
         </header>
 
         
         <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">      
-        <div className="lg:mt-[10px] bg">
+        <div className="lg:mt-[10px] ">
             <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
               <Link
                 to="/income"
-                className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-top no-underline ${
+                className={` lg:h-[50px] 2xl:px-5 px-14 py-3 rounded-top no-underline ${
                   activeButton === "maintenance"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -218,7 +249,7 @@ const OtherIncome = () => {
               </Link>
               <Link
                 to="/otherincome"
-                className={`w-full lg:h-[50px] sm:w-[150px] text-[] px-4 py-3 rounded-top no-underline ${
+                className={` lg:h-[50px] 2xl:px-5 px-10  py-3 rounded-top no-underline ${
                   activeButton === "otherIncome"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -230,15 +261,14 @@ const OtherIncome = () => {
             </div>
           </div>
 
-          <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] px-7 py-10 p-4 mt-3 rounded bg-[#FFFFFF]">
+          <div className="2xl:w-[1560px] sm:ml-[20px] 2xl:ml-[40px] px-7 py-10 p-3 mt-3 rounded bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="lg:text-3xl  font-semibold text-gray-800">
+              <span className="text-xl  whitespace-nowrap font-semibold text-gray-800">
               Other Income
-              </h1>
-           
+              </span>    
               <button
                 onClick={handleCreateNoteClick} // Trigger modal opening
-                className="bg-orange-500  text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
+                className="bg-orange-500 whitespace-nowrap text-[#FFFFFF] px-1 py-2 rounded-lg flex items-center"
               >
                 Create Other Income
               </button>

@@ -10,42 +10,41 @@ import axiosInstance from "../Common/axiosInstance";
 import moment from "moment";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner";
 
-const Facilities = () => {
-  const [openDropdown, setOpenDropdown] = useState(null); // Track which card dropdown is open
-  const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false); // Manage CreateNote modal visibility
-  const [isEditNoteOpen, setIsEditNoteOpen] = useState(false); // Manage EditNote modal visibility
-  const [selectedNote, setSelectedNote] = useState(null); // Store selected note for editing
+const Facilities = (card) => {
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false);
+  const [isEditNoteOpen, setIsEditNoteOpen] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
   const [facility, setFacility] = useState([]);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
 
-  // Toggle dropdown menu visibility
   const toggleDropdown = (index) => {
     if (openDropdown === index) {
-      setOpenDropdown(null); // Close the dropdown if it's already open
+      setOpenDropdown(null);
     } else {
-      setOpenDropdown(index); // Open the dropdown for the clicked card
+      setOpenDropdown(index);
     }
   };
 
-  // Open the CreateFacility modal
   const handleCreateNoteClick = () => {
-    setIsCreateNoteOpen(true); // Open CreateFacility modal
+    setIsCreateNoteOpen(true);
   };
 
-  // Close the CreateFacility modal
   const closeCreateNoteModal = () => {
     setIsCreateNoteOpen(false);
   };
 
-  // Open the EditFacility modal with selected card data
   const handleEditNoteClick = (note) => {
-    setSelectedNote(note); // Set the selected note for editing
-    setIsEditNoteOpen(true); // Open the EditFacility modal
+    setSelectedNote(note);
+    setIsEditNoteOpen(true);
   };
 
-  // Close the EditFacility modal
   const closeEditNoteModal = () => {
-    setIsEditNoteOpen(false); // Close the modal
-    setSelectedNote(null); // Clear selected note data
+    setIsEditNoteOpen(false);
+    setSelectedNote(null);
   };
 
   // Fetch Facility from the API
@@ -70,22 +69,48 @@ const Facilities = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white lg:h-[60px] shadow-md">
+
+        <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
-          <div className="flex items-center space-x-2 text-gray-600 ml-20 md:ml-20">
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
             <Link
               to="/dashboard"
-              className="text-[#A7A7A7] no-underline font-semibold"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="font-semibold text-[#5678E9]">
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
               Facility Management
             </span>
           </div>
-
-          {/* Notifications and Profile Section */}
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
           <HeaderBaner />
         </header>
 
@@ -98,7 +123,7 @@ const Facilities = () => {
               </h1>
               {/* Create Facility Button */}
               <button
-                onClick={handleCreateNoteClick} // Trigger modal opening
+                onClick={handleCreateNoteClick}
                 className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
               >
                 Create facility
@@ -118,7 +143,7 @@ const Facilities = () => {
                     <div className="flex items-center gap-2">
                       <i
                         className="border rounded p-2 bg-white text-[#5678E9] fa-solid fa-ellipsis-vertical cursor-pointer"
-                        onClick={() => toggleDropdown(index)} // Toggle dropdown visibility
+                        onClick={() => toggleDropdown(index)}
                       ></i>
                     </div>
                   </div>
@@ -128,7 +153,7 @@ const Facilities = () => {
                     <div className="bg-white shadow-lg rounded-md absolute top-12 left-[85%] transform -translate-x-[50%] w-[80px]">
                       <button
                         className="w-full text-center px-4 py-2 text-sm text-gray-700"
-                        onClick={() => handleEditNoteClick(card)} // Open EditFacility modal
+                        onClick={() => handleEditNoteClick(card)}
                       >
                         Edit
                       </button>
@@ -146,13 +171,18 @@ const Facilities = () => {
                           : " "}
                       </span>
                     </div>
-
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">
-                      Description
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      {!!card.Description ? card.Description : ""}
-                    </p>
+                    <div>
+                      <h3 className="text-sm text-[#4F4F4F] mb-2">
+                        Description
+                      </h3>
+                      <div className="max-h-[70px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                        <span className="text-sm text-[#202224]">
+                          {!!card.Description
+                            ? card.Description
+                            : "No description available"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}

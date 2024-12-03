@@ -11,6 +11,7 @@ import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 import { FileImage, FileIcon as FilePdf } from 'lucide-react';
 import axiosInstance from '../../Common/axiosInstance';
 import moment from 'moment';
+import "../../Dashboard/Maintenance/scrollbar.css";
 
 const initialData = [
   { id: 1, title: 'Rent or Mortgage', description: 'A visual representation of your spending categories...', date: '10/02/2024', Amount: '1000', billFormat: 'JPG'},
@@ -35,6 +36,11 @@ const Expense = () => {
   const [selectedExpenseForView, setSelectedExpenseForView] = useState(null);
   const [selectedExpenseForDelete, setSelectedExpenseForDelete] = useState(null);
   const [Expense, setExpense] = useState([]);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+
 
   const openCreateExpenseModal = () => setIsExpenseOpen(true);
   const closeCreateExpenseModal = () => setIsExpenseOpen(false);
@@ -95,50 +101,82 @@ const Expense = () => {
     <div className="flex bg-gray-100 w-full h-full">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        <header className="flex justify-between lg:ml-[290px] items-center lg:px-5 bg-white h-[60px] shadow-md">
-          <div className="flex items-center space-x-2 text-gray-600">
-            <Link to="/expense" className="text-[#A7A7A7] no-underline font-semibold ml-20 md:ml-20">
+      <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
+            <Link
+              to="/dashboard"
+              className=" text-[#A7A7A7] text-decoration-none font-weight-semibold  sm:text-base"
+            >
               Home
             </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="font-semibold text-[#5678E9]">Add Expense Details</span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+            Expenses
+            </span>
           </div>
 
-          <HeaderBaner/>
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
         </header>
 
-        <div className="bg-[#FFFFFF] rounded-lg lg:ml-[330px] shadow-md lg:w-[1560px] mt-5">
+        <div className="bg-[#FFFFFF] rounded-lg lg:ml-[310px] shadow-md lg:w-[1590px] mt-5">
           <div className="flex justify-between items-center mb-6 p-2 pt-4 ps-3">
-            <h1 className="text-3xl font-semibold text-gray-800">Add Expense Details</h1>
+            <h1 className="text-xl font-semibold  whitespace-nowrap text-gray-800">Add Expense Details</h1>
             <button
               onClick={openCreateExpenseModal}
-              className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
+              className="bg-orange-500  whitespace-nowrap hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
             >
               Add Expense Details
             </button>
           </div>
            
-          <div className="overflow-x-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            <table className="bg-white border border-gray-200 rounded-lg shadow-md w-full">
+          <div className="overflow-x-auto h-[700px] rounded-2xl scrollbar-thin 2xl:ml-5 ml-2 mr-2  scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+           <div className='Content'>
+            <table className="bg-white border 2xl:w-[1560px] border-gray-200 rounded-lg shadow-md w-full">
               <thead className="bg-[#5678E9] w-full" style={{ backgroundColor:"rgba(86, 120, 233, 0.1)" }} >
                 <tr className="text-left text-sm font-semibold">
-                  <th className="p-3 text-[#202224]">Title</th>
-                  <th className="p-3 hidden sm:table-cell">Description</th>
-                  <th className="p-3 hidden md:table-cell">Date</th>
-                  <th className="p-3 hidden lg:table-cell">Amount</th>
-                  <th className="p-3 hidden lg:table-cell">Bill Format</th>
-                  <th className="p-3 hidden lg:table-cell text-center">Action</th>
+                  <th className="p-3  whitespace-nowrap text-[#202224]">Title</th>
+                  <th className="p-3 text-left whitespace-nowrap  sm:table-cell">Description</th>
+                  <th className="p-3 text-center whitespace-nowrap  md:table-cell">Date</th>
+                  <th className="p-3 text-center whitespace-nowrap  lg:table-cell">Amount</th>
+                  <th className="p-3 ps-5 whitespace-nowrap  lg:table-cell">Bill Format</th>
+                  <th className="p-3 lg:table-cell text-center">Action</th>
                 </tr>
               </thead>
 
               <tbody>
                 {Expense.map((item, index) => (
                   <tr key={index} className="border-t border-gray-200">
-                    <td className="p-3 pt-2 text-gray-700 font-medium">{!!item.Title ? item.Title : ""}</td>
-                    <td className="p-3 pt-2 hidden sm:table-cell text-gray-600">{!!item.Description ? item.Description : ""}</td>
-                    <td className="p-3 pt-2 hidden md:table-cell text-gray-600">{!!item.Date ? moment(item.Date).format("DD/MM/YYYY") : ""}</td>
-                    <td className="p-3 pt-2 hidden lg:table-cell text-[#39973D]">₹{!!item.Amount ? item.Amount : 0}</td>
-                    <><td className="p-3 pt-2 hidden lg:table-cell text-gray-600">
+                    <td className="p-3 pt-2 text-start whitespace-nowrap text-gray-700 font-medium">{!!item.Title ? item.Title : ""}</td>
+                    <td className="p-3 pt-2 text-left whitespace-nowrap sm:table-cell text-gray-600">{!!item.Description ? item.Description : ""}</td>
+                    <td className="p-3 pt-2 text-center md:table-cell text-gray-600">{!!item.Date ? moment(item.Date).format("DD/MM/YYYY") : ""}</td>
+                    <td className="p-3 pt-2 text-center lg:table-cell text-[#39973D]">₹{!!item.Amount ? item.Amount : 0}</td>
+                    <><td className="p-3 ps-5 pt-2   text-center lg:table-cell text-gray-600">
                       {!!item.billFormat ? <div className="flex items-center space-x-2">
                         {item.billFormat == 'JPG' || item.billFormat == "jpg" ? (
                           <FileImage className="w-5 h-5 text-blue-500" />
@@ -151,7 +189,7 @@ const Expense = () => {
                       }
                     </td></>
                     <td className="p-3 pt-2">
-                      <div className="flex flex-wrap sm:flex-nowrap sm:space-x-2 space-y-2 sm:space-y-0 justify-center">
+                      <div className="flex  space-x-2  justify-center">
                         <button
                           className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"
                           onClick={() => openEditModal(item)}
@@ -176,6 +214,7 @@ const Expense = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 
