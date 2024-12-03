@@ -55,7 +55,7 @@ const GetPass = ({ isOpen, onClose, selectedMember, fetchAnnouncement }) => {
   };
 
   const handlePayNow = () => {
-    setIsPayNowOpen(true); // Open the PayNow modal
+    setIsPayNowOpen(true);
   };
 
   const handlePaymentSuccess = () => {
@@ -137,7 +137,7 @@ const GetPass = ({ isOpen, onClose, selectedMember, fetchAnnouncement }) => {
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#F6F8FB] text-[#202224]"
               }`}
-              onClick={handlePayNow} // Open the PayNow modal
+              onClick={handlePayNow} 
               disabled={!isFormValid}
             >
               Pay Now
@@ -150,8 +150,8 @@ const GetPass = ({ isOpen, onClose, selectedMember, fetchAnnouncement }) => {
       {isPayNowOpen && (
         <PayNow
           totalAmount={totalAmount} 
-          onClose={() => setIsPayNowOpen(false)} // Close PayNow modal
-          onPaymentSuccess={handlePaymentSuccess} // Handle payment success
+          onClose={() => setIsPayNowOpen(false)} 
+          onPaymentSuccess={handlePaymentSuccess} 
         />
       )}
     </div>
