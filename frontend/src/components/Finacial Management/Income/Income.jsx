@@ -344,12 +344,12 @@ const Income = ({ color }) => {
             </div>
             <div className="overflow-x-auto h-[500px]  rounded-2xl ml-2  mr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <div className="Content">
-                <table className="2xl:w-[1530px]  text-sm text-left text-gray-600 rounded-top">
-                  <thead style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
+                <table className="2xl:w-[1530px]   text-sm text-left text-gray-600 rounded-top">
+                  <thead className="" style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
                     <tr className=" text-gray-600 uppercase text-xs font-semibold">
-                      <th className="ps-5 whitespace-nowrap py-2">Name</th>
+                      <th className="ps-5  whitespace-nowrap py-2">Name</th>
                       <th className="tex whitespace-nowrap">Unit Number</th>
-                      <th className="ps-5 whitespace-nowrap ">Date</th>
+                      <th className="ps-5 p-3 whitespace-nowrap ">Date</th>
                       <th className="2xl:ps-5 whitespace-nowrap ">Role</th>
                       <th className="text-center whitespace-nowrap ">
                         Phone Number

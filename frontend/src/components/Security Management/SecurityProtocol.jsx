@@ -217,9 +217,12 @@ const SecurityProtocol = () => {
             >
               Home
             </Link>
-            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-            Security Protocols
+              Security Protocols
             </span>
           </div>
 
@@ -310,63 +313,77 @@ const SecurityProtocol = () => {
             </button>
           </div>
           <div className="overflow-x-auto   h-[700px]   rounded-2xl 2xl:ml-5 ml-2 mr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-          <div className="Content"> 
-          <table className="bg-white  2xl:w-[1560px] border-gray-200 rounded-lg shadow-md w-full">
-            <thead
-              className=""
-              style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
-            >
-              <tr className="text-left text-sm font-semibold">
-                <th className="p-3 ps-3 whitespace-nowrap text-[#202224] ">Title</th>
-                <th className="p-3 ps-5 whitespace-nowrap  sm:table-cell">Description</th>
-                <th className="p-3 text-center whitespace-nowrap  md:table-cell">Date</th>
-                <th className="p-3 text-center whitespace-nowrap  lg:table-cell">Time</th>
-                <th className="p-3 text-center whitespace-nowrap  xl:table-cell">Action</th>
-              </tr>
-            </thead>
+            <div className="Content">
+              <table className="bg-white  2xl:w-[1560px] border-gray-200 rounded-lg shadow-md w-full">
+                <thead
+                  className=""
+                  style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
+                >
+                  <tr className="text-left text-sm font-semibold">
+                    <th className="p-3 ps-3 whitespace-nowrap text-[#202224] ">
+                      Title
+                    </th>
+                    <th className="p-3 ps-5 whitespace-nowrap  sm:table-cell">
+                      Description
+                    </th>
+                    <th className="p-3 text-center whitespace-nowrap  md:table-cell">
+                      Date
+                    </th>
+                    <th className="p-3 text-center whitespace-nowrap  lg:table-cell">
+                      Time
+                    </th>
+                    <th className="p-3 text-center whitespace-nowrap  xl:table-cell">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              {SecurityProtocols.map((item, index) => (
-                <tr key={index} className="border-t border-gray-200">
-                  <td className="p-3 pt-2   text-left ps-3 whitespace-nowrap text-gray-700 font-medium">
-                    {item.Title}
-                  </td>
-                  <td className="p-3 pt-2   text-left ps-5 whitespace-nowrap sm:table-cell text-gray-600">
-                    {item.Description}
-                  </td>
-                  <td className="p-3 pt-2   text-center whitespace-nowrap md:table-cell text-gray-600">
-                    {!!item.Date ? moment(item.Date).format("DD/MM/YYYY") : " "}
-                  </td>
-                  <td className="p-3 pt-2  text-center whitespace-nowrap lg:table-cell text-gray-600">
-                    {item.Time}
-                  </td>
-                  <td className="p-3 pt-2 flex justify-center">
-                    <div className="flex   space-x-2 sm:space-y-0">
-                      <button
-                        className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"
-                        onClick={() => openEditModal(item)}
-                      >
-                        <i className="fa-solid fa-pen-to-square"></i>
-                      </button>
-                      <button
-                        className="bg-blue-50 text-[#5678E9] rounded-2 p-2 sm:w-10 sm:h-10"
-                        onClick={() => openViewModal(item)} 
-                      >
-                        <i className="fa-solid fa-eye w-2 me-2"></i>
-                      </button>
-                      <button
-                        className="bg-blue-50 text-red-600 rounded-2 p-2 sm:w-10 sm:h-10"
-                        onClick={() => openDeleteModal(item)} 
-                      >
-                        <i className="fa-solid fa-trash"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
+                <tbody>
+                  {SecurityProtocols.map((item, index) => (
+                    <tr key={index} className="border-t border-gray-200">
+                      <td className="p-3 pt-2   text-left ps-3 whitespace-nowrap text-gray-700 font-medium">
+                        {item.Title}
+                      </td>
+                      <td className="p-3 pt-2 text-left ps-5 sm:table-cell text-gray-600 border-b border-gray-200">
+                        <div className="break-words w-[800px] whitespace-normal">
+                          {item.Description}
+                        </div>
+                      </td>
+                      <td className="p-3 pt-2   text-center whitespace-nowrap md:table-cell text-gray-600">
+                        {!!item.Date
+                          ? moment(item.Date).format("DD/MM/YYYY")
+                          : " "}
+                      </td>
+                      <td className="p-3 pt-2  text-center whitespace-nowrap lg:table-cell text-gray-600">
+                        {item.Time}
+                      </td>
+                      <td className="p-3 pt-2 text-center align-middle">
+                        <div className="inline-flex space-x-2">
+                          <button
+                            className="bg-blue-50 text-[#39973D] rounded p-2 sm:w-10 sm:h-10 flex items-center justify-center"
+                            onClick={() => openEditModal(item)}
+                          >
+                            <i className="fa-solid fa-pen-to-square"></i>
+                          </button>
+                          <button
+                            className="bg-blue-50 text-[#5678E9] rounded p-2 sm:w-10 sm:h-10 flex items-center justify-center"
+                            onClick={() => openViewModal(item)}
+                          >
+                            <i className="fa-solid fa-eye"></i>
+                          </button>
+                          <button
+                            className="bg-blue-50 text-red-600 rounded p-2 sm:w-10 sm:h-10 flex items-center justify-center"
+                            onClick={() => openDeleteModal(item)}
+                          >
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

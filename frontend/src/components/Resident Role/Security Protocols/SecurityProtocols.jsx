@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import moment from 'moment';
+import moment from "moment";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 import ResidentSidebar from "../Resident Sidebar/ResidentSidebar";
-import axiosInstance from '../../Common/axiosInstance';
-
+import axiosInstance from "../../Common/axiosInstance";
 
 const SecurityProtocols = () => {
   const [SecurityProtocols, setSecurityProtocols] = useState([]);
@@ -51,27 +50,22 @@ const SecurityProtocols = () => {
     },
   ];
 
-
-
   // Fetch Security Protocols from the API
   const fetchSecurityProtocols = async () => {
     try {
-        const response = await axiosInstance.get('/v2/securityprotocol/');
-        console.log(response.data);
-        if(response.status === 200){
-         setSecurityProtocols(response.data.data); 
-        }
-       
+      const response = await axiosInstance.get("/v2/securityprotocol/");
+      console.log(response.data);
+      if (response.status === 200) {
+        setSecurityProtocols(response.data.data);
+      }
     } catch (error) {
-        console.error('Error fetching Security Protocols:', error);
+      console.error("Error fetching Security Protocols:", error);
     }
-};
+  };
 
-
-useEffect(() => {
-  fetchSecurityProtocols();
-}, []);
-
+  useEffect(() => {
+    fetchSecurityProtocols();
+  }, []);
 
   return (
     <div className="flex bg-gray-100 w-full h-full">
@@ -93,51 +87,53 @@ useEffect(() => {
           <HeaderBaner />
         </header>
 
-        <div className="ps-6 pe-6 mt-3 w-full">
-          <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1570px] bg-[#FFFFFF]">
+        <div className=" mt-5 w-full">
+          <div className="rounded-lg 2xl:ml-[310px] shadow-md lg:w-[1590px] bg-[#FFFFFF]">
             <h1 className="p-3 fs-6 font-semibold text-gray-800 mt-2">
               Security Protocols
             </h1>
-            <div />
-            <div className="overflow-x-auto h-[500px]  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-              <div className="Content">
-                <table className="2xl:w-[1560px] border border-gray-200 rounded-table">
+ 
+            <div className="overflow-x-auto h-[700px] 2xl:ml-3 rounded-2xl mr-2 rounded-tr-xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <div className="Content ">
+                <table className="2xl:w-[1560px] rounded-2xl  border-gray-200 ">
                   <thead
                     className="relative"
                     style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                   >
-                     <tr className="text-left text-sm font-semibold">
+                    <tr className="text-left text-sm font-semibold ">
                       <th className="ps-4 text-[#202224] ">Title</th>
-                      <th className="ps-5 text-[#202224] ">Description</th>
-                      <th className=" text-center p-2 ">Date</th>
+                      <th className="ps-3 text-[#202224] ">Description</th>
+                      <th className=" text-left p-2 ">Date</th>
                       <th className=" text-center ">Time</th>
                     </tr>
-
                   </thead>
                   <tbody>
                     {SecurityProtocols.map((security, index) => (
-                      <tr key={index} className="border-t border-gray-200">
-                      <td className="p-2 pt-3 pb-2 flex items-center whitespace-nowrap">
-                        <span className="text-[#4F4F4F] inline">
-                          {!!security.Title ? security.Title : ""}
-                        </span>
-                      </td>
-                      <td className="text-[#4F4F4F] text-left whitespace-nowrap">
-                        <span className="text-[#4F4F4F] ">
-                        {!!security.Description ? security.Description : ""}
-                        </span>
-                      </td>
-                      <td className="text-[#4F4F4F] text-center">
-                        <span className="text-[#4F4F4F]  text-sm sm:text-base">
-                          <span className="inline">{!!security.Time ? security.Time : ""}</span>
-                        </span>
-                      </td>
+                      <tr key={index} className="border-t  border-gray-200">
+                        <td className="p-3  text-left   border-b  whitespace-nowrap  align-middle">
+                          <span className="text-[#4F4F4F]">
+                            {!!security.Title ? security.Title : ""}
+                          </span>
+                        </td>
+                        <td className="text-[#4F4F4F] p-3  text-left  sm:table-cell  border-b border-gray-200">
+                          <div className="text-[#4F4F4F] break-words w-[800px] whitespace-normal ">
+                            {!!security.Description ? security.Description : ""}
+                          </div>
+                        </td>
+                        <td className="text-[#4F4F4F] text-left whitespace-nowrap border-b pe-3">
+                          <span className="text-[#4F4F4F]   text-sm sm:text-base">
+                            <span className="inline">
+                              {!!security.Time ? security.Time : ""}
+                            </span>
+                          </span>
+                        </td>
 
-                      <td className="pt-3 text-[#4F4F4F] ">
-                      {!!security.Date ? moment(security.Date).format("DD/MM/YYYY") : ""}
-                      </td>
-                    </tr>
-
+                        <td className=" text-[#4F4F4F] border-b">
+                          {!!security.Date
+                            ? moment(security.Date).format("DD/MM/YYYY")
+                            : ""}
+                        </td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>

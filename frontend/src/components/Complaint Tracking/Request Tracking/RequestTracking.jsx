@@ -150,14 +150,15 @@ const unitImages = {
 };
 
 const RequestTracking = () => {
-  const [data, setData] = useState(initialData); 
+  const [data, setData] = useState(initialData);
   const [isCreateProtocolOpen, setIsCreateProtocolOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProtocolForView, setSelectedProtocolForView] = useState(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [selectedProtocolForDelete, setSelectedProtocolForDelete] =useState(null); 
+  const [selectedProtocolForDelete, setSelectedProtocolForDelete] =
+    useState(null);
   const [RequestTracking, setRequestTracking] = useState([]);
 
   const toggleSearchVisibility = () => {
@@ -180,24 +181,24 @@ const RequestTracking = () => {
   const closeViewModal = () => setIsViewModalOpen(false);
 
   const openDeleteModal = (item) => {
-    setSelectedProtocolForDelete(item); 
+    setSelectedProtocolForDelete(item);
     setIsDeleteModalOpen(true);
   };
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
   const handleDelete = (id) => {
-    setRequestTracking(RequestTracking.filter((item) => item._id !== id)); 
+    setRequestTracking(RequestTracking.filter((item) => item._id !== id));
     closeDeleteModal();
   };
 
   const Badge = ({ children, className }) => (
     <span
-      className={`px-4 py-2 text-xs font-semibold ${className}`} 
+      className={`px-4 py-2 text-xs font-semibold ${className}`}
       style={{
         borderRadius: "15px",
-        display: "inline-block", 
-        minWidth: "80px", 
-        textAlign: "center", 
+        display: "inline-block",
+        minWidth: "80px",
+        textAlign: "center",
       }}
     >
       {children}
@@ -234,7 +235,10 @@ const RequestTracking = () => {
             >
               Home
             </Link>
-            <span className="text-[#202224] fs-5  mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] fs-5  mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
               Request Tracking
             </span>
@@ -281,9 +285,9 @@ const RequestTracking = () => {
               Create Request
             </button>
           </div>
-          <div className="overflow-x-auto  h-[700px]   rounded-2xl 2xl:ml-5 ml-2 mr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="overflow-x-auto  h-[700px]   rounded-2xl  2xl:ml-5 ml-2 mr-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className="Content">
-              <table className="bg-white   2xl:w-[1560px] ">
+              <table className="bg-white   2xl:w-[1550px] ">
                 <thead
                   className="w-full "
                   style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
@@ -317,27 +321,31 @@ const RequestTracking = () => {
                 <tbody>
                   {RequestTracking.map((item, index) => (
                     <tr key={index} className="border-t  border-gray-200">
-                      <td className="px-4 whitespace-nowrap py-3 flex items-center space-x-3">
+                      <td className=" px-4 py-3 whitespace-nowrap">
+                      <div className="flex whitespace-nowrap items-center space-x-3">
                         <img
                           src={AvatarImage}
                           alt="avatar"
                           className="w-8 h-8 rounded-full"
                         />
-                        <span>{item.Requester_name}</span>
+                        <span  className="truncate max-w-xs">{item.Requester_name}</span>
+                        </div>
                       </td>
-                      <td className="p-3 pt-2 text-left whitespace-nowrap sm:table-cell text-gray-600">
+                      <td className="p-3 text-left whitespace-nowrap sm:table-cell text-gray-600">
                         {item.Request_name}
                       </td>
 
                       <td className="p-3 text-left  whitespace-nowrap   text-gray-600">
-                        {!!item.Description
-                          ? item.Description
-                          : "No Description"}
+                        <p className="break-words w-[500px] whitespace-normal">
+                          {!!item.Description
+                            ? item.Description
+                            : "No Description"}
+                        </p>
                       </td>
                       <td className="p-2  text-center whitespace-nowrap  text-gray-600">
                         {moment(item.Request_date).format("DD/MM/YYYY")}
                       </td>
-                      <td className="pt-2  text-center ps-5  whitespace-nowrap d-flex  sm:table-cell text-gray-600">
+                      <td className="  text-center   whitespace-nowrap   sm:table-cell text-gray-600">
                         {/* {" "}
                     <img
                       src={unitImages[item.unit]}
@@ -360,7 +368,7 @@ const RequestTracking = () => {
                         </span>{" "}
                         {" " + item.Unit}
                       </td>
-                      <td className="p-3 pt-2 text-center whitespace-nowrap  lg:table-cell text-gray-600">
+                      <td className="p-3  text-center whitespace-nowrap  lg:table-cell text-gray-600">
                         <Badge
                           className={
                             item.Priority === "High"
@@ -373,7 +381,7 @@ const RequestTracking = () => {
                           {item.Priority}
                         </Badge>
                       </td>
-                      <td className="p-3 pt-2  text-center whitespace-nowrap  md:table-cell text-gray-600">
+                      <td className="p-3   text-center whitespace-nowrap  md:table-cell text-gray-600">
                         <Badge
                           className={
                             item.Status === "Open"
@@ -387,7 +395,7 @@ const RequestTracking = () => {
                         </Badge>
                       </td>
 
-                      <td className=" pt-2">
+                      <td className=" ">
                         <div className="flex space-x-2   sm:space-y-0">
                           <button
                             className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"

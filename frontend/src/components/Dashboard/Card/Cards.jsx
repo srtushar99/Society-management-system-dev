@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import sendMoneyIcon from "../../assets/money-send.png"; // Update with actual path
 import receiveMoneyIcon from "../../assets/money-recive.png"; // Update with actual path
 import documentIcon from "../../assets/document.png"; // Update with actual path
 import buildingIcon from "../../assets/building-4.png";
 import "../../Sidebar/sidebar.css";
+import axiosInstance from '../../Common/axiosInstance';
 
 const Card = ({ title, amount, icon, color }) => {
   return (
@@ -39,6 +40,52 @@ const Card = ({ title, amount, icon, color }) => {
 };
 
 const Cards = () => {
+  const [totalUnit, setTotalUnit] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+
+  
+        const fetchTotalUnit = async () => {
+          try {
+              const response = await axiosInstance.get('/v2/resident/unit/total-residents-count');
+              if(response.status === 200){
+                setTotalUnit(response.data.TotalResidents);
+              }
+          } catch (error) {
+              console.error('Error fetching fetchTotalUnit:', error);
+          }
+      };
+
+      const fetchTotalExpense = async () => {
+        try {
+            const response = await axiosInstance.get('/v2/expenses/expenses/total-amount');
+            if(response.status === 200){
+              setTotalExpense(response.data.totalAmount);
+            }
+        } catch (error) {
+            console.error('Error fetching fetchTotalExpense:', error);
+        }
+      };
+
+      const fetchTotalIncome = async () => {
+        try {
+            const response = await axiosInstance.get('/v2/income/income/total-amount');
+            if(response.status === 200){
+              setTotalIncome(response.data.totalAmount);
+            }
+        } catch (error) {
+            console.error('Error fetching fetchTotalIncome:', error);
+        }
+      };
+
+
+
+    useEffect(() => {
+      fetchTotalUnit();
+      fetchTotalExpense();
+      fetchTotalIncome();
+    }, []);
+
   return (
     <div className="2xl:flex flex-wrap justify-start mt-4 me-3   2xl:ml-[310px]">
       {/* Total Balance Card */}
@@ -46,7 +93,7 @@ const Cards = () => {
         <Card 
           className=""
           title="Total Balance"
-          amount="₹2,22,520"
+          amount={totalIncome-totalExpense}
           icon={documentIcon}
           color="#FF6A00"
         />
@@ -55,7 +102,7 @@ const Cards = () => {
         <Card
           className=""
           title="Total Income"
-          amount="₹55,000"
+          amount={totalIncome}
           icon={receiveMoneyIcon}
           color="#39973D"
         />
@@ -66,7 +113,7 @@ const Cards = () => {
         <Card
           className=""
           title="Total Expense"
-          amount="₹20,550"
+          amount={totalExpense}
           icon={sendMoneyIcon}
           color="#869FF3"
         />
@@ -75,7 +122,7 @@ const Cards = () => {
         <Card
           className="w-[300px]" // Adding specific width for this card
           title="Total Unit"
-          amount="20,550"
+          amount={totalUnit}
           icon={buildingIcon}
           color="#EB37C3"
         />

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import ResidentSidebar from '../../Resident Sidebar/ResidentSidebar';
-import Header from '../../../Dashboard/Header/HeaderBaner';
+import HeaderBaner from '../../../Dashboard/Header/HeaderBaner';
 import { Link, useNavigate } from 'react-router-dom';
 import './maintenence.css';
 import PayNow from './Paynow';
@@ -18,6 +18,11 @@ const MaintenanceInvoices = () => {
   const [dueMaintenance, setDueMaintenance] = useState([]);
   const [totalMaintenance_Amount, setTotalMaintenance_Amount] = useState(0);
   const [totalPenalty_Amount, setTotalPenalty_Amount] = useState(0);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+
 
 
   const navigate = useNavigate();
@@ -81,21 +86,47 @@ const MaintenanceInvoices = () => {
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-        <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
-          <Link
-            to="/ResidentDashboard"
-            className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
-          >
-            Home
-          </Link>
-          <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
-          <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-            Maintenance Invoices
-          </span>
-        </div>
-        <Header />
-      </header>
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
+            <Link
+              to="/residentDashboard"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
+            >
+              Home
+            </Link>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+         Maintenance Invoice 
+            </span>
+          </div>
 
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
+        </header>
       <div className="flex">
         {/* Sidebar */}
         <div className='col-2'>

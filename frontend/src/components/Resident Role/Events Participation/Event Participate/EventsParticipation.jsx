@@ -290,7 +290,7 @@ const EventsParticipation = () => {
                       <th className="2xl:p-3 p-2  text-[#202224]">
                         Participator Name
                       </th>
-                      <th className="2xl:p-3 p-2 ps-5 text-[#202224]">
+                      <th className="2xl:p-3 p-2  text-[#202224]">
                         Description
                       </th>
                       <th className="2xl:p-1 p-2 ps-5 whitespace-nowrap">Event Time</th>
@@ -311,10 +311,10 @@ const EventsParticipation = () => {
                             {event.name}
                           </span>
                         </td>
-                        <td className="text-[#4F4F4F] text-left mr-10 whitespace-nowrap">
-                          <span className="text-[#4F4F4F] ">
+                        <td className="text-[#4F4F4F] text-left whitespace-nowrap">
+                        <div className="break-words text-[#4F4F4F] w-[500px] whitespace-normal">
                             {event.description}
-                          </span>
+                        </div>
                         </td>
                         <td className="text-[#4F4F4F] text-center ">
                           <span className="text-[#4F4F4F]  text-sm sm:text-base">

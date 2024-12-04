@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Ensure this path is correct
 import Sidebar from "../Sidebar/Sidebar"; // Ensure this path is correct
+import axiosInstance from '../Common/axiosInstance';
 
 const OwnerPage = () => {
   const [activeButton, setActiveButton] = useState("ownerpage");
@@ -147,6 +148,49 @@ const OwnerPage = () => {
     }
     console.log("Form submitted with :", formData);
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (isFormValid) {
+  //     try {
+  //       const formData = new FormData();
+  //       formData.append("Full_name", formData.fullName);
+  //       formData.append("Phone_number", MailOrPhone);
+  //       formData.append("Email_address", moment(shiftDate).format('DD/MM/YYYY'));
+  //       formData.append("Age", time);
+  //       formData.append("Gender", shift);
+  //       formData.append("Wing", gender);
+  //       formData.append("Unit", formData.fullName);
+  //       formData.append("Relation", MailOrPhone);
+  //       formData.append("Email_address", moment(shiftDate).format('DD/MM/YYYY'));
+  //       formData.append("Age", time);
+  //       formData.append("Gender", shift);
+  //       formData.append("Wing", gender);
+
+
+  //       if (uploadprofileimage) {
+  //         formData.append("profileimage", uploadprofileimage); 
+  //       }
+  //       if (adharcard) {
+  //         formData.append("adhar_card", adharcard); 
+  //       }
+
+  //       const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       });
+  
+  //       if (response.status === 200) {
+  //         fetchSecurityGuard();
+  //         onClose();
+  //         ClearAllData();
+  //       }
+  //     } catch (error) {
+  //       console.error("Error creating Guard:", error.response || error.message);
+  //     }
+  //   } else {
+  //     console.log("Form is invalid");
+  //   }
+  // };
 
   const handleVehicleDetailChange = (index, name, value) => {
     // Validation for vehicle details

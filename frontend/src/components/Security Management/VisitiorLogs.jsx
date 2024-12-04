@@ -192,9 +192,9 @@ useEffect(() => {
               <thead className=" relative lg:w-[1560px]" style={{ backgroundColor:"rgba(86, 120, 233, 0.1)", }} >
                 <tr className="text-left text-sm  font-semibold ">
                   <th className="p-3 text-left  whitespace-nowrap text-[#202224]">Visitor Name</th>
-                  <th className="p-3 text-left whitespace-nowrap  sm:table-cell">Phone Number</th>
+                  <th className="p-3 text-center whitespace-nowrap  sm:table-cell">Phone Number</th>
                   <th className="p-3 text-center whitespace-nowrap  md:table-cell">Date</th>
-                  <th className="p-3 text-center whitespace-nowrap  lg:table-cell">Unit Number</th>
+                  <th className="p-3 text-left  whitespace-nowrap  lg:table-cell">Unit Number</th>
                   <th className="p-1 text-center whitespace-nowrap  xl:table-cell">Time</th>
                 </tr>
               </thead>
@@ -212,7 +212,7 @@ useEffect(() => {
                     <td className="pt-3 text-center whitespace-nowrap  sm:table-cell text-gray-600">{!!visitor.number ? visitor.number : ""}</td>
                     <td className="pt-3 text-center whitespace-nowrap   md:table-cell text-gray-600">{!!visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
                     <td className="pt-3 text-center whitespace-nowrap  lg:table-cell text-gray-600 d-flex ml-10">
-                    <span className={`unit-badge unit-${visitor.wing.toLowerCase()}`}>
+                    <span className={` unit-badge unit-${visitor.wing.toLowerCase()}`}>
                         {!!visitor.wing ? visitor.wing : ""}
                       </span>
                       {!!visitor.unit ? visitor.unit :""}

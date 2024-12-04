@@ -1,4 +1,3 @@
-// AddResident.js
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
