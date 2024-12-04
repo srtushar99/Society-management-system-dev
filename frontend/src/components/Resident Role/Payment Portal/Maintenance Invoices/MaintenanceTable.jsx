@@ -209,12 +209,12 @@
           <div className="flex items-center md:ml-[100px] lg:ml-[340px] text-muted-foreground hidden sm:flex 2xl:ml-80">
             <Link
               to="/ResidentDashboard"
-              className="text-muted-foreground no-underline font-semibold text-sm sm:text-base hover:text-primary"
+              className="text-[#A7A7A7] no-underline font-semibold text-sm sm:text-base hover:text-primary"
             >
               Home
             </Link>
-            <span className="mx-2 text-sm sm:text-base"> &gt; </span>
-            <span className="font-semibold text-primary text-sm sm:text-base">
+            <span className="fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-semibold text-[#5678E9] text-sm sm:text-base">
               Maintenance Invoices
             </span>
           </div>
@@ -223,9 +223,8 @@
         <div className=' flex'>
         <div className="col-2 ">
           <ResidentSidebar />
-        
         </div>
-      <div className='col-9 border py-4 px-3 me-3 my-3' style={{borderRadius:"15px"}}>
+      <div className='col-9 shadow-md py-4 px-3 me-3  my-3' style={{borderRadius:"15px"}}>
         <div className="d-flex justify-content-between align-items-center  mb-4">
           <h1 className="h2">Maintenance Invoices</h1>
           <Dropdown>
@@ -239,8 +238,8 @@
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <div className="table-responsive">
-          <Table  bordered hover>
+        <div className="table-responsive  rounded-2xl">
+          <Table  >
             <thead >
               <tr >
                 <th style={{backgroundColor:"rgba(86, 120, 233, 0.1"}}>Invoice ID</th>
@@ -294,7 +293,7 @@
         className="custom-modal"
         style={{position:"fixed",top:"5%"}}
       >
-        <Modal.Header className="d-flex justify-content-between align-items-center border-0">
+        <Modal.Header className="d-flex justify-content-between align-items-center ">
           <Modal.Title className="fw-bold text-gray-800">Maintenance Invoices </Modal.Title>
           <button
             type="button"
