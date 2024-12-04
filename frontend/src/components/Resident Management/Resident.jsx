@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
 import plus from "../assets/add-square.png";
@@ -22,6 +22,7 @@ import EditOwner from "./EditOwner";
 import EditTenant from "./EditTenant";
 import ViewOwner from "./ViewOwner";
 import ViewTenant from "./ViewTenant";
+import axiosInstance from '../Common/axiosInstance';
 
 const initialData = [
   {
@@ -67,84 +68,7 @@ const initialData = [
     Number: "97587 85828",
     Member: "4",
     Vehicle: "2",
-  },
-  {
-    id: 5,
-    Photo: Avatar,
-    Name: "-",
-    UnitNumber: "2001",
-    UnitStatus: "Vacate",
-    ResidentStatus: "--",
-    Number: "--",
-    Member: "1",
-    Vehicle: "-",
-  },
-  {
-    id: 6,
-    Photo: AvatarImage,
-    Name: "Robert Fox",
-    UnitNumber: "2002",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Tenant",
-    Number: "97587 85828",
-    Member: "3",
-    Vehicle: "2",
-  },
-  {
-    id: 7,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "2003",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Owner",
-    Number: "97587 85828",
-    Member: "5",
-    Vehicle: "3",
-  },
-  {
-    id: 8,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "3004",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Tenant",
-    Number: "97587 85828",
-    Member: "5",
-    Vehicle: "3",
-  },
-  {
-    id: 9,
-    Photo: Avatar,
-    Name: "-",
-    UnitNumber: "3001",
-    UnitStatus: "Vacate",
-    ResidentStatus: "--",
-    Number: "--",
-    Member: "-",
-    Vehicle: "-",
-  },
-  {
-    id: 10,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "3002",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Owner",
-    Number: "97587 85828",
-    Member: "3",
-    Vehicle: "3",
-  },
-  {
-    id: 11,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "3003",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Tenant",
-    Number: "97587 85828",
-    Member: "3",
-    Vehicle: "2",
-  },
+  }
 ];
 
 const unitImages = {
@@ -169,6 +93,8 @@ const Resident = () => {
   const [memberCount, setMemberCount] = useState(1); // Default member count
   const [vehicleCount, setVehicleCount] = useState(1); // Default vehicle count
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [residents, setResidents] = useState([]);
+
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
@@ -209,6 +135,25 @@ const Resident = () => {
       {children}
     </span>
   );
+
+
+
+  const fetchResident = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/resident/allresident');
+        if(response.status === 200){
+          setResidents(response.data.Residents); 
+        }
+       
+     } catch (error) {
+        console.error('Error fetching fetchResident:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchResident();
+  }, []);
+
 
   return (
     <div className="flex bg-gray-100 w-full h-full">
@@ -291,17 +236,17 @@ const Resident = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index) => (
+                {residents.map((item, index) => (
                   <tr key={index} className="border-t border-gray-200">
                     <td className="px-4 py-3 flex items-center space-x-3">
                       <img
-                        src={item.Name === "-" ? Avatar : AvatarImage}
-                        alt="avatar"
+                        src={!!item.profileImage ? item.profileImage : AvatarImage}
+                        alt={!!item.Full_name ? item.Full_name : ""}
                         className="w-8 h-8 rounded-full flex"
                       />
-                      <span >{item.Name}</span>
+                      <span >{!!item.Full_name ? item.Full_name : ""}</span>
                     </td>
-                    <td className="p-3 pt-2 ps-3 hidden sm:table-cell text-gray-600">
+                    {/* <td className="p-3 pt-2 ps-3 hidden sm:table-cell text-gray-600">
                       <img
                         src={unitImages[item.UnitNumber]}
                         alt={item.UnitNumber}
@@ -310,11 +255,18 @@ const Resident = () => {
                         className="rounded-full"
                       />
                       {item.UnitNumber}
+                    </td> */}
+                    <td className="p-3 pt-2 ps-3 hidden sm:table-cell text-gray-600">
+                    <span className={`unit-badge unit-${item.Wing.toLowerCase()}`}>
+                        {!!item.Wing ? item.Wing : ""}
+                      </span>
+                      {!!item.Unit ? item.Unit :""}
                     </td>
+
                     <td className="p-3 pt-2 ps-5 hidden sm:table-cell text-gray-600">
                       <Badge
                         className={
-                          item.UnitStatus === "Occupied"
+                          item.UnitStatus === "Occupied" 
                             ? "bg-[#ECFFFF] text-[#14B8A6]"
                             : item.UnitStatus === "Vacate"
                             ? "bg-[#FFF6FF] text-[#9333EA]"
@@ -322,42 +274,42 @@ const Resident = () => {
                         }
                       >
                         <i className="fa-solid fa-building"></i>{" "}
-                        {item.UnitStatus}
+                        {!!item.UnitStatus ? item.UnitStatus :""}
                       </Badge>
                     </td>
                     <td className="px-4 py-3 w-[40px] pe-5">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold flex ${
-                          item.ResidentStatus === "--"
+                          item.Resident_status === "--"
                             ? "bg-[#F6F8FB] text-[#202224]"
-                            : item.ResidentStatus === "Tenant"
+                            : item.Resident_status === "Tenant"
                             ? "bg-pink-100 text-pink-600"
                             : "bg-blue-100 text-blue-600"
                         }`}
                       >
-                        {item.ResidentStatus !== "--" && (
+                        {item.Resident_status !== "--" && (
                           <FontAwesomeIcon icon={faUser} className="mr-2" />
                         )}
-                        {item.ResidentStatus}
+                        {!!item.Resident_status ? item.Resident_status : ""}
                       </span>
                     </td>
                     <td className="p-3 pt-2 hidden lg:table-cell text-gray-600">
-                      {item.Number}
+                      {!!item.Phone_number ? item.Phone_number : ""}
                     </td>
                     <td className="p-3 pt-2 ps-2 hidden md:table-cell">
                       <span className="bg-[#F6F8FB] p-2 text-[#4F4F4F] rounded-2xl w-[30px] h-[60px] ml-10">
-                        {item.Member}
+                        {!!item.Member_Counting_Total ? item.Member_Counting_Total : 0}
                       </span>
                     </td>
                     <td className="p-3 pt-2 ps-2 hidden md:table-cell">
                       <span className="bg-[#F6F8FB] p-2 text-[#4F4F4F] rounded-2xl w-[30px] h-[60px] ml-5">
-                        {item.Vehicle}
+                        {!!item.Vehicle_Counting_Tota ? item.Vehicle_Counting_Tota : 0}
                       </span>
                     </td>
                     <td className="p-3 pt-2">
                       <div className="flex flex-wrap sm:flex-nowrap sm:space-x-2 space-y-2 sm:space-y-0">
                         {/* Only show Edit and View buttons for Tenant or Owner */}
-                        {item.ResidentStatus !== "--" && (
+                        {item.Resident_status !== "--" && (
                           <>
                             <button
                               className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Ensure this path is correct
 import Sidebar from "../Sidebar/Sidebar"; // Ensure this path is correct
+import axiosInstance from '../Common/axiosInstance';
 
 const OwnerPage = () => {
   const [activeButton, setActiveButton] = useState("ownerpage");
