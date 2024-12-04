@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
 import Header from "../../../Dashboard/Header/HeaderBaner";
 import { Modal, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./otherincome.css";
 import PayNow from "../Maintenance Invoices/Paynow";
 import moment from "moment";
@@ -14,10 +14,11 @@ const OtherIncomeInvoice = () => {
   const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
   const [isPayNowOpen, setIsPayNowOpen] = useState(false); 
   const [OtherIncome, setOtherIncome] = useState([]);
-
+  const navigate = useNavigate();
 
   const handleViewInvoiceClick = () => {
-    setShowInvoiceModal(true);
+
+    navigate('/otherincomeTable')
   };
 
   const handleCloseInvoiceModal = () => {

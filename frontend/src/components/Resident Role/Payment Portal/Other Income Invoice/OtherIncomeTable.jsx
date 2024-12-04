@@ -67,7 +67,7 @@ const invoices = [
     maintenanceAmount: 1500,
     pendingAmount: 2500,
   },
-
+  
   {
     id: "152563",
     ownerName: "Terry Rhiel Madsen",
@@ -87,8 +87,7 @@ const invoices = [
     email: "FrancesHarris@rhyta.com",
     maintenanceAmount: 1500,
     pendingAmount: 2500,
-  },
-  {
+  }, {
     id: "152563",
     ownerName: "Terry Rhiel Madsen",
     billDate: "10/02/2024",
@@ -97,8 +96,7 @@ const invoices = [
     email: "FrancesHarris@rhyta.com",
     maintenanceAmount: 1500,
     pendingAmount: 2500,
-  },
-  {
+  }, {
     id: "152563",
     ownerName: "Terry Rhiel Madsen",
     billDate: "10/02/2024",
@@ -107,8 +105,7 @@ const invoices = [
     email: "FrancesHarris@rhyta.com",
     maintenanceAmount: 1500,
     pendingAmount: 2500,
-  },
-  {
+  }, {
     id: "152563",
     ownerName: "Terry Rhiel Madsen",
     billDate: "10/02/2024",
@@ -117,11 +114,11 @@ const invoices = [
     email: "FrancesHarris@rhyta.com",
     maintenanceAmount: 1500,
     pendingAmount: 2500,
-  },
+  },  
   // Add more data as needed...
 ];
 
-export function MaintenanceTable() {
+export default function otherIncomeTable() {
   const [showModal, setShowModal] = useState(false);
 
   const handleViewInvoiceClick = () => {
@@ -131,6 +128,7 @@ export function MaintenanceTable() {
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
 
   const handleCloseModal = () => {
     setShowModal(false); // Close modal
@@ -150,21 +148,18 @@ export function MaintenanceTable() {
     <div className="flex bg-gray-100 w-full h-full">
       <ResidentSidebar />
       <div className="flex-1 flex flex-col">
-        <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+      <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
             <Link
-              to="/dashboard"
+              to="/residentDashboard"
               className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
-              {" "}
-              &gt;{" "}
-            </span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-              Maintenance Invoices
+            Other Income Invoices  
             </span>
           </div>
 
@@ -199,68 +194,64 @@ export function MaintenanceTable() {
           <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1590px] bg-[#FFFFFF]">
             <div className="p-3 flex justify-between items-center">
               <p className="2xl:text-2xl text-lg whitespace-nowrap text-gray-800">
-                Maintenance Invoices
+              Other Income Invoices
               </p>
               {/* <div className=""> */}
-              <select className="border-gray-300 p-2 ml-6 pb-3 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
-                <option>Months</option>
+                <select className="border-gray-300 p-2 ml-6 pb-3 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <option>Month</option>
                 <option>Current Month</option>
-                <option>Previous Month</option>
-                <option>All Time</option>
-              </select>
-            </div>
+                  <option>Previous Month</option>
+                  <option>All Time</option>
+                </select>
+              </div>
             {/* </div> */}
 
             <div className="overflow-x-auto h-[700px] ml-5 mr-3 rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-              <div className="Content">
-                <table className=" 2xl:w-[1550px] ">
-                  <thead
-                    className=""
-                    style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
-                  >
-                    <tr>
-                      <th className="p-3 text-left whitespace-nowrap text-gray-600">
-                        Invoice ID
-                      </th>
-                      <th className="p-3 text-left whitespace-nowrap text-gray-600">
-                        Due Date
-                      </th>
-                      <th className="p-3 text-left whitespace-nowrap text-gray-600">
-                        Payment Date
-                      </th>
-                      <th className="p-3 text-left whitespace-nowrap text-gray-600">
-                        Maintenance Amount
-                      </th>
-                      <th className="p-3 text-left whitespace-nowrap  text-gray-600">
-                        Pending Amount
-                      </th>
-                      <th className="p-3 text-center text-gray-600">Action</th>
+            <div className="Content">
+              <table className=" 2xl:w-[1550px] ">
+                <thead
+                  className=""
+                  style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
+                >
+                  <tr>
+                    <th className="p-3 text-left whitespace-nowrap text-gray-600">Invoice ID</th>
+                    <th className="p-3 text-left whitespace-nowrap text-gray-600">Due Date</th>
+                    <th className="p-3 text-left whitespace-nowrap text-gray-600">
+                      Payment Date
+                    </th>
+                    <th className="p-3 text-left whitespace-nowrap text-gray-600">
+                      Maintenance Amount
+                    </th>
+                    <th className="p-3 text-left whitespace-nowrap  text-gray-600">
+                      Pending Amount
+                    </th>
+                    <th className="p-3 text-center text-gray-600">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((invoice, index) => (
+                    <tr key={index} className="border-b text-left">
+                      <td className="p-3">{invoice.id}</td>
+                      <td className="p-3">{invoice.billDate}</td>
+                      <td className="p-3">{invoice.paymentDate}</td>
+                      <td className="p-3 text-green-600">
+                        ₹ {invoice.maintenanceAmount}
+                      </td>
+                      <td className="p-3 text-red-600">
+                        ₹ {invoice.pendingAmount}
+                      </td>
+                      <td className="p-3 text-center">
+                        <button
+                          className="text-blue-500 hover:text-blue-700"
+                          onClick={handleViewInvoiceClick}
+                        >
+                          <Eye size={20} />
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {invoices.map((invoice, index) => (
-                      <tr key={index} className="border-b text-left">
-                        <td className="p-3">{invoice.id}</td>
-                        <td className="p-3">{invoice.billDate}</td>
-                        <td className="p-3">{invoice.paymentDate}</td>
-                        <td className="p-3 text-green-600">
-                          ₹ {invoice.maintenanceAmount}
-                        </td>
-                        <td className="p-3 text-red-600">
-                          ₹ {invoice.pendingAmount}
-                        </td>
-                        <td className="p-3 text-center">
-                          <button
-                            className="text-blue-500 hover:text-blue-700"
-                            onClick={handleViewInvoiceClick}
-                          >
-                            <Eye size={20} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </tbody>
+              </table>
               </div>
             </div>
           </div>
@@ -283,7 +274,7 @@ const InvoiceModal = ({ show, handleClose }) => {
     >
       <Modal.Header className="d-flex justify-content-between align-items-center ">
         <Modal.Title className="fw-bold text-gray-800">
-          Maintenance Invoices{" "}
+        Other Income Invoices{" "}
         </Modal.Title>
         <button
           type="button"

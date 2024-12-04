@@ -52,6 +52,7 @@ import Activity from './components/Resident Role/Events Participation/Activity P
 import Viewmaintenence from './components/Resident Role/Payment Portal/Maintenance Invoices/Viewmaintenence';
 import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
 import PersonalTenant from './components/Resident Role/Personal Detail/PersonalTenant';
+import OtherIncomeTable from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeTable';
 // import UpdateMaintenance from './components/Resident Role/Dashboard/Notification Panel/UpdateMaintenance';
 
 
@@ -118,6 +119,7 @@ function App() {
             <Route path="/EventsParticipation" element={<EventsParticipation/>} />
             <Route path="/activity" element={<Activity/>} />
             <Route path="/MaintenanceTable" element={<MaintenanceTable/>} />
+            <Route path="/otherincomeTable" element={<OtherIncomeTable/>} />
             
         </Routes>
     );
