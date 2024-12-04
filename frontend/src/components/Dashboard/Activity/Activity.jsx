@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import '../Maintenance/scrollbar.css';
 import '../../Sidebar/sidebar.css';
 import axiosInstance from "../../Common/axiosInstance";
+import moment from "moment";
+
 const Activity = () => {
   const activities = [
     {
@@ -78,10 +80,13 @@ const Activity = () => {
 
    // Fetch Announcement from the API
    const fetchAnnouncement = async () => {
+    const currentDate = new Date();
     try {
       const response = await axiosInstance.get("/v2/annoucement/");
       if(response.status === 200){
-        setAnnouncement(response.data.announcements);
+        const upCompingData = response.data.announcements;
+        const futureData = upCompingData.filter((item) => new Date(item.Announcement_Date) >= currentDate);
+        setAnnouncement(futureData);
       }
       
     } catch (error) {
@@ -108,7 +113,7 @@ const Activity = () => {
       </div>
 
       <div className="overflow-y-auto  h-[200px] px-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        {activities.map((activity, index) => (
+        {announcement?.map((activity, index) => (
           <div 
             key={index}
             className="flex items-center gap-1 bg-white rounded-lg shadow-sm p-1"
@@ -116,13 +121,13 @@ const Activity = () => {
             <div
               className={`w-10 h-10 rounded-full ${activity.bgColor} ${activity.textColor} flex items-center justify-center font-semibold`}
             >
-              {activity.letter}
+              {!!activity.Announcement_Title ? activity.Announcement_Title?.charAt(0).toUpperCase() : "N/A"}
             </div>
             <div className="flex-1 pt-1 px-1 ml-2  ">
-              <span className="text-gray-900 font-medium d-flex pt-1"style={{alignItems:"center"}}>{activity.title}</span>
-              <p className="text-sm text-gray-500">{activity.time}</p>
+              <span className="text-gray-900 font-medium d-flex pt-1"style={{alignItems:"center"}}>{!!activity.Announcement_Title ? activity.Announcement_Title : " "}</span>
+              <p className="text-sm text-gray-500">{!!activity.Announcement_Time ? activity.Announcement_Time : " "}</p>
             </div>
-            <div className="text-sm text-gray-500">{activity.date}</div>
+            <div className="text-sm text-gray-500">{!!activity.Announcement_Date ? moment(activity.Announcement_Date).format("DD/MM/YYYY") : " "}</div>
           </div>
         ))}
       </div>
