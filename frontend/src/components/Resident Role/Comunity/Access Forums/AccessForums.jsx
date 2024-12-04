@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col, Form, Button, Image, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Image, ListGroup, Dropdown } from 'react-bootstrap';
 import { FaVideo, FaPhone, FaSmile, FaPaperclip, FaMicrophone, FaCamera, FaEllipsisV, FaArrowRight } from 'react-icons/fa';
 import ResidentSidebar from '../../Resident Sidebar/ResidentSidebar';
 import { Link } from 'react-router-dom';
 import Header from '../../../Dashboard/Header/HeaderBaner';
 import AvatarImage from '../../../assets/Avatar.png';
 import './AccessForums.css';
-// import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker from 'emoji-picker-react';
 
 export default function AccessForums() {
   const [message, setMessage] = useState('');
@@ -16,13 +16,14 @@ export default function AccessForums() {
   const [recordingStartTime, setRecordingStartTime] = useState(null);
   const [recordingDuration, setRecordingDuration] = useState('00:00');
   const [audioData, setAudioData] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState(null); // State to hold the uploaded file
-  const [capturedImage, setCapturedImage] = useState(null); // Captured image for chat
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [capturedImage, setCapturedImage] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const fileInputRef = useRef(null); // Ref for the file input element
+  const fileInputRef = useRef(null);
+  const audioRecorder = useRef(null);
 
   const contacts = [
     { id: 1, name: 'Michael John', lastMessage: 'Hi, John! how are you?', time: '10:27', online: true },
@@ -46,7 +47,7 @@ export default function AccessForums() {
     if (!message && !uploadedFile && !capturedImage && !audioData || !selectedContact) return;
 
     const newMessage = {
-      id: Math.random(), // Temporary unique ID
+      id: Math.random(),
       sender: 'User',
       content: message,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -70,34 +71,33 @@ export default function AccessForums() {
     setMessage((prev) => prev + emoji.emoji);
   };
 
-  const handleStartRecording = () => {
+  const handleStartRecording = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(stream);
+    audioRecorder.current = mediaRecorder;
+
+    const audioChunks = [];
+    mediaRecorder.ondataavailable = (event) => {
+      audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+      const blobURL = URL.createObjectURL(audioBlob);
+      setAudioData({ blob: audioBlob, blobURL });
+    };
+
+    mediaRecorder.start();
     setIsRecording(true);
-    setRecordingStartTime(Date.now()); // Set the start time of recording
+    setRecordingStartTime(Date.now());
   };
 
   const handleStopRecording = () => {
-    setIsRecording(false);
-    setRecordingStartTime(null);
-
-    const recordedBlob = {
-      blobURL: 'https://via.placeholder.com/150', // Replace with actual audio blob URL
-    };
-
-    setAudioData(recordedBlob);
-
-    if (selectedContact) {
-      const newMessage = {
-        id: Math.random(),
-        sender: 'User',
-        audio: recordedBlob.blobURL,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        duration: recordingDuration,
-      };
-
-      setMessages({
-        ...messages,
-        [selectedContact.id]: [...(messages[selectedContact.id] || []), newMessage],
-      });
+    if (audioRecorder.current) {
+      audioRecorder.current.stop();
+      audioRecorder.current.stream.getTracks().forEach((track) => track.stop());
+      setIsRecording(false);
+      setRecordingStartTime(null);
     }
   };
 
@@ -111,13 +111,13 @@ export default function AccessForums() {
   };
 
   useEffect(() => {
-    const intervalId = setInterval(updateRecordingDuration, 1000); // Update every second
+    const intervalId = setInterval(updateRecordingDuration, 1000);
 
-    return () => clearInterval(intervalId); // Clean up the interval when component unmounts
+    return () => clearInterval(intervalId);
   }, [isRecording, recordingStartTime]);
 
   const handleCameraClick = () => {
-    setIsCameraOpen((prevState) => !prevState); // Toggle camera open/close
+    setIsCameraOpen((prevState) => !prevState);
   };
 
   const handleCaptureImage = () => {
@@ -126,10 +126,9 @@ export default function AccessForums() {
       context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
 
       const imageData = canvasRef.current.toDataURL('image/png');
-      setCapturedImage(imageData); // Set the captured image
-      setIsCameraOpen(false); // Close the camera after capturing the image
+      setCapturedImage(imageData);
+      setIsCameraOpen(false);
 
-      // Send captured image as message
       if (selectedContact) {
         const newMessage = {
           id: Math.random(),
@@ -157,7 +156,7 @@ export default function AccessForums() {
     let stream;
     if (isCameraOpen) {
       const constraints = {
-        video: { facingMode: "user" }, // Use the user's front camera
+        video: { facingMode: "user" },
       };
 
       navigator.mediaDevices.getUserMedia(constraints)
@@ -172,7 +171,7 @@ export default function AccessForums() {
       return () => {
         if (stream) {
           const tracks = stream.getTracks();
-          tracks.forEach(track => track.stop()); // Stop all tracks when the component unmounts
+          tracks.forEach(track => track.stop());
         }
       };
     }
@@ -235,7 +234,15 @@ export default function AccessForums() {
                     <div className="d-flex gap-2">
                       <Button variant="link"><FaVideo /></Button>
                       <Button variant="link"><FaPhone /></Button>
-                      <Button variant="link"><FaEllipsisV /></Button>
+                      <Dropdown>
+                        <Dropdown.Toggle as={Button} variant="link" className='mt-3'>
+                          <FaEllipsisV />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu align="end">
+                          <Dropdown.Item>Copy</Dropdown.Item>
+                          <Dropdown.Item>Forward</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
                     </div>
                   </div>
 
@@ -274,7 +281,7 @@ export default function AccessForums() {
                 <Button variant="link" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
                   <FaSmile />
                 </Button>
-                {/*{showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}*/}
+                {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
                 <Form.Control
                   type="text"
                   placeholder="Type a message"
@@ -325,3 +332,4 @@ export default function AccessForums() {
     </Container>
   );
 }
+

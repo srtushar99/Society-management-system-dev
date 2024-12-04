@@ -188,7 +188,7 @@
 
     const handleViewInvoiceClick = () => {
       setShowModal(true); // Open modal
-    };
+    };  
 
     const handleCloseModal = () => {
       setShowModal(false); // Close modal
