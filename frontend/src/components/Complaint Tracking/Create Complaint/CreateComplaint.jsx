@@ -221,7 +221,7 @@ const CreateComplaint = () => {
     <div className="flex bg-gray-100  w-full h-full">
       <Sidebar />
       <div className="flex-1 flex flex-col ">
-      <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+        <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
             <Link
@@ -230,9 +230,12 @@ const CreateComplaint = () => {
             >
               Home
             </Link>
-            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-           Create Complaint
+              Create Complaint
             </span>
           </div>
 
@@ -276,7 +279,7 @@ const CreateComplaint = () => {
               Create Create
             </button>
           </div>
-          <div className="overflow-x-auto  rounded-2xl h-[700px] 2xl:ml-5 ml-2 mr-2 scrollbar-thin  scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="overflow-x-auto 2xl:overflow-y-hidden rounded-2xl h-[700px] 2xl:ml-5 ml-2 mr-2 scrollbar-thin  scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className="Content">
               <table className="bg-white   2xl:w-[1560px]">
                 <thead
@@ -284,7 +287,9 @@ const CreateComplaint = () => {
                   style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                 >
                   <tr className="text-left text-sm font-semibold">
-                    <th className="p-3    whitespace-nowrap text-[#202224]">Complainer Name</th>
+                    <th className="p-3    whitespace-nowrap text-[#202224]">
+                      Complainer Name
+                    </th>
                     <th className="p-3 text- whitespace-nowrap  sm:table-cell">
                       Complaint Name
                     </th>
@@ -294,7 +299,9 @@ const CreateComplaint = () => {
                     <th className="p-3   whitespace-nowrap lg:table-cell">
                       Unit Number
                     </th>
-                    <th className="p-3  text-center whitespace-nowrap lg:table-cell">Priority</th>
+                    <th className="p-3  text-center whitespace-nowrap lg:table-cell">
+                      Priority
+                    </th>
                     <th className="p-3  text-center  lg:table-cell">Status</th>
                     <th className="p-3  text-center lg:table-cell">Action</th>
                   </tr>
@@ -303,22 +310,29 @@ const CreateComplaint = () => {
                 <tbody>
                   {complaint.map((item, index) => (
                     <tr key={index} className="border-t border-gray-200">
-                      <td className="px-4 whitespace-nowrap py-3 flex items-center space-x-3">
-                        <img
-                          src={AvatarImage}
-                          alt="avatar"
-                          className="w-8 h-8 rounded-full"
-                        />
-                        <span>{item.Complainer_name}</span>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex whitespace-nowrap items-center space-x-3">
+                          <img
+                            src={AvatarImage}
+                            alt="avatar"
+                            className="w-8 h-8 rounded-full"
+                          />
+                          <span className="truncate max-w-xs">
+                            {item.Complainer_name}
+                          </span>
+                        </div>
                       </td>
-                      <td className="p-3 pt-2 text-left whitespace-nowrap sm:table-cell text-gray-600">
+
+                      <td className="p-3  text-left whitespace-nowrap sm:table-cell text-gray-600">
                         {item.Complaint_name}
                       </td>
 
-                      <td className="p-3 pt-2 text-left whitespace-nowrap ps-5  sm:table-cell text-gray-600">
-                        {item.Description}
+                      <td className="p-3  text-left whitespace-nowrap   sm:table-cell text-gray-600">
+                        <p className="break-words w-[700px] whitespace-normal">
+                          {item.Description}
+                        </p>
                       </td>
-                      <td className=" pt-2  text-center ps-5 whitespace-nowrap d-flex  sm:table-cell text-gray-600">
+                      <td className=" text-center  whitespace-nowrap sm:table-cell text-gray-600">
                         {/* {" "}
                     <img
                       src={unitImages[item.Wing]}
@@ -339,7 +353,8 @@ const CreateComplaint = () => {
                         </span>{" "}
                         {" " + item.Unit}
                       </td>
-                      <td className="p-3 pt-2 text-center whitespace-nowrap  lg:table-cell text-gray-600">
+                      
+                      <td className="p-3  text-center whitespace-nowrap  lg:table-cell text-gray-600">
                         <Badge
                           className={
                             item.Priority === "High"
@@ -352,7 +367,7 @@ const CreateComplaint = () => {
                           {item.Priority}
                         </Badge>
                       </td>
-                      <td className="p-3 pt-2  text-center whitespace-nowrap  md:table-cell text-gray-600">
+                      <td className="p-3   text-center whitespace-nowrap  md:table-cell text-gray-600">
                         <Badge
                           className={
                             item.Status === "Open"
@@ -366,7 +381,7 @@ const CreateComplaint = () => {
                         </Badge>
                       </td>
 
-                      <td className=" pt-2">
+                      <td className="">
                         <div className="flex space-x-2  sm:space-y-0">
                           <button
                             className="bg-blue-50 text-[#39973D] rounded-2 p-2 sm:w-10 sm:h-10"

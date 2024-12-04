@@ -284,11 +284,11 @@ const Activity = () => {
                         {" "}
                         Participator Name
                       </th>
-                      <th className="2xl:p-3 p-2 ps-5 text-[#202224]">
+                      <th className="2xl:p-3 p-2  text-[#202224]">
                         Description
                       </th>
                       <th className="2xl:p-1 p-2  ps-5  whitespace-nowrap ">Event Time</th>
-                      <th className="2xl:p-3 p-2 ps-5  whitespace-nowrap">Event Date</th>
+                      <th className="2xl:p-3 p-2 ps-3  whitespace-nowrap">Event Date</th>
                       <th className="2xl:p-3 p-2  ps-5  whitespace-nowrap">Event Name</th>
                     </tr>
                   </thead>
@@ -306,9 +306,11 @@ const Activity = () => {
                           </span>
                         </td>
                         <td className="text-[#4F4F4F] text-left whitespace-nowrap">
-                          <span className="text-[#4F4F4F]">
+                        
+                          <div className="break-words text-[#4F4F4F] w-[500px] whitespace-normal">
                             {activity.description}
-                          </span>
+                            </div>
+                    
                         </td>
 
                         <td className="  text-[#4F4F4F]  text-center">
