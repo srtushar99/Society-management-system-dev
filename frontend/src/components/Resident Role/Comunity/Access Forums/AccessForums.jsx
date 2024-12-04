@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Header from '../../../Dashboard/Header/HeaderBaner';
 import AvatarImage from '../../../assets/Avatar.png';
 import './AccessForums.css';
-import EmojiPicker from 'emoji-picker-react';
+// import EmojiPicker from 'emoji-picker-react';
 
 export default function AccessForums() {
   const [message, setMessage] = useState('');
@@ -281,7 +281,7 @@ export default function AccessForums() {
                 <Button variant="link" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
                   <FaSmile />
                 </Button>
-                {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
+                {/* {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />} */}
                 <Form.Control
                   type="text"
                   placeholder="Type a message"

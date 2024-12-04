@@ -75,7 +75,7 @@ const Expense = () => {
           const response = await axiosInstance.get('/v2/expenses/viewexpenses');
           console.log(response.data);
           if(response.status === 200){
-            const updatedData = response.data.Owner.map(item => {
+            const updatedData = response.data.expenses.map(item => {
               const url = item.Upload_Bill;
               const format = url.split('.').pop().toLowerCase();
               return {
