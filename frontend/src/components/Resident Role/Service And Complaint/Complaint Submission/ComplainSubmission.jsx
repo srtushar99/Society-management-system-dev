@@ -71,35 +71,35 @@ const ComplainSubmission = () => {
 
   // Handle delete modal
   const handleDeleteClick = (complaint) => {
-    setSelectedComplaint(complaint); // Set the selected complaint
-    setIsDeleteModalOpen(true); // Open the delete modal
+    setSelectedComplaint(complaint); 
+    setIsDeleteModalOpen(true); 
   };
 
   // Close the delete modal
   const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false); // Close the delete modal
-    setSelectedComplaint(null); // Clear the selected complaint
+    setIsDeleteModalOpen(false); 
+    setSelectedComplaint(null); 
   };
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    // setData(data.filter((item) => item.id !== id)); // Update the state to remove the deleted protocol
+    // setData(data.filter((item) => item.id !== id)); 
     setComplaint(complaint.filter((item) => item._id !== id)); 
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
   };
 
-  // Open CreateComplaint modal
+
   const handleCreateNoteClick = () => {
-    setIsCreateNoteOpen(true); // Open the CreateComplaint modal
+    setIsCreateNoteOpen(true); 
   };
 
-  // Close CreateComplaint modal
+
   const closeCreateNoteModal = () => {
     setIsCreateNoteOpen(false);
   };
 
-  // Toggle search input visibility
+
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
@@ -177,11 +177,11 @@ const ComplainSubmission = () => {
 
         {/* Facility Management Section */}
         <main className="flex-grow-1 rounded border bg-light">
-          <div className="lg:mt-[30px]  mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[30px]">
+          <div className="lg:mt-[30px]  mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[25px]">
             <div className="mt-4 lg:px-4 ">
               <Link
                 to="/complain"
-                className={`lg:h-[50px] lg:w-[180px] lg:px-4 py-2 p-1 rounded-t-md no-underline transition-all ${
+                className={`lg:h-[50px]  2xl:px-4 py-3 p-3 rounded-t-md no-underline transition-all ${
                   activeButton === "complain"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -192,7 +192,7 @@ const ComplainSubmission = () => {
 
               <Link
                 to="/request"
-                className={`lg:h-[50px] sm:w-[60px] lg:px-6 py-2 p-1 rounded-t-md no-underline transition-all ${
+                className={`lg:h-[50px] sm:w-[60px] lg:px-6 py-3 p-3 rounded-t-md no-underline transition-all ${
                   activeButton === "request"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -205,11 +205,11 @@ const ComplainSubmission = () => {
 
           <div className=" 2xl:w-[1550px] 2xl:ml-[40px]  bg-white p-4 rounded">
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h6 className=" text-dark font-weight-bold">Complaint</h6>
+              <h6 className=" text-dark font-bold">Complaint</h6>
               {/* Create Facility Button */}
               <button
                 onClick={handleCreateNoteClick}
-                className="bg-orange-500 text-[#FFFFFF] px-1 ml-1 py-2 rounded-lg flex items-center"
+                className="bg-orange-500 text-[#FFFFFF]  ml-1 p-2 rounded-lg flex items-center"
               >
                 Create Complaint
               </button>
@@ -267,10 +267,18 @@ const ComplainSubmission = () => {
                         </span>
                       </div>
 
-                      <p className="card-title text-muted">Description</p>
-                      <p className="card-text text-[#202224]">
-                        {card.Description || "No description available"}
-                      </p>
+                      <div className="h-[100px]">
+                    <h3 className="text-sm text-[#4F4F4F] mb-2">
+                      Description:
+                    </h3>
+                    <div className="max-h-[80px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                      <span className="text-md text-[#202224] break-words leading-6">
+                        {!!card.Description
+                          ? card.Description
+                          : "No description available"}
+                      </span>
+                    </div>
+                  </div>
                     </div>
                   </div>
                 </div>

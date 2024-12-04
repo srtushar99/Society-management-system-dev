@@ -244,8 +244,8 @@ const Activity = () => {
             <div className="mt-4 lg:px-5  ">
               <Link
                 to="/EventsParticipation"
-                style={{ fontSize: "12px" }}
-                className={`lg:h-[30px] 2xl:h-[30px] lg:w-[180px]  py-3 ps-4 pe-4  rounded-t-md no-underline transition-all ${
+                style={{ fontSize: "15px" }}
+                className={`lg:h-[30px] 2xl:h-[30px] lg:w-[180px]  py-3 p-3  rounded-t-md no-underline transition-all ${
                   activeButton === "EventsParticipation"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -255,8 +255,8 @@ const Activity = () => {
               </Link>
               <Link
                 to="/activity"
-                style={{ fontSize: "12px" }}
-                className={`lg:h-[50px] 2xl:h-[30px] sm:w-[60px]  py-3 ps-4 pe-3  rounded-t-md no-underline transition-all    ${
+                style={{ fontSize: "15px" }}
+                className={`lg:h-[50px] 2xl:h-[30px] sm:w-[60px]  py-3 p-3  rounded-t-md no-underline transition-all    ${
                   activeButton === "activity"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -272,7 +272,7 @@ const Activity = () => {
               Events Participation
             </h1>
             <div />
-            <div className="overflow-x-auto sm:overflow-y-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="overflow-x-auto sm:overflow-y-auto h-[700px] rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <div className="Content">
                 <table className="2xl:w-[1560px]  border border-gray-200  rounded-table ">
                   <thead
