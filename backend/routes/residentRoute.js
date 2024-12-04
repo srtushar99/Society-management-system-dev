@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const { addOwnerData, GetAllOwner, updateOwnerData, GetByIdResident, GetAllResidents, DeleteByIdResident } = require("../controller/ownerController");
+const { addOwnerData, GetAllOwner, updateOwnerData, GetByIdResident, GetAllResidents, DeleteByIdResident, GetTotalResidentsCount } = require("../controller/ownerController");
 const { GetAllTenant, updateTenantData, addTenant } = require("../controller/tenantController");
 const upload=require("../utils/ownerImages")
 //add owner
@@ -49,8 +49,14 @@ router.put("/Tenant/:id",upload.fields([
 //======================
 //get by id resident
 router.get("/owner/:id",GetByIdResident)
+
 // get all resident
 router.get("/allresident",GetAllResidents)
+
 //delete resident
 router.delete("/:id",DeleteByIdResident)
+
+// Route for fetching total residents count only
+router.get('/unit/total-residents-count', GetTotalResidentsCount);
+
 module.exports=router;

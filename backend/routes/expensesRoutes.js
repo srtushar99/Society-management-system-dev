@@ -1,6 +1,6 @@
 const router=require("express").Router();
 
-const { createExpense, GetAllExpenses, GetExpenseById, UpdateExpense, DeleteExpense,  } = require("../controller/expensesController");
+const { createExpense, GetAllExpenses, GetExpenseById, UpdateExpense, DeleteExpense, GetTotalExpensesAmount,  } = require("../controller/expensesController");
 const upload=require("../utils/expensesImage")
 
 // add expenses
@@ -17,5 +17,9 @@ router.put('/updateexpenses/:id',  upload.fields([{ name: 'Upload_Bill', maxCoun
 
 // delete expense
 router.delete('/:id', DeleteExpense);
+
+// get total amount
+router.get('/expenses/total-amount', GetTotalExpensesAmount);
+
 
 module.exports=router;

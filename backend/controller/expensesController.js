@@ -69,27 +69,35 @@ exports.createExpense = async (req, res) => {
     }
 };
 
-exports.GetAllExpenses= async(req,res)=>{
+// get all expenses
+exports.GetAllExpenses = async (req, res) => {
     try {
-        const find= await Expenses.find();
-        if(!find){
+        // Fetch all expenses
+        const find = await Expenses.find();
+
+        if (!find || find.length === 0) {
             return res.status(400).json({
-                success:false,
-                message:"No data found"
-            })
+                success: false,
+                message: "No data found",
+            });
         }
+
+        // Calculate total expenses amount
+        const totalAmount = find.reduce((sum, expense) => sum + expense.Amount, 0);
+
         return res.json({
-            success:true,
-            Owner:find
-        })
+            success: true,
+            expenses: find,
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-             success: false,
-             message: "Failed to add expenses data"
-         });
+            success: false,
+            message: "Failed to retrieve expenses data",
+        });
     }
-}
+};
+
 
 // Get Expense by ID
 exports.GetExpenseById = async (req, res) => {
@@ -208,3 +216,37 @@ exports.DeleteExpense = async (req, res) => {
         });
     }
 };
+
+// get Total amount
+exports.GetTotalExpensesAmount = async (req, res) => {
+    try {
+        // Ensure Amount is a Number in the schema, not a String.
+        const totalAmount = await Expenses.aggregate([
+            {
+                $group: {
+                    _id: null, // No grouping, calculate a total
+                    total: { $sum: "$Amount" }, // Sum the Amount field
+                },
+            },
+        ]);
+
+        if (!totalAmount || totalAmount.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No expenses found to calculate the total amount",
+            });
+        }
+
+        return res.json({
+            success: true,
+            totalAmount: totalAmount[0].total, // Send the total value
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to calculate total expenses amount",
+        });
+    }
+};
+

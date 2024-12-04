@@ -68,21 +68,50 @@ exports.CreateIncome = async (req, res) => {
     }
 };
 //get income
+// exports.GetIncome = async (req, res) => {
+//   try {
+//     const income = await Income.find().populate("members.resident");
+//     return res.status(200).json({
+//       success: true,
+//       Income: income,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching Income:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Error fetching Income",
+//     });
+//   }
+// };
 exports.GetIncome = async (req, res) => {
-    try {
+  try {
+      // Fetch all income entries
       const income = await Income.find().populate("members.resident");
+
+      if (!income || income.length === 0) {
+          return res.status(400).json({
+              success: false,
+              message: "No income data found",
+          });
+      }
+
+      // Calculate total income amount
+      const totalIncome = income.reduce((sum, entry) => sum + (entry.amount || 0), 0);
+
       return res.status(200).json({
-        success: true,
-        Income: income,
+          success: true,
+          Income: income,
+          totalIncome: totalIncome, // Include the calculated total income amount
       });
-    } catch (error) {
+  } catch (error) {
       console.error("Error fetching Income:", error);
       return res.status(500).json({
-        success: false,
-        message: "Error fetching Income",
+          success: false,
+          message: "Error fetching Income",
       });
-    }
-  };
+  }
+};
+
 //get by id income
 exports.GetByIdIncome = async (req, res) => {
     try {
@@ -325,4 +354,35 @@ exports.fetchUserPendingIncome = async (req, res) => {
   }
 };
 
-  
+// get total income amount
+exports.GetTotalIncomeAmount = async (req, res) => {
+  try {
+      // Ensure Amount is a Number in the schema, not a String.
+      const totalAmount = await Income.aggregate([
+          {
+              $group: {
+                  _id: null, // No grouping, calculate a total
+                  total: { $sum: "$amount" }, // Sum the Amount field
+              },
+          },
+      ]);
+
+      if (!totalAmount || totalAmount.length === 0) {
+          return res.status(400).json({
+              success: false,
+              message: "No Income found to calculate the total amount",
+          });
+      }
+
+      return res.json({
+          success: true,
+          totalAmount: totalAmount[0].total, // Send the total value
+      });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+          success: false,
+          message: "Failed to calculate total Income amount",
+      });
+  }
+};

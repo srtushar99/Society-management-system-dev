@@ -184,42 +184,53 @@ exports.addOwnerData = async (req, res) => {
 // get all owner
 
 exports.GetAllOwner = async (req, res) => {
-    try {
+  try {
+      // Fetch all owner data from the database, sorted by Wing and Unit
+      const owners = await Owner.find().sort({ Wing: 1, Unit: 1 });
 
-        const owners = await Owner.find().sort({ Wing: 1, Unit: 1 });
+      // Check if owners data exists
+      if (!owners || owners.length === 0) {
+          return res.status(400).json({
+              success: false,
+              message: "No data found"
+          });
+      }
 
-        if (!owners || owners.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "No data found"
-            });
-        }
+      // Extract full details of each owner, including all fields
+      const ownerDetails = owners.map(owner => ({
+          profileImage: owner.profileImage,
+          Full_name: owner.Full_name,
+          Phone_number: owner.Phone_number,
+          Email_address: owner.Email_address,
+          Age: owner.Age,
+          Gender: owner.Gender,
+          Wing: owner.Wing,
+          Unit: owner.Unit,
+          Relation: owner.Relation,
+          Resident_status: owner.Resident_status,
+          UnitStatus: owner.UnitStatus,
+          Adhar_front: owner.Adhar_front,
+          Adhar_back: owner.Adhar_back,
+          Address_proof: owner.Address_proof,
+          Rent_Agreement: owner.Rent_Agreement,
+          Member_Counting: owner.Member_Counting,
+          Vehicle_Counting: owner.Vehicle_Counting,
+      }));
 
-        
-        const ownerCounts = owners.map(owner => ({
-            profileImage:owner.profileImage,
-            Full_name: owner.Full_name,
-            Unit: owner.Unit,
-            Wing: owner.Wing,
-            Resident_status: owner.Resident_status,
-            Phone_number: owner.Phone_number,
-            Member_Counting_Total: owner.Member_Counting ? owner.Member_Counting.length : 0,
-            Vehicle_Counting_Total: owner.Vehicle_Counting ? owner.Vehicle_Counting.length : 0
-        }));
-
-        // Respond with only the counts
-        return res.json({
-            success: true,
-            Owner: ownerCounts
-        });
-    } catch (error) {
-        console.error("Error fetching owner counts:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to retrieve owner data"
-        });
-    }
+      // Respond with all the details of the owners
+      return res.json({
+          success: true,
+          owners: ownerDetails
+      });
+  } catch (error) {
+      console.error("Error fetching owner data:", error);
+      return res.status(500).json({
+          success: false,
+          message: "Failed to retrieve owner data"
+      });
+  }
 };
+
 
 // get by id resident 
 
@@ -322,51 +333,105 @@ exports.DeleteByIdResident = async (req, res) => {
 };
 
 // get all residenet=
-exports.GetAllResidents = async (req, res) => {
-    try {
+// exports.GetAllResidents = async (req, res) => {
+//     try {
 
+//       const [tenants, owners] = await Promise.all([
+//         Tenant.find(),
+//         Owner.find()
+//       ]);
+  
+//       if (!tenants.length && !owners.length) {
+//         return res.status(400).json({
+//           success: false,
+//           message: "No residents found.",
+//         });
+//       }
+  
+//       const formatResidentData = (resident) => ({
+//         ...resident._doc,
+//         Member_Counting_Total: resident.Member_Counting?.length || 0,
+//         Vehicle_Counting_Total: resident.Vehicle_Counting?.length || 0,
+//       });
+  
+//       const allResidents = [
+//         ...tenants.map(formatResidentData),
+//         ...owners.map(formatResidentData),
+//       ];
+  
+//       allResidents.sort((a, b) => {
+//         if (a.Wing === b.Wing) {
+//           return a.Unit - b.Unit;
+//         }
+//         return a.Wing.localeCompare(b.Wing)
+//       });
+  
+//       return res.json({
+//         success: true,
+//         Residents: allResidents,
+//       });
+//     } catch (error) {
+//       console.error("Error fetching residents:", error.message);
+//       return res.status(500).json({
+//         success: false,
+//         message: "An error occurred while retrieving residents data.",
+//       });
+//     }
+//   };
+exports.GetAllResidents = async (req, res) => {
+  try {
+      // Fetch tenants and owners in parallel
       const [tenants, owners] = await Promise.all([
-        Tenant.find(),
-        Owner.find()
+          Tenant.find(),
+          Owner.find(),
       ]);
-  
+
+      // Check if no residents exist
       if (!tenants.length && !owners.length) {
-        return res.status(400).json({
-          success: false,
-          message: "No residents found.",
-        });
+          return res.status(400).json({
+              success: false,
+              message: "No residents found.",
+          });
       }
-  
+
+      // Helper function to format resident data
       const formatResidentData = (resident) => ({
-        ...resident._doc,
-        Member_Counting_Total: resident.Member_Counting?.length || 0,
-        Vehicle_Counting_Total: resident.Vehicle_Counting?.length || 0,
+          ...resident._doc,
+          Member_Counting_Total: resident.Member_Counting?.length || 0,
+          Vehicle_Counting_Total: resident.Vehicle_Counting?.length || 0,
       });
-  
+
+      // Combine all residents and format them
       const allResidents = [
-        ...tenants.map(formatResidentData),
-        ...owners.map(formatResidentData),
+          ...tenants.map(formatResidentData),
+          ...owners.map(formatResidentData),
       ];
-  
+
+      // Sort residents by Wing and Unit
       allResidents.sort((a, b) => {
-        if (a.Wing === b.Wing) {
-          return a.Unit - b.Unit;
-        }
-        return a.Wing.localeCompare(b.Wing)
+          if (a.Wing === b.Wing) {
+              return a.Unit - b.Unit;
+          }
+          return a.Wing.localeCompare(b.Wing);
       });
-  
+
+      // Calculate the total number of residents
+      const totalResidentsCount = tenants.length + owners.length;
+
+      // Return all residents and total user count
       return res.json({
-        success: true,
-        Residents: allResidents,
+          success: true,
+          Residents: allResidents,
+          TotalResidents: totalResidentsCount, // Include total count here
       });
-    } catch (error) {
+  } catch (error) {
       console.error("Error fetching residents:", error.message);
       return res.status(500).json({
-        success: false,
-        message: "An error occurred while retrieving residents data.",
+          success: false,
+          message: "An error occurred while retrieving residents data.",
       });
-    }
-  };
+  }
+};
 
 // update owner data
 
@@ -489,4 +554,36 @@ exports.updateOwnerData = async (req, res) => {
     }
   };
   
+  exports.GetTotalResidentsCount = async (req, res) => {
+    try {
+        // Fetch counts of tenants and owners
+        const [tenantsCount, ownersCount] = await Promise.all([
+            Tenant.countDocuments(),
+            Owner.countDocuments(),
+        ]);
+
+        // Total count of residents
+        const totalResidentsCount = tenantsCount + ownersCount;
+
+        // Check if no residents exist
+        if (totalResidentsCount === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No residents found.",
+            });
+        }
+
+        // Return the total count
+        return res.json({
+            success: true,
+            TotalResidents: totalResidentsCount,
+        });
+    } catch (error) {
+        console.error("Error fetching total residents count:", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while retrieving the total residents count.",
+        });
+    }
+};
 

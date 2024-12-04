@@ -16,7 +16,7 @@ const expensesSchema = new mongoose.Schema({
         required: true,
     },
     Amount: {
-        type: String,
+        type: Number,
         required: true,
     },
     Upload_Bill:{
