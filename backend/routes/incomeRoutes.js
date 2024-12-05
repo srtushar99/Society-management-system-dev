@@ -1,10 +1,10 @@
 const { CreateIncome, GetIncome, GetByIdIncome, DeleteIncome, UpdateIncome, updateResidentIncomePaymentMode, getCompletedIncomeRecords, fetchUserPendingIncome, GetTotalIncomeAmount } = require("../controller/incomeController");
-const { authenticate } = require("../middleware/authenticate ");
+const { authenticate, IsAdmin } = require("../middleware/authenticate ");
 
 const router=require("express").Router();
 
 //add income
-router.post("/addincome",CreateIncome)
+router.post("/addincome",authenticate,IsAdmin,CreateIncome)
 
 //get income
 router.get("/",GetIncome)

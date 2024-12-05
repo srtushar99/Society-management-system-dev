@@ -48,7 +48,7 @@ exports.getAllSecurityProtocols = async (req, res) => {
     }
 };
 
-// Get Security Protocol by ID
+// Get Security Protocol 
 exports.getSecurityProtocolById = async (req, res) => {
     try {
         const protocol = await SecurityProtocol.findById(req.params.id);
@@ -74,7 +74,7 @@ exports.getSecurityProtocolById = async (req, res) => {
 
 
 
-// Update Security Protocol by ID
+// Update Security Protocol 
 exports.updateSecurityProtocol = async (req, res) => {
     try {
         const updatedProtocol = await SecurityProtocol.findByIdAndUpdate(
@@ -102,7 +102,7 @@ exports.updateSecurityProtocol = async (req, res) => {
     }
 };
 
-// Delete Security Protocol by ID
+// Delete Security Protocol 
 exports.deleteSecurityProtocol = async (req, res) => {
     try {
         const deletedProtocol = await SecurityProtocol.findByIdAndDelete(req.params.id);

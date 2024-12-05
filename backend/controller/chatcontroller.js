@@ -1,24 +1,6 @@
 const Chat = require('../models/chatModel');
 const cloudinary = require('../utils/cloudinary'); 
 const fs=require("fs")
-// exports.createMessage = async (req, res) => {
-//   const { senderId, senderModel, receiverId, receiverModel, message, media } = req.body;
-
-//   try {
-//     const newMessage = await Chat.create({
-//       senderId,
-//       senderModel,
-//       receiverId,
-//       receiverModel,
-//       message,
-//       media,
-//     });
-
-//     res.status(201).json(newMessage);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 
 // create message 
 exports.createMessage = async (req, res) => {
@@ -49,7 +31,7 @@ exports.createMessage = async (req, res) => {
       receiverId,
       receiverModel,
       message,
-      media: mediaUrls, // Save the Cloudinary URLs
+      media: mediaUrls, 
     });
 
     res.status(201).json({
@@ -90,13 +72,10 @@ exports.getMessages = async (req, res) => {
 
     console.log("Retrieved messages:", messages);
 
-    // Respond with the retrieved messages
     res.status(200).json(messages);
   } catch (error) {
-    // Log any errors that occur
+  
     console.error("Error fetching messages:", error);
-
-    // Respond with an error message
     res.status(500).json({ error: error.message });
   }
 };

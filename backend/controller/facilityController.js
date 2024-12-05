@@ -1,4 +1,5 @@
-const Facility = require('../models/facilityModel'); // Adjust path as necessary
+const Facility = require('../models/facilityModel');
+// const Notification = require('../models/notificationModel');
 
 // Create a new facility
 exports.createFacility = async (req, res) => {
@@ -12,8 +13,6 @@ exports.createFacility = async (req, res) => {
                 message: "All fields (Facility_name, Description, Date, Remind_Before) are required",
             });
         }
-
-        // Create new facility document
         const newFacility = new Facility({
             Facility_name,
             Description,
@@ -38,7 +37,57 @@ exports.createFacility = async (req, res) => {
     }
 };
 
+// exports.createFacility = async (req, res) => {
+//     try {
+//         const { Facility_name, Description, Date, Remind_Before, role } = req.body;
+
+//         // Check if all required fields are provided
+//         if (!Facility_name || !Description || !Date || !Remind_Before) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "All fields are required",
+//             });
+//         }
+
+//         // Create the facility
+//         const newFacility = new Facility({
+//             Facility_name,
+//             Description,
+//             Date,
+//             Remind_Before,
+//             role: role || 'resident',
+//         });
+
+//         await newFacility.save();
+
+//         // Create a notification
+//         const notification = new Notification({
+//             title: "New Facility Created",
+//             name: Facility_name,
+//             message: `A new facility "${Facility_name}" has been created. Description: ${Description}`,
+//             users: [], 
+//         });
+
+//         await notification.save();
+
+//         return res.status(201).json({
+//             success: true,
+//             message: "Facility created successfully and notification generated",
+
+//         });
+//     } catch (error) {
+//         console.error("Error creating facility:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Failed to create facility",
+//         });
+//     }
+// };
+
 // Get all facilities
+
+// get All facilities
+
 exports.getAllFacilities = async (req, res) => {
     try {
         const facilities = await Facility.find();

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const AnnouncementSchema = new mongoose.Schema({
+    Announcement_Type: {
+        type: String,
+        required: true,
+        enum: ['Event','Activity'] 
+    },
     Announcement_Title: {
         type: String,
         required: true,
@@ -19,11 +24,17 @@ const AnnouncementSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role: {
-        type: String,
-        enum: ['admin', 'resident', 'security'], 
-        default: 'resident' 
-    },
+    Members:[{
+        participent: {
+          type: mongoose.SchemaTypes.ObjectId,
+          refPath: 'Members.residentType', 
+          
+        },
+        residentType: {
+          type: String,
+          enum: ["Owner", "Tenant"], 
+        },
+    }],
 }, {
     timestamps: true 
 });

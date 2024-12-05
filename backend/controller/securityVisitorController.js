@@ -15,10 +15,8 @@ exports.CreateVisitor = async (req, res) => {
       });
     }
 
-    // Parse the date with Moment.js
     const formattedDate = moment(date, 'DD/MM/YYYY', true).toDate();
 
-    // Check if the date is valid
     if (!moment(date, 'DD/MM/YYYY', true).isValid()) {
       return res.status(400).json({
         success: false,
@@ -69,7 +67,7 @@ exports.GetAllVisitor = async (req, res) => {
     }
   };
 
-
+// filter visitor
 exports.FilterVisitor = async (req, res) => {
   try {
     const { timePeriod } = req.query;

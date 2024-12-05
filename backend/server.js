@@ -101,8 +101,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 
-require('./config/db'); // Database connection
-
+require('./config/db'); 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -131,6 +130,7 @@ const visitorRoute = require('./routes/visitorRoute');
 const alertRoute = require('./routes/alertRoute');
 const pollRoute = require('./routes/pollRoutes');
 const chatRoute = require('./routes/chatRoute');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 // Routes
 app.use('/api/v1', userRoutes);
@@ -151,15 +151,14 @@ app.use('/api/v2/Visitor', visitorRoute);
 app.use('/api/v2/alert', alertRoute);
 app.use('/api/v2/poll', pollRoute);
 app.use('/api/v2/chat', chatRoute);
+app.use('/api/v2/notifications', notificationRoutes);
 
-// Create HTTP server
+
 const server = http.createServer(app);
 
-// Initialize Socket.IO
 const initializeSocket = require('./socketServer');
 initializeSocket(server);
 
-// Start the server
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

@@ -1,12 +1,12 @@
 const { CheckMaintenancePassword, CreateMaintenance, GetMaintenance, changePaymentDetails, fetchUserPendingMaintenance, getResidentsWithCompletedPayments,   } = require("../controller/maintenanceController");
-const { authenticate } = require("../middleware/authenticate ");
+const { authenticate, IsAdmin } = require("../middleware/authenticate ");
 const router=require("express").Router();
 
 //check password correction in maintenance
-router.post("/checkpassword",authenticate,CheckMaintenancePassword)
+router.post("/checkpassword",authenticate,IsAdmin,CheckMaintenancePassword)
 
 //add maintenance 
-router.post("/addmaintenance",CreateMaintenance)
+router.post("/addmaintenance",authenticate,IsAdmin,CreateMaintenance)
 
 //get maintenance
 router.get("/",GetMaintenance)

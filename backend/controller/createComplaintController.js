@@ -4,7 +4,7 @@ const Complaint = require('../models/createCamplaintModel');
 
 exports.createComplaint = async (req, res) => {
     try {
-        // Extract data from the request body
+  
         const {
             Complainer_name,
             Complaint_name,
@@ -15,31 +15,27 @@ exports.createComplaint = async (req, res) => {
             Status,
         } = req.body;
 
-        // Validate required fields
         if (!Complainer_name || !Complaint_name || !Description || !Wing || !Unit) {
             return res.status(400).json({
                 success: false,
-                message: "All required fields (Complainer_name, Complaint_name, Description, Wing, Unit) must be provided.",
+                message: "All required fields  must be provided.",
             });
         }
 
-        // Create the complaint document
         const complaint = new Complaint({
             Complainer_name,
             Complaint_name,
             Description,
             Wing,
             Unit,
-            Priority: Priority || "Medium", // Defaults handled by schema, but ensuring compatibility
+            Priority: Priority || "Medium", 
             Status: Status || "Pending",
-            createdBy: req.user?._id,      // Use logged-in user's ID
-            createdByType: req.user?.type // User type (Owner, Tenant, etc.)
+            createdBy: req.user?._id,      
+            createdByType: req.user?.type 
         });
 
-        // Save the complaint to the database
         await complaint.save();
 
-        // Return success response with created complaint
         return res.status(201).json({
             success: true,
             message: "Complaint created successfully.",

@@ -2,12 +2,78 @@ const Income = require("../models/incomeModel");
 const moment = require('moment');
 const Owner = require("../models/ownerModel");
 const Tenant = require("../models/tenantModel");
+const User = require("../models/userModel");
+const Notification = require("../models/notificationModel");
 
 // CreateIncome function
+// exports.CreateIncome = async (req, res) => {
+//     try {
+//         const { title, date, dueDate, description, amount, member } = req.body;
+        
+//         if (!title || !date || !dueDate || !description || !amount) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "All fields are required"
+//             });
+//         }
+
+//         // Parse date strings to Date objects
+//         const parsedDate = moment(date, "DD/MM/YYYY").toDate();
+//         const parsedDueDate = moment(dueDate, "DD/MM/YYYY").toDate();
+
+//         // Validate parsed dates
+//         if (isNaN(parsedDate) || isNaN(parsedDueDate)) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid date format. Use DD/MM/YYYY"
+//             });
+//         }
+
+//         const income = new Income({
+//             title,
+//             date: parsedDate,
+//             dueDate: parsedDueDate,
+//             description,
+//             amount,
+//             member
+//         });
+
+//         const ownerData = await Owner.find();
+//         const tenantData = await Tenant.find();
+    
+//         const residentList = [...ownerData, ...tenantData];
+       
+        
+//         const residentsWithStatus = residentList.map((resident) => ({
+//           resident: resident._id,
+//           paymentStatus: "pending",
+//           residentType: resident.Resident_status, 
+//           paymentMode: "cash",
+//         }));
+    
+        
+//         income.members = residentsWithStatus;
+    
+
+//         await income.save();
+
+//         return res.status(200).json({
+//             success: true,
+//             message: "Income Successfully Added"
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal Server Error"
+//         });
+//     }
+// };
+// create income
 exports.CreateIncome = async (req, res) => {
     try {
         const { title, date, dueDate, description, amount, member } = req.body;
-        
+
         if (!title || !date || !dueDate || !description || !amount) {
             return res.status(400).json({
                 success: false,
@@ -27,6 +93,7 @@ exports.CreateIncome = async (req, res) => {
             });
         }
 
+        // Create the income entry
         const income = new Income({
             title,
             date: parsedDate,
@@ -38,26 +105,39 @@ exports.CreateIncome = async (req, res) => {
 
         const ownerData = await Owner.find();
         const tenantData = await Tenant.find();
-    
         const residentList = [...ownerData, ...tenantData];
-       
-        
-        const residentsWithStatus = residentList.map((resident) => ({
-          resident: resident._id,
-          paymentStatus: "pending",
-          residentType: resident.Resident_status, 
-          paymentMode: "cash",
-        }));
-    
-        
-        income.members = residentsWithStatus;
-    
 
+        const residentsWithStatus = residentList.map((resident) => ({
+            resident: resident._id,
+            paymentStatus: "pending",
+            residentType: resident.Resident_status,
+            paymentMode: "cash",
+        }));
+
+        income.members = residentsWithStatus;
         await income.save();
+
+    const adminData = await User.find({ role: "admin" });
+
+    const ownerUsers = ownerData.map((owner) => ({ _id: owner._id, model: "Owner" }));
+    const tenantUsers = tenantData.map((tenant) => ({ _id: tenant._id, model: "Tenant" }));
+    const adminUsers = adminData.map((admin) => ({ _id: admin._id, model: "User" }));
+
+    const allUsers = [...ownerUsers, ...tenantUsers, ...adminUsers];
+
+    // Create the notification
+    const notification = new Notification({
+      title:  `${title}`,
+      name: "System",
+      message: `A new income record has been added: ${title}. Amount: ₹${amount}`,
+      users: allUsers, 
+    });
+
+    await notification.save();
 
         return res.status(200).json({
             success: true,
-            message: "Income Successfully Added"
+            message: "Income and notification created successfully",
         });
     } catch (error) {
         console.error(error);
@@ -67,25 +147,12 @@ exports.CreateIncome = async (req, res) => {
         });
     }
 };
+
 //get income
-// exports.GetIncome = async (req, res) => {
-//   try {
-//     const income = await Income.find().populate("members.resident");
-//     return res.status(200).json({
-//       success: true,
-//       Income: income,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching Income:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Error fetching Income",
-//     });
-//   }
-// };
+
 exports.GetIncome = async (req, res) => {
   try {
-      // Fetch all income entries
+
       const income = await Income.find().populate("members.resident");
 
       if (!income || income.length === 0) {
@@ -95,13 +162,12 @@ exports.GetIncome = async (req, res) => {
           });
       }
 
-      // Calculate total income amount
       const totalIncome = income.reduce((sum, entry) => sum + (entry.amount || 0), 0);
 
       return res.status(200).json({
           success: true,
           Income: income,
-          totalIncome: totalIncome, // Include the calculated total income amount
+         
       });
   } catch (error) {
       console.error("Error fetching Income:", error);
@@ -168,11 +234,9 @@ exports.UpdateIncome = async (req, res) => {
             });
         }
 
-        // Parse date strings to Date objects
         const parsedDate = moment(date, "DD/MM/YYYY").toDate();
         const parsedDueDate = moment(dueDate, "DD/MM/YYYY").toDate();
 
-        // Validate parsed dates
         if (isNaN(parsedDate) || isNaN(parsedDueDate)) {
             return res.status(400).json({
                 success: false,
@@ -208,9 +272,9 @@ exports.UpdateIncome = async (req, res) => {
 
 //update and get payment
 exports.updateResidentIncomePaymentMode = async (req, res) => {
-    const { incomeId } = req.params; // Income record ID
-    const { paymentMode } = req.body; // New payment mode
-    const residentId = req.user.id; // ID of the logged-in resident
+    const { incomeId } = req.params; 
+    const { paymentMode } = req.body; 
+    const residentId = req.user.id; 
   
     console.log("Resident ID from user:", residentId);
     console.log("Request body:", req.body);
@@ -242,7 +306,6 @@ exports.updateResidentIncomePaymentMode = async (req, res) => {
       memberToUpdate.paymentMode = paymentMode;
       memberToUpdate.paymentStatus = "done";   
   
-      // Save the updated income record
       await incomeRecord.save();
 
       const populatedIncomeRecord = await incomeRecord.populate("members.resident");
@@ -265,12 +328,11 @@ exports.updateResidentIncomePaymentMode = async (req, res) => {
 // get incomr done
 exports.getCompletedIncomeRecords = async (req, res) => {
     try {
-      // Find income records with at least one member having paymentStatus: "done"
+
       const incomeRecords = await Income.find({
         "members.paymentStatus": "done"
       }).populate("members.resident");
   
-      // Filter members to include only those with paymentStatus: "done"
       const filteredIncome = incomeRecords.map(record => ({
         ...record.toObject(),
         members: record.members.filter(member => member.paymentStatus === "done"),
@@ -293,7 +355,7 @@ exports.getCompletedIncomeRecords = async (req, res) => {
 //FindByIdUserAndMaintance
 exports.fetchUserPendingIncome = async (req, res) => {
   try {
-      const loggedInUserId = req.user?.id; // Safely access `req.user`
+      const loggedInUserId = req.user?.id;
       if (!loggedInUserId) {
           return res.status(400).json({
               success: false,
@@ -303,7 +365,6 @@ exports.fetchUserPendingIncome = async (req, res) => {
 
       console.log("Fetching pending incomes for User ID:", loggedInUserId);
 
-      // Retrieve income records for the logged-in user
       const incomeRecords = await Income.find({
           "members.resident": loggedInUserId,
       }).populate({
@@ -317,10 +378,8 @@ exports.fetchUserPendingIncome = async (req, res) => {
           });
       }
 
-      // Filter income records to include only pending payments for the logged-in user
       const filteredRecords = incomeRecords
           .map(record => {
-              // Safely filter `members` to only include relevant entries
               if (Array.isArray(record.members)) {
                   record.members = record.members.filter(
                       member =>
@@ -331,7 +390,7 @@ exports.fetchUserPendingIncome = async (req, res) => {
               }
               return record;
           })
-          .filter(record => record.members && record.members.length > 0); // Discard records with no relevant members
+          .filter(record => record.members && record.members.length > 0); 
 
       if (filteredRecords.length === 0) {
           return res.status(404).json({
@@ -340,7 +399,6 @@ exports.fetchUserPendingIncome = async (req, res) => {
           });
       }
 
-      // Return the filtered pending income records
       return res.status(200).json({
           success: true,
           pendingIncomes: filteredRecords,
@@ -357,12 +415,12 @@ exports.fetchUserPendingIncome = async (req, res) => {
 // get total income amount
 exports.GetTotalIncomeAmount = async (req, res) => {
   try {
-      // Ensure Amount is a Number in the schema, not a String.
+      
       const totalAmount = await Income.aggregate([
           {
               $group: {
-                  _id: null, // No grouping, calculate a total
-                  total: { $sum: "$amount" }, // Sum the Amount field
+                  _id: null, 
+                  total: { $sum: "$amount" }, 
               },
           },
       ]);
@@ -376,7 +434,7 @@ exports.GetTotalIncomeAmount = async (req, res) => {
 
       return res.json({
           success: true,
-          totalAmount: totalAmount[0].total, // Send the total value
+          totalAmount: totalAmount[0].total, 
       });
   } catch (error) {
       console.error(error);

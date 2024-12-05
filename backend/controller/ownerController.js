@@ -54,14 +54,13 @@ exports.addOwnerData = async (req, res) => {
       const Password = generatePassword();
       const hashpassword = await hash(Password);
 
-      // Upload and delete local file logic
       const uploadAndDeleteLocal = async (fileArray) => {
           if (fileArray && fileArray[0]) {
               const filePath = fileArray[0].path;
               try {
-                  // Upload to Cloudinary
+          
                   const result = await cloudinary.uploader.upload(filePath);
-                  // Delete from local server
+             
                   fs.unlink(filePath, (err) => {
                       if (err) console.error("Error deleting file from server:", err);
                       else console.log("File deleted from server:", filePath);
@@ -75,14 +74,12 @@ exports.addOwnerData = async (req, res) => {
           return '';
       };
 
-      // Upload images to Cloudinary
       const profileImage = await uploadAndDeleteLocal(req.files?.profileImage);
       const Adhar_front = await uploadAndDeleteLocal(req.files?.Adhar_front);
       const Adhar_back = await uploadAndDeleteLocal(req.files?.Adhar_back);
       const Address_proof = await uploadAndDeleteLocal(req.files?.Address_proof);
       const Rent_Agreement = await uploadAndDeleteLocal(req.files?.Rent_Agreement);
 
-      // Validate required fields
       if (
           !Full_name ||
           !Phone_number ||
@@ -104,7 +101,6 @@ exports.addOwnerData = async (req, res) => {
           });
       }
 
-      // Check if Wing and Unit already exist
       const existingWing = await Owner.findOne({ Wing, Unit });
       if (existingWing) {
           return res.status(400).json({
@@ -113,7 +109,6 @@ exports.addOwnerData = async (req, res) => {
           });
       }
 
-      // Parse Member_Counting and Vehicle_Counting
       let parsedMembers = [];
       let parsedVehicles = [];
 
@@ -127,7 +122,6 @@ exports.addOwnerData = async (req, res) => {
           });
       }
 
-      // Validate parsed data
       if (!Array.isArray(parsedMembers) || !Array.isArray(parsedVehicles)) {
           return res.status(400).json({
               success: false,
@@ -135,7 +129,6 @@ exports.addOwnerData = async (req, res) => {
           });
       }
 
-      // Create a new owner document
       const newOwner = new Owner({
           profileImage,
           Full_name,
@@ -160,14 +153,12 @@ exports.addOwnerData = async (req, res) => {
 
       await newOwner.save();
 
-      // Send email with credentials
       await senData(
           newOwner.Email_address,
           "Registration Successful - Login Details",
           `Dear ${newOwner.Full_name},\n\nYou have successfully registered as a resident. Your login details are as follows:\n\nUsername: ${newOwner.Email_address}\nPassword: <b>${Password}</b>\n\nPlease keep this information secure.\n\nBest Regards,\nManagement`
       );
 
-      // Success response
       return res.status(201).json({
           success: true,
           message: "Owner data added successfully",
@@ -185,10 +176,8 @@ exports.addOwnerData = async (req, res) => {
 
 exports.GetAllOwner = async (req, res) => {
   try {
-      // Fetch all owner data from the database, sorted by Wing and Unit
       const owners = await Owner.find().sort({ Wing: 1, Unit: 1 });
 
-      // Check if owners data exists
       if (!owners || owners.length === 0) {
           return res.status(400).json({
               success: false,
@@ -196,7 +185,6 @@ exports.GetAllOwner = async (req, res) => {
           });
       }
 
-      // Extract full details of each owner, including all fields
       const ownerDetails = owners.map(owner => ({
           profileImage: owner.profileImage,
           Full_name: owner.Full_name,
@@ -217,7 +205,6 @@ exports.GetAllOwner = async (req, res) => {
           Vehicle_Counting: owner.Vehicle_Counting,
       }));
 
-      // Respond with all the details of the owners
       return res.json({
           success: true,
           owners: ownerDetails
@@ -282,8 +269,7 @@ exports.GetByIdResident = async (req, res) => {
             }
           : {}),
       };
-  
-      // Return the response with the resident's data
+
       return res.status(200).json({
         success: true,
         Resident: residentData,
@@ -454,8 +440,7 @@ exports.updateOwnerData = async (req, res) => {
       } = req.body;
   
       const { id } = req.params; 
-      
-      // Function to upload files to Cloudinary and delete from local
+    
       const uploadAndDeleteLocal = async (fileArray) => {
         if (fileArray && fileArray[0]) {
           const filePath = fileArray[0].path;
@@ -473,8 +458,7 @@ exports.updateOwnerData = async (req, res) => {
         }
         return ''; 
       };
-  
-      // Upload new profile and document images if provided
+
       const profileImage = await uploadAndDeleteLocal(req.files?.profileImage);
       const Adhar_front = await uploadAndDeleteLocal(req.files?.Adhar_front);
       const Adhar_back = await uploadAndDeleteLocal(req.files?.Adhar_back);
@@ -497,8 +481,7 @@ exports.updateOwnerData = async (req, res) => {
           message: "Wing and Unit already exists for another owner.",
         });
       }
-  
-      // Find the owner to update
+
       const owner = await Owner.findById(id);
       if (!owner) {
         return res.status(404).json({
@@ -507,7 +490,6 @@ exports.updateOwnerData = async (req, res) => {
         });
       }
   
-      // Update fields with new values if provided
       if (Full_name) owner.Full_name = Full_name;
       if (Phone_number) owner.Phone_number = Phone_number;
       if (Email_address) owner.Email_address = Email_address;
@@ -523,21 +505,17 @@ exports.updateOwnerData = async (req, res) => {
       if (Adhar_back) owner.Adhar_back = Adhar_back;
       if (Address_proof) owner.Address_proof = Address_proof;
       if (Rent_Agreement) owner.Rent_Agreement = Rent_Agreement;
-    //   if (hashpassword) owner.password = hashpassword; // Update password only if provided
-  
      
       if (Member_Counting) {
         const members = JSON.parse(Member_Counting);
         owner.Member_Counting = members; 
       }
-  
-      // Handle Vehicle Counting
+
       if (Vehicle_Counting) {
         const vehicles = JSON.parse(Vehicle_Counting);
         owner.Vehicle_Counting = vehicles;
       }
   
-      // Save the updated owner document
       await owner.save();
   
       return res.status(200).json({
@@ -554,18 +532,18 @@ exports.updateOwnerData = async (req, res) => {
     }
   };
   
+  // get total resident count
+
   exports.GetTotalResidentsCount = async (req, res) => {
     try {
-        // Fetch counts of tenants and owners
+   
         const [tenantsCount, ownersCount] = await Promise.all([
             Tenant.countDocuments(),
             Owner.countDocuments(),
         ]);
 
-        // Total count of residents
         const totalResidentsCount = tenantsCount + ownersCount;
 
-        // Check if no residents exist
         if (totalResidentsCount === 0) {
             return res.status(400).json({
                 success: false,
@@ -573,7 +551,6 @@ exports.updateOwnerData = async (req, res) => {
             });
         }
 
-        // Return the total count
         return res.json({
             success: true,
             TotalResidents: totalResidentsCount,

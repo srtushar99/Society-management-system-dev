@@ -1,8 +1,9 @@
 const Maintenance = require("../models/maintenaceModel")
 const { compare } = require("../utils/compare");
-const user = require("../models/userModel");
+const User = require("../models/userModel");
 const Owner = require("../models/ownerModel");
 const Tenant = require("../models/tenantModel");
+const Notification = require('../models/notificationModel'); 
 
 //check password correction in maintenance
 exports.CheckMaintenancePassword = async (req, res) => {
@@ -43,129 +44,128 @@ exports.CheckMaintenancePassword = async (req, res) => {
 
 
 //add maintenance
-// exports.CreateMaintenance= async (req,res)=>{
+
+// exports.CreateMaintenance = async (req, res) => {
 //     try {
-//         const {Maintenance_Amount,Penalty_Amount,DueDate,PenaltyDay}=req.body;
-//         if(!Maintenance_Amount || !Penalty_Amount || !DueDate || !PenaltyDay){
+//         const { Maintenance_Amount, Penalty_Amount, DueDate, PenaltyDay } = req.body;
+
+//         // Check if all required fields are present
+//         if (!Maintenance_Amount || !Penalty_Amount || !DueDate || !PenaltyDay) {
 //             return res.status(400).json({
-//                 success:false,
-//                 message:"All fields are required"
-//             })
+//                 success: false,
+//                 message: "All fields are required",
+//             });
 //         }
-//         const maintenance= new Maintenance({
+
+//         // Create and save the new maintenance entry
+//         const maintenance = new Maintenance({
 //             Maintenance_Amount,
 //             Penalty_Amount,
 //             DueDate,
-//             PenaltyDay
-//         })
+//             PenaltyDay,
+//         });
+
+//         // Fetch all owner and tenant data
+//         const ownerData = await Owner.find();
+//         const tenantData = await Tenant.find();
+
+//         // Merge and format resident data
+//         const ResidentList = [...ownerData, ...tenantData].map((resident) => ({
+//             resident: resident.id,
+//             paymentStatus: "pending",
+//             residentType: resident.Resident_status || "unknown", // Handle missing Resident_status gracefully
+//             paymentMode: "cash",
+//         }));
+
+//         // Attach the resident list to the maintenance entry
+//         maintenance.ResidentList = ResidentList;
+
+//         // Save maintenance with resident data
 //         await maintenance.save();
 
-//         const ownerData = await Owner.find();
-//         const TenantData = await Tenant.find();
-    
-//         const ResidentList = [...ownerData, ...TenantData];
-    
-//         const residentStatus = ResidentList.map((resident) => ({
-//           resident: resident.id,
-//           paymentStatus: "pending",
-//           residentType: resident.Resident_status,
-//           paymentMode:"cash"
-//         }));
-    
-      
-    
-//         maintenance.ResidentList = residentStatus;
-    
-//         await maintenance.save();
-    
-        
-//         if(!maintenance){
-//             return res.status(400).json({
-//                 success:false,
-//                 message:"Soemthing went wrong"
-//             })
-//         }
 //         return res.status(200).json({
-//             success:true,
-//             message:"Maintenance Successfully Added"
-//         })
+//             success: true,
+//             message: "Maintenance successfully added",
+//         });
 //     } catch (error) {
-//         console.error(error);
+//         console.error("Error in CreateMaintenance:", error);
 //         return res.status(500).json({
 //             success: false,
-//             message: "Internal Server Error"
+//             message: "Internal Server Error",
 //         });
 //     }
+// };
 
-// }
+
 exports.CreateMaintenance = async (req, res) => {
-    try {
-        const { Maintenance_Amount, Penalty_Amount, DueDate, PenaltyDay } = req.body;
+  try {
+    const { Maintenance_Amount, Penalty_Amount, DueDate, PenaltyDay } = req.body;
 
-        // Check if all required fields are present
-        if (!Maintenance_Amount || !Penalty_Amount || !DueDate || !PenaltyDay) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required",
-            });
-        }
-
-        // Create and save the new maintenance entry
-        const maintenance = new Maintenance({
-            Maintenance_Amount,
-            Penalty_Amount,
-            DueDate,
-            PenaltyDay,
-        });
-
-        // Fetch all owner and tenant data
-        const ownerData = await Owner.find();
-        const tenantData = await Tenant.find();
-
-        // Merge and format resident data
-        const ResidentList = [...ownerData, ...tenantData].map((resident) => ({
-            resident: resident.id,
-            paymentStatus: "pending",
-            residentType: resident.Resident_status || "unknown", // Handle missing Resident_status gracefully
-            paymentMode: "cash",
-        }));
-
-        // Attach the resident list to the maintenance entry
-        maintenance.ResidentList = ResidentList;
-
-        // Save maintenance with resident data
-        await maintenance.save();
-
-        return res.status(200).json({
-            success: true,
-            message: "Maintenance successfully added",
-        });
-    } catch (error) {
-        console.error("Error in CreateMaintenance:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error",
-        });
+    // Check if all required fields are present
+    if (!Maintenance_Amount || !Penalty_Amount || !DueDate || !PenaltyDay) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields, including payment mode, are required.",
+      });
     }
+
+    // Create and save the new maintenance entry
+    const maintenance = new Maintenance({
+      Maintenance_Amount,
+      Penalty_Amount,
+      DueDate,
+      PenaltyDay,
+    });
+    const ownerData = await Owner.find();
+    const tenantData = await Tenant.find();
+    const ResidentList = [...ownerData, ...tenantData].map((resident) => ({
+                  resident: resident.id,
+                  paymentStatus: "pending",
+                  residentType: resident.Resident_status || "unknown", 
+                  paymentMode: "cash",
+              }));
+
+              maintenance.ResidentList = ResidentList;
+              await maintenance.save();
+      
+
+    // Fetch users
+
+    const adminData = await User.find({ role: "admin" });
+
+    const ownerUsers = ownerData.map((owner) => ({ _id: owner._id, model: "Owner" }));
+    const tenantUsers = tenantData.map((tenant) => ({ _id: tenant._id, model: "Tenant" }));
+    const adminUsers = adminData.map((admin) => ({ _id: admin._id, model: "User" }));
+
+    const allUsers = [...ownerUsers, ...tenantUsers, ...adminUsers];
+
+    // Create the notification
+    const notification = new Notification({
+      title: "Update Maintenance",
+      name: "System",
+      message: `₹ ${Maintenance_Amount}₹ ${Penalty_Amount}`,
+      users: allUsers, // Attach all relevant users
+    });
+
+    await notification.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Maintenance successfully added and notifications sent",
+    });
+  } catch (error) {
+    console.error("Error in CreateMaintenance:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 };
+
+
 
 //get maintenance  admin side 
 
-// exports.GetMaintenance =async (req,res)=>{
-//     try {
-//         const  maintenance= await Maintenance.find()
-//         return res.status(200).json({
-//           success: true,
-//           Maintenance: maintenance,
-//         });
-//       } catch (error) {
-//         console.error("Error fetching Maintenance:", error);
-//         return res.status(500).json({
-//           success: false,
-//           message: "Error fetching Maintenance",
-//         });
-//       }
-// }
 exports.GetMaintenance = async (req, res) => {
     try {
       const maintenanceRecord = await Maintenance.find().populate("ResidentList.resident");
@@ -218,14 +218,12 @@ exports.changePaymentDetails = async (req, res) => {
             });
         }
 
-        // Respond with the updated maintenance record
         return res.status(200).json({
             success: true,
             message: "Payment details updated successfully",
             Maintenance: updatedMaintenance,
         });
     } catch (error) {
-        // Log and handle errors
         console.error("Error updating payment details:", error);
         return res.status(500).json({
             success: false,
@@ -316,10 +314,9 @@ exports.getResidentsWithCompletedPayments = async (req, res) => {
         );
   
  
-        return { ...record._doc, ResidentList: completedResidents }; // Spread _doc for cleaner response
+        return { ...record._doc, ResidentList: completedResidents }; 
       });
   
-      // Return filtered records
       return res.status(200).json({
         success: true,
         Maintenance: filteredRecords,
