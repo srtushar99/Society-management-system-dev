@@ -1014,7 +1014,7 @@ const TenantPage = () => {
 
                       <div className="flex-1 min-w-[200px]">
                         <label className="block text-sm font-medium text-gray-700">
-                          Relationkkkkkkkkkkk<span className="text-red-500">*</span>
+                          Relation<span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
