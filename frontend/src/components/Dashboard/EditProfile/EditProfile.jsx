@@ -6,7 +6,8 @@ import NotificationIcon from "../../assets/notification-bing.png";
 import AvatarImage from "../../assets/Avatar.png";
 import pngwingImage from "../../assets/Frame 1000006013.png";
 import ProfileImage from "../../assets/Ellipse 1101.png";
-import editIcon from "../../assets/edit.png";
+import editIcon from "../../assets/editIcon.png";
+import edit from "../../assets/edit.png";
 import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
 
 const EditProfile = () => {
@@ -27,17 +28,18 @@ const EditProfile = () => {
   // Inline background image style
   const backgroundStyle = {
     display: "block",
+    overflow: "hidden", // Ensures no content spills outside this container
     position: "absolute",
     top: "60px",
     marginLeft: "290px",
-    width: "100%",
+    width: "1630px",
     height: "300px",
     backgroundImage: `url(${pngwingImage})`,
     backgroundSize: "cover",
-    backgroundPosition: "center",
+    backgroundAttachment: "fixed", // Corrects potential issue
     backgroundRepeat: "no-repeat",
+ // Optional: for rounded corners
   };
-
   return (
     <div className="container-fluid bg-light min-h-screen">
       <Sidebar />
@@ -70,29 +72,30 @@ const EditProfile = () => {
       </header>
 
       {/* Edit Profile Section */}
-      <div className="flex items-center mt-10 md:mt-20 lg:mt-28 ms-[560px]">
+      <div className="flex items-center justify-center mt-10 md:mt-20 2xl:mt-28 ms-[300px]">
         <p className="text-2xl font-semibold">Profile</p>
         <button
-          className="flex items-center text-white rounded-md px-2 ms-[590px] py-2 mb-2"
-          style={{ background: "linear-gradient(90deg, #FE512E 0%, #F09619 100%)", zIndex: "1000" }}
+          className="flex items-center text-white rounded-md px-2 ms-[600px] py-2 mb-2"
+          style={{ background: "linear-gradient(90deg, #FE512E 0%, #F09619 100%)", zIndex: "1000",}}
           onClick={() => navigate('/update-profile')}  // Handle navigation to the update profile page if needed
         >
-          <img src={editIcon} alt="edit" className="mr-2 h-4 w-4" />
+          <img src={edit} alt="edit" className="mr-2 h-4 w-4" />
           Edit Profile
         </button>
       </div>
 
       {/* Profile Edit Form */}
-      <div className="w-full max-w-[800px] mx-auto bg-white p-6 shadow-md relative border-2 rounded-2">
+      <div className="flex justify-center">
+      <div className="w-[800px] ms-[300px] h-[400px] bg-white border p-6 shadow-md relative rounded">
         <div className="flex">
           <div className="relative flex justify-start items-start pe-12 pt-2 ps-4">
             <img
               src={ProfileImage}
               alt="Profile"
-              className="rounded-full h-[120px] object-cover border-4 border-gray-200 shadow-md"
+              className="rounded-full w-[150px] h-[120px] object-cover border-4 border-gray-200 shadow-md"
             />
-            <button className="absolute sm:bottom-28 right-0 lg:mb-[55px] w-5 bg-white rounded-full shadow-md" style={{ transform: "translate(-240%, -100%)" }}>
-              <i className="fa-solid fa-pen"></i>
+            <button className="absolute sm:bottom-28 right-0 lg:mb-[65px] w-5  bg-white rounded-full shadow-md" style={{ transform: "translate(-240%, -100%)" }}>
+              {/* <img src={editIcon} alt="edit" className="h-5 w-5 bg-white rounded-full p-1" /> */}
             </button>
             <div className="absolute bottom-[100px] sm:bottom-[130px] left-1/2 transform -translate-x-1/2 text-center flex space-x-2">
               <p>{firstName}</p>
@@ -232,6 +235,7 @@ const EditProfile = () => {
             </div>
           </form>
         </div>
+      </div>
       </div>
     </div>
   );

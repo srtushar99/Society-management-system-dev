@@ -85,7 +85,7 @@ const Chart = () => {
   };
 
   return (
-    <div className="h-[240px] sm:h-[240px]  pe-1  sm:w-[730px] md:h-[240px] lg:w-[780px] md:ms-[880px] sm:ml-[310px] lg:ml-[0px] xl:ml-[290px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
+    <div className="h-[240px] sm:h-[240px]  pe-1 2xl:mb-0 md:mb-2 mb-40 sm:w-[730px] lg:ml-[300px] 2xl:w-[780px] md:w-auto md:h-[240px] lg:w-[250px]  md:ms-[310px] sm:ml-[310px] xl:w-[360px] xl:ml-[300px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
       <Card className="me-2">
         <CardHeader>
           <CardTitle>Total Balance</CardTitle>
@@ -97,7 +97,7 @@ const Chart = () => {
           </Select>
         </CardHeader>
         <CardContent>
-          <ChartContainer className="h-[270px] "style={{zIndex:"-99999999"}}>
+          <ChartContainer className="2xl:h-[270px] xl:h-[270px] sm:h-[270px] lg:h-[245px] md:h-[245px] "style={{zIndex:"-99999999"}}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 30, right: 40, bottom: 20, left: 10 }}>
                 <CartesianGrid style={{zIndex:"-99989898"}} vertical={false} horizontal={true} strokeDasharray="3 4" />

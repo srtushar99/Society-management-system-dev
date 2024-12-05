@@ -75,6 +75,7 @@ const Sidebar = () => {
     alignItems: "center",
     position: "relative",
     height: "52px",
+    // height: "40px",
     borderRadius: "5px",
     marginBottom: "10px",
     transition: "background 0.3s, color 0.3s",
@@ -94,6 +95,8 @@ const Sidebar = () => {
     left: "-15px",
     width: "7px",
     height: "52px",
+    // height: "40px",
+
     borderRadius: "0 5px 5px 0",
     background: activeLink === link
       ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
@@ -161,7 +164,7 @@ const Sidebar = () => {
   return (
     <div>
       <div
-        className="sidebar-toggle-btn block lg:hidden"
+        className="sidebar-toggle-btn block 2xl:hidden  md:hidden lg:hidden xl:hidden "
         style={{ zIndex: "9999" }}
         onClick={toggleSidebar}
       >
