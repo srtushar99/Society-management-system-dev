@@ -24,69 +24,8 @@ import ViewOwner from "./ViewOwner";
 import ViewTenant from "./ViewTenant";
 import axiosInstance from '../Common/axiosInstance';
 
-const initialData = [
-  {
-    id: 1,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "1001",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Tenant",
-    Number: "97587 85828",
-    Member: "1",
-    Vehicle: "2",
-  },
-  {
-    id: 2,
-    Photo: Avatar,
-    Name: "-",
-    UnitNumber: "1002",
-    UnitStatus: "Vacate",
-    ResidentStatus: "--",
-    Number: "--",
-    Member: "-",
-    Vehicle: "-",
-  },
-  {
-    id: 3,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "1003",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Owner",
-    Number: "97587 85828",
-    Member: "1",
-    Vehicle: "3",
-  },
-  {
-    id: 4,
-    Photo: AvatarImage,
-    Name: "Evelyn Harper",
-    UnitNumber: "1004",
-    UnitStatus: "Occupied",
-    ResidentStatus: "Tenant",
-    Number: "97587 85828",
-    Member: "4",
-    Vehicle: "2",
-  }
-];
-
-const unitImages = {
-  1001: [AIcon],
-  1002: [BIcon],
-  1003: [CIcon],
-  1004: [DIcon],
-  2001: [EIcon],
-  2002: [FIcon],
-  2003: [GIcon],
-  2004: [HIcon],
-  3001: [IIcon],
-  3002: [AIcon],
-  3003: [BIcon],
-};
 
 const Resident = () => {
-  const [data, setData] = useState(initialData);
   const [isCreateProtocolOpen, setIsCreateProtocolOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedResident, setSelectedResident] = useState(null);
@@ -101,16 +40,17 @@ const Resident = () => {
 
   const openCreateProtocolModal = () => setIsCreateProtocolOpen(true);
   const closeCreateProtocolModal = () => setIsCreateProtocolOpen(false);
+  
   const openEditModal = (item) => {
     setSelectedResident(item); 
     setMemberCount(item.Member); 
     setVehicleCount(item.Vehicle); 
   
-    if (item.ResidentStatus === "Owner") {
+    if (item.Resident_status === "Owner") {
       navigate("/editowner", { 
         state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } 
       });
-    } else if (item.ResidentStatus === "Tenant") {
+    } else if (item.Resident_status === "Tenant") {
       navigate("/edittenant", { 
         state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } 
       });
@@ -344,7 +284,7 @@ const Resident = () => {
 
         {isViewModalOpen &&
           selectedResident &&
-          selectedResident.ResidentStatus === "Owner" && (
+          selectedResident.Resident_status === "Owner" && (
             <ViewOwner
               isOpen={isViewModalOpen}
               onClose={closeViewModal}
@@ -354,7 +294,7 @@ const Resident = () => {
 
         {isViewModalOpen &&
           selectedResident &&
-          selectedResident.ResidentStatus === "Tenant" && (
+          selectedResident.Resident_status === "Tenant" && (
             <ViewTenant
               isOpen={isViewModalOpen}
               onClose={closeViewModal}

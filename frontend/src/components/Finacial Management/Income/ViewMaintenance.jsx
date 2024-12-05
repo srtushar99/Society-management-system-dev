@@ -20,7 +20,7 @@ import VerifiedIcon from "../../assets/verified.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
-const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
+const ViewMaintenance = ({ isOpen, onClose, maintenance,  Maintenance_Amount}) => {
   if (!isOpen || !maintenance) return null;
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -56,12 +56,12 @@ const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
   };
 
   // Format the maintenance date (if it exists)
-  const formattedDate = maintenance.date
-    ? format(new Date(maintenance.date), "MMMM dd, yyyy")
+  const formattedDate = maintenance.resident.createdAt
+    ? format(new Date(maintenance.resident.createdAt), "MMMM dd, yyyy")
     : "Unknown Date";
 
-  // Get the correct image based on the maintenance.unit
-  const unitImageSrc = unitImages[maintenance.unit] || "/fallback-avatar.png"; // Default to fallback image if not found
+  // Get the correct image based on the maintenance.resident.Unit
+  const unitImageSrc = unitImages[maintenance.resident.Unit] || "/fallback-avatar.png"; // Default to fallback image if not found
 
   return (
     <>
@@ -83,13 +83,13 @@ const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
           {/* Profile Section */}
           <div className="flex items-center gap-4 mb-8">
             <img
-              src={AvatarImage || "/fallback-avatar.png"}
-              alt={maintenance.name || "Unknown"}
+              src={maintenance.resident.profileImage || "/fallback-avatar.png"}
+              alt={maintenance.resident.Full_name || "Unknown"}
               className="w-16 h-16 rounded-full object-cover"
             />
             <div>
               <h2 className="font-semibold text-lg text-gray-900">
-                {maintenance.name || "Unknown"}
+                {maintenance.resident.Full_name || "Unknown"}
               </h2>
               <p className="text-gray-500 text-sm">{formattedDate}</p>{" "}
               {/* Display formatted date */}
@@ -103,17 +103,15 @@ const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Wing</h3>
                 {/* Show the unit image */}
-                <img
-                  src={unitImageSrc}
-                  alt="Unit Icon"
-                  className="w-6 ml-2 h-6 rounded-full object-cover"
-                />
+                <span className={`unit-badge unit-${maintenance.resident.Wing.toLowerCase()}`}>
+                  {!!maintenance.resident.Wing ? maintenance.resident.Wing : ""}
+                </span>
               </div>
 
               <div>
-                <h3 className="text-gray-500 text-sm mb-1" >Unit</h3>
-                <p className="font-medium text-gray-900  ">
-                  {maintenance.unit || "N/A"}
+                <h3 className="text-gray-500 text-sm mb-1">Unit</h3>
+                <p className="font-medium text-gray-900">
+                  {maintenance.resident.Unit || "N/A"}
                 </p>
               </div>
 
@@ -121,84 +119,83 @@ const ViewMaintenance = ({ maintenance, onClose, isOpen }) => {
                 <h3 className="text-gray-500 text-sm mb-1 ml-4">Priority</h3>
 
                 <span
-                  className={`px-3 py-1 rounded-full   text-xs font-semibold flex items-center ${
-                    maintenance.role === "Tenant"
+                  className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center ${
+                    maintenance.residentType === "Tenant"
                       ? "bg-pink-100 text-pink-600"
                       : "bg-blue-100 text-blue-600"
                   }`}
                 >
-                  {maintenance.role === "Tenant" ? (
+                  {maintenance.residentType === "Tenant" ? (
                     <FontAwesomeIcon icon={faUser} className="mr-2" />
                   ) : (
                     <img src={UserIcon} className="mr-2 w-3 h-3" /> // Ensuring consistent width and height
                   )}
-                  {maintenance.role}
+                  {maintenance.residentType}
                 </span>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1 ml-7">Amount</h3>
                 <span className="inline-block px-3 py-1 rounded-full text-sm ml-4 text-[#39973D]">
-                  {maintenance.amount || "N/A"}
+                  ₹ {Maintenance_Amount.Maintenance_Amount || "N/A"}
                 </span>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1">Penalty</h3>
-                <span
-                  className='inline-block px-3 py-1 rounded-full text-sm bg-[#F6F8FB]' >
-                  {maintenance.penalty || "N/A"}
+                <span className="inline-block px-3 py-1 rounded-full text-sm bg-[#F6F8FB]">
+                  ₹ {Maintenance_Amount.Penalty_Amount || "N/A"}
                 </span>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1 lg:ml-[50%]">Status</h3>
                 <span
-                          className={`px-2 py-1 rounded-full text-xs w-[40px] lg:ml-[30%] flex font-semibold ${
-                            maintenance.status === "Pending"
-                              ? "bg-yellow-100 text-yellow-600"
-                              : "bg-green-100 text-green-600"
-                          }`}
-                          style={{ width: "100px", height: "20px" }}
-                        >
-                          {maintenance.status === "Pending" ? (
-                            <img
-                              src={TimerIcon}
-                              className="mr-2 text-[#FFC313]"
-                            />
-                          ) : (
-                            <img
-                              src={VerifiedIcon}
-                              className="mr-2 text-[#39973D]"
-                            />
-                          )}
-                          {maintenance.status}
-                        </span>
+                  className={`px-2 py-1 rounded-full text-xs w-[40px] lg:ml-[30%] flex font-semibold ${
+                    maintenance.paymentStatus === "Pending"
+                      ? "bg-yellow-100 text-yellow-600"
+                      : "bg-green-100 text-green-600"
+                  }`}
+                  style={{ width: "100px", height: "20px" }}
+                >
+                  {maintenance.paymentStatus === "Pending" ? (
+                    <img
+                      src={TimerIcon}
+                      className="mr-2 text-[#FFC313]"
+                    />
+                  ) : (
+                    <img
+                      src={VerifiedIcon}
+                      className="mr-2 text-[#39973D]"
+                    />
+                  )}
+                  {maintenance.paymentStatus}
+                </span>
               </div>
 
               <div>
                 <h3 className="text-gray-500 text-sm mb-1 lg:ml-[130px]">Payment</h3>
                 <span
-                          style={{ width: "80px", height: "20px",marginLeft:"120px" }}
-                          className={`px-2 py-1 rounded-full text-xs flex font-semibold ${
-                            maintenance.payment === "Online"
-                              ? "bg-blue-100 text-blue-600"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          {maintenance.payment === "Online" ? (
-                            <img
-                              src={WalletIcon}
-                              className="mr-2  text-[#5678E9]"
-                            />
-                          ) : (
-                            <img
-                              src={MoneysIcon}
-                              className="mr-2  text-[#202224]"
-                            />
-                          )}
-                          {maintenance.payment}
-                        </span>
+                  style={{ width: "80px", height: "20px", marginLeft: "120px" }}
+                  className={`px-2 py-1 rounded-full text-xs flex font-semibold ${
+                    maintenance.paymentMode === "Online"
+                      ? "bg-blue-100 text-blue-600"
+                      : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {maintenance.paymentMode === "Online" ? (
+                    <img
+                      src={WalletIcon}
+                      className="mr-2 text-[#5678E9]"
+                    />
+                  ) : (
+                    <img
+                      src={MoneysIcon}
+                      className="mr-2 text-[#202224]"
+                    />
+                  )}
+                  {maintenance.paymentMode}
+                </span>
               </div>
             </div>
           </div>

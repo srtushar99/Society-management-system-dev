@@ -2,14 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
+import moment from 'moment';
+import axiosInstance from '../../Common/axiosInstance';
 import "react-datepicker/dist/react-datepicker.css"; // Import DatePicker CSS
 
-const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
+const AddMaintenance = ({ isOpen, onClose , fetchMaintenance }) => {
   // State for the input fields
-  const [amount, setAmount] = useState(""); // Maintenance Amount
-  const [penaltyAmount, setPenaltyAmount] = useState(0); // Penalty Amount
+  const [Maintenance_Amount, setMaintenance_Amount] = useState(""); // Maintenance Amount
+  const [Penalty_Amount, setPenalty_Amount] = useState(""); // Penalty Amount
   const [dueDate, setDueDate] = useState(null); // Due Date state
-  const [penaltyDays, setPenaltyDays] = useState(0); // Days after due date to apply penalty
+  const [PenaltyDay, setPenaltyDay] = useState(0); // Days after due date to apply penalty
   const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State to toggle calendar visibility
 
   const datePickerRef = useRef(null); // Reference for the DatePicker component
@@ -22,23 +24,14 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
 
   // Check if all fields are filled and valid
   const isFormValid =
-    amount &&
-    penaltyAmount &&
+    Maintenance_Amount &&
+    Penalty_Amount &&
     dueDate &&
-    penaltyDays &&
-    amountRegex.test(amount) &&
-    penaltyAmountRegex.test(penaltyAmount) &&
-    penaltyDaysRegex.test(penaltyDays);
+    PenaltyDay &&
+    amountRegex.test(Maintenance_Amount) &&
+    penaltyAmountRegex.test(Penalty_Amount) &&
+    penaltyDaysRegex.test(PenaltyDay);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isFormValid) {
-      console.log("Form Submitted", { amount, dueDate, penaltyAmount, penaltyDays });
-    } else {
-      console.log("Form is invalid");
-    }
-  };
 
   const navigate = useNavigate();
 
@@ -47,20 +40,57 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
     navigate("/income");
   };
 
+
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.preventDefault();
+    if (isFormValid) {
+      const DueDate = moment(dueDate);
+        const MaintenanceData = {
+          Maintenance_Amount: Number(Maintenance_Amount), 
+          DueDate,
+          Penalty_Amount: Number(Penalty_Amount), 
+          PenaltyDay
+        };
+        try {
+          const response = await axiosInstance.post(
+            "/v2/maintenance/addmaintenance",
+            MaintenanceData
+          );
+          if (response.status===200) {
+            console.log("Successfully saved:", response.data);
+            handleClose();
+            onClose(); 
+            fetchMaintenance(); 
+          } else {
+            const errorData = await response.json();
+            console.error("Error saving Maintenance :", errorData.message || "Something went wrong.");
+          }
+        } catch (error) {
+          console.error("Error creating Maintenance :", error);
+        }
+    } else {
+      console.log("Form is invalid");
+    }
+  };
+
+  
   // Handle date change (to calculate penalty)
   const handleDateChange = (date) => {
     setDueDate(date);
     setIsCalendarOpen(false); // Close the calendar after selecting a date
-    calculatePenalty(date, penaltyDays); // Recalculate penalty with the selected due date and penalty days
+    // calculatePenalty(date, penaltyDays); // Recalculate penalty with the selected due date and penalty days
   };
 
   // Handle penalty days change
   const handlePenaltyDaysChange = (e) => {
     const days = parseInt(e.target.value, 10);
-    setPenaltyDays(days);
-    if (dueDate) {
-      calculatePenalty(dueDate, days); // Recalculate penalty whenever penalty days changes
-    }
+    setPenaltyDay(days);
+    // if (dueDate) {
+    //   calculatePenalty(dueDate, days); // Recalculate penalty whenever penalty days changes
+    // }
   };
 
   // Handle calendar icon click
@@ -89,28 +119,35 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
     };
   }, []);
 
-  // Calculate penalty based on the due date and penalty days
-  const calculatePenalty = (date, days) => {
-    if (date && days >= 0) {
-      const currentDate = new Date();
-      const diffTime = Math.abs(currentDate - date); // Get time difference in milliseconds
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+  // // Calculate penalty based on the due date and penalty days
+  // const calculatePenalty = (date, days) => {
+  //   if (date && days >= 0) {
+  //     const currentDate = new Date();
+  //     const diffTime = Math.abs(currentDate - date); // Get time difference in milliseconds
+  //     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
 
-      // Example penalty calculation (penalty per day after the due date)
-      const penaltyPerDay = 50; // You can change this to the actual penalty value per day
-      if (diffDays > days) {
-        setPenaltyAmount((diffDays - days) * penaltyPerDay); // Apply penalty only after the selected penalty days
-      } else {
-        setPenaltyAmount(0); // No penalty if within the selected number of days
-      }
-    }
-  };
+  //     // Example penalty calculation (penalty per day after the due date)
+  //     const penaltyPerDay = 50; // You can change this to the actual penalty value per day
+  //     if (diffDays > days) {
+  //       setPenaltyAmount((diffDays - days) * penaltyPerDay); // Apply penalty only after the selected penalty days
+  //     } else {
+  //       setPenaltyAmount(0); // No penalty if within the selected number of days
+  //     }
+  //   }
+  // };
 
   // Restrict amount input to only numeric values and limit decimal points to 2
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (amountRegex.test(value) || value === "") {
-      setAmount(value); // Update amount if it matches the regex
+      setMaintenance_Amount(value); // Update amount if it matches the regex
+    }
+  };
+
+  const handlePenaltyAmountChange = (e) => {
+    const value = e.target.value;
+    if (amountRegex.test(value) || value === "") {
+      setPenalty_Amount(value); // Update amount if it matches the regex
     }
   };
 
@@ -142,7 +179,7 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
                 <span className="text-xl text-[#202224] ml-3">₹</span>
                 <input
                   type="text"
-                  value={amount}
+                  value={Maintenance_Amount}
                   onChange={handleAmountChange} // Restrict input to numeric values
                   className="w-full px-3 py-2 text-[#202224] rounded-lg pl-6"
                   placeholder="0000"
@@ -159,8 +196,8 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
                 <span className="text-xl text-[#202224] ml-3">₹</span>
                 <input
                   type="text"
-                  value={penaltyAmount}
-                  readOnly // Make this field read-only
+                  value={Penalty_Amount}
+                  onChange={handlePenaltyAmountChange}
                   className="w-full px-3 py-2 text-[#202224] rounded-lg pl-6"
                   placeholder="0000"
                 />
@@ -197,7 +234,7 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
               Penalty Applied After Days of Due Date
             </label>
             <select
-              value={penaltyDays}
+              value={PenaltyDay}
               onChange={handlePenaltyDaysChange}
               defaultValue="Select Penalty Applied After Day Selection"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
@@ -230,7 +267,7 @@ const AddMaintenance = ({ isOpen, onClose ,maintenance}) => {
                 ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]" // Apply gradient if form is valid
                 : "bg-[#F6F8FB] text-[#202224]" // Default color if form is not valid
                 }`}
-              disabled={!isFormValid}
+              // disabled={!isFormValid}
             >
               Apply
             </button>

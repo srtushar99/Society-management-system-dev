@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../Sidebar/Sidebar";
-import NotificationIcon from "../../assets/notification-bing.png";
-import AvatarImage from "../../assets/Avatar.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import UserIcon from "../../assets/User.png";
@@ -10,136 +8,28 @@ import TimerIcon from "../../assets/timer.png";
 import VerifiedIcon from "../../assets/verified.png";
 import WalletIcon from "../../assets/wallet.png";
 import MoneysIcon from "../../assets/moneys.png";
-import AIcon from "../../assets/A.png";
-import BIcon from "../../assets/B.png";
-import CIcon from "../../assets/C.png";
-import DIcon from "../../assets/D.png";
-import EIcon from "../../assets/E.png";
-import FIcon from "../../assets/F.png";
-import GIcon from "../../assets/G.png";
-import HIcon from "../../assets/H.png";
-import IIcon from "../../assets/I.png";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 import ViewMaintenance from "./ViewMaintenance";
 import "../../Dashboard/Maintenance/scrollbar.css";
 import Password from "./Password";
 import "../../Dashboard/Maintenance/scrollbar.css";
+import axiosInstance from '../../Common/axiosInstance';
 
 const Income = ({ color }) => {
   const [activeButton, setActiveButton] = useState("maintenance");
-
   const [isViewMaintenanceOpen, setIsViewMaintenanceOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null); // To hold the selected maintenance data
+  const [selectedMaintenance_Amount, setSelectedMaintenance_Amount] = useState(null);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [Maintenance, setMaintenance] = useState([]);
+  const [totalMaintenanceAmount, setTotalMaintenanceAmount] = useState(0);
+  const [totalPenaltyAmount, setTotalPenaltyAmount] = useState(0);
+
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
 
-  const data = [
-    {
-      name: "Cody Fisher",
-      unit: "1001",
-      date: "10/02/2024",
-      role: "Tenant",
-      phone: "92524 34522",
-      amount: "₹ 1000",
-      penalty: "--",
-      status: "Pending",
-      payment: "Online",
-    },
-    {
-      name: "Esther Howard",
-      unit: "1002",
-      date: "11/02/2024",
-      role: "Owner",
-      phone: "92524 12365",
-      amount: "₹ 1000",
-      penalty: "250",
-      status: "Done",
-      payment: "Cash",
-    },
-    {
-      name: "Jenny Wilson",
-      unit: "1003",
-      date: "12/02/2024",
-      role: "Tenant",
-      phone: "92589 34522",
-      amount: "₹ 1000",
-      penalty: "--",
-      status: "Pending",
-      payment: "Online",
-    },
-    {
-      name: "Robert Fox",
-      unit: "1004",
-      date: "13/02/2024",
-      role: "Owner",
-      phone: "92524 12369",
-      amount: "₹ 1000",
-      penalty: "--",
-      status: "Done",
-      payment: "Cash",
-    },
-    {
-      name: "Jacob Jones",
-      unit: "2001",
-      date: "14/02/2024",
-      role: "Tenant",
-      phone: "92333 34522",
-      amount: "₹ 1000",
-      penalty: "250",
-      status: "Pending",
-      payment: "Online",
-    },
-    {
-      name: "Albert Flores",
-      unit: "2002",
-      date: "15/02/2024",
-      role: "Owner",
-      phone: "92524 34522",
-      amount: "₹ 1000",
-      penalty: "--",
-      status: "Done",
-      payment: "Cash",
-    },
-    {
-      name: "Annette Black",
-      unit: "2003",
-      date: "16/02/2024",
-      role: "Tenant",
-      phone: "92258 34522",
-      amount: "₹ 1000",
-      penalty: "250",
-      status: "Pending",
-      payment: "Online",
-    },
-    {
-      name: "Jerome Bell",
-      unit: "2004",
-      date: "17/02/2024",
-      role: "Owner",
-      phone: "92589 34522",
-      amount: "₹ 1000",
-      penalty: "--",
-      status: "Done",
-      payment: "Cash",
-    },
-  ];
-
-  const unitImages = {
-    1001: [AIcon],
-    1002: [BIcon],
-    1003: [CIcon],
-    1004: [DIcon],
-    2001: [EIcon],
-    2002: [FIcon],
-    2003: [GIcon],
-    2004: [HIcon],
-    3001: [IIcon],
-    3002: [AIcon],
-    3003: [BIcon],
-  };
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -157,21 +47,56 @@ const Income = ({ color }) => {
     setIsViewMaintenanceOpen(false); // Close the ViewMaintenance modal
   };
 
-  const openViewMaintenanceModal = (maintenance) => {
-    setSelectedMaintenance(maintenance); // Set selected maintenance data
+  const openViewMaintenanceModal = (resident, maintenance) => {
+    setSelectedMaintenance(resident); // Set selected maintenance data
+    setSelectedMaintenance_Amount(maintenance);
     setIsViewMaintenanceOpen(true); // Open the modal
   };
+
+
+
+  const fetchMaintenance = async () => {
+    try {
+        const response = await axiosInstance.get('/v2/maintenance/');
+        if(response.status === 200){
+          setMaintenance(response.data.Maintenance); 
+        }
+       
+     } catch (error) {
+        console.error('Error fetching Maintenance:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMaintenance();
+  }, []);
+
+  useEffect(() => {
+    if (Maintenance.length > 0) {
+      let totalMaintenance = 0;
+      let totalPenalty = 0;
+      Maintenance.map(maintenance => {
+        const residentCount = maintenance.ResidentList.length;
+        totalMaintenance += maintenance.Maintenance_Amount * residentCount;
+        totalPenalty += maintenance.Penalty_Amount * residentCount;
+      });
+  
+      setTotalMaintenanceAmount(totalMaintenance);
+      setTotalPenaltyAmount(totalPenalty);
+    }
+  }, [Maintenance]);
+
 
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col  lg:ml-[290px]">
+      <div className="flex-1 flex flex-col lg:ml-[290px]">
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
-          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[30px]  text-muted d-none d-sm-flex ">
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[30px] text-muted d-none d-sm-flex">
             <Link
               to="/Income"
-              className="text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
@@ -181,20 +106,20 @@ const Income = ({ color }) => {
             </span>
             <Link
               to="/memberlist"
-              className=" text-[#A7A7A7]  text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Maintenance
             </Link>
             <span className="text-[#202224] fs-5 mx-2"> &gt; </span>
-
-            <span className=" text-[#5678E9]  font-weight-semibold text-sm sm:text-base">
+  
+            <span className="text-[#5678E9] font-weight-semibold text-sm sm:text-base">
               Financial Management
             </span>
           </div>
-
+  
           {/* Search Icon (Visible only on small screens) */}
           <div
-            className={` ml-auto d-sm-none p-2 rounded-lg ${
+            className={`ml-auto d-sm-none p-2 rounded-lg ${
               isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
             }`}
           >
@@ -203,7 +128,7 @@ const Income = ({ color }) => {
                 onClick={toggleSearchVisibility}
                 className="text-muted bg-transparent border-0"
               >
-                <i className="fas fa-search"></i> 
+                <i className="fas fa-search"></i>
               </button>
             )}
             {isSearchVisible && (
@@ -215,33 +140,12 @@ const Income = ({ color }) => {
                 />
               </div>
             )}
-            
           </div>
-
+  
           <HeaderBaner />
         </header>
-        {/* <div className="flex items-center space-x-2 text-gray-600 ml-4 md:ml-20">
-            <Link
-              to="/Income"
-              className="text-[#A7A7A7] no-underline font-semibold"
-            >
-              Home
-            </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <Link
-              to="/memberlist"
-              className="text-[#A7A7A7] no-underline font-semibold"
-            >
-              Maintenance
-            </Link>
-            <span className="text-gray-400"> &gt; </span>
-
-            <span className="font-semibold text-[#5678E9]">
-              Financial Management
-            </span>
-          </div> */}
-
-        <div className="flex flex-col sm:flex-row justify-between items-center 2xl:ml-5  lg:mt-7 2xl:w-[1590px] p-3 bg-white rounded-md">
+  
+        <div className="flex flex-col sm:flex-row justify-between items-center 2xl:ml-5 lg:mt-7 2xl:w-[1590px] p-3 bg-white rounded-md">
           <div className="2xl:flex space-x-4">
             {/* First Card */}
             <div
@@ -268,10 +172,10 @@ const Income = ({ color }) => {
                 }}
                 className="rounded-r-lg lg:mt-10 my-auto"
               ></div>
-              <p className="text-gray-500 text-sm">Penalty Amount</p>
-              <p className="font-bold text-lg text-[#39973D]">₹ 0</p>
+              <p className="text-gray-500 text-sm">Maintenance Amount</p>
+              <p className="font-bold text-lg text-[#39973D]">₹ {totalMaintenanceAmount}</p>
             </div>
-
+  
             {/* Second Card */}
             <div
               className="bg-[#FFFFFF] p-3"
@@ -297,10 +201,10 @@ const Income = ({ color }) => {
                 className="rounded-r-lg lg:mt-10 my-auto"
               ></div>
               <p className="text-gray-500 text-sm">Penalty Amount</p>
-              <p className="font-bold text-lg text-[#E74C3C]">₹ 0</p>
+              <p className="font-bold text-lg text-[#E74C3C]">₹ {totalPenaltyAmount}</p>
             </div>
           </div>
-
+  
           <button
             onClick={openPasswordModal}
             className="bg-gradient-to-r from-red-500 to-yellow-500 text-white font-bold py-2 px-4 rounded-md mt-4 sm:mt-0"
@@ -308,193 +212,186 @@ const Income = ({ color }) => {
             Set Maintenance
           </button>
         </div>
-
+  
         <div className="lg:mt-[10px]">
           <div className="mt-4 px-4 sm:px-8">
             <button
               onClick={() => handleButtonClick("maintenance")}
-              className={`
-                 lg:h-[50px]  2xl:px-5 px-14 py-3 rounded-top ${
-                   activeButton === "maintenance"
-                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
-                     : "bg-[#FFFFFF] text-[#202224]"
-                 }`}
+              className={`lg:h-[50px] 2xl:px-5 px-14 py-3 rounded-top ${
+                activeButton === "maintenance"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
+                  : "bg-[#FFFFFF] text-[#202224]"
+              }`}
             >
-              {" "}
-              Maintenance{" "}
+              Maintenance
             </button>
             <Link
               to="/otherincome"
-              className={` lg:h-[50px] 2xl:px-5 px-10 py-3 rounded-top no-underline ${
+              className={`lg:h-[50px] 2xl:px-5 px-10 py-3 rounded-top no-underline ${
                 activeButton === "otherIncome"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
               }`}
             >
-              {" "}
-              Other Income{" "}
+              Other Income
             </Link>
           </div>
         </div>
-
+  
         <div className="bg-gray-100 2xl:ps-4 pb-5">
-          <div className="bg-white  p-3 lg:w-[1590px] rounded border-gray-300">
+          <div className="bg-white p-3 lg:w-[1590px] rounded border-gray-300">
             <div className="text-2xl font-bold text-gray-800 mb-4">
               Maintenance Details
             </div>
-            <div className="overflow-x-auto h-[500px]  rounded-2xl ml-2  mr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="overflow-x-auto h-[500px] rounded-2xl ml-2 mr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <div className="Content">
-                <table className="2xl:w-[1530px]   text-sm text-left text-gray-600 rounded-top">
-                  <thead className="" style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
-                    <tr className=" text-gray-600 uppercase text-xs font-semibold">
-                      <th className="ps-5  whitespace-nowrap py-2">Name</th>
+                <table className="2xl:w-[1530px] text-sm text-left text-gray-600 rounded-top">
+                  <thead
+                    className=""
+                    style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
+                  >
+                    <tr className="text-gray-600 uppercase text-xs font-semibold">
+                      <th className="ps-5 whitespace-nowrap py-2">Name</th>
                       <th className="tex whitespace-nowrap">Unit Number</th>
-                      <th className="ps-5 p-3 whitespace-nowrap ">Date</th>
-                      <th className="2xl:ps-5 whitespace-nowrap ">Role</th>
-                      <th className="text-center whitespace-nowrap ">
+                      <th className="ps-5 p-3 whitespace-nowrap">Date</th>
+                      <th className="2xl:ps-5 whitespace-nowrap">Role</th>
+                      <th className="text-center whitespace-nowrap">
                         Phone Number
                       </th>
-                      <th className="text-center whitespace-nowrap ">Amount</th>
-                      <th className="text-center whitespace-nowrap ">
-                        Penalty
-                      </th>
-                      <th className="text-center whitespace-nowrap ">Status</th>
-                      <th className="text-center whitespace-nowrap ">
-                        Payment
-                      </th>
-                      <th className="text-start whitespace-nowrap ">Action</th>
+                      <th className="text-center whitespace-nowrap">Amount</th>
+                      <th className="text-center whitespace-nowrap">Penalty</th>
+                      <th className="text-center whitespace-nowrap">Status</th>
+                      <th className="text-center whitespace-nowrap">Payment</th>
+                      <th className="text-start whitespace-nowrap">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {data.map((row, index) => (
-                      <tr
-                        key={index}
-                        className="border-t border-gray-200 hover:bg-gray-50"
-                      >
-                        <td className="px-3 mr-3 py-3 whitespace-nowrap flex items-center space-x-3">
-                          <img
-                            src={AvatarImage}
-                            alt="avatar"
-                            className="w-8 h-8 rounded-full"
-                          />
-                          <span>{row.name}</span>
-                        </td>
-                        <td className="   whitespace-nowrap lg:table-cell text-gray-600">
-                          {unitImages[row.unit]?.map((img, idx) => (
+                    {Maintenance?.map((maintenance, index) =>
+                      maintenance.ResidentList?.map((resident, idx) => (
+                        <tr
+                          key={`${index}-${idx}`}
+                          className="border-t border-gray-200 hover:bg-gray-50"
+                        >
+                          <td className="px-3 mr-3 py-3 whitespace-nowrap flex items-center space-x-3">
                             <img
-                              style={{ display: "inline" }}
-                              key={idx}
-                              src={img}
-                              alt={`Unit ${row.unit}`}
-                              className="w-6 h-6 mr-2"
+                              src={resident.resident.profileImage}
+                              alt="avatar"
+                              className="w-8 h-8 rounded-full"
                             />
-                          ))}
-                          {row.unit}
-                        </td>
-                        <td className="ps-4 pe-3">{row.date}</td>
-                        {/* <div className="flex"> */}
-                        <td className="  ">
-                          <span
-                            className={` ps-2 rounded-lg flex ${
-                              row.role === "Tenant"
-                                ? "bg-pink-100 text-pink-600"
-                                : "bg-blue-100 text-blue-600"
-                            }`}
-                          >
-                            {row.role === "Tenant" ? (
-                              <FontAwesomeIcon
-                                icon={faUser}
-                                className="w-3 h-5 mr-2"
-                              />
-                            ) : (
-                              <img src={UserIcon} className="w-3 h-5 mr-2" />
-                            )}
-                            {row.role}
-                          </span>
-                        </td>
-
-                        <td className="px-4 py-3 text-center whitespace-nowrap">
-                          {row.phone}
-                        </td>
-                        <td className="px-4 py-3 text-green-600 text-center whitespace-nowrap">
-                          {row.amount}
-                        </td>
-                        <td className="px-4 py-3 text-center text-red-600">
-                          {row.penalty}
-                        </td>
-                        <td className="ps-4 py-3">
-                          <span
-                            className={`px-2 text-center p-1 rounded-full text-xs w-[40px] flex font-semibold ${
-                              row.status === "Pending"
-                                ? "bg-yellow-100 text-yellow-600"
-                                : "bg-green-100 text-green-600"
-                            }`}
-                            style={{ width: "100px" }}
-                          >
-                            {row.status === "Pending" ? (
-                              <img
-                                src={TimerIcon}
-                                className="w-5 h-5 mr-2  text-[#FFC313]"
-                              />
-                            ) : (
-                              <img
-                                src={VerifiedIcon}
-                                className="w-5 h-5 mr-2 text-[#39973D]"
-                              />
-                            )}
-                            {row.status}
-                          </span>
-                        </td>
-                        <td className="ps-4 py-3">
-                          <span
-                            style={{ width: "80px" }}
-                            className={`px-2 py-1 rounded-full text-xs flex font-semibold ${
-                              row.payment === "Online"
-                                ? "bg-blue-100 text-blue-600"
-                                : "bg-gray-100 text-gray-600"
-                            }`}
-                          >
-                            {row.payment === "Online" ? (
-                              <img
-                                src={WalletIcon}
-                                className="w-5 h-5 mr-2 text-[#5678E9]"
-                              />
-                            ) : (
-                              <img
-                                src={MoneysIcon}
-                                className="w-5 h-5 mr-2 text-[#202224]"
-                              />
-                            )}
-                            {row.payment}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3 ">
-                          <button
-                            onClick={() => openViewMaintenanceModal(row)}
-                            className="bg-blue-50 text-[#5678E9] rounded-2 sm:w-10 sm:h-10"
-                          >
-                            <i className="fa-solid fa-eye w-2 mr-2"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                            <span>{resident.resident.Full_name}</span>
+                          </td>
+                          <td className="whitespace-nowrap lg:table-cell text-gray-600">
+                            <span className={`unit-badge unit-${resident.resident.Wing.toLowerCase()}`}>
+                              {!!resident.resident.Wing ? resident.resident.Wing : ""}
+                            </span>
+                            {resident.resident.Unit}
+                          </td>
+                          <td className="ps-4 pe-3">
+                            {new Date(maintenance.DueDate).toLocaleDateString()}
+                          </td>
+                          <td className="">
+                            <span
+                              className={`ps-2 rounded-lg flex ${
+                                resident.residentType === "Tenant"
+                                  ? "bg-pink-100 text-pink-600"
+                                  : "bg-blue-100 text-blue-600"
+                              }`}
+                            >
+                              {resident.residentType === "Tenant" ? (
+                                <FontAwesomeIcon
+                                  icon={faUser}
+                                  className="w-3 h-5 mr-2"
+                                />
+                              ) : (
+                                <img src={UserIcon} className="w-3 h-5 mr-2" />
+                              )}
+                              {resident.residentType}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-center whitespace-nowrap">
+                            {resident.resident.Phone_number}
+                          </td>
+                          <td className="px-4 py-3 text-green-600 text-center whitespace-nowrap">
+                            ₹ {maintenance.Maintenance_Amount}
+                          </td>
+                          <td className="px-4 py-3 text-center text-red-600">
+                            ₹ {maintenance.Penalty_Amount}
+                          </td>
+                          <td className="ps-4 py-3">
+                            <span
+                              className={`px-2 text-center p-1 rounded-full text-xs w-[40px] flex font-semibold ${
+                                resident.paymentStatus === "Pending"
+                                  ? "bg-yellow-100 text-yellow-600"
+                                  : "bg-green-100 text-green-600"
+                              }`}
+                              style={{ width: "100px" }}
+                            >
+                              {resident.paymentStatus === "Pending" ? (
+                                <img
+                                  src={TimerIcon}
+                                  className="w-5 h-5 mr-2 text-[#FFC313]"
+                                />
+                              ) : (
+                                <img
+                                  src={VerifiedIcon}
+                                  className="w-5 h-5 mr-2 text-[#39973D]"
+                                />
+                              )}
+                              {resident.paymentStatus}
+                            </span>
+                          </td>
+                          <td className="ps-4 py-3">
+                            <span
+                              style={{ width: "80px" }}
+                              className={`px-2 py-1 rounded-full text-xs flex font-semibold ${
+                                resident.paymentMode === "Online"
+                                  ? "bg-blue-100 text-blue-600"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
+                            >
+                              {resident.paymentMode === "Online" ? (
+                                <img
+                                  src={WalletIcon}
+                                  className="w-5 h-5 mr-2 text-[#5678E9]"
+                                />
+                              ) : (
+                                <img
+                                  src={MoneysIcon}
+                                  className="w-5 h-5 mr-2 text-[#202224]"
+                                />
+                              )}
+                              {resident.paymentMode}
+                            </span>
+                          </td>
+                          <td className="px-3 py-3">
+                            <button
+                              onClick={() => openViewMaintenanceModal(resident, maintenance)}
+                              className="bg-blue-50 text-[#5678E9] rounded-2 sm:w-10 sm:h-10"
+                            >
+                              <i className="fa-solid fa-eye w-2 mr-2"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
         </div>
-
+  
         {/* Password Modal */}
         {isPasswordModalOpen && (
-          <Password isOpen={isPasswordModalOpen} onClose={closePasswordModal} />
+          <Password isOpen={openPasswordModal} onClose={closePasswordModal} fetchMaintenance={fetchMaintenance}/>
         )}
-
+  
         {isViewMaintenanceOpen && (
           <ViewMaintenance
             isOpen={isViewMaintenanceOpen}
             onClose={closeViewMaintenanceModal}
             maintenance={selectedMaintenance}
+            Maintenance_Amount={selectedMaintenance_Amount}
           />
         )}
       </div>

@@ -10,6 +10,7 @@ import SecurityIcon from "./icons/encrypted.svg";
 import SecurityGuardIcon from "./icons/security-user.png";
 import AnnouncementIcon from "./icons/Announcement.png";
 import "./sidebar.css";
+import axiosInstance from '../Common/axiosInstance';
 
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState("dashboard");
@@ -139,8 +140,16 @@ const Sidebar = () => {
     }
   };
 
-  const handleLogout = () => {
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await axiosInstance.post("/v1/logout");
+      if (response.data.success) {
+        localStorage.removeItem("Society-Management");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
   const dropdownItemStyle = (item, activeItem) => ({
     color: activeItem === item ? "#FE512E" : "#4F4F4F",

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import AddMaintenance from "./AddMaintenance";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from '../../Common/axiosInstance';
 
-const Password = ({ isOpen, onClose }) => {
+const Password = ({ isOpen, onClose, fetchMaintenance  }) => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [isAddMaintenanceOpen, setIsAddMaintenanceOpen] = useState(false);
@@ -15,21 +16,50 @@ const Password = ({ isOpen, onClose }) => {
 
   const isFormValid = password.length > 0;
 
-  const handleSubmit = () => {
+  const handleSubmit  = async (e) => {
+    e.preventDefault();
+
     if (!password) {
       setErrorMessage("Password is required.");
-    } else if (password !== correctPassword) {
-      setErrorMessage("Incorrect password.");
-      setPassword("");
-    } else {
-      setErrorMessage(null);
-      setIsAddMaintenanceOpen(true);
+    } 
+    // else if (password !== correctPassword) {
+    //   setErrorMessage("Incorrect password.");
+    //   setPassword("");
+    // } 
+    
+    try {
+      const loginData = {
+        Password: password
+      };
+
+      const response = await axiosInstance.post('/v2/maintenance/checkpassword', loginData);
+
+      if (response.data.success) {
+        setIsAddMaintenanceOpen(true);
+      } else {
+        setErrorMessage(response.data.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(error.response.data.message || 'Failed to log in. Please try again.');
+      } else if (error.request) {
+        setErrorMessage('No response from server. Please check your connection.');
+      } else {
+        setErrorMessage('Failed to log in. Please try again.');
+      }
     }
+
   };
 
   const handleClose = () => {
     if (onClose) onClose(); // Close the modal
     navigate("/Income"); // Redirect to the Income page
+  };
+
+  const handleCloseAddMaintenance = () => {
+    if (onClose) onClose(); 
+    navigate("/Income"); 
+    setIsAddMaintenanceOpen(false)
   };
 
   const togglePasswordVisibility = () => {
@@ -85,7 +115,7 @@ const Password = ({ isOpen, onClose }) => {
         </div>
 
         {isAddMaintenanceOpen && (
-          <AddMaintenance isOpen={isAddMaintenanceOpen} onClose={() => setIsAddMaintenanceOpen(false)} />
+          <AddMaintenance isOpen={isAddMaintenanceOpen} onClose={handleCloseAddMaintenance} fetchMaintenance={fetchMaintenance}/>
         )}
       </div>
     )
