@@ -9,6 +9,12 @@ import rating from "./images/rating.png";
 import numeric from "./images/Frame.png";
 import text from "./images/Text polls.png";
 import icon from "./images/Icon.png";
+import MultipleChoice from "./Add Polls/MultipleChoice";
+import Ranking from "./Add Polls/Ranking";
+
+import Rating from "./Add Polls/Rating";
+import Numeric from "./Add Polls/Numeric";
+import TextPolls from "./Add Polls/TextPolls";
 
 const options = [
   { value: "multichoice", label: "Multichoice Polls", icon: multiple },
@@ -20,18 +26,25 @@ const options = [
 
 const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
   const [question, setQuestion] = useState("");
-  const [option1, setOption1] = useState("");
-  const [option2, setOption2] = useState("");
-  const [pollType, setPollType] = useState("single");
   const [pollCategory, setPollCategory] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showAddPolls, setShowAddPolls] = useState(false);
+  const [showRankingPolls, setShowRankingPolls] = useState(false);
+  const [showRatingPolls, setShowRatingPolls] = useState(false);
+  const [showNumericPolls, setShowNumericPolls] = useState(false);
+  const [showtextPolls, setShowTextPolls] = useState(false);
   const dropdownRef = useRef(null);
-
   const modalRef = useRef(null);
   const navigate = useNavigate();
 
   // Form validation
-  const isFormValid = question && option1 && option2;
+  const isFormValid =
+    question ||
+    pollCategory === "multichoice" ||
+    pollCategory === "ranking" ||
+    pollCategory === "numeric" ||
+    pollCategory === "rating" ||
+    pollCategory === "text";
 
   const handleClose = () => {
     if (onClose) onClose();
@@ -40,7 +53,11 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
 
   const handleSelect = (value) => {
     setPollCategory(value);
-    setIsDropdownOpen(false); // Close dropdown after selection
+    setIsDropdownOpen(false);
+
+    if (value === "multichoice") {
+      setQuestion("");
+    }
   };
 
   // Close dropdown when clicking outside
@@ -54,20 +71,34 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Regex validation function for alphabetic characters only
-  const handleAlphaInput = (setter) => (e) => {
-    const value = e.target.value;
-    const regex = /^[A-Za-z\s]*$/; // Allows only letters and spaces
-    if (regex.test(value)) {
-      setter(value); // Set the value if valid
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
+      if (pollCategory === "multichoice") {
+        setShowAddPolls(true);
+        return;
+      }
+      if (pollCategory === "ranking") {
+        setShowRankingPolls(true);
+        return;
+      }
+      if (pollCategory === "rating") {
+        setShowRatingPolls(true);
+        return;
+      }
+
+      if (pollCategory === "numeric") {
+        setShowNumericPolls(true);
+        return;
+      }
+
+      if (pollCategory === "text") {
+        setShowTextPolls(true);
+        return;
+      }
+
       try {
-        const pollData = { question, options: [option1, option2], pollType };
+        const pollData = { question, options: [], pollType: pollCategory };
 
         const response = await axios.post("/v2/polls/addpoll", pollData, {
           headers: { "Content-Type": "application/json" },
@@ -104,11 +135,11 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
           </button>
         </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className=" flex flex-col gap-2">
+        <form className="space-y-2" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-2">
             {/* Poll Category Select Dropdown */}
             <div className="relative w-full" ref={dropdownRef}>
-              <label className="block text-left font-medium text-[#202224] ">
+              <label className="block text-left font-medium text-[#202224]">
                 Polls<span className="text-red-500">*</span>
               </label>
               <div
@@ -135,9 +166,9 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
                   ) : (
                     <div className="flex items-center">
                       <img
-                        src={select} 
+                        src={select}
                         alt="Select Poll"
-                        className="w-4 h-4 mr-3 "
+                        className="w-4 h-4 mr-3"
                       />
                       <span className="text-[#A7A7A7]">Select Poll</span>
                     </div>
@@ -145,29 +176,31 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
                   <img
                     src={icon}
                     alt="dropdown-icon"
-                    className="w-4 h-2 ml-auto "
+                    className="w-4 h-2 ml-auto"
                   />
                 </div>
                 {isDropdownOpen && (
-                  <ul className="z-10 p-3 bg-white  overflow-x-auto h-[120px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 border-gray-300 rounded-lg w-full shadow-lg ">
+                  <ul className="z-10 p-3 bg-white  border-gray-300 rounded-lg w-full shadow-lg">
                     {options.map((option) => (
                       <li
                         key={option.value}
-                        className="flex items-center cursor-pointer "
-                        onClick={() => handleSelect(option.value)}
+                        className="flex items-center cursor-pointer"
+                        onClick={() => handleSelect(option.value)} // Close dropdown on select
                       >
                         <input
                           type="radio"
                           checked={pollCategory === option.value}
-                          onChange={() => handleSelect(option.value)}
-                          className="mr-2 border border-[#A7A7A7] "
+                          onChange={() => handleSelect(option.value)} // Close dropdown on select
+                          className="mr-2 border border-[#A7A7A7]"
                         />
                         <img
                           src={option.icon}
                           alt={option.label}
                           className="w-5 h-5 mr-3 ml-3"
                         />
-                        <span className="text-[#A7A7A7] mb-1">{option.label}</span>
+                        <span className="text-[#A7A7A7] mb-1">
+                          {option.label}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -176,52 +209,8 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
             </div>
           </div>
 
-          {/* Poll Question */}
-          <div>
-            <label className="block text-left font-medium text-[#202224] mb-1">
-              Question<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Ask a Question"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-            />
-          </div>
-
-          {/* Option 1 */}
-          <div>
-            <label className="block text-left font-medium text-[#202224] mb-1">
-              Option 1<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Add"
-              value={option1}
-              onChange={handleAlphaInput(setOption1)} // Validate alphabetic input
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-            />
-          </div>
-
-          {/* Option 2 */}
-          <div>
-            <label className="block text-left font-medium text-[#202224] mb-1">
-              Option 2<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Add"
-              value={option2}
-              onChange={handleAlphaInput(setOption2)} // Validate alphabetic input
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-            />
-          </div>
-
-          {/* Poll Type Selection */}
-
           {/* Buttons */}
-          <div className="flex  sm:flex-row gap-4 pt-2">
+          <div className="flex sm:flex-row gap-4">
             <button
               type="button"
               className="w-full 2xl:w-[48%] px-4 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
@@ -235,13 +224,46 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
                 isFormValid
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                   : "bg-[#F6F8FB] text-[#202224]"
-              }`}
+              } `}
+              disabled={!isFormValid}
             >
-              Save
+              Create
             </button>
           </div>
         </form>
       </div>
+      {showAddPolls && (
+        <MultipleChoice
+          isOpen={showAddPolls}
+          onClose={() => setShowAddPolls(false)}
+        />
+      )}
+      {showRankingPolls && (
+        <Ranking
+          isOpen={showRankingPolls}
+          onClose={() => setShowRankingPolls(false)}
+        />
+      )}
+
+      {showRatingPolls && (
+        <Rating
+          isOpen={showRatingPolls}
+          onClose={() => setShowRatingPolls(false)}
+        />
+      )}
+      {showNumericPolls && (
+        <Numeric
+          isOpen={showNumericPolls}
+          onClose={() => setShowNumericPolls(false)}
+        />
+      )}
+
+      {showtextPolls && (
+        <TextPolls
+          isOpen={showtextPolls}
+          onClose={() => setShowTextPolls(false)}
+        />
+      )}
     </div>
   );
 };
