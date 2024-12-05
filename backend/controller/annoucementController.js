@@ -67,7 +67,7 @@ exports.createAnnouncement = async (req, res) => {
 
     
    const notification = new Notification({
-     title: `New Activity${Announcement_Type}`,
+     title: `New Activity ${Announcement_Type}`,
      name: Announcement_Title,
      message: Description,
      users:allUsers
@@ -96,11 +96,11 @@ exports.GetActivityAnnouncement = async (req, res) => {
     try {
   
       const activities = await Announcement.find({
-        type: "Activity",
-        Members: { $exists: true, $not: { $size: 0 } },
+        Announcement_Type: "Activity",
+        members: { $exists: true, $not: { $size: 0 } },
       })
         .populate({
-          path: "Members.participent",
+          path: "members.participent",
           select: "profileImage Full_name",
         }).exec();
   
@@ -129,18 +129,18 @@ exports.GetActivityAnnouncement = async (req, res) => {
     try {
   
       const activities = await Announcement.find({
-        type: "Event",
-        Members: { $exists: true, $not: { $size: 0 } },
+        Announcement_Type: "Event",
+        members: { $exists: true, $not: { $size: 0 } },
       })
         .populate({
-          path: "Members.participent",
+          path: "members.participent",
           select: "profileImage Full_name",
         }).exec();
   
       if (!activities || activities.length === 0) {
         return res.status(404).json({
           success: false,
-          message: "No activity announcements with participants found",
+          message: "No Event announcements with participants found",
         });
       }
   
@@ -227,5 +227,49 @@ exports.getActivityAnnouncement = async (req, res) => {
     }
 };
 
+//accept announcment 
+exports.AcceptAnnouncement = async (req, res) => {
+  try {
+    const { announcementId } = req.body;
 
+    const userId = req.user?.id;
+    const userType = req.user?.Resident_status;
+
+    if (!announcementId) {
+      return res.status(400).json({
+        success: false,
+        message: "Announcement ID is required",
+      });
+    }
+
+    const announcement = await Announcement.findById(announcementId);
+    if (!announcement) {
+      return res.status(404).json({
+        success: false,
+        message: "Announcement not found",
+      });
+    }
+
+    announcement.members.push({
+      participent: userId,
+      residentType: userType,
+
+    });
+
+
+    await announcement.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "You have successfully accepted the announcement",
+      announcement,
+    });
+  } catch (error) {
+    console.error("Error accepting announcement:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error accepting announcement",
+    });
+  }
+};
 
