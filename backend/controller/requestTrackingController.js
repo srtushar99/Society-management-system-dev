@@ -5,7 +5,6 @@ exports.createRequest = async (req, res) => {
     try {
         const { Requester_name, Request_name, Request_date,Description, Wing, Unit, Priority, Status} = req.body;
 
-        // Check if all required fields are provided
         if (!Requester_name || !Request_name || !Request_date|| !Description || !Wing || !Unit || !Priority || !Status) {
             return res.status(400).json({ message: 'All fields are required' });
         }
@@ -78,7 +77,6 @@ exports.updateRequest = async (req, res) => {
     try {
         const { Requester_name, Request_name, Request_date, Description, Wing, Unit, Priority, Status, role } = req.body;
 
-        // Check if all required fields are provided for the update
         if (!Requester_name || !Request_name || !Request_date|| !Description || !Wing || !Unit || !Priority || !Status) {
             return res.status(400).json({ message: 'All fields are required' });
         }

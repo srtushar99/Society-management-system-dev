@@ -13,24 +13,19 @@ exports.CreateSecurityGuard = async (req, res) => {
     try {
 
         function generatePassword(length = 9) {
-            // Define sets of characters
             const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
             const numbers = '0123456789';
-            const specialChar = '@'; // Fixed special character
-        
-            // Ensure length is at least 3 (for alphabet@number format)
+            const specialChar = '@'; 
+   
             if (length < 3) {
                 throw new Error('Password length must be at least 3 for this format');
             }
-        
-            // Generate random alphabet
+  
             const randomAlphabet = alphabets[crypto.randomInt(0, alphabets.length)];
-            // Generate random number
             const randomNumber = numbers[crypto.randomInt(0, numbers.length)];
         
-            // Remaining characters (if length > 3)
             let remainingChars = '';
-            const remainingLength = length - 2; // Subtract the fixed alphabet and number
+            const remainingLength = length - 2; 
             const allCharacters = alphabets + numbers;
         
             for (let i = 0; i < remainingLength; i++) {
@@ -52,7 +47,6 @@ exports.CreateSecurityGuard = async (req, res) => {
             role,
         } = req.body;
 
-        // Convert date string (DD/MM/YYYY) to Date object
         const parsedDate = moment(date, "DD/MM/YYYY").toDate();
         if (!parsedDate || isNaN(parsedDate.getTime())) {
             return res.status(400).json({
@@ -99,7 +93,7 @@ exports.CreateSecurityGuard = async (req, res) => {
             MailOrPhone,
             gender,
             shift,
-            date: parsedDate,  // Use the parsed date here
+            date: parsedDate,  
             time,
             profileimage,
             adhar_card,
@@ -152,6 +146,9 @@ exports.CreateSecurityGuard = async (req, res) => {
           });
      }
  }
+
+ // get bby id Guard
+
  exports.GetByIdGuard= async (req,res)=>{
      try {
          const find= await Guard.findById(req.params.id);
@@ -173,6 +170,8 @@ exports.CreateSecurityGuard = async (req, res) => {
           });
      }
  }
+ // delete Guard
+ 
  exports.DeleteGuard= async (req,res)=>{
      try {
          const find= await Guard.findByIdAndDelete(req.params.id);

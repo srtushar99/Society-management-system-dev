@@ -43,7 +43,7 @@ exports.getAllImportantNumbers = async (req, res) => {
   }
 };
 
-// Get a single important number by ID
+// Get a single important number
 exports.getImportantNumberById = async (req, res) => {
   try {
     const importantNumberId = req.params.id;
@@ -59,19 +59,17 @@ exports.getImportantNumberById = async (req, res) => {
   }
 };
 
-// Edit an important number by ID
+// Edit  important number 
 exports.EditImportantNumber = async (req, res) => {
     try {
       const importantNumberId = req.params.id;
   
-      // Find the current document by ID
       const currentImportantNumber = await ImportantNumber.findById(importantNumberId);
       
       if (!currentImportantNumber) {
         return res.status(404).json({ message: 'Important number not found' });
       }
   
-      // Update the important number with provided data
       const updatedImportantNumber = await ImportantNumber.findByIdAndUpdate(
         importantNumberId,
         { $set: req.body },
@@ -85,7 +83,7 @@ exports.EditImportantNumber = async (req, res) => {
   };
   
 
-// Delete an important number by ID
+// Delete an important number 
 exports.deleteImportantNumber = async (req, res) => {
   try {
     const importantNumberId = req.params.id;

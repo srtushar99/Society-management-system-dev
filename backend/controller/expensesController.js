@@ -2,6 +2,7 @@ const Expenses = require('../models/expensesModel'); // Adjust path as necessary
 const cloudinary = require('../utils/cloudinary'); 
 const fs=require("fs")
 
+// create expense 
 exports.createExpense = async (req, res) => {
     try {
 
@@ -19,9 +20,9 @@ exports.createExpense = async (req, res) => {
                 if (fileArray && fileArray[0]) {
                     const filePath = fileArray[0].path;
                     try {
-                        // Upload to Cloudinary
+            
                         const result = await cloudinary.uploader.upload(filePath);
-                        // Delete from local server
+                    
                         fs.unlink(filePath, (err) => {
                             if (err) console.error("Error deleting file from server:", err);
                             else console.log("File deleted from server:", filePath);
@@ -35,11 +36,8 @@ exports.createExpense = async (req, res) => {
                 return '';
             };
     
-            // Upload images to Cloudinary and delete local files
             const Upload_Bill = await uploadAndDeleteLocal(req.files?.Upload_Bill);
- 
-    
-        // Create a new owner document
+
         const newExpenses = new Expenses({
             Title,
             Description,
@@ -54,7 +52,6 @@ exports.createExpense = async (req, res) => {
       
         await newExpenses.save();
         
-        // Send success response
        return res.status(201).json({
             success: true,
             message: "Expenses data added successfully",
@@ -72,7 +69,6 @@ exports.createExpense = async (req, res) => {
 // get all expenses
 exports.GetAllExpenses = async (req, res) => {
     try {
-        // Fetch all expenses
         const find = await Expenses.find();
 
         if (!find || find.length === 0) {
@@ -82,7 +78,6 @@ exports.GetAllExpenses = async (req, res) => {
             });
         }
 
-        // Calculate total expenses amount
         const totalAmount = find.reduce((sum, expense) => sum + expense.Amount, 0);
 
         return res.json({
@@ -127,9 +122,9 @@ const uploadAndDeleteLocal = async (fileArray) => {
     if (fileArray && fileArray[0]) {
         const filePath = fileArray[0].path;
         try {
-            // Upload to Cloudinary
+        
             const result = await cloudinary.uploader.upload(filePath);
-            // Delete from local server
+
             fs.unlink(filePath, (err) => {
                 if (err) console.error("Error deleting file from server:", err);
                 else console.log("File deleted from server:", filePath);
@@ -163,7 +158,7 @@ exports.UpdateExpense = async (req, res) => {
                 Original_FileName,
                 role: role || "resident",
             },
-            { new: true } // Return updated document
+            { new: true } 
         );
 
         if (!updatedExpense) {
@@ -198,10 +193,9 @@ exports.DeleteExpense = async (req, res) => {
             });
         }
 
-        // Optionally delete the associated image from Cloudinary if needed
         if (expense.Upload_Bill) {
-            const publicId = expense.Upload_Bill.split('/').pop().split('.')[0]; // Extract public ID from URL
-            await cloudinary.uploader.destroy(publicId); // Delete from Cloudinary
+            const publicId = expense.Upload_Bill.split('/').pop().split('.')[0]; 
+            await cloudinary.uploader.destroy(publicId); 
         }
 
         return res.json({
@@ -224,8 +218,8 @@ exports.GetTotalExpensesAmount = async (req, res) => {
         const totalAmount = await Expenses.aggregate([
             {
                 $group: {
-                    _id: null, // No grouping, calculate a total
-                    total: { $sum: "$Amount" }, // Sum the Amount field
+                    _id: null, 
+                    total: { $sum: "$Amount" }, 
                 },
             },
         ]);
@@ -239,7 +233,7 @@ exports.GetTotalExpensesAmount = async (req, res) => {
 
         return res.json({
             success: true,
-            totalAmount: totalAmount[0].total, // Send the total value
+            totalAmount: totalAmount[0].total, 
         });
     } catch (error) {
         console.error(error);

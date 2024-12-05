@@ -5,7 +5,6 @@ exports.createNote = async (req, res) => {
     try {
         const { Title, Description, Date, role } = req.body;
 
-        // Check if all fields are provided
         if (!Title || !Description || !Date ) {
             return res.status(400).json({
                 success: false,
@@ -13,7 +12,6 @@ exports.createNote = async (req, res) => {
             });
         }
 
-        // Create a new note document
         const newNote = new Note({
             Title,
             Description,
@@ -38,7 +36,7 @@ exports.createNote = async (req, res) => {
 };
 
 
-// Get all notes or notes by ID
+// Get all notes
 exports.getAllNotes = async (req, res) => {
     try {
         const notes = await Note.find();
@@ -62,7 +60,7 @@ exports.getAllNotes = async (req, res) => {
     }
 };
 
-// Get a single note by ID
+// Get a single note 
 exports.getNoteById = async (req, res) => {
     try {
         const note = await Note.findById(req.params.id);
@@ -87,7 +85,7 @@ exports.getNoteById = async (req, res) => {
     }
 };
 
-// Edit a note by ID
+// Edit a note 
 exports.updateNote = async (req, res) => {
     try {
         const { Title, Description, Date, role } = req.body;
@@ -100,7 +98,7 @@ exports.updateNote = async (req, res) => {
                 Date,
                 role: role || 'resident',
             },
-            { new: true } // Return the updated document
+            { new: true }
         );
 
         if (!updatedNote) {

@@ -10,7 +10,6 @@ const chatSchema = new mongoose.Schema(
     },
     senderModel: {
       type: String,
-      required: true,
       enum: ['Owner', 'Tenant'],           
     },
     receiverId: {
@@ -20,7 +19,6 @@ const chatSchema = new mongoose.Schema(
     },
     receiverModel: {
       type: String,
-      required: true,
       enum: ['Owner', 'Tenant'],         
     },
     message: {

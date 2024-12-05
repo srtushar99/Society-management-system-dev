@@ -71,6 +71,17 @@ exports.authenticate = async (req, res, next) => {
 //     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
 //   }
 // };
+exports.IsAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: "Unauthorized, no user found" });
+  }
+
+  if (req.user.role === "admin") {
+    next();
+  } else {
+    return res.status(403).json({ success: false, message: "You are not authorized to access this resource" });
+  }
+};
 
 
 exports.IsResident = (req, res, next) => {
