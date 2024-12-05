@@ -101,7 +101,7 @@ const Activity = () => {
 
 
   return (
-    <div className="border bg-white border-gray-300 rounded-lg mt-1 h-[300px] 2xl:ml-4 w-full sm:mt-5 2xl:w-[380px] sm:ml-4 ">
+    <div className="border bg-white border-gray-300 rounded-lg mt-1 h-[300px] md:w-[250px] xl:w-[300px] 2xl:ml-4 w-full sm:mt-5 2xl:w-[380px] sm:ml-4 ">
       <div className="flex justify-between items-center  p-3">
         <h5 className="text-xl font-semibold text-gray-900">Upcoming Activity</h5>
         <Select defaultValue="month" onChange={handleRangeChange}>
@@ -124,7 +124,7 @@ const Activity = () => {
               {!!activity.Announcement_Title ? activity.Announcement_Title?.charAt(0).toUpperCase() : "N/A"}
             </div>
             <div className="flex-1 pt-1 px-1 ml-2  ">
-              <span className="text-gray-900 font-medium d-flex pt-1"style={{alignItems:"center"}}>{!!activity.Announcement_Title ? activity.Announcement_Title : " "}</span>
+              <span className="text-gray-900  font-medium d-flex pt-1"style={{alignItems:"center"}}>{!!activity.Announcement_Title ? activity.Announcement_Title : " "}</span>
               <p className="text-sm text-gray-500">{!!activity.Announcement_Time ? activity.Announcement_Time : " "}</p>
             </div>
             <div className="text-sm text-gray-500">{!!activity.Announcement_Date ? moment(activity.Announcement_Date).format("DD/MM/YYYY") : " "}</div>

@@ -66,7 +66,7 @@ const ContactsPage = () => {
 
   return (
     <div
-      className="rounded-lg shadow-md  2xl:ml-2 sm:w-[390px] bg-white lg:w-[380px] lg:h-[380px]"
+      className="rounded-lg shadow-md 2xl:mt-0 sm:mt-10 xl:mt-0 2xl:ml-2 md:mt-0  sm:w-[390px] md:w-[250px] xl:w-[280px] md:h-[240px] lg:w-[260px]  bg-white 2xl:w-[380px] lg:h-[380px]"
       style={{ height: "405px" }}
     >
       <div className="flex justify-between items-center mb-4 px-3 pt-3">

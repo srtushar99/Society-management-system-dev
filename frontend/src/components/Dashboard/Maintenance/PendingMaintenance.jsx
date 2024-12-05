@@ -85,7 +85,7 @@ const maintenanceItems = [
 
 const PendingMaintenance = () => {
   return (
-    <div className="sm:w-full bg-white rounded lg:h-[405px] lg:w-[380px] mx-2sm:ml-2">
+    <div className="sm:w-full bg-white rounded 2xl:h-[405px] md:h-[405px] xl:h-[405px] lg:h-[405px] 2xl:w-[380px] xl:w-[300px]  md:w-[250px] mx-2 sm:ml-2">
       <Card className="w-full h-full ">
         <CardHeader className="pt-4 px-3">
           <CardTitle className="text-base sm:text-lg">Pending Maintenances</CardTitle>

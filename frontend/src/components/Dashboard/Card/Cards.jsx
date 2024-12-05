@@ -8,7 +8,8 @@ import axiosInstance from '../../Common/axiosInstance';
 
 const Card = ({ title, amount, icon, color }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg h-[100px] w-full ml-3  2xl:ml-4 sm:mb-4 mb-2 2xl:mt-4 2xl:w-[380px]  flex">
+    
+    <div className="bg-white shadow-lg rounded-lg h-[100px] w-full ml-3 md:w-[395px] lg:w-[380px]  xl:w-[470px] 2xl:ml-4 sm:mb-4 mb-2 2xl:mt-4 2xl:w-[380px] flex">
       <div
         style={{
           width: "8px",
@@ -19,7 +20,7 @@ const Card = ({ title, amount, icon, color }) => {
         }}
         className="rounded-r-lg  pl-2 ml-2"
       ></div>
-      <div className="flex-1 flex justify-between items-center pl-4 mx-2">
+      <div className="flex-1 flex justify-between items-center  pl-4 mx-2">
         <div className="">
           <div className=" rounded sm: mt-3  2xl:hidden ">
             <img src={icon} alt={title} className="w-8 h-8" />
@@ -87,7 +88,7 @@ const Cards = () => {
     }, []);
 
   return (
-    <div className="2xl:flex flex-wrap justify-start mt-4 me-3   2xl:ml-[310px]">
+    <div className="2xl:flex  md:ml-[300px]  flex-wrap justify-start mt-4 me-3   2xl:ml-[310px]">
       {/* Total Balance Card */}
       <div className="flex 2xl:flex sm:flex ">
         <Card 

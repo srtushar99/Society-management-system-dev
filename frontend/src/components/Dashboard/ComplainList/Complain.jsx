@@ -150,7 +150,7 @@ const Complain = () => {
   }, []);
 
   return (
-    <div className="lg:w-[1175px] md:w-[1150px] lg:ms-[320px] mt-1 h-[350px] sm:h-[300px] bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="2xl:w-[1175px]  2xl:ms-[320px] lg:w-[520px] mt-1  h-[350px] xl:ml-[300px] md:ml-[300px] md:w-[540px] xl:w-[640px] sm:h-[300px] bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-3 flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Complaint List</h2>
         <Select defaultValue="month" onChange={handleRangeChange}>
@@ -177,8 +177,8 @@ const Complain = () => {
         </Select>
       </div>
 
-      <div className="h-[200px] overflow-y-auto rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        <table className="w-full table-auto  ">
+      <div className="h-[200px] overflow-y-auto ml-4 mr-3 rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <table className="   w-[1140px]">
           <thead style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
             <tr className=" text-left text-xs font-semibold text-gray-600 uppercase">
               <th className="whitespace-nowrap ps-4">Complainer Name</th>
@@ -191,7 +191,7 @@ const Complain = () => {
           </thead>
           <tbody className="text-sm ">
             {complaint.map((complaints) => (
-              <tr key={complaints._id} className="border ">
+              <tr key={complaints._id} className="border-b ">
                 <td className="">
                   <div className="flex items-center space-x-2 ps-4">
                     <img

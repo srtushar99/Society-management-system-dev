@@ -66,9 +66,9 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center  justify-between px-6 bg-white sm:ms-[50px] h-[70px] flex-wrap md:flex-nowrap">
+    <header className="flex items-center  justify-between px-6 bg-white sm:ms-[50px] md:ms-[] h-[70px] flex-wrap md:flex-nowrap">
       {/* Search Bar Section */}
-      <div className="relative flex-1  md:ml-[290px] md:mr-4">
+      <div className="relative flex-1  2xl:ml-[290px] md:ml-[290px] md:mr-4">
         {/* Search input visible on larger screens */}
         <div className="hidden md:block">
           <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 h-5 w-5 " />
@@ -89,7 +89,7 @@ const Header = () => {
       
 
       {/* Right Section with Notification and Avatar */}
-      <div className="flex items-center space-x-4 sm:space-x-6">
+      <div className="flex items-center md:ml-[100px] space-x-4 sm:space-x-6">
         {/* Notification Icon */}
         <button
           className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
