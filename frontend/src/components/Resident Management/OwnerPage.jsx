@@ -33,9 +33,9 @@ const OwnerPage = () => {
     wing: "",
     unit: "",
     relation: "",
-    memberCount: 0,
+    // memberCount: 0,
     memberDetails: [],
-    vehicleCount: 0,
+    // vehicleCount: 0,
     vehicleDetails: [],
   });
   const [photo, setPhoto] = useState(null);
@@ -183,8 +183,8 @@ const OwnerPage = () => {
         formData.append("Wing", OwnerData.wing);
         formData.append("Unit", OwnerData.unit);
         formData.append("Relation", OwnerData.relation);
-        formData.append("Member_Counting", OwnerData.memberDetails);
-        formData.append("Vehicle_Counting", OwnerData.vehicleDetails);
+        formData.append("Member_Counting", JSON.stringify(OwnerData.memberDetails));
+        formData.append("Vehicle_Counting", JSON.stringify(OwnerData.vehicleDetails));
 
         if (uploadprofileimage) {
           formData.append("profileImage", uploadprofileimage); 
