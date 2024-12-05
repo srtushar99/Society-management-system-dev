@@ -10,7 +10,7 @@ const OwnerPage = () => {
   const [adharcard, setadhar_card] = useState(null);
   // const [isDragging, setIsDragging] = useState(false);
   //  const [profile_image, setprofileimage] = useState(null);
-  // const [uploadprofileimage, setuploadprofileimage] = useState(null);
+  const [uploadprofileimage, setuploadprofileimage] = useState(null);
 
 
   const [frontAadhar, setFrontAadhar] = useState(null);
@@ -23,27 +23,8 @@ const OwnerPage = () => {
   const addressInputRef = useRef(null);
   const rentInputRef = useRef(null);
 
-  const handleFileChange = (e, setter) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size <= 10 * 1024 * 1024) { // 10MB limit
-        setter(file);
-      } else {
-        alert('File size should be less than 10MB');
-        e.target.value = '';
-      }
-    }
-  };
 
-  const handleClearFile = (setter, inputRef) => {
-    setter(null);
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  };
-
-
-  const [formData, setFormData] = useState({
+  const [OwnerData, setOwnerData] = useState({
     fullName: "",
     phoneNumber: "",
     emailAddress: "",
@@ -63,16 +44,16 @@ const OwnerPage = () => {
   // const dropZoneRef = useRef(null);
 
   const isFormValid =
-    formData.fullName &&
-    formData.phoneNumber &&
-    formData.age &&
-    formData.gender &&
-    formData.emailAddress &&
-    formData.wing &&
-    formData.unit &&
-    formData.relation &&
-    adharcard &&
-    formData.memberDetails.every(
+    OwnerData.fullName &&
+    OwnerData.phoneNumber &&
+    OwnerData.age &&
+    OwnerData.gender &&
+    OwnerData.emailAddress &&
+    OwnerData.wing &&
+    OwnerData.unit &&
+    OwnerData.relation &&
+    // adharcard &&
+    OwnerData.memberDetails.every(
       (member) =>
         member.memberName &&
         member.Number &&
@@ -81,17 +62,16 @@ const OwnerPage = () => {
         member.gender &&
         member.relation
     ) &&
-    formData.vehicleDetails.every(
+    OwnerData.vehicleDetails.every(
       (vehicle) =>
         vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
     );
 
-  // const ClearAllData = () => {
-  //   setprofileimage(null);
-  //   setuploadprofileimage(null);
-  //   setadhar_card(null);
-
-  // };
+    const ClearAllData = () => {
+      setprofileimage(null);
+      setuploadprofileimage(null);
+      setadhar_card(null);
+    };
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -122,21 +102,22 @@ const OwnerPage = () => {
 
 
     if (index !== null) {
-      const newMemberDetails = [...formData.memberDetails];
+      const newMemberDetails = [...OwnerData.memberDetails];
       newMemberDetails[index] = {
         ...newMemberDetails[index],
         [name]: value,
       };
-      setFormData({ ...formData, memberDetails: newMemberDetails });
+      setOwnerData({ ...OwnerData, memberDetails: newMemberDetails });
       return;
     }
 
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setOwnerData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setuploadprofileimage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhoto(reader.result);
@@ -147,7 +128,7 @@ const OwnerPage = () => {
 
   const handleMemberCountChange = (e) => {
     const newMemberCount = parseInt(e.target.value, 10);
-    const newMemberDetails = [...formData.memberDetails].slice(
+    const newMemberDetails = [...OwnerData.memberDetails].slice(
       0,
       newMemberCount
     );
@@ -163,8 +144,8 @@ const OwnerPage = () => {
       });
     }
 
-    setFormData({
-      ...formData,
+    setOwnerData({
+      ...OwnerData,
       memberCount: newMemberCount,
       memberDetails: newMemberDetails,
     });
@@ -172,7 +153,7 @@ const OwnerPage = () => {
 
   const handleVehicleCountChange = (e) => {
     const count = parseInt(e.target.value, 10);
-    const updatedVehicleDetails = [...formData.vehicleDetails].slice(0, count);
+    const updatedVehicleDetails = [...OwnerData.vehicleDetails].slice(0, count);
     while (updatedVehicleDetails.length < count) {
       updatedVehicleDetails.push({
         vehicleType: "",
@@ -180,7 +161,7 @@ const OwnerPage = () => {
         vehicleNumber: "",
       });
     }
-    setFormData((prevState) => ({
+    setOwnerData((prevState) => ({
       ...prevState,
       vehicleCount: count,
       vehicleDetails: updatedVehicleDetails,
@@ -188,98 +169,55 @@ const OwnerPage = () => {
   };
 
 
-  // const handleAadharCardChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     if (file.size <= 10 * 1024 * 1024) { // 10MB limit
-  //       setadhar_card(file);
-  //     } else {
-  //       alert("File size should be less than 10MB");
-  //       if (fileInputRef.current) {
-  //         fileInputRef.current.value = '';
-  //       }
-  //     }
-  //   }
-  // };
-  // const handleDragOver = (e) => {
-  //   e.preventDefault();
-  //   setIsDragging(true);
-  // };
 
-  // const handleDragLeave = (e) => {
-  //   e.preventDefault();
-  //   setIsDragging(false);
-  // };
-  // const handleDrop = (e) => {
-  //   e.preventDefault();
-  //   setIsDragging(false);
-  //   const file = e.dataTransfer.files[0];
-  //   if (file) {
-  //     if (file.size <= 10 * 1024 * 1024) {
-  //       setAadharCard(file);
-  //     } else {
-  //       alert("File size should be less than 10MB");
-  //     }
-  //   }
-  // };
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (uploadprofileimage) {
-  //     formData.append("profileimage", uploadprofileimage); 
-  //   }
-  //   if (adharcard) {
-  //     formData.append("adhar_card", adharcard); 
-  //   }
-  //   if (!isFormValid) {
-  //     alert("Please fill in all required fields correctly.");
-  //     return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isFormValid) {
+      try {
+        const formData = new FormData();
+        formData.append("Full_name", OwnerData.fullName);
+        formData.append("Phone_number", OwnerData.phoneNumber);
+        formData.append("Email_address", OwnerData.emailAddress);
+        formData.append("Age", OwnerData.age);
+        formData.append("Gender", OwnerData.gender);
+        formData.append("Wing", OwnerData.wing);
+        formData.append("Unit", OwnerData.unit);
+        formData.append("Relation", OwnerData.relation);
+        formData.append("Member_Counting", OwnerData.memberDetails);
+        formData.append("Vehicle_Counting", OwnerData.vehicleDetails);
 
-  //   }
-  //   console.log("Form submitted with :", formData);
-  // };
+        if (uploadprofileimage) {
+          formData.append("profileImage", uploadprofileimage); 
+        }
+        if (backAadhar) {
+          formData.append("Adhar_back", backAadhar); 
+        }
+        if (addressProof) {
+          formData.append("Address_proof", addressProof); 
+        }
+        if (rentAgreement) {
+          formData.append("Rent_Agreement", rentAgreement); 
+        }
+        if (frontAadhar) {
+          formData.append("Adhar_front", frontAadhar); 
+        }
+        console.log(formData);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (isFormValid) {
-  //     try {
-  //       const formData = new FormData();
-  //       formData.append("Full_name", formData.fullName);
-  //       formData.append("Phone_number", MailOrPhone);
-  //       formData.append("Email_address", moment(shiftDate).format('DD/MM/YYYY'));
-  //       formData.append("Age", time);
-  //       formData.append("Gender", shift);
-  //       formData.append("Wing", gender);
-  //       formData.append("Unit", formData.fullName);
-  //       formData.append("Relation", MailOrPhone);
-  //       formData.append("Email_address", moment(shiftDate).format('DD/MM/YYYY'));
-  //       formData.append("Age", time);
-  //       formData.append("Gender", shift);
-  //       formData.append("Wing", gender);
+        const response = await axiosInstance.post("/v2/resident/addowner", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
+        if (response.status === 200) {
+          navigate("/Resident-Manegement");
+        }
+      } catch (error) {
+        console.error("Error creating Owner:", error.response || error.message);
+      }
+    } else {
+      console.log("Form is invalid");
+    }
+  };
 
-  //       if (uploadprofileimage) {
-  //         formData.append("profileimage", uploadprofileimage); 
-  //       }
-  //       if (adharcard) {
-  //         formData.append("adhar_card", adharcard); 
-  //       }
-
-  //       const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       });
-
-  //       if (response.status === 200) {
-  //         fetchSecurityGuard();
-  //         onClose();
-  //         ClearAllData();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error creating Guard:", error.response || error.message);
-  //     }
-  //   } else {
-  //     console.log("Form is invalid");
-  //   }
-  // };
 
   const handleVehicleDetailChange = (index, name, value) => {
     // Validation for vehicle details
@@ -293,12 +231,12 @@ const OwnerPage = () => {
       if (!regex.test(value) && value !== "") return;
     }
 
-    const updatedVehicleDetails = [...formData.vehicleDetails];
+    const updatedVehicleDetails = [...OwnerData.vehicleDetails];
     updatedVehicleDetails[index] = {
       ...updatedVehicleDetails[index],
       [name]: value,
     };
-    setFormData({ ...formData, vehicleDetails: updatedVehicleDetails });
+    setOwnerData({ ...OwnerData, vehicleDetails: updatedVehicleDetails });
   };
 
   const handleMemberDetailChange = (index, name, value) => {
@@ -323,47 +261,68 @@ const OwnerPage = () => {
       if (value !== "" && !regex.test(value)) return; // Allow empty
     }
 
-    const updatedMemberDetails = [...formData.memberDetails];
+    const updatedMemberDetails = [...OwnerData.memberDetails];
     updatedMemberDetails[index][name] = value;
-    setFormData({ ...formData, memberDetails: updatedMemberDetails });
+    setOwnerData({ ...OwnerData, memberDetails: updatedMemberDetails });
   };
-  const ClearAllData = () => {
 
-    setprofileimage(null);
-    setuploadprofileimage(null);
-    setadhar_card(null);
-
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (isFormValid) {
-      try {
-        const formData = new FormData();
-
-
-        // if (uploadprofileimage) {
-        //   formData.append("profileimage", uploadprofileimage);
-        // }
-        if (adharcard) {
-          formData.append("adhar_card", adharcard);
+  
+  const handleFrontAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setFrontAadhar(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (frontInputRef.current) {
+          frontInputRef.current.value = '';
         }
-
-        // const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
-        //   headers: { "Content-Type": "multipart/form-data" },
-        // });
-
-        // if (response.status === 200) {
-        //   fetchSecurityGuard();
-        //   onClose();
-        //   ClearAllData();
-        // }
-      } catch (error) {
-        console.error("Error creating Guard:", error.response || error.message);
       }
-    } else {
-      console.log("Form is invalid");
     }
   };
+
+  const handleBackAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setBackAadhar(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (backInputRef.current) {
+          backInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleAddressProofChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setAddressProof(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (addressInputRef.current) {
+          addressInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleRentAgreementChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setRentAgreement(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (rentInputRef.current) {
+          rentInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
 
   return (
     <div className="flex bg-gray-100 w-full h-screen">
@@ -424,7 +383,7 @@ const OwnerPage = () => {
           <div className="flex items-center gap-6 ml-2">
             <div className="flex flex-col items-center">
               <div className="border bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
-                {photo ? (
+                {/* {photo ? (
                   <img
                     src={photo}
                     alt="Owner"
@@ -432,18 +391,23 @@ const OwnerPage = () => {
                   />
                 ) : (
                   <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
+                )} */}
+                {photo ? (
+                  <img src={photo} alt="Owner" className="w-[50px] h-[50px] object-cover rounded-full" />
+                ) : (
+                  <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
                 )}
               </div>
               <button
                 type="button"
                 className="mt-3 text-blue-500 no-underline"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("photoInput").click()}
               >
                 Add Photo
               </button>
             </div>
             <input
-              id="fileInput"
+              id="photoInput"
               type="file"
               accept="image/*"
               onChange={handlePhotoChange}
@@ -458,7 +422,7 @@ const OwnerPage = () => {
                 <input
                   type="text"
                   name="fullName"
-                  value={formData.fullName}
+                  value={OwnerData.fullName}
                   onChange={handleInputChange}
                   className="mt-1 block w-[430px] px-3 py-2 border border-gray-300 rounded-lg text-[#202 224] pr-10"
                   placeholder="Enter Full Name"
@@ -471,7 +435,7 @@ const OwnerPage = () => {
                 <input
                   type="tel"
                   name="phoneNumber"
-                  value={formData.phoneNumber}
+                  value={OwnerData.phoneNumber}
                   onChange={handleInputChange}
                   className="mt-1 block w-[450px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="+91"
@@ -484,7 +448,7 @@ const OwnerPage = () => {
                 <input
                   type=" email"
                   name="emailAddress"
-                  value={formData.emailAddress}
+                  value={OwnerData.emailAddress}
                   onChange={handleInputChange}
                   className="mt-1 block w-[420px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="Enter Email Address"
@@ -502,7 +466,7 @@ const OwnerPage = () => {
                 <input
                   type="text"
                   name="age"
-                  value={formData.age}
+                  value={OwnerData.age}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="Enter Age"
@@ -514,7 +478,7 @@ const OwnerPage = () => {
                 </label>
                 <select
                   name="gender"
-                  value={formData.gender}
+                  value={OwnerData.gender}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                 >
@@ -532,7 +496,7 @@ const OwnerPage = () => {
                 <input
                   type="text"
                   name="wing"
-                  value={formData.wing}
+                  value={OwnerData.wing}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="Enter Wing"
@@ -546,7 +510,7 @@ const OwnerPage = () => {
                 <input
                   type="text"
                   name="unit"
-                  value={formData.unit}
+                  value={OwnerData.unit}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholder="Enter Unit"
@@ -560,7 +524,7 @@ const OwnerPage = () => {
                 <input
                   type="text"
                   name="relation"
-                  value={formData.relation}
+                  value={OwnerData.relation}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholder="Enter Relation"
@@ -578,9 +542,9 @@ const OwnerPage = () => {
                 <input
                   ref={frontInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  // onChange={(e) => handleFileChange(e, setFrontAadhar) }
+                  onChange={handleFrontAadharChange}
                   className="hidden"
-                 
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
                 {frontAadhar ? (
@@ -588,7 +552,13 @@ const OwnerPage = () => {
                     <span className="text-sm text-success ">{frontAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      // onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      onClick={() => {
+                        setFrontAadhar(null);
+                        if (frontInputRef.current) {
+                          frontInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -614,141 +584,7 @@ const OwnerPage = () => {
               </div>
             </div>
 
-            {/* <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div> */}
-
+            
             <div className="col-3 mx-1 ">
               <label className="block font-medium text-gray-700 mb-1">
                 Upload Aadhar Card (Back side) <span className="text-red-500">*</span>
@@ -757,7 +593,8 @@ const OwnerPage = () => {
                 <input
                   ref={backInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  // onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  onChange={handleBackAadharChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -766,7 +603,13 @@ const OwnerPage = () => {
                     <span className="text-sm text-success">{backAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      // onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      onClick={() => {
+                        setFrontAadhar(null);
+                        if (backInputRef.current) {
+                          backInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -793,13 +636,14 @@ const OwnerPage = () => {
 
             <div className="col-3 mx-1">
               <label className="block font-medium text-gray-700 mb-1">
-                Address Proof (Vera Bill or Light Bill) <span className="text-red-500">*</span>
+                Address Proof <span className="text-red-500">*</span>
               </label>
               <div className="border-2 border-dashed rounded-lg p-4 text-center">
                 <input
                   ref={addressInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setAddressProof)}
+                  // onChange={(e) => handleFileChange(e, setAddressProof)}
+                  onChange={handleAddressProofChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -808,7 +652,13 @@ const OwnerPage = () => {
                     <span className="text-sm text-success">{addressProof.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      // onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      onClick={() => {
+                        setAddressProof(null);
+                        if (addressInputRef.current) {
+                          addressInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                     <X className="h-4 w-4" />
@@ -841,7 +691,8 @@ const OwnerPage = () => {
                 <input
                   ref={rentInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  // onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  onChange={handleRentAgreementChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -850,7 +701,13 @@ const OwnerPage = () => {
                     <span className="text-sm text-success">{rentAgreement.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      // onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      onClick={() => {
+                        setRentAgreement(null);
+                        if (rentInputRef.current) {
+                          rentInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -888,7 +745,7 @@ const OwnerPage = () => {
                   <span>Select Member</span>
                   <select
                     name="memberCount"
-                    value={formData.memberCount}
+                    value={OwnerData.memberCount}
                     onChange={handleMemberCountChange}
                     className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   >
@@ -901,7 +758,7 @@ const OwnerPage = () => {
                 </div>
               </div>
 
-              {Array.from({ length: formData.memberCount }).map((_, index) => (
+              {Array.from({ length: OwnerData.memberCount }).map((_, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="flex-1 min-w-[200px]">
                     <label className="block text-sm font-medium text-gray-700">
@@ -910,7 +767,7 @@ const OwnerPage = () => {
                     <input
                       type="text"
                       name="memberName"
-                      value={formData.memberDetails[index]?.memberName || ""}
+                      value={OwnerData.memberDetails[index]?.memberName || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
@@ -930,7 +787,7 @@ const OwnerPage = () => {
                     <input
                       type="tel"
                       name="Number"
-                      value={formData.memberDetails[index]?.Number || ""}
+                      value={OwnerData.memberDetails[index]?.Number || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
@@ -950,7 +807,7 @@ const OwnerPage = () => {
                     <input
                       type="email"
                       name="email"
-                      value={formData.memberDetails[index]?.email || ""}
+                      value={OwnerData.memberDetails[index]?.email || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(index, "email", e.target.value)
                       }
@@ -966,7 +823,7 @@ const OwnerPage = () => {
                     <input
                       type="text"
                       name="age"
-                      value={formData.memberDetails[index]?.age || ""}
+                      value={OwnerData.memberDetails[index]?.age || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(index, "age", e.target.value)
                       }
@@ -981,7 +838,7 @@ const OwnerPage = () => {
                     </label>
                     <select
                       name="gender"
-                      value={formData.memberDetails[index]?.gender || ""}
+                      value={OwnerData.memberDetails[index]?.gender || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
@@ -1005,7 +862,7 @@ const OwnerPage = () => {
                     <input
                       type="text"
                       name="relation"
-                      value={formData.memberDetails[index]?.relation || ""}
+                      value={OwnerData.memberDetails[index]?.relation || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
@@ -1032,7 +889,7 @@ const OwnerPage = () => {
                   <span>Select Vehicle</span>
                   <select
                     name="vehicleCount"
-                    value={formData.vehicleCount}
+                    value={OwnerData.vehicleCount}
                     onChange={handleVehicleCountChange}
                     className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   >
@@ -1045,7 +902,7 @@ const OwnerPage = () => {
                 </div>
               </div>
 
-              {Array.from({ length: formData.vehicleCount }).map((_, index) => (
+              {Array.from({ length: OwnerData.vehicleCount }).map((_, index) => (
                 <div key={index} className="space-y-4 mt-4">
                   <div className="flex gap-4 items-center">
                     <div className="flex-1 min-w-[200px]">
@@ -1054,7 +911,7 @@ const OwnerPage = () => {
                       </label>
                       <select
                         value={
-                          formData.vehicleDetails[index]?.vehicleType || ""
+                          OwnerData.vehicleDetails[index]?.vehicleType || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
@@ -1078,7 +935,7 @@ const OwnerPage = () => {
                       <input
                         type="text"
                         value={
-                          formData.vehicleDetails[index]?.vehicleName || ""
+                          OwnerData.vehicleDetails[index]?.vehicleName || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
@@ -1099,7 +956,7 @@ const OwnerPage = () => {
                       <input
                         type="text"
                         value={
-                          formData.vehicleDetails[index]?.vehicleNumber || ""
+                          OwnerData.vehicleDetails[index]?.vehicleNumber || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(

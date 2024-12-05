@@ -22,24 +22,7 @@ const TenantPage = () => {
   const addressInputRef = useRef(null);
   const rentInputRef = useRef(null);
 
-  const handleFileChange = (e, setter) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size <= 10 * 1024 * 1024) { // 10MB limit
-        setter(file);
-      } else {
-        alert('File size should be less than 10MB');
-        e.target.value = '';
-      }
-    }
-  };
 
-  const handleClearFile = (setter, inputRef) => {
-    setter(null);
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  };
   const [activeButton, setActiveButton] = useState("tenantpage");
   const [formData, setFormData] = useState({
     photo :"",
@@ -300,6 +283,64 @@ const TenantPage = () => {
       console.log("Form is invalid");
     }
   };
+
+
+  const handleFrontAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setFrontAadhar(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (frontInputRef.current) {
+          frontInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleBackAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setBackAadhar(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (backInputRef.current) {
+          backInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleAddressProofChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setAddressProof(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (addressInputRef.current) {
+          addressInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
+  const handleRentAgreementChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { 
+        setRentAgreement(file);
+      } else {
+        alert("File size should be less than 10MB");
+        if (rentInputRef.current) {
+          rentInputRef.current.value = '';
+        }
+      }
+    }
+  };
+
 
   return (
     <div className="flex bg-gray-100 w-full h-screen">
@@ -580,7 +621,8 @@ const TenantPage = () => {
                 <input
                   ref={frontInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  // onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  onChange={handleFrontAadharChange}
                   className="hidden"
                  
                   accept=".jpg,.jpeg,.png,.pdf"
@@ -590,7 +632,13 @@ const TenantPage = () => {
                     <span className="text-sm text-success ">{frontAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      // onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      onClick={() => {
+                        setFrontAadhar(null);
+                        if (frontInputRef.current) {
+                          frontInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -616,140 +664,6 @@ const TenantPage = () => {
               </div>
             </div>
 
-            {/* <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div> */}
 
             <div className="col-3 mx-1 ">
               <label className="block font-medium text-gray-700 mb-1">
@@ -759,7 +673,8 @@ const TenantPage = () => {
                 <input
                   ref={backInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  // onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  onChange={handleBackAadharChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -768,7 +683,13 @@ const TenantPage = () => {
                     <span className="text-sm text-success">{backAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      // onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      onClick={() => {
+                        setFrontAadhar(null);
+                        if (backInputRef.current) {
+                          backInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -795,13 +716,14 @@ const TenantPage = () => {
 
             <div className="col-3 mx-1">
               <label className="block font-medium text-gray-700 mb-1">
-                Address Proof (Vera Bill or Light Bill) <span className="text-red-500">*</span>
+                Address Proof <span className="text-red-500">*</span>
               </label>
               <div className="border-2 border-dashed rounded-lg p-4 text-center">
                 <input
                   ref={addressInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setAddressProof)}
+                  // onChange={(e) => handleFileChange(e, setAddressProof)}
+                  onChange={handleAddressProofChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -810,7 +732,13 @@ const TenantPage = () => {
                     <span className="text-sm text-success">{addressProof.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      // onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      onClick={() => {
+                        setAddressProof(null);
+                        if (addressInputRef.current) {
+                          addressInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                     <X className="h-4 w-4" />
@@ -843,7 +771,8 @@ const TenantPage = () => {
                 <input
                   ref={rentInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  // onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  onChange={handleRentAgreementChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -852,7 +781,13 @@ const TenantPage = () => {
                     <span className="text-sm text-success">{rentAgreement.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      // onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      onClick={() => {
+                        setRentAgreement(null);
+                        if (rentInputRef.current) {
+                          rentInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
