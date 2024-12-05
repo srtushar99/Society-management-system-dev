@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnnouncement, getAllAnnouncement, getAnnouncementById, updateAnnouncement, deleteAnnouncement, getActivityAnnouncement, GetActivityAnnouncement, GetEventAnnouncement} = require('../controller/AnnoucementController');
+const { createAnnouncement, getAllAnnouncement, getAnnouncementById, updateAnnouncement, deleteAnnouncement, getActivityAnnouncement, GetActivityAnnouncement, GetEventAnnouncement, AcceptAnnouncement} = require('../controller/AnnoucementController');
 const { authenticate, IsAdmin } = require('../middleware/authenticate ');
 
 const router = express.Router();
@@ -26,5 +26,8 @@ router.put('/updateannouncement/:id', updateAnnouncement);
 router.delete('/deleteannouncement/:id', deleteAnnouncement);
 
 router.get('/getall/activities', getActivityAnnouncement);
+
+//accept announcement
+router.post("/accept-announcement", authenticate, AcceptAnnouncement);
 
 module.exports = router;
