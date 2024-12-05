@@ -43,7 +43,9 @@ const ResidentSidebar = () => {
     else if (path === 'MaintenanceTable') {
       setActiveLink('PaymentPortal');
     }
-
+    else if (path === 'Request') {
+      setActiveLink('PaymentPortal');
+    }
     else if (['AccessForums', 'Polls', 'CommunitiesDiscussion'].includes(path)) {
       setActiveLink('Community');
       setCommunityActive(path);

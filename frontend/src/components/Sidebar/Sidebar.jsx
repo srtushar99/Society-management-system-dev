@@ -45,6 +45,13 @@ const Sidebar = () => {
     else if (path === 'editowner') {
       setActiveLink('Resident-Manegement');
     }
+    else if (path === 'ownerpage') {
+      setActiveLink('Resident-Manegement');
+    }
+    else if (path === 'tenantpage') {
+      setActiveLink('Resident-Manegement');
+    }
+    
 
     else if (path === 'createcomplaint' || path === 'requesttracking') {
       setActiveLink('Complaint-Tracking');

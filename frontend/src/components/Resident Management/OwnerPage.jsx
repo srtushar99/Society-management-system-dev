@@ -1,11 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Ensure this path is correct
 import Sidebar from "../Sidebar/Sidebar"; // Ensure this path is correct
 import axiosInstance from '../Common/axiosInstance';
+import { Upload, X } from "lucide-react";
 
 const OwnerPage = () => {
   const [activeButton, setActiveButton] = useState("ownerpage");
+  const [adharcard, setadhar_card] = useState(null);
+  // const [isDragging, setIsDragging] = useState(false);
+  //  const [profile_image, setprofileimage] = useState(null);
+  // const [uploadprofileimage, setuploadprofileimage] = useState(null);
+
+
+  const [frontAadhar, setFrontAadhar] = useState(null);
+  const [backAadhar, setBackAadhar] = useState(null);
+  const [addressProof, setAddressProof] = useState(null);
+  const [rentAgreement, setRentAgreement] = useState(null);
+
+  const frontInputRef = useRef(null);
+  const backInputRef = useRef(null);
+  const addressInputRef = useRef(null);
+  const rentInputRef = useRef(null);
+
+  const handleFileChange = (e, setter) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+        setter(file);
+      } else {
+        alert('File size should be less than 10MB');
+        e.target.value = '';
+      }
+    }
+  };
+
+  const handleClearFile = (setter, inputRef) => {
+    setter(null);
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -22,6 +59,8 @@ const OwnerPage = () => {
   });
   const [photo, setPhoto] = useState(null);
   const navigate = useNavigate();
+  // const fileInputRef = useRef(null);
+  // const dropZoneRef = useRef(null);
 
   const isFormValid =
     formData.fullName &&
@@ -32,6 +71,7 @@ const OwnerPage = () => {
     formData.wing &&
     formData.unit &&
     formData.relation &&
+    adharcard &&
     formData.memberDetails.every(
       (member) =>
         member.memberName &&
@@ -45,6 +85,13 @@ const OwnerPage = () => {
       (vehicle) =>
         vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
     );
+
+  // const ClearAllData = () => {
+  //   setprofileimage(null);
+  //   setuploadprofileimage(null);
+  //   setadhar_card(null);
+
+  // };
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -61,13 +108,13 @@ const OwnerPage = () => {
 
     if (name === "phoneNumber") {
       const regex = /^[6-9]\d{0,9}$/;
-      if(!regex.test(value) && value !== "") return; 
+      if (!regex.test(value) && value !== "") return;
     }
     if (name === "email") {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)$/;
-    if (value !== "" && !emailRegex.test(value)) return; 
+      if (value !== "" && !emailRegex.test(value)) return;
     }
-    
+
     if (name === "age") {
       const regex = /^(?:[1-9][0-9]?|1[01])$/; // Allows only numbers 1-99
       if (value !== "" && !regex.test(value)) return; // Allow empty
@@ -140,14 +187,56 @@ const OwnerPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!isFormValid) {
-      alert("Please fill in all required fields correctly.");
-      return;
-    }
-    console.log("Form submitted with :", formData);
-  };
+
+  // const handleAadharCardChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+  //       setadhar_card(file);
+  //     } else {
+  //       alert("File size should be less than 10MB");
+  //       if (fileInputRef.current) {
+  //         fileInputRef.current.value = '';
+  //       }
+  //     }
+  //   }
+  // };
+  // const handleDragOver = (e) => {
+  //   e.preventDefault();
+  //   setIsDragging(true);
+  // };
+
+  // const handleDragLeave = (e) => {
+  //   e.preventDefault();
+  //   setIsDragging(false);
+  // };
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   setIsDragging(false);
+  //   const file = e.dataTransfer.files[0];
+  //   if (file) {
+  //     if (file.size <= 10 * 1024 * 1024) {
+  //       setAadharCard(file);
+  //     } else {
+  //       alert("File size should be less than 10MB");
+  //     }
+  //   }
+  // };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (uploadprofileimage) {
+  //     formData.append("profileimage", uploadprofileimage); 
+  //   }
+  //   if (adharcard) {
+  //     formData.append("adhar_card", adharcard); 
+  //   }
+  //   if (!isFormValid) {
+  //     alert("Please fill in all required fields correctly.");
+  //     return;
+
+  //   }
+  //   console.log("Form submitted with :", formData);
+  // };
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -178,7 +267,7 @@ const OwnerPage = () => {
   //       const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
   //         headers: { "Content-Type": "multipart/form-data" },
   //       });
-  
+
   //       if (response.status === 200) {
   //         fetchSecurityGuard();
   //         onClose();
@@ -201,7 +290,7 @@ const OwnerPage = () => {
 
     if (name === "vehicleNumber") {
       const regex = /^[A-Za-z0-9]+$/; // Alphanumeric for vehicle number
-      if (!regex.test(value) && value !== "") return; 
+      if (!regex.test(value) && value !== "") return;
     }
 
     const updatedVehicleDetails = [...formData.vehicleDetails];
@@ -238,6 +327,43 @@ const OwnerPage = () => {
     updatedMemberDetails[index][name] = value;
     setFormData({ ...formData, memberDetails: updatedMemberDetails });
   };
+  const ClearAllData = () => {
+
+    setprofileimage(null);
+    setuploadprofileimage(null);
+    setadhar_card(null);
+
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isFormValid) {
+      try {
+        const formData = new FormData();
+
+
+        // if (uploadprofileimage) {
+        //   formData.append("profileimage", uploadprofileimage);
+        // }
+        if (adharcard) {
+          formData.append("adhar_card", adharcard);
+        }
+
+        // const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+        //   headers: { "Content-Type": "multipart/form-data" },
+        // });
+
+        // if (response.status === 200) {
+        //   fetchSecurityGuard();
+        //   onClose();
+        //   ClearAllData();
+        // }
+      } catch (error) {
+        console.error("Error creating Guard:", error.response || error.message);
+      }
+    } else {
+      console.log("Form is invalid");
+    }
+  };
 
   return (
     <div className="flex bg-gray-100 w-full h-screen">
@@ -271,22 +397,20 @@ const OwnerPage = () => {
           <div className="mt-4 px-4 sm:px-8">
             <button
               onClick={() => handleButtonClick("ownerpage")}
-              className={`w- lg:h-[50px] sm:w-[100px] px-4 py-3 rounded-t-md transition-all ${
-                activeButton === "ownerpage"
+              className={`w- lg:h-[50px] sm:w-[100px] px-4 py-3 rounded-t-md transition-all ${activeButton === "ownerpage"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
-              }`}
+                }`}
             >
               Owner
             </button>
 
             <Link
               to="/tenantpage"
-              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-t-md no-underline transition-all ${
-                activeButton === "tenantpage"
+              className={`w-full lg:h-[50px] sm:w-[150px] px-4 py-3 rounded-t-md no-underline transition-all ${activeButton === "tenantpage"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
-              }`}
+                }`}
             >
               Tenant
             </Link>
@@ -358,14 +482,14 @@ const OwnerPage = () => {
                   Email Address
                 </label>
                 <input
-                    type=" email"
-                    name="emailAddress"
-                    value={formData.emailAddress}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-[420px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
-                    placeholder="Enter Email Address"
-                  />
-                </div>
+                  type=" email"
+                  name="emailAddress"
+                  value={formData.emailAddress}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-[420px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
+                  placeholder="Enter Email Address"
+                />
+              </div>
             </div>
           </div>
 
@@ -445,6 +569,315 @@ const OwnerPage = () => {
             </div>
           </div>
 
+          <div className="flex  col-12 pe-4 mt-4 ">
+            <div className="col-3 mx-1">
+              <label className="block font-medium text-gray-700 mb-1">
+                Upload Aadhar Card (Front side) <span className="text-red-500">*</span>
+              </label>
+              <div className="border-2 border-dashed rounded-lg p-4  text-center">
+                <input
+                  ref={frontInputRef}
+                  type="file"
+                  onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  className="hidden"
+                 
+                  accept=".jpg,.jpeg,.png,.pdf"
+                />
+                {frontAadhar ? (
+                  <div className="flex items-center justify-between" style={{height:"98px"}}>
+                    <span className="text-sm text-success ">{frontAadhar.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      className="text-red-500"
+                    >
+                     <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+             <div className="space-y-2">
+        
+                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div  className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => frontInputRef.current?.click()}
+                      className="text-blue-500"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* <div className="col-3 mx-1">
+                <label className="block text-left font-medium text-[#202224] mb-1">
+                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
+                </label>
+                <div
+                
+                 className="border-2 border-dashed rounded-lg p-4 text-center"
+                >
+                  <input
+                    ref={frontInputRef}
+                    type="file"
+                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                  />
+                  {frontAadhar  ? (
+                    <div className="flex items-center justify-between p-2">
+                      <span className="text-sm text-gray-600">{adharcard.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                      <div className="flex flex-col items-center">
+                        <button
+                          type="button"
+                          onClick={() => frontInputRef.current?.click()}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          Upload a file
+                        </button>
+                        <span className="text-gray-500">or drag and drop</span>
+                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-3 mx-1">
+                <label className="block text-left font-medium text-[#202224] mb-1">
+                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
+                </label>
+                <div
+                
+                 className="border-2 border-dashed rounded-lg p-4 text-center"
+                >
+                  <input
+                    ref={frontInputRef}
+                    type="file"
+                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                  />
+                  {frontAadhar  ? (
+                    <div className="flex items-center justify-between p-2">
+                      <span className="text-sm text-gray-600">{adharcard.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                      <div className="flex flex-col items-center">
+                        <button
+                          type="button"
+                          onClick={() => frontInputRef.current?.click()}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          Upload a file
+                        </button>
+                        <span className="text-gray-500">or drag and drop</span>
+                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-3 mx-1">
+                <label className="block text-left font-medium text-[#202224] mb-1">
+                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
+                </label>
+                <div
+                
+                 className="border-2 border-dashed rounded-lg p-4 text-center"
+                >
+                  <input
+                    ref={frontInputRef}
+                    type="file"
+                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                  />
+                  {frontAadhar  ? (
+                    <div className="flex items-center justify-between p-2">
+                      <span className="text-sm text-gray-600">{adharcard.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                      <div className="flex flex-col items-center">
+                        <button
+                          type="button"
+                          onClick={() => frontInputRef.current?.click()}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          Upload a file
+                        </button>
+                        <span className="text-gray-500">or drag and drop</span>
+                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div> */}
+
+            <div className="col-3 mx-1 ">
+              <label className="block font-medium text-gray-700 mb-1">
+                Upload Aadhar Card (Back side) <span className="text-red-500">*</span>
+              </label>
+              <div className="border-2 border-dashed rounded-lg p-4 text-center">
+                <input
+                  ref={backInputRef}
+                  type="file"
+                  onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                />
+                {backAadhar ? (
+                  <div className="flex items-center justify-between"style={{height:"98px"}} >
+                    <span className="text-sm text-success">{backAadhar.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      className="text-red-500"
+                    >
+                     <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => backInputRef.current?.click()}
+                      className="text-blue-500"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="col-3 mx-1">
+              <label className="block font-medium text-gray-700 mb-1">
+                Address Proof (Vera Bill or Light Bill) <span className="text-red-500">*</span>
+              </label>
+              <div className="border-2 border-dashed rounded-lg p-4 text-center">
+                <input
+                  ref={addressInputRef}
+                  type="file"
+                  onChange={(e) => handleFileChange(e, setAddressProof)}
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                />
+                {addressProof ? (
+                  <div className="flex items-center justify-between" style={{height:"98px"}}>
+                    <span className="text-sm text-success">{addressProof.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      className="text-red-500"
+                    >
+                    <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => addressInputRef.current?.click()}
+                      className="text-blue-500"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="col-3 mx-1">
+              <label className="block font-medium text-gray-700 mb-1">
+                Rent Agreement <span className="text-red-500">*</span>
+              </label>
+              <div className="border-2 border-dashed rounded-lg p-4 text-center">
+                <input
+                  ref={rentInputRef}
+                  type="file"
+                  onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                />
+                {rentAgreement ? (
+                  <div className="flex items-center justify-between" style={{height:"98px"}}>
+                    <span className="text-sm text-success">{rentAgreement.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      className="text-red-500"
+                    >
+                     <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => rentInputRef.current?.click()}
+                      className="text-blue-500"
+                    >
+                      Upload a file
+                    </button>
+                    <span className="text-gray-500">or drag and drop</span>
+                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                  </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+
+          </div>
+
           <div>
             <div>
               <div className="flex justify-between items-center">
@@ -514,7 +947,7 @@ const OwnerPage = () => {
                     <label className="block text-sm font-medium text-gray-700">
                       Email Address<span className="text-red-500">*</span>
                     </label>
-                     <input
+                    <input
                       type="email"
                       name="email"
                       value={formData.memberDetails[index]?.email || ""}
@@ -696,11 +1129,10 @@ const OwnerPage = () => {
 
             <button
               type="submit"
-              className={`w-[180px] px-4 py-2 rounded-lg ${
-                isFormValid
+              className={`w-[180px] px-4 py-2 rounded-lg ${isFormValid
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
                   : "bg-[#F6F8FB] text-[#202224]"
-              }`}
+                }`}
             >
               Create
             </button>
