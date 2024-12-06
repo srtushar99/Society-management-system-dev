@@ -8,7 +8,6 @@ import axios from 'axios';
 import axiosInstance from '../Common/axiosInstance';
 
 const EditOwner = () => {
-  const [adharcard, setadhar_card] = useState(null);
   const [frontAadhar, setFrontAadhar] = useState(null);
   const [backAadhar, setBackAadhar] = useState(null);
   const [addressProof, setAddressProof] = useState(null);
@@ -335,10 +334,6 @@ const EditOwner = () => {
     }));
   };
 
-  const ClearAllData = () => {
-    setadhar_card(null);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
@@ -381,6 +376,7 @@ const EditOwner = () => {
           formData.append("Adhar_front", frontAadhar); 
         }
 
+        // Log the FormData object
         for (let [key, value] of formData.entries()) {
           console.log(key, value);
         }

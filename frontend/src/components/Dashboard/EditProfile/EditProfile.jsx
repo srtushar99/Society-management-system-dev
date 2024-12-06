@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import { Link, useNavigate } from "react-router-dom"; 
 import "tailwindcss/tailwind.css"; 
 import Sidebar from "../../Sidebar/Sidebar";
@@ -9,6 +9,8 @@ import ProfileImage from "../../assets/Ellipse 1101.png";
 import editIcon from "../../assets/editIcon.png";
 import edit from "../../assets/edit.png";
 import HeaderBaner  from "../../Dashboard/Header/HeaderBaner";
+import { jwtDecode } from "jwt-decode";
+import axiosInstance from '../../Common/axiosInstance';
 
 const EditProfile = () => {
   const [firstName, setFirstName] = useState("Arlene");
@@ -19,6 +21,7 @@ const EditProfile = () => {
   const [country, setCountry] = useState("India");
   const [state, setState] = useState("Gujarat");
   const [city, setCity] = useState("Baroda");
+  const [userById, setUserById] = useState([]);
 
   const navigate = useNavigate(); 
 
@@ -40,6 +43,36 @@ const EditProfile = () => {
     backgroundRepeat: "no-repeat",
  // Optional: for rounded corners
   };
+
+
+  const fetchUserById = async (UserToken) => {
+    try {
+      const response = await axiosInstance.get(
+        `/v1/${UserToken.userId}`
+      );
+      if (response.status === 200) {
+        setUserById(response.data.data);
+          // navigate("/update-profile");
+      }
+    } catch (error) {
+      console.error("Error fetching UserById:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("Society-Management");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        fetchUserById(decodedToken);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
+
+
   return (
     <div className="container-fluid bg-light min-h-screen">
       <Sidebar />
