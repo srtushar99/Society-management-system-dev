@@ -54,6 +54,10 @@ const userSchema = mongoose.Schema({
     get:(otpExpiration)=>otpExpiration.getTime(),
     set:(otpExpiration)=>new Date(otpExpiration)
   },
+  select_society:
+   { type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Society' },
+
   profileImage: {
     type: String,
   },
