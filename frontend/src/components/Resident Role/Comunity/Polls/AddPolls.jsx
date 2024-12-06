@@ -11,7 +11,6 @@ import text from "./images/Text polls.png";
 import icon from "./images/Icon.png";
 import MultipleChoice from "./Add Polls/MultipleChoice";
 import Ranking from "./Add Polls/Ranking";
-
 import Rating from "./Add Polls/Rating";
 import Numeric from "./Add Polls/Numeric";
 import TextPolls from "./Add Polls/TextPolls";

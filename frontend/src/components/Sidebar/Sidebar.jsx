@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import DashboardIcon from "./icons/Widget 5.png";
+import residentIcon from "./icons/resident management.png";
+import DashboardIcon from "./icons/dashboard.png";
 import FinancialIcon from "./icons/dollar-square.png";
-import FacilitiesIcon from "./icons/domain.svg";
+import FacilitiesIcon from "./icons/building.png";
 import ComplaintsTrackingIcon from "./icons/sms-tracking.png";
-import SecurityIcon from "./icons/encrypted.svg";
+import SecurityIcon from "./icons/security management.png";
 import SecurityGuardIcon from "./icons/security-user.png";
 import AnnouncementIcon from "./icons/Announcement.png";
 import "./sidebar.css";
-import axiosInstance from '../Common/axiosInstance';
+import axiosInstance from "../Common/axiosInstance";
 
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState("dashboard");
@@ -20,50 +21,39 @@ const Sidebar = () => {
   const [showSecurityDropdown, setShowSecurityDropdown] = useState(false);
   const [showFinancialDropdown, setShowFinancialDropdown] = useState(false);
   const [showComplaintsDropdown, setShowComplaintsDropdown] = useState(false);
-  const [complaintsActive, setComplaintsActive] = useState('');
+  const [complaintsActive, setComplaintsActive] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const path = location.pathname.split('/')[1];
-    if (path === 'visitorlogs' || path === 'securityprotocol') {
-      setActiveLink('security-Management');
+    const path = location.pathname.split("/")[1];
+    if (path === "visitorlogs" || path === "securityprotocol") {
+      setActiveLink("security-Management");
       setSecurityActive(path);
       setShowSecurityDropdown(true);
-    } 
-    else if (path === 'edit-profile') {
-      setActiveLink('dashboard');
-    }
-    else if (path === 'otherincome') {
-      setActiveLink('Financial-Manegement');
-    }
-    
-    else if (path === 'edittenant') {
-      setActiveLink('Resident-Manegement');
-    }
-
-    else if (path === 'editowner') {
-      setActiveLink('Resident-Manegement');
-    }
-    else if (path === 'ownerpage') {
-      setActiveLink('Resident-Manegement');
-    }
-    else if (path === 'tenantpage') {
-      setActiveLink('Resident-Manegement');
-    }
-    
-
-    else if (path === 'createcomplaint' || path === 'requesttracking') {
-      setActiveLink('Complaint-Tracking');
+    } else if (path === "edit-profile") {
+      setActiveLink("dashboard");
+    } else if (path === "otherincome") {
+      setActiveLink("Financial-Manegement");
+    } else if (path === "edittenant") {
+      setActiveLink("Resident-Manegement");
+    } else if (path === "editowner") {
+      setActiveLink("Resident-Manegement");
+    } else if (path === "ownerpage") {
+      setActiveLink("Resident-Manegement");
+    } else if (path === "tenantpage") {
+      setActiveLink("Resident-Manegement");
+    } else if (path === "createcomplaint" || path === "requesttracking") {
+      setActiveLink("Complaint-Tracking");
       setComplaintsActive(path);
       setShowComplaintsDropdown(true);
-    } else if (path === 'income' || path === 'expense' || path === 'notes') {
-      setActiveLink('Financial-Manegement');
+    } else if (path === "income" || path === "expense" || path === "notes") {
+      setActiveLink("Financial-Manegement");
       setFinancialActive(path);
       setShowFinancialDropdown(true);
     } else {
-      setActiveLink(path || 'dashboard');
+      setActiveLink(path || "dashboard");
     }
   }, [location]);
 
@@ -92,9 +82,10 @@ const Sidebar = () => {
 
   const getLinkStyle = (link) => ({
     ...navLinkStyle,
-    background: activeLink === link
-      ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
-      : "transparent",
+    background:
+      activeLink === link
+        ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
+        : "transparent",
     color: activeLink === link ? "#FFFFFF" : "#4F4F4F",
   });
 
@@ -106,9 +97,10 @@ const Sidebar = () => {
     // height: "40px",
 
     borderRadius: "0 5px 5px 0",
-    background: activeLink === link
-      ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
-      : "transparent",
+    background:
+      activeLink === link
+        ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
+        : "transparent",
   });
 
   const handleLinkClick = (link, path) => {
@@ -119,7 +111,7 @@ const Sidebar = () => {
 
   const getIconStyle = (link) => ({
     marginRight: "10px",
-    width: "20px",
+    width: "17px",
     height: "20px",
     filter: activeLink === link ? "brightness(0) invert(1)" : "none",
   });
@@ -163,7 +155,8 @@ const Sidebar = () => {
   };
   const dropdownItemStyle = (item, activeItem) => ({
     color: activeItem === item ? "#FE512E" : "#4F4F4F",
-    backgroundColor: activeItem === item ? "rgba(254, 81, 46, 0.1)" : "transparent",
+    backgroundColor:
+      activeItem === item ? "rgba(254, 81, 46, 0.1)" : "transparent",
     display: "flex",
     alignItems: "center",
     padding: "10px 15px",
@@ -239,18 +232,15 @@ const Sidebar = () => {
             <Link
               to="/Resident-Manegement"
               style={getLinkStyle("Resident-Manegement")}
-              onClick={() => handleLinkClick("Resident-Manegement", "/Resident-Manegement")}
+              onClick={() =>
+                handleLinkClick("Resident-Manegement", "/Resident-Manegement")
+              }
             >
-              <i
-                className="fa-solid fa-money-bill"
-                style={{
-                  marginRight: "10px",
-                  color:
-                    activeLink === "Resident-Manegement"
-                      ? "#FFFFFF"
-                      : "#4F4F4F",
-                }}
-              ></i>
+              <img
+                src={residentIcon}
+                style={getIconStyle("Resident-Manegement")}
+                alt=""
+              />
               Resident Management
             </Link>
           </div>
@@ -340,7 +330,9 @@ const Sidebar = () => {
             <Link
               to="/Facility-Management"
               style={getLinkStyle("Facility-Management")}
-              onClick={() => handleLinkClick("Facility-Management", "/Facility-Management")}
+              onClick={() =>
+                handleLinkClick("Facility-Management", "/Facility-Management")
+              }
             >
               <img
                 src={FacilitiesIcon}
@@ -363,7 +355,9 @@ const Sidebar = () => {
                   ...getLinkStyle("Complaint-Tracking"),
                   fontSize: "14px",
                 }}
-                onClick={() => handleComplaintsClick("createcomplaint", "/createcomplaint")}
+                onClick={() =>
+                  handleComplaintsClick("createcomplaint", "/createcomplaint")
+                }
               >
                 <img
                   src={ComplaintsTrackingIcon}
@@ -376,7 +370,9 @@ const Sidebar = () => {
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("createcomplaint", complaintsActive)}
-                  onClick={() => handleComplaintsClick("createcomplaint", "/createcomplaint")}
+                  onClick={() =>
+                    handleComplaintsClick("createcomplaint", "/createcomplaint")
+                  }
                 >
                   {complaintsActive === "createcomplaint" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -394,7 +390,9 @@ const Sidebar = () => {
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("requesttracking", complaintsActive)}
-                  onClick={() => handleComplaintsClick("requesttracking", "/requesttracking")}
+                  onClick={() =>
+                    handleComplaintsClick("requesttracking", "/requesttracking")
+                  }
                 >
                   {complaintsActive === "requesttracking" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -413,7 +411,7 @@ const Sidebar = () => {
             </Dropdown>
           </div>
 
-          <div style={{ position: "relative", }}>
+          <div style={{ position: "relative" }}>
             <div style={getIndicatorStyle("security-Management")}></div>
             <Dropdown
               show={showSecurityDropdown}
@@ -425,10 +423,13 @@ const Sidebar = () => {
                   ...getLinkStyle("security-Management"),
                   fontSize: "14px",
                 }}
-                onClick={() => handleSecurityClick("visitorlogs", "/visitorlogs")}
+                onClick={() =>
+                  handleSecurityClick("visitorlogs", "/visitorlogs")
+                }
               >
                 <img
                   src={SecurityIcon}
+                  
                   style={getIconStyle("security-Management")}
                   alt="Security Management"
                 />
@@ -438,7 +439,9 @@ const Sidebar = () => {
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("visitorlogs", securityActive)}
-                  onClick={() => handleSecurityClick("visitorlogs", "/visitorlogs")}
+                  onClick={() =>
+                    handleSecurityClick("visitorlogs", "/visitorlogs")
+                  }
                 >
                   {securityActive === "visitorlogs" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -456,7 +459,9 @@ const Sidebar = () => {
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("securityprotocol", securityActive)}
-                  onClick={() => handleSecurityClick("securityprotocol", "/securityprotocol")}
+                  onClick={() =>
+                    handleSecurityClick("securityprotocol", "/securityprotocol")
+                  }
                 >
                   {securityActive === "securityprotocol" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -480,7 +485,9 @@ const Sidebar = () => {
             <Link
               to="/security-guard"
               style={getLinkStyle("security-guard")}
-              onClick={() => handleLinkClick("security-guard", "/security-guard")}
+              onClick={() =>
+                handleLinkClick("security-guard", "/security-guard")
+              }
             >
               <img
                 src={SecurityGuardIcon}

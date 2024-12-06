@@ -38,6 +38,14 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, fetchAnnouncement }) => {
     timeRegex.test(Announcement_Time);
 
 
+    const [selectedOption, setSelectedOption] = useState("Event");
+    const [IsOpen, setIsOpen] = useState(false);
+  
+    const handleSelectChange = (value) => {
+      setSelectedOption(value);
+      setIsOpen(false); // Close the dropdown after selecting
+    };
+
   // Handle form inputs
   const handleTitleChange = (e) => {
     const value = e.target.value;
@@ -148,6 +156,47 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, fetchAnnouncement }) => {
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+
+        <div>
+              <label className="block text-left font-medium text-[#202224] mb-1">
+                Announcement Type <span className="text-red-500">*</span>
+              </label>
+
+              <div className="relative">
+                <div
+                  className="w-full px-3 py-2 border bg-[#FFFFFF] rounded-lg text-[#202224] cursor-pointer flex items-center justify-between"
+                  onClick={() => setIsOpen(!IsOpen)}
+                >
+                  {selectedOption}
+                  <i className="fa-solid fa-chevron-down text-[#202224] ml-auto"></i>
+                </div>
+
+                {IsOpen && (
+                  <div className="absolute mt-1 w-full bg-white border rounded-lg shadow-lg">
+                    <label className="flex items-center px-3 py-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        value="Event"
+                        checked={selectedOption === "Event"}
+                        onChange={() => handleSelectChange("Event")}
+                        className="mr-2"
+                      />
+                      Event
+                    </label>
+                    <label className="flex items-center px-3 py-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        value="activity"
+                        checked={selectedOption === "Activity"}
+                        onChange={() => handleSelectChange("Activity")}
+                        className="mr-2"
+                      />
+                      Activity
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
           <div>
             <label className="block text-left font-medium text-[#202224] mb-1">
               Announcement Title<span className="text-red-500">*</span>
