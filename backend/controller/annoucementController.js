@@ -210,23 +210,6 @@ exports.deleteAnnouncement = async (req, res) => {
 };
 
 
-// Controller to fetch only "Activity" announcements
-exports.getActivityAnnouncement = async (req, res) => {
-    try {
-        const activities = await Announcement.find({ Announcement_Type: 'Activity' });
-        res.status(200).json({
-            success: true,
-            data: activities,
-        });
-    } catch (error) {
-        console.error('Error fetching activity announcements:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server Error',
-        });
-    }
-};
-
 //accept announcment 
 exports.AcceptAnnouncement = async (req, res) => {
   try {

@@ -20,12 +20,10 @@ router.get("/acitivity/getannouncement",GetActivityAnnouncement)
 router.get("/event/getannouncement",GetEventAnnouncement)
 
 // update annoucement
-router.put('/updateannouncement/:id', updateAnnouncement);
+router.put('/updateannouncement/:id',authenticate,IsAdmin, updateAnnouncement);
 
 // delete annoucement
-router.delete('/deleteannouncement/:id', deleteAnnouncement);
-
-router.get('/getall/activities', getActivityAnnouncement);
+router.delete('/deleteannouncement/:id',authenticate,IsAdmin, deleteAnnouncement);
 
 //accept announcement
 router.post("/accept-announcement", authenticate, AcceptAnnouncement);
