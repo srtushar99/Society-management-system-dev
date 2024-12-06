@@ -24,10 +24,10 @@ const AnnouncementSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    Members:[{
+    members:[{
         participent: {
           type: mongoose.SchemaTypes.ObjectId,
-          refPath: 'Members.residentType', 
+          refPath: 'members.residentType', 
           
         },
         residentType: {
