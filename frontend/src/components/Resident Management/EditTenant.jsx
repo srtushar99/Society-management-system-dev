@@ -5,74 +5,6 @@ import Sidebar from "../Sidebar/Sidebar";
 import Avatar from "../assets/Avatar.png";
 import { Upload, X } from "lucide-react";
 
-const staticMembers = [
-  {
-    memberName: "Arlene McCoy",
-    Number: "9876543210",
-    email: "rachit@example.com",
-    age: "28",
-    gender: "male",
-    relation: "Self",
-  },
-  {
-    memberName: "Aditi",
-    Number: "9876543211",
-    email: "aditi@example.com",
-    age: "25",
-    gender: "female",
-    relation: "Spouse",
-  },
-  {
-    memberName: "Arjun",
-    Number: "9876543212",
-    email: "arjun@example.com",
-    age: "5",
-    gender: "male",
-    relation: "Son",
-  },
-  {
-    memberName: "Meera",
-    Number: "9876543213",
-    email: "meera@example.com",
-    age: "3",
-    gender: "female",
-    relation: "Daughter",
-  },
-  {
-    memberName: "Rahul",
-    Number: "9876543214",
-    email: "rahul@example.com",
-    age: "30",
-    gender: "male",
-    relation: "Brother",
-  },
-  {
-    memberName: "Sita",
-    Number: "9876543215",
-    email: "sita@example.com",
-    age: "60",
-    gender: "female",
-    relation: "Mother",
-  },
-];
-
-const staticVehicles = [
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Toyota Camry",
-    vehicleNumber: "ABC1234",
-  },
-  {
-    vehicleType: "2-wheeler",
-    vehicleName: "Honda Activa",
-    vehicleNumber: "XYZ5678",
-  },
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Ford Mustang",
-    vehicleNumber: "LMN9101",
-  },
-];
 const EditTenant = () => {
   const [adharcard, setadhar_card] = useState(null);
   // const [isDragging, setIsDragging] = useState(false);
@@ -84,6 +16,21 @@ const EditTenant = () => {
   const [backAadhar, setBackAadhar] = useState(null);
   const [addressProof, setAddressProof] = useState(null);
   const [rentAgreement, setRentAgreement] = useState(null);
+
+  const [frontAadharView, setFrontAadharView] = useState(false);
+  const [backAadharView, setBackAadharView] = useState(false);
+  const [addressProofView, setAddressProofView] = useState(false);
+  const [rentAgreementView, setRentAgreementView] = useState(false);
+  const [Adhar_frontSize, setAdhar_frontSize] = useState("");
+  const [Adhar_frontName, setAdhar_frontName] = useState("");
+  const [backAadharSize, setBackAadharSize] = useState("");
+  const [backAadharName, setBackAadharName] = useState("");
+  const [addressProofSize, setAddressProofSize] = useState("");
+  const [addressProofName, setAddressProofName] = useState("");
+  const [rentAgreementSize, setRentAgreementSize] = useState("");
+  const [rentAgreementName, setRentAgreementName] = useState("");
+
+  const [isphoto, setphoto] = useState(false);
 
   const frontInputRef = useRef(null);
   const backInputRef = useRef(null);
@@ -112,122 +59,221 @@ const EditTenant = () => {
   const location = useLocation();
   const { ownerData } = location.state || {}; // Get the owner data from state
   const navigate = useNavigate();
+
   const {
     existingData,
     memberCount = 1,
     vehicleCount = 2,
   } = location.state || {};
 
-  const [formData, setFormData] = useState({
-    photo: "",
-    ownerName: "Arlene McCoy",
-    ownerPhone: "+91 9575225165",
-    address: "C-101,Dhara Arcade , Mota Varacha Surat.",
-    fullName: existingData?.Name || "Rachit",
-    phoneNumber: existingData?.Number || "97587 85828",
-    emailAddress: existingData?.Email || "rachit@gmail.com",
-    age: existingData?.Age || "20",
-    gender: existingData?.Gender || "male",
-    wing: existingData?.Wing || "A",
-    unit: existingData?.UnitNumber || "1003",
-    relation: existingData?.Relation || "Friend",
-    memberCount: memberCount,
-    memberDetails: staticMembers.slice(0, memberCount),
-    vehicleCount: vehicleCount,
-    vehicleDetails: staticVehicles.slice(0, vehicleCount),
+  const [TenantData, setTenantData] = useState({
+    ownerName:existingData?.Owner_Full_name || "",
+    ownerPhone: existingData?.Owner_Phone || "",
+    address: existingData?.Owner_Address || "",
+    fullName: existingData?.Full_name || "",
+    phoneNumber: existingData?.Phone_number || "",
+    emailAddress: existingData?.Email_address || "",
+    age: existingData?.Age || "",
+    gender: existingData?.Gender || "",
+    wing: existingData?.Wing || "",
+    unit: existingData?.Unit || "",
+    relation: existingData?.Relation || "",
+    memberCount: existingData?.Member_Counting_Total,
+    vehicleCount: existingData?.Vehicle_Counting_Total,
+    memberDetails: existingData?.Member_Counting || [],
+    // memberDetails: staticMembers.slice(0, memberCount),
+    vehicleDetails: existingData?.Vehicle_Counting || [],
   });
   const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
     if (existingData) {
       // Check if MemberDetails and VehicleDetails are defined and are arrays
-      const memberDetails = Array.isArray(existingData.MemberDetails)
-        ? existingData.MemberDetails
+      const memberDetails = Array.isArray(existingData.Member_Counting)
+        ? existingData.Member_Counting
         : [];
-      const vehicleDetails = Array.isArray(existingData.VehicleDetails)
-        ? existingData.VehicleDetails
+      const vehicleDetails = Array.isArray(existingData.Vehicle_Counting)
+        ? existingData.Vehicle_Counting
         : [];
 
       // Initialize member details with static data or existing data
       const initialMemberDetails = Array.from(
-        { length: formData.memberCount },
+        { length: existingData.Member_Counting_Total },
         (_, index) => ({
-          memberName:
-            memberDetails[index]?.memberName ||
-            staticMembers[index]?.memberName ||
-            "",
-          Number:
-            memberDetails[index]?.Number || staticMembers[index]?.Number || "",
-          email:
-            memberDetails[index]?.email || staticMembers[index]?.email || "",
-          age: memberDetails[index]?.age || staticMembers[index]?.age || "",
-          gender:
-            memberDetails[index]?.gender || staticMembers[index]?.gender || "",
-          relation:
-            memberDetails[index]?.relation ||
-            staticMembers[index]?.relation ||
-            "",
+          Full_name: memberDetails[index]?.Full_name || "",
+          Phone_number: memberDetails[index]?.Phone_number || "",
+          Email_address: memberDetails[index]?.Email_address || "",
+          Age: memberDetails[index]?.Age || "",
+          Gender: memberDetails[index]?.Gender || "",
+          Relation: memberDetails[index]?.Relation || "",
         })
       );
 
       // Initialize vehicle details with static data or existing data
       const initialVehicleDetails = Array.from(
-        { length: formData.vehicleCount },
+        { length: existingData.Vehicle_Counting_Total },
         (_, index) => ({
-          vehicleType:
-            vehicleDetails[index]?.vehicleType ||
-            staticVehicles[index]?.vehicleType ||
-            "",
-          vehicleName:
-            vehicleDetails[index]?.vehicleName ||
-            staticVehicles[index]?.vehicleName ||
-            "",
-          vehicleNumber:
-            vehicleDetails[index]?.vehicleNumber ||
-            staticVehicles[index]?.vehicleNumber ||
-            "",
+          vehicle_type: vehicleDetails[index]?.vehicle_type || "",
+          vehicle_name: vehicleDetails[index]?.vehicle_name || "",
+          vehicle_number: vehicleDetails[index]?.vehicle_number || "",
         })
       );
 
-      setFormData((prevData) => ({
+      setTenantData((prevData) => ({
         ...prevData,
         memberDetails: initialMemberDetails,
         vehicleDetails: initialVehicleDetails,
       }));
     }
-  }, [existingData, formData.memberCount, formData.vehicleCount]);
+  }, [existingData, TenantData.memberCount, TenantData.vehicleCount]);
+
+
+  useEffect(() => {
+    if (existingData) {
+      if (existingData.Adhar_front) {
+        processAdhar_front(existingData.Adhar_front);
+      }
+      if (existingData.Adhar_back) {
+        processAdhar_back(existingData.Adhar_back);
+      }
+      if (existingData.Address_proof) {
+        processAddress_proof(existingData.Address_proof);
+      }
+      if (existingData.Rent_Agreement) {
+        processRent_Agreement(existingData.Rent_Agreement);
+      }
+      setFrontAadhar(
+        existingData.Adhar_front
+          ? {
+              name: Adhar_frontName,
+              size: Adhar_frontSize,
+            }
+          : null
+      );
+      setBackAadhar(
+        existingData.Adhar_back
+          ? {
+              name: backAadharName,
+              size: backAadharSize,
+            }
+          : null
+      );
+      setAddressProof(
+        existingData.Address_proof
+          ? {
+              name: addressProofName,
+              size: addressProofSize,
+            }
+          : null
+      );
+      setRentAgreement(
+        existingData.Rent_Agreement
+          ? {
+              name: rentAgreementName,
+              size: rentAgreementSize,
+            }
+          : null
+      );
+    }
+  }, [existingData, Adhar_frontName, Adhar_frontSize, backAadharName, backAadharSize, addressProofName, addressProofSize, rentAgreementName, rentAgreementSize]);
+
+  const processAdhar_front = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setAdhar_frontName(extractedFileName);
+      setAdhar_frontSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setAdhar_frontName(extractedFileName);
+      setAdhar_frontSize("Unknown");
+    }
+  };
+
+  const processAdhar_back = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setBackAadharName(extractedFileName);
+      setBackAadharSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setBackAadharName(extractedFileName);
+      setBackAadharSize("Unknown");
+    }
+  };
+
+  const processAddress_proof = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setAddressProofName(extractedFileName);
+      setAddressProofSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setAddressProofName(extractedFileName);
+      setAddressProofSize("Unknown");
+    }
+  };
+
+  const processRent_Agreement = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setRentAgreementName(extractedFileName);
+      setRentAgreementSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setRentAgreementName(extractedFileName);
+      setRentAgreementSize("Unknown");
+    }
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPhoto(reader.result);
+      reader.readAsDataURL(file);
+      setphoto(true);
+    }
+  };
 
   const isFormValid =
-    formData.ownerName &&
-    formData.ownerPhone &&
-    formData.address &&
-    formData.fullName &&
-    formData.phoneNumber &&
-    formData.age &&
-    formData.gender &&
-    formData.emailAddress &&
-    formData.wing &&
-    formData.unit &&
-    formData.relation &&
-    adharcard &&
-    formData.memberDetails.every(
+    TenantData.ownerName &&
+    TenantData.ownerPhone &&
+    TenantData.address &&
+    TenantData.fullName &&
+    TenantData.phoneNumber &&
+    TenantData.age &&
+    TenantData.gender &&
+    TenantData.emailAddress &&
+    TenantData.wing &&
+    TenantData.unit &&
+    TenantData.relation &&
+    TenantData.memberDetails.every(
       (member) =>
-        member.memberName &&
+        member.Full_name &&
         member.Number &&
         member.email &&
         member.age &&
         member.gender &&
         member.relation
     ) &&
-    formData.vehicleDetails.every(
+    TenantData.vehicleDetails.every(
       (vehicle) =>
         vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
     );
 
-  const handleButtonClick = (buttonType) => {
-    setActiveButton(buttonType);
-  };
-
+ 
   const handleInputChange = (e, index = null) => {
     const { name, value } = e.target;
 
@@ -258,35 +304,25 @@ const EditTenant = () => {
     }
 
     if (index !== null) {
-      const newMemberDetails = [...formData.memberDetails];
+      const newMemberDetails = [...TenantData.memberDetails];
       newMemberDetails[index] = {
         ...newMemberDetails[index],
         [name]: value,
       };
-      setFormData({ ...formData, memberDetails: newMemberDetails });
+      setTenantData({ ...TenantData, memberDetails: newMemberDetails });
       return;
     }
 
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setTenantData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleMemberCountChange = (e) => {
     const newMemberCount = parseInt(e.target.value, 10);
     const newMemberDetails = staticMembers.slice(0, newMemberCount); // Get static members based on selected count
 
-    setFormData({
-      ...formData,
+    setTenantData({
+      ...TenantData,
       memberCount: newMemberCount,
       memberDetails: newMemberDetails,
     });
@@ -296,7 +332,7 @@ const EditTenant = () => {
     const count = parseInt(e.target.value, 10);
     const updatedVehicleDetails = staticVehicles.slice(0, count); // Get static vehicles based on selected count
 
-    setFormData((prevState) => ({
+    setTenantData((prevState) => ({
       ...prevState,
       vehicleCount: count,
       vehicleDetails: updatedVehicleDetails,
@@ -313,17 +349,17 @@ const EditTenant = () => {
     e.preventDefault();
     if (isFormValid) {
       try {
-        const formData = new FormData();
+        const TenantData = new TenantData();
 
 
         // if (uploadprofileimage) {
-        //   formData.append("profileimage", uploadprofileimage);
+        //   TenantData.append("profileimage", uploadprofileimage);
         // }
         if (adharcard) {
-          formData.append("adhar_card", adharcard);
+          TenantData.append("adhar_card", adharcard);
         }
 
-        // const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+        // const response = await axiosInstance.post("/v2/security/addsecurity", TenantData, {
         //   headers: { "Content-Type": "multipart/form-data" },
         // });
 
@@ -352,17 +388,17 @@ const EditTenant = () => {
       if (!regex.test(value)) return;
     }
 
-    const updatedVehicleDetails = [...formData.vehicleDetails];
+    const updatedVehicleDetails = [...TenantData.vehicleDetails];
     updatedVehicleDetails[index] = {
       ...updatedVehicleDetails[index],
       [name]: value,
     };
-    setFormData({ ...formData, vehicleDetails: updatedVehicleDetails });
+    setTenantData({ ...TenantData, vehicleDetails: updatedVehicleDetails });
   };
 
   const handleMemberDetailChange = (index, name, value) => {
     // Validation for member details
-    if (name === "memberName" || name === "relation") {
+    if (name === "Full_name" || name === "relation") {
       const regex = /^[A-Za-z\s]*$/; // Allow letters and spaces, including empty
       if (!regex.test(value)) return;
     }
@@ -382,9 +418,9 @@ const EditTenant = () => {
       if (value !== "" && !regex.test(value)) return; // Allow empty
     }
 
-    const updatedMemberDetails = [...formData.memberDetails];
+    const updatedMemberDetails = [...TenantData.memberDetails];
     updatedMemberDetails[index][name] = value;
-    setFormData({ ...formData, memberDetails: updatedMemberDetails });
+    setTenantData({ ...TenantData, memberDetails: updatedMemberDetails });
   };
 
   // Handle file upload for photo (image)
@@ -490,7 +526,7 @@ const EditTenant = () => {
                 <input
                   type="text"
                   name="ownerName"
-                  value={formData.ownerName}
+                  value={TenantData.ownerName}
                   onChange={handleInputChange}
                   placeholder="Enter Owner Full Name"
                   className="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
@@ -504,7 +540,7 @@ const EditTenant = () => {
                 <input
                   type="tel"
                   name="ownerPhone"
-                  value={formData.ownerPhone}
+                  value={TenantData.ownerPhone}
                   onChange={handleInputChange}
                   placeholder="+91"
                   className="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
@@ -520,7 +556,7 @@ const EditTenant = () => {
                 <input
                   type="text"
                   name="address"
-                  value={formData.address}
+                  value={TenantData.address}
                   onChange={handleInputChange} // Call handleInputChange on change
                   placeholder="Enter Address"
                   className="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
@@ -570,7 +606,7 @@ const EditTenant = () => {
                   <input
                     type="text"
                     name="fullName"
-                    value={formData.fullName}
+                    value={TenantData.fullName}
                     onChange={handleInputChange}
                     className="mt-1 block w-[430px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     placeholder="Enter Full Name"
@@ -583,7 +619,7 @@ const EditTenant = () => {
                   <input
                     type="tel"
                     name="phoneNumber"
-                    value={formData.phoneNumber}
+                    value={TenantData.phoneNumber}
                     onChange={handleInputChange}
                     className="mt-1 block w-[450px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="+91"
@@ -596,7 +632,7 @@ const EditTenant = () => {
                   <input
                     type=" email"
                     name="emailAddress"
-                    value={formData.emailAddress}
+                    value={TenantData.emailAddress}
                     onChange={handleInputChange}
                     className="mt-1 block w-[420px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="Enter Email Address"
@@ -614,7 +650,7 @@ const EditTenant = () => {
                   <input
                     type="text"
                     name="age"
-                    value={formData.age}
+                    value={TenantData.age}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="Enter Age"
@@ -626,7 +662,7 @@ const EditTenant = () => {
                   </label>
                   <select
                     name="gender"
-                    value={formData.gender}
+                    value={TenantData.gender}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   >
@@ -644,7 +680,7 @@ const EditTenant = () => {
                   <input
                     type="text"
                     name="wing"
-                    value={formData.wing}
+                    value={TenantData.wing}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="Enter Wing"
@@ -658,7 +694,7 @@ const EditTenant = () => {
                   <input
                     type="text"
                     name="unit"
-                    value={formData.unit}
+                    value={TenantData.unit}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     placeholder="Enter Unit"
@@ -672,7 +708,7 @@ const EditTenant = () => {
                   <input
                     type="text"
                     name="relation"
-                    value={formData.relation}
+                    value={TenantData.relation}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     placeholder="Enter Relation"
@@ -866,7 +902,7 @@ const EditTenant = () => {
                     <span>Select Member</span>
                     <select
                       name="memberCount"
-                      value={formData.memberCount}
+                      value={TenantData.memberCount}
                       onChange={handleMemberCountChange}
                       className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                     >
@@ -879,7 +915,7 @@ const EditTenant = () => {
                   </div>
                 </div>
 
-                {Array.from({ length: formData.memberCount }).map(
+                {Array.from({ length: TenantData.memberCount }).map(
                   (_, index) => (
                     <div key={index} className="flex gap-4">
                       <div className="flex-1 min-w-[200px]">
@@ -888,14 +924,14 @@ const EditTenant = () => {
                         </label>
                         <input
                           type="text"
-                          name="memberName"
+                          name="Full_name"
                           value={
-                            formData.memberDetails[index]?.memberName || ""
+                            TenantData.memberDetails[index]?.Full_name || ""
                           }
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "memberName",
+                              "Full_name",
                               e.target.value
                             )
                           }
@@ -911,7 +947,7 @@ const EditTenant = () => {
                         <input
                           type="tel"
                           name="Number"
-                          value={formData.memberDetails[index]?.Number || ""}
+                          value={TenantData.memberDetails[index]?.Number || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
@@ -931,7 +967,7 @@ const EditTenant = () => {
                         <input
                           type="email"
                           name="email"
-                          value={formData.memberDetails[index]?.email || ""}
+                          value={TenantData.memberDetails[index]?.email || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
@@ -951,7 +987,7 @@ const EditTenant = () => {
                         <input
                           type="text"
                           name="age"
-                          value={formData.memberDetails[index]?.age || ""}
+                          value={TenantData.memberDetails[index]?.age || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
@@ -970,7 +1006,7 @@ const EditTenant = () => {
                         </label>
                         <select
                           name="gender"
-                          value={formData.memberDetails[index]?.gender || ""}
+                          value={TenantData.memberDetails[index]?.gender || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
@@ -994,7 +1030,7 @@ const EditTenant = () => {
                         <input
                           type="text"
                           name="relation"
-                          value={formData.memberDetails[index]?.relation || ""}
+                          value={TenantData.memberDetails[index]?.relation || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
@@ -1022,7 +1058,7 @@ const EditTenant = () => {
                     <span>Select Vehicle</span>
                     <select
                       name="vehicleCount"
-                      value={formData.vehicleCount}
+                      value={TenantData.vehicleCount}
                       onChange={handleVehicleCountChange}
                       className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                     >
@@ -1035,7 +1071,7 @@ const EditTenant = () => {
                   </div>
                 </div>
 
-                {Array.from({ length: formData.vehicleCount }).map(
+                {Array.from({ length: TenantData.vehicleCount }).map(
                   (_, index) => (
                     <div key={index} className="space-y-4 mt-4">
                       <div className="flex gap-4 items-center">
@@ -1045,7 +1081,7 @@ const EditTenant = () => {
                           </label>
                           <select
                             value={
-                              formData.vehicleDetails[index]?.vehicleType || ""
+                              TenantData.vehicleDetails[index]?.vehicleType || ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
@@ -1069,7 +1105,7 @@ const EditTenant = () => {
                           <input
                             type="text"
                             value={
-                              formData.vehicleDetails[index]?.vehicleName || ""
+                              TenantData.vehicleDetails[index]?.vehicleName || ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
@@ -1091,7 +1127,7 @@ const EditTenant = () => {
                           <input
                             type="text"
                             value={
-                              formData.vehicleDetails[index]?.vehicleNumber ||
+                              TenantData.vehicleDetails[index]?.vehicleNumber ||
                               ""
                             }
                             onChange={(e) =>

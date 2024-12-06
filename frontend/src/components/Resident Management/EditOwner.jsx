@@ -1,114 +1,39 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner";
 import Sidebar from "../Sidebar/Sidebar";
 import Avatar from "../assets/Avatar.png";
 import { Upload, X } from "lucide-react";
-
-const staticMembers = [
-  {
-    memberName: "Arlene McCoy",
-    Number: "9876543210",
-    email: "rachit@example.com",
-    age: "28",
-    gender: "male",
-    relation: "Self",
-  },
-  {
-    memberName: "Aditi",
-    Number: "9876543211",
-    email: "aditi@example.com",
-    age: "25",
-    gender: "female",
-    relation: "Spouse",
-  },
-  {
-    memberName: "Arjun",
-    Number: "9876543212",
-    email: "arjun@example.com",
-    age: "5",
-    gender: "male",
-    relation: "Son",
-  },
-  {
-    memberName: "Meera",
-    Number: "9876543213",
-    email: "meera@example.com",
-    age: "3",
-    gender: "female",
-    relation: "Daughter",
-  },
-  {
-    memberName: "Rahul",
-    Number: "9876543214",
-    email: "rahul@example.com",
-    age: "30",
-    gender: "male",
-    relation: "Brother",
-  },
-  {
-    memberName: "Sita",
-    Number: "9876543215",
-    email: "sita@example.com",
-    age: "60",
-    gender: "female",
-    relation: "Mother",
-  },
-];
-
-const staticVehicles = [
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Toyota Camry",
-    vehicleNumber: "ABC1234",
-  },
-  {
-    vehicleType: "2-wheeler",
-    vehicleName: "Honda Activa",
-    vehicleNumber: "XYZ5678",
-  },
-  {
-    vehicleType: "4-wheeler",
-    vehicleName: "Ford Mustang",
-    vehicleNumber: "LMN9101",
-  },
-];
+import axios from 'axios';
+import axiosInstance from '../Common/axiosInstance';
 
 const EditOwner = () => {
   const [adharcard, setadhar_card] = useState(null);
-  // const [isDragging, setIsDragging] = useState(false);
-  //  const [profile_image, setprofileimage] = useState(null);
-  // const [uploadprofileimage, setuploadprofileimage] = useState(null);
-
-
   const [frontAadhar, setFrontAadhar] = useState(null);
   const [backAadhar, setBackAadhar] = useState(null);
   const [addressProof, setAddressProof] = useState(null);
   const [rentAgreement, setRentAgreement] = useState(null);
+
+  const [frontAadharView, setFrontAadharView] = useState(false);
+  const [backAadharView, setBackAadharView] = useState(false);
+  const [addressProofView, setAddressProofView] = useState(false);
+  const [rentAgreementView, setRentAgreementView] = useState(false);
+  const [Adhar_frontSize, setAdhar_frontSize] = useState("");
+  const [Adhar_frontName, setAdhar_frontName] = useState("");
+  const [backAadharSize, setBackAadharSize] = useState("");
+  const [backAadharName, setBackAadharName] = useState("");
+  const [addressProofSize, setAddressProofSize] = useState("");
+  const [addressProofName, setAddressProofName] = useState("");
+  const [rentAgreementSize, setRentAgreementSize] = useState("");
+  const [rentAgreementName, setRentAgreementName] = useState("");
+
+  const [isphoto, setphoto] = useState(false);
 
   const frontInputRef = useRef(null);
   const backInputRef = useRef(null);
   const addressInputRef = useRef(null);
   const rentInputRef = useRef(null);
 
-  const handleFileChange = (e, setter) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size <= 10 * 1024 * 1024) { // 10MB limit
-        setter(file);
-      } else {
-        alert('File size should be less than 10MB');
-        e.target.value = '';
-      }
-    }
-  };
-
-  const handleClearFile = (setter, inputRef) => {
-    setter(null);
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  };
   const [activeButton, setActiveButton] = useState("editowner");
   const location = useLocation();
   const navigate = useNavigate();
@@ -118,100 +43,194 @@ const EditOwner = () => {
     vehicleCount = 3,
   } = location.state || {};
 
-  const [formData, setFormData] = useState({
-    fullName: existingData?.Name || "Rachit",
-    phoneNumber: existingData?.Number || "97587 85828",
-    emailAddress: existingData?.Email || "rachit@gmail.com",
-    age: existingData?.Age || "20",
-    gender: existingData?.Gender || "male",
-    wing: existingData?.Wing || "A",
-    unit: existingData?.UnitNumber || "1003",
-    relation: existingData?.Relation || "Friend",
-    memberCount: memberCount,
-    memberDetails: staticMembers.slice(0, memberCount),
-    vehicleCount: vehicleCount,
-    vehicleDetails: staticVehicles.slice(0, vehicleCount),
+  const [OwnerData, setOwnerData] = useState({
+    fullName: existingData?.Full_name || "",
+    phoneNumber: existingData?.Phone_number || "",
+    emailAddress: existingData?.Email_address || "",
+    age: existingData?.Age || "",
+    gender: existingData?.Gender || "",
+    wing: existingData?.Wing || "",
+    unit: existingData?.Unit || "",
+    relation: existingData?.Relation || "",
+    memberCount: existingData?.Member_Counting_Total,
+    vehicleCount: existingData?.Vehicle_Counting_Total,
+    memberDetails: existingData?.Member_Counting || [],
+    // memberDetails: staticMembers.slice(0, memberCount),
+    vehicleDetails: existingData?.Vehicle_Counting || [],
   });
 
-  const [photo, setPhoto] = useState(null);
+  const [photo, setPhoto] = useState(existingData?.profileImage || null);
 
   useEffect(() => {
     if (existingData) {
-      const memberDetails = Array.isArray(existingData.MemberDetails)
-        ? existingData.MemberDetails
+      const memberDetails = Array.isArray(existingData.Member_Counting)
+        ? existingData.Member_Counting
         : [];
-      const vehicleDetails = Array.isArray(existingData.VehicleDetails)
-        ? existingData.VehicleDetails
+      const vehicleDetails = Array.isArray(existingData.Vehicle_Counting)
+        ? existingData.Vehicle_Counting
         : [];
 
       const initialMemberDetails = Array.from(
-        { length: formData.memberCount },
+        { length: existingData.Member_Counting_Total },
         (_, index) => ({
-          memberName:
-            memberDetails[index]?.memberName ||
-            staticMembers[index]?.memberName ||
-            "",
-          Number:
-            memberDetails[index]?.Number || staticMembers[index]?.Number || "",
-          email:
-            memberDetails[index]?.email || staticMembers[index]?.email || "",
-          age: memberDetails[index]?.age || staticMembers[index]?.age || "",
-          gender:
-            memberDetails[index]?.gender || staticMembers[index]?.gender || "",
-          relation:
-            memberDetails[index]?.relation ||
-            staticMembers[index]?.relation ||
-            "",
+          Full_name: memberDetails[index]?.Full_name || "",
+          Phone_number: memberDetails[index]?.Phone_number || "",
+          Email_address: memberDetails[index]?.Email_address || "",
+          Age: memberDetails[index]?.Age || "",
+          Gender: memberDetails[index]?.Gender || "",
+          Relation: memberDetails[index]?.Relation || "",
         })
       );
 
       const initialVehicleDetails = Array.from(
-        { length: formData.vehicleCount },
+        { length: existingData.Vehicle_Counting_Total },
         (_, index) => ({
-          vehicleType:
-            vehicleDetails[index]?.vehicleType ||
-            staticVehicles[index]?.vehicleType ||
-            "",
-          vehicleName:
-            vehicleDetails[index]?.vehicleName ||
-            staticVehicles[index]?.vehicleName ||
-            "",
-          vehicleNumber:
-            vehicleDetails[index]?.vehicleNumber ||
-            staticVehicles[index]?.vehicleNumber ||
-            "",
+          vehicle_type: vehicleDetails[index]?.vehicle_type || "",
+          vehicle_name: vehicleDetails[index]?.vehicle_name || "",
+          vehicle_number: vehicleDetails[index]?.vehicle_number || "",
         })
       );
 
-      setFormData((prevData) => ({
+      setOwnerData((prevData) => ({
         ...prevData,
         memberDetails: initialMemberDetails,
         vehicleDetails: initialVehicleDetails,
       }));
+      setPhoto(existingData.profileImage || "");
     }
-  }, [existingData, formData.memberCount, formData.vehicleCount]);
+  }, [existingData, OwnerData.memberCount, OwnerData.vehicleCount]);
+
+  useEffect(() => {
+    if (existingData) {
+      if (existingData.Adhar_front) {
+        processAdhar_front(existingData.Adhar_front);
+      }
+      if (existingData.Adhar_back) {
+        processAdhar_back(existingData.Adhar_back);
+      }
+      if (existingData.Address_proof) {
+        processAddress_proof(existingData.Address_proof);
+      }
+      if (existingData.Rent_Agreement) {
+        processRent_Agreement(existingData.Rent_Agreement);
+      }
+      setFrontAadhar(
+        existingData.Adhar_front
+          ? {
+              name: Adhar_frontName,
+              size: Adhar_frontSize,
+            }
+          : null
+      );
+      setBackAadhar(
+        existingData.Adhar_back
+          ? {
+              name: backAadharName,
+              size: backAadharSize,
+            }
+          : null
+      );
+      setAddressProof(
+        existingData.Address_proof
+          ? {
+              name: addressProofName,
+              size: addressProofSize,
+            }
+          : null
+      );
+      setRentAgreement(
+        existingData.Rent_Agreement
+          ? {
+              name: rentAgreementName,
+              size: rentAgreementSize,
+            }
+          : null
+      );
+    }
+  }, [existingData, Adhar_frontName, Adhar_frontSize, backAadharName, backAadharSize, addressProofName, addressProofSize, rentAgreementName, rentAgreementSize]);
+
+  const processAdhar_front = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setAdhar_frontName(extractedFileName);
+      setAdhar_frontSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setAdhar_frontName(extractedFileName);
+      setAdhar_frontSize("Unknown");
+    }
+  };
+
+  const processAdhar_back = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setBackAadharName(extractedFileName);
+      setBackAadharSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setBackAadharName(extractedFileName);
+      setBackAadharSize("Unknown");
+    }
+  };
+
+  const processAddress_proof = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setAddressProofName(extractedFileName);
+      setAddressProofSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setAddressProofName(extractedFileName);
+      setAddressProofSize("Unknown");
+    }
+  };
+
+  const processRent_Agreement = async (url) => {
+    const extractedFileName = url.substring(url.lastIndexOf("/") + 1);
+    try {
+      const response = await axios.head(url);
+      const fileSizeBytes = response.headers["content-length"];
+      const fileSizeMB = (fileSizeBytes / (1024 * 1024)).toFixed(2);
+      setRentAgreementName(extractedFileName);
+      setRentAgreementSize(`${fileSizeMB} MB`);
+    } catch (error) {
+      console.error("Error fetching file metadata:", error.message);
+      setRentAgreementName(extractedFileName);
+      setRentAgreementSize("Unknown");
+    }
+  };
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result);
-      };
+      reader.onloadend = () => setPhoto(reader.result);
       reader.readAsDataURL(file);
+      setphoto(true);
     }
   };
 
   const handleMemberDetailChange = (index, name, value) => {
-    const newMemberDetails = [...formData.memberDetails];
+    const newMemberDetails = [...OwnerData.memberDetails];
     newMemberDetails[index][name] = value;
-    setFormData({ ...formData, memberDetails: newMemberDetails });
+    setOwnerData({ ...OwnerData, memberDetails: newMemberDetails });
   };
 
   const handleVehicleDetailChange = (index, name, value) => {
-    const newVehicleDetails = [...formData.vehicleDetails];
+    const newVehicleDetails = [...OwnerData.vehicleDetails];
     newVehicleDetails[index][name] = value;
-    setFormData({ ...formData, vehicleDetails: newVehicleDetails });
+    setOwnerData({ ...OwnerData, vehicleDetails: newVehicleDetails });
   };
+
   const handleInputChange = (e, index = null) => {
     const { name, value } = e.target;
 
@@ -236,64 +255,61 @@ const EditOwner = () => {
     }
 
     if (index !== null) {
-      const newMemberDetails = [...formData.memberDetails];
+      const newMemberDetails = [...OwnerData.memberDetails];
       newMemberDetails[index] = {
         ...newMemberDetails[index],
         [name]: value,
       };
-      setFormData({ ...formData, memberDetails: newMemberDetails });
+      setOwnerData({ ...OwnerData, memberDetails: newMemberDetails });
       return;
     }
 
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setOwnerData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const isFormValid =
-    formData.fullName &&
-    formData.phoneNumber &&
-    formData.age &&
-    formData.gender &&
-    formData.emailAddress &&
-    formData.wing &&
-    formData.unit &&
-    formData.relation &&
-    adharcard &&
-    formData.memberDetails.every(
+    OwnerData.fullName &&
+    OwnerData.phoneNumber &&
+    OwnerData.age &&
+    OwnerData.gender &&
+    OwnerData.emailAddress &&
+    OwnerData.wing &&
+    OwnerData.unit &&
+    OwnerData.relation &&
+    OwnerData.memberDetails.every(
       (member) =>
-        member.memberName &&
-        member.Number &&
-        member.email &&
-        member.age &&
-        member.gender &&
-        member.relation
+        member.Full_name &&
+        member.Phone_number &&
+        member.Email_address &&
+        member.Age &&
+        member.Gender &&
+        member.Relation
     ) &&
-    formData.vehicleDetails.every(
+    OwnerData.vehicleDetails.every(
       (vehicle) =>
-        vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
+        vehicle.vehicle_type && vehicle.vehicle_name && vehicle.vehicle_number
     );
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
   };
 
-  // Function to handle form input changes
-
   const handleMemberCountChange = (e) => {
     const newMemberCount = parseInt(e.target.value, 10);
     const newMemberDetails = Array.from(
       { length: newMemberCount },
       (_, index) => ({
-        memberName: staticMembers[index]?.memberName || "",
-        Number: staticMembers[index]?.Number || "",
-        email: staticMembers[index]?.email || "",
-        age: staticMembers[index]?.age || "",
-        gender: staticMembers[index]?.gender || "",
-        relation: staticMembers[index]?.relation || "",
+        Full_name: OwnerData.memberDetails[index]?.Full_name || "",
+        Phone_number: OwnerData.memberDetails[index]?.Phone_number || "",
+        Email_address: OwnerData.memberDetails[index]?.Email_address || "",
+        Age: OwnerData.memberDetails[index]?.Age || "",
+        Gender: OwnerData.memberDetails[index]?.Gender || "",
+        Relation: OwnerData.memberDetails[index]?.Relation || "",
       })
     );
 
-    setFormData({
-      ...formData,
+    setOwnerData({
+      ...OwnerData,
       memberCount: newMemberCount,
       memberDetails: newMemberDetails,
     });
@@ -302,51 +318,109 @@ const EditOwner = () => {
   const handleVehicleCountChange = (e) => {
     const count = parseInt(e.target.value, 10);
     const updatedVehicleDetails = Array.from({ length: count }, (_, index) => ({
-      vehicleType: staticVehicles[index]?.vehicleType || "",
-      vehicleName: staticVehicles[index]?.vehicleName || "",
-      vehicleNumber: staticVehicles[index]?.vehicleNumber || "",
+      vehicle_type: OwnerData.vehicleDetails[index]?.vehicle_type || "",
+      vehicle_name: OwnerData.vehicleDetails[index]?.vehicle_name || "",
+      vehicle_number: OwnerData.vehicleDetails[index]?.vehicle_number || "",
     }));
 
-    setFormData((prevState) => ({
+    setOwnerData((prevState) => ({
       ...prevState,
       vehicleCount: count,
       vehicleDetails: updatedVehicleDetails,
     }));
   };
+
   const ClearAllData = () => {
-
-   
     setadhar_card(null);
-
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
       try {
         const formData = new FormData();
 
-
-        // if (uploadprofileimage) {
-        //   formData.append("profileimage", uploadprofileimage);
-        // }
         if (adharcard) {
           formData.append("adhar_card", adharcard);
         }
 
-        // const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
-        //   headers: { "Content-Type": "multipart/form-data" },
-        // });
+        const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-        // if (response.status === 200) {
-        //   fetchSecurityGuard();
-        //   onClose();
-        //   ClearAllData();
-        // }
+        if (response.status === 200) {
+          navigate("/Resident-Manegement");
+          ClearAllData();
+        }
       } catch (error) {
         console.error("Error creating Guard:", error.response || error.message);
       }
     } else {
       console.log("Form is invalid");
+    }
+  };
+
+  const handleFrontAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setFrontAadharView(true);
+        setFrontAadhar({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
+
+  const handleBackAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setBackAadharView(true);
+        setBackAadhar({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
+
+  const handleAddressProofChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setAddressProofView(true);
+        setAddressProof({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
+
+  const handleRentAgreementChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setRentAgreementView(true);
+        setRentAgreement({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
     }
   };
 
@@ -422,7 +496,7 @@ const EditOwner = () => {
               <div className="border bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
                 {photo ? (
                   <img
-                    src={Avatar}
+                    src={photo || Avatar}
                     alt="Owner"
                     className="w-[50px] h-[50px] object-cover rounded-full"
                   />
@@ -454,9 +528,9 @@ const EditOwner = () => {
                 <input
                   type="text"
                   name="fullName"
-                  value={formData.fullName}
+                  value={OwnerData.fullName}
                   onChange={handleInputChange}
-                  className="mt-1 block w-[430px] px-3 py-2 border border-gray-300 rounded-lg text-[#202 224] pr-10"
+                  className="mt-1 block w-[430px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholder="Enter Full Name"
                 />
               </div>
@@ -467,7 +541,7 @@ const EditOwner = () => {
                 <input
                   type="tel"
                   name="phoneNumber"
-                  value={formData.phoneNumber}
+                  value={OwnerData.phoneNumber}
                   onChange={handleInputChange}
                   className="mt-1 block w-[450px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="+91"
@@ -478,9 +552,9 @@ const EditOwner = () => {
                   Email Address
                 </label>
                 <input
-                  type=" email"
+                  type="email"
                   name="emailAddress"
-                  value={formData.emailAddress}
+                  value={OwnerData.emailAddress}
                   onChange={handleInputChange}
                   className="mt-1 block w-[420px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="Enter Email Address"
@@ -498,7 +572,7 @@ const EditOwner = () => {
                 <input
                   type="text"
                   name="age"
-                  value={formData.age}
+                  value={OwnerData.age}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="Enter Age"
@@ -510,7 +584,7 @@ const EditOwner = () => {
                 </label>
                 <select
                   name="gender"
-                  value={formData.gender}
+                  value={OwnerData.gender}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                 >
@@ -528,7 +602,7 @@ const EditOwner = () => {
                 <input
                   type="text"
                   name="wing"
-                  value={formData.wing}
+                  value={OwnerData.wing}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   placeholder="Enter Wing"
@@ -542,7 +616,7 @@ const EditOwner = () => {
                 <input
                   type="text"
                   name="unit"
-                  value={formData.unit}
+                  value={OwnerData.unit}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholder="Enter Unit"
@@ -556,7 +630,7 @@ const EditOwner = () => {
                 <input
                   type="text"
                   name="relation"
-                  value={formData.relation}
+                  value={OwnerData.relation}
                   onChange={handleInputChange}
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                   placeholder="Enter Relation"
@@ -565,186 +639,53 @@ const EditOwner = () => {
             </div>
           </div>
 
-
-          <div className="flex  col-12 pe-4 mt-4 ">
+          <div className="flex col-12 pe-4 mt-4 ">
             <div className="col-3 mx-1">
               <label className="block font-medium text-gray-700 mb-1">
                 Upload Aadhar Card (Front side) <span className="text-red-500">*</span>
               </label>
-              <div className="border-2 border-dashed rounded-lg p-4  text-center">
+              <div className="border-2 border-dashed rounded-lg p-4 text-center">
                 <input
                   ref={frontInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  onChange={handleFrontAadharChange}
                   className="hidden"
-                 
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
                 {frontAadhar ? (
-                  <div className="flex items-center justify-between" style={{height:"98px"}}>
+                  <div className="flex items-center justify-between" style={{ height: "98px" }}>
                     <span className="text-sm text-success ">{frontAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      onClick={() => {
+                        setFrontAadhar(null);
+                        if (frontInputRef.current) {
+                          frontInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
-                     <X className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 ) : (
-             <div className="space-y-2">
-        
-                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                  <div  className="flex flex-col items-center">
-                    <button
-                      type="button"
-                      onClick={() => frontInputRef.current?.click()}
-                      className="text-blue-500"
-                    >
-                      Upload a file
-                    </button>
-                    <span className="text-gray-500">or drag and drop</span>
-                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                  </div>
+                  <div className="space-y-2">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                    <div className="flex flex-col items-center">
+                      <button
+                        type="button"
+                        onClick={() => frontInputRef.current?.click()}
+                        className="text-blue-500"
+                      >
+                        Upload a file
+                      </button>
+                      <span className="text-gray-500">or drag and drop</span>
+                      <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
-
-            {/* <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-3 mx-1">
-                <label className="block text-left font-medium text-[#202224] mb-1">
-                  Upload Aadhar Card (Front side)<span className="text-red-500">*</span>
-                </label>
-                <div
-                
-                 className="border-2 border-dashed rounded-lg p-4 text-center"
-                >
-                  <input
-                    ref={frontInputRef}
-                    type="file"
-                    onChange={(e) => handleFileChange(e, setFrontAadhar)}
-                    className="hidden"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                  />
-                  {frontAadhar  ? (
-                    <div className="flex items-center justify-between p-2">
-                      <span className="text-sm text-gray-600">{adharcard.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <div className="flex flex-col items-center">
-                        <button
-                          type="button"
-                          onClick={() => frontInputRef.current?.click()}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          Upload a file
-                        </button>
-                        <span className="text-gray-500">or drag and drop</span>
-                        <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div> */}
 
             <div className="col-3 mx-1 ">
               <label className="block font-medium text-gray-700 mb-1">
@@ -754,35 +695,40 @@ const EditOwner = () => {
                 <input
                   ref={backInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  onChange={handleBackAadharChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
                 {backAadhar ? (
-                  <div className="flex items-center justify-between"style={{height:"98px"}} >
+                  <div className="flex items-center justify-between" style={{ height: "98px" }}>
                     <span className="text-sm text-success">{backAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      onClick={() => {
+                        setBackAadhar(null);
+                        if (backInputRef.current) {
+                          backInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
-                     <X className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                  <div className="flex flex-col items-center">
-                    <button
-                      type="button"
-                      onClick={() => backInputRef.current?.click()}
-                      className="text-blue-500"
-                    >
-                      Upload a file
-                    </button>
-                    <span className="text-gray-500">or drag and drop</span>
-                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                  </div>
+                    <div className="flex flex-col items-center">
+                      <button
+                        type="button"
+                        onClick={() => backInputRef.current?.click()}
+                        className="text-blue-500"
+                      >
+                        Upload a file
+                      </button>
+                      <span className="text-gray-500">or drag and drop</span>
+                      <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -790,41 +736,46 @@ const EditOwner = () => {
 
             <div className="col-3 mx-1">
               <label className="block font-medium text-gray-700 mb-1">
-                Address Proof (Vera Bill or Light Bill) <span className="text-red-500">*</span>
+                Address Proof<span className="text-red-500">*</span>
               </label>
               <div className="border-2 border-dashed rounded-lg p-4 text-center">
                 <input
                   ref={addressInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setAddressProof)}
+                  onChange={handleAddressProofChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
                 {addressProof ? (
-                  <div className="flex items-center justify-between" style={{height:"98px"}}>
+                  <div className="flex items-center justify-between" style={{ height: "98px" }}>
                     <span className="text-sm text-success">{addressProof.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      onClick={() => {
+                        setAddressProof(null);
+                        if (addressInputRef.current) {
+                          addressInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
-                    <X className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                  <div className="flex flex-col items-center">
-                    <button
-                      type="button"
-                      onClick={() => addressInputRef.current?.click()}
-                      className="text-blue-500"
-                    >
-                      Upload a file
-                    </button>
-                    <span className="text-gray-500">or drag and drop</span>
-                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                  </div>
+                    <div className="flex flex-col items-center">
+                      <button
+                        type="button"
+                        onClick={() => addressInputRef.current?.click()}
+                        className="text-blue-500"
+                      >
+                        Upload a file
+                      </button>
+                      <span className="text-gray-500">or drag and drop</span>
+                      <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -838,43 +789,45 @@ const EditOwner = () => {
                 <input
                   ref={rentInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  onChange={handleRentAgreementChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
                 {rentAgreement ? (
-                  <div className="flex items-center justify-between" style={{height:"98px"}}>
+                  <div className="flex items-center justify-between" style={{ height: "98px" }}>
                     <span className="text-sm text-success">{rentAgreement.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      onClick={() => {
+                        setRentAgreement(null);
+                        if (rentInputRef.current) {
+                          rentInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
-                     <X className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                  <div className="flex flex-col items-center">
-                    <button
-                      type="button"
-                      onClick={() => rentInputRef.current?.click()}
-                      className="text-blue-500"
-                    >
-                      Upload a file
-                    </button>
-                    <span className="text-gray-500">or drag and drop</span>
-                    <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
-                  </div>
+                    <div className="flex flex-col items-center">
+                      <button
+                        type="button"
+                        onClick={() => rentInputRef.current?.click()}
+                        className="text-blue-500"
+                      >
+                        Upload a file
+                      </button>
+                      <span className="text-gray-500">or drag and drop</span>
+                      <span className="text-xs text-gray-400">PNG, JPG up to 10MB</span>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
-
-
           </div>
-
 
           <div>
             <div>
@@ -886,7 +839,7 @@ const EditOwner = () => {
                   <span>Select Member</span>
                   <select
                     name="memberCount"
-                    value={formData.memberCount}
+                    value={OwnerData.memberCount}
                     onChange={handleMemberCountChange}
                     className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   >
@@ -899,7 +852,7 @@ const EditOwner = () => {
                 </div>
               </div>
 
-              {Array.from({ length: formData.memberCount }).map((_, index) => (
+              {Array.from({ length: OwnerData.memberCount }).map((_, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="flex-1 min-w-[200px]">
                     <label className="block text-sm font-medium text-gray-700">
@@ -907,12 +860,12 @@ const EditOwner = () => {
                     </label>
                     <input
                       type="text"
-                      name="memberName"
-                      value={formData.memberDetails[index]?.memberName || ""}
+                      name="Full_name"
+                      value={OwnerData.memberDetails[index]?.Full_name || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "memberName",
+                          "Full_name",
                           e.target.value
                         )
                       }
@@ -927,12 +880,12 @@ const EditOwner = () => {
                     </label>
                     <input
                       type="tel"
-                      name="Number"
-                      value={formData.memberDetails[index]?.Number || ""}
+                      name="Phone_number"
+                      value={OwnerData.memberDetails[index]?.Phone_number || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "Number",
+                          "Phone_number",
                           e.target.value
                         )
                       }
@@ -947,10 +900,10 @@ const EditOwner = () => {
                     </label>
                     <input
                       type="email"
-                      name="email"
-                      value={formData.memberDetails[index]?.email || ""}
+                      name="Email_address"
+                      value={OwnerData.memberDetails[index]?.Email_address || ""}
                       onChange={(e) =>
-                        handleMemberDetailChange(index, "email", e.target.value)
+                        handleMemberDetailChange(index, "Email_address", e.target.value)
                       }
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                       placeholder="Enter Email Address"
@@ -963,10 +916,10 @@ const EditOwner = () => {
                     </label>
                     <input
                       type="text"
-                      name="age"
-                      value={formData.memberDetails[index]?.age || ""}
+                      name="Age"
+                      value={OwnerData.memberDetails[index]?.Age || ""}
                       onChange={(e) =>
-                        handleMemberDetailChange(index, "age", e.target.value)
+                        handleMemberDetailChange(index, "Age", e.target.value)
                       }
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                       placeholder="Enter Age"
@@ -978,12 +931,12 @@ const EditOwner = () => {
                       Gender<span className="text-red-500">*</span>
                     </label>
                     <select
-                      name="gender"
-                      value={formData.memberDetails[index]?.gender || ""}
+                      name="Gender"
+                      value={OwnerData.memberDetails[index]?.Gender || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "gender",
+                          "Gender",
                           e.target.value
                         )
                       }
@@ -1002,12 +955,12 @@ const EditOwner = () => {
                     </label>
                     <input
                       type="text"
-                      name="relation"
-                      value={formData.memberDetails[index]?.relation || ""}
+                      name="Relation"
+                      value={OwnerData.memberDetails[index]?.Relation || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "relation",
+                          "Relation",
                           e.target.value
                         )
                       }
@@ -1030,7 +983,7 @@ const EditOwner = () => {
                   <span>Select Vehicle</span>
                   <select
                     name="vehicleCount"
-                    value={formData.vehicleCount}
+                    value={OwnerData.vehicleCount}
                     onChange={handleVehicleCountChange}
                     className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                   >
@@ -1043,7 +996,7 @@ const EditOwner = () => {
                 </div>
               </div>
 
-              {Array.from({ length: formData.vehicleCount }).map((_, index) => (
+              {Array.from({ length: OwnerData.vehicleCount }).map((_, index) => (
                 <div key={index} className="space-y-4 mt-4">
                   <div className="flex gap-4 items-center">
                     <div className="flex-1 min-w-[200px]">
@@ -1052,12 +1005,12 @@ const EditOwner = () => {
                       </label>
                       <select
                         value={
-                          formData.vehicleDetails[index]?.vehicleType || ""
+                          OwnerData.vehicleDetails[index]?.vehicle_type || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
                             index,
-                            "vehicleType",
+                            "vehicle_type",
                             e.target.value
                           )
                         }
@@ -1076,12 +1029,12 @@ const EditOwner = () => {
                       <input
                         type="text"
                         value={
-                          formData.vehicleDetails[index]?.vehicleName || ""
+                          OwnerData.vehicleDetails[index]?.vehicle_name || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
                             index,
-                            "vehicleName",
+                            "vehicle_name",
                             e.target.value
                           )
                         }
@@ -1097,12 +1050,12 @@ const EditOwner = () => {
                       <input
                         type="text"
                         value={
-                          formData.vehicleDetails[index]?.vehicleNumber || ""
+                          OwnerData.vehicleDetails[index]?.vehicle_number || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
                             index,
-                            "vehicleNumber",
+                            "vehicle_number",
                             e.target.value
                           )
                         }

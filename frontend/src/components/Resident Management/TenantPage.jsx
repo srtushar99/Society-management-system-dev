@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Assuming you have this component
 import Sidebar from "../Sidebar/Sidebar";
 import { Upload, X } from "lucide-react";
+import axiosInstance from '../Common/axiosInstance';
 
 const TenantPage = () => {
  
   const [adharcard, setadhar_card] = useState(null);
   // const [isDragging, setIsDragging] = useState(false);
   //  const [profile_image, setprofileimage] = useState(null);
-  // const [uploadprofileimage, setuploadprofileimage] = useState(null);
+  const [uploadprofileimage, setuploadprofileimage] = useState(null);
 
 
   const [frontAadhar, setFrontAadhar] = useState(null);
@@ -24,8 +25,7 @@ const TenantPage = () => {
 
 
   const [activeButton, setActiveButton] = useState("tenantpage");
-  const [formData, setFormData] = useState({
-    photo :"",
+  const [TenantData, setTenantData] = useState({
     ownerName: "",
     ownerPhone: "",
     address: "",
@@ -37,9 +37,7 @@ const TenantPage = () => {
     wing: "",
     unit: "",
     relation: "",
-    memberCount: 0,
     memberDetails: [],
-    vehicleCount: 0,
     vehicleDetails: [],
   });
   const [photo, setPhoto] = useState(null);
@@ -47,30 +45,29 @@ const TenantPage = () => {
 
   const isFormValid =
   
-    formData.ownerName &&
-    formData.ownerPhone &&
-    formData.address &&
-    formData.fullName &&
-    formData.phoneNumber &&
-    formData.age &&
-    formData.gender &&
-    formData.emailAddress &&
-    formData.wing &&
-    formData.unit &&
-    formData.relation &&
-    adharcard &&
-    formData.memberDetails.every(
+    TenantData.ownerName &&
+    TenantData.ownerPhone &&
+    TenantData.address &&
+    TenantData.fullName &&
+    TenantData.phoneNumber &&
+    TenantData.age &&
+    TenantData.gender &&
+    TenantData.emailAddress &&
+    TenantData.wing &&
+    TenantData.unit &&
+    TenantData.relation &&
+    TenantData.memberDetails.every(
       (member) =>
-        member.memberName &&
-        member.Number &&
-        member.email &&
-        member.age &&
-        member.gender &&
-        member.relation
+        member.Full_name &&
+        member.Phone_number &&
+        member.Email_address &&
+        member.Age &&
+        member.Gender &&
+        member.Relation
     ) &&
-    formData.vehicleDetails.every(
+    TenantData.vehicleDetails.every(
       (vehicle) =>
-        vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
+        vehicle.vehicle_type && vehicle.vehicle_name && vehicle.vehicle_number
     );
 
   const handleButtonClick = (buttonType) => {
@@ -108,21 +105,22 @@ const TenantPage = () => {
     }
 
     if (index !== null) {
-      const newMemberDetails = [...formData.memberDetails];
+      const newMemberDetails = [...TenantData.memberDetails];
       newMemberDetails[index] = {
         ...newMemberDetails[index],
         [name]: value,
       };
-      setFormData({ ...formData, memberDetails: newMemberDetails });
+      setTenantData({ ...TenantData, memberDetails: newMemberDetails });
       return;
     }
 
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setTenantData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setuploadprofileimage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhoto(reader.result);
@@ -133,24 +131,24 @@ const TenantPage = () => {
 
   const handleMemberCountChange = (e) => {
     const newMemberCount = parseInt(e.target.value, 10);
-    const newMemberDetails = [...formData.memberDetails].slice(
+    const newMemberDetails = [...TenantData.memberDetails].slice(
       0,
       newMemberCount
     );
 
     while (newMemberDetails.length < newMemberCount) {
       newMemberDetails.push({
-        memberName: "",
-        Number: "",
-        email: "",
-        age: "",
-        gender: "",
-        relation: "",
+        Full_name: "",
+        Phone_number: "",
+        Email_address: "",
+        Age: "",
+        Gender: "",
+        Relation: "",
       });
     }
 
-    setFormData({
-      ...formData,
+    setTenantData({
+      ...TenantData,
       memberCount: newMemberCount,
       memberDetails: newMemberDetails,
     });
@@ -158,80 +156,68 @@ const TenantPage = () => {
 
   const handleVehicleCountChange = (e) => {
     const count = parseInt(e.target.value, 10);
-    const updatedVehicleDetails = [...formData.vehicleDetails].slice(0, count);
+    const updatedVehicleDetails = [...TenantData.vehicleDetails].slice(0, count);
     while (updatedVehicleDetails.length < count) {
       updatedVehicleDetails.push({
-        vehicleType: "",
-        vehicleName: "",
-        vehicleNumber: "",
+        vehicle_type: "",
+        vehicle_name: "",
+        vehicle_number: "",
       });
     }
-    setFormData((prevState) => ({
+    setTenantData((prevState) => ({
       ...prevState,
       vehicleCount: count,
       vehicleDetails: updatedVehicleDetails,
     }));
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (!isFormValid) {
-  //     alert("Please fill in all required fields correctly.");
-  //     return;
-  //     if (adharcard) {
-  //       formData.append("adhar_card", adharcard);
-  //     }
-
-
-  //   }
-  //   console.log("Form submitted with :", formData);
-  // };
-
+ 
   const handleVehicleDetailChange = (index, name, value) => {
     // Validation for vehicle details
-    if (name === "vehicleName") {
+    if (name === "vehicle_name") {
       const regex = /^[A-Za-z\s]+$/; // Only letters and spaces
       if (!regex.test(value)) return;
     }
 
-    if (name === "vehicleNumber") {
+    if (name === "vehicle_number") {
       const regex = /^[A-Za-z0-9]+$/; // Alphanumeric for vehicle number
       if (!regex.test(value)) return;
     }
 
-    const updatedVehicleDetails = [...formData.vehicleDetails];
+    const updatedVehicleDetails = [...TenantData.vehicleDetails];
     updatedVehicleDetails[index] = {
       ...updatedVehicleDetails[index],
       [name]: value,
     };
-    setFormData({ ...formData, vehicleDetails: updatedVehicleDetails });
+    setTenantData({ ...TenantData, vehicleDetails: updatedVehicleDetails });
   };
 
   const handleMemberDetailChange = (index, name, value) => {
     // Validation for member details
-    if (name === "memberName" || name === "relation") {
+    if (name === "Full_name" || name === "Relation") {
       const regex = /^[A-Za-z\s]*$/; // Allow letters and spaces, including empty
       if (!regex.test(value)) return;
     }
 
-    if (name === "Number") {
+    if (name === "Phone_number") {
       const regex = /^[6-9]\d{0,9}$/; // Starts with 6,7,8,9 and allows up to 10 digits
       if (!regex.test(value) && value !== "") return; // Allow empty
     }
 
-    if (name === "Email") {
+    if (name === "email") {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
       if (value !== "" && !emailRegex.test(value)) return; // Allow empty
     }
 
-    if (name === "age") {
+    if (name === "Age") {
       const regex = /^(?:[1-9][0-9]?|1[01])$/; // Allows only numbers 1-99
       if (value !== "" && !regex.test(value)) return; // Allow empty
     }
 
-    const updatedMemberDetails = [...formData.memberDetails];
+
+    const updatedMemberDetails = [...TenantData.memberDetails];
     updatedMemberDetails[index][name] = value;
-    setFormData({ ...formData, memberDetails: updatedMemberDetails });
+    setTenantData({ ...TenantData, memberDetails: updatedMemberDetails });
   };
 
   // Handle file upload for photo (image)
@@ -268,16 +254,49 @@ const TenantPage = () => {
     if (isFormValid) {
       try {
         const formData = new FormData();
+        formData.append("Full_name", TenantData.fullName);
+        formData.append("Phone_number", TenantData.phoneNumber);
+        formData.append("Email_address", TenantData.emailAddress);
+        formData.append("Age", Number(TenantData.age));
+        formData.append("Gender", TenantData.gender);
+        formData.append("Wing", TenantData.wing);
+        formData.append("Unit", TenantData.unit);
+        formData.append("Relation", TenantData.relation);
+        formData.append("Member_Counting", JSON.stringify(TenantData.memberDetails));
+        formData.append("Vehicle_Counting", JSON.stringify(TenantData.vehicleDetails));
+        formData.append("Owner_Full_name", TenantData.ownerName);
+        formData.append("Owner_Phone", TenantData.ownerPhone);
+        formData.append("Owner_Address", TenantData.address);
 
-
-        
-        if (adharcard) {
-          formData.append("adhar_card", adharcard);
+        if (uploadprofileimage) {
+          formData.append("profileImage", uploadprofileimage); 
         }
+        if (backAadhar) {
+          formData.append("Adhar_back", backAadhar); 
+        }
+        if (addressProof) {
+          formData.append("Address_proof", addressProof); 
+        }
+        if (rentAgreement) {
+          formData.append("Rent_Agreement", rentAgreement); 
+        }
+        if (frontAadhar) {
+          formData.append("Adhar_front", frontAadhar); 
+        }
+       // Log the FormData to inspect its contents
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
-       
+        const response = await axiosInstance.post("/v2/resident/addtenant", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (response.status === 201) {
+          navigate("/Resident-Manegement");
+        }
       } catch (error) {
-        console.error("Error creating Guard:", error.response || error.message);
+        console.error("Error creating Tenant:", error.response || error.message);
       }
     } else {
       console.log("Form is invalid");
@@ -403,6 +422,10 @@ const TenantPage = () => {
         </div>
 
         <div className=" w-[1500px]  mt-2 mb-5 ml-[340px]  ">
+        {/* <form
+            className="space-y-4 w-[1500px]  bg-white p-3 pt-1"
+            onSubmit={handleSubmit}
+          > */}
           <div
             onSubmit={handleSubmit}
             className="flex bg-white  w-[1500px] mb-2 rounded-e-md mx-auto p-6"
@@ -417,7 +440,7 @@ const TenantPage = () => {
                 <input
                   type="text"
                   name="ownerName"
-                  value={formData.ownerName}
+                  value={TenantData.ownerName}
                   onChange={handleInputChange}
                   placeholder="Enter Owner Full Name"
                   className="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
@@ -431,7 +454,7 @@ const TenantPage = () => {
                 <input
                   type="tel"
                   name="ownerPhone"
-                  value={formData.ownerPhone}
+                  value={TenantData.ownerPhone}
                   onChange={handleInputChange}
                   placeholder="+91"
                   className="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
@@ -448,7 +471,7 @@ const TenantPage = () => {
                 <input
                   type="text"
                   name="address"
-                  value={formData.address}
+                  value={TenantData.address}
                   onChange={handleInputChange} // Call handleInputChange on change
                   placeholder="Enter Address"
                   className="w-full mt-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
@@ -464,7 +487,7 @@ const TenantPage = () => {
             <div className="flex items-center gap-6 ml-2">
               <div className="flex flex-col items-center">
                 <div className="border bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
-                  {photo ? (
+                  {/* {photo ? (
                     <img
                       src={photo}
                       alt="Owner"
@@ -472,18 +495,23 @@ const TenantPage = () => {
                     />
                   ) : (
                     <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
-                  )}
+                  )} */}
+                  {photo ? (
+                  <img src={photo} alt="Owner" className="w-[50px] h-[50px] object-cover rounded-full" />
+                ) : (
+                  <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
+                )}
                 </div>
                 <button
                   type="button"
                   className="mt-3 text-blue-500 no-underline"
-                  onClick={() => document.getElementById("fileInput").click()}
+                  onClick={() => document.getElementById("photoInput").click()}
                 >
                   Add Photo
                 </button>
               </div>
               <input
-                id="fileInput"
+                id="photoInput"
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoChange}
@@ -498,7 +526,7 @@ const TenantPage = () => {
                   <input
                     type="text"
                     name="fullName"
-                    value={formData.fullName}
+                    value={TenantData.fullName}
                     onChange={handleInputChange}
                     className="mt-1 block w-[430px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     placeholder="Enter Full Name"
@@ -511,7 +539,7 @@ const TenantPage = () => {
                   <input
                     type="tel"
                     name="phoneNumber"
-                    value={formData.phoneNumber}
+                    value={TenantData.phoneNumber}
                     onChange={handleInputChange}
                     className="mt-1 block w-[450px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="+91"
@@ -524,7 +552,7 @@ const TenantPage = () => {
                   <input
                     type=" email"
                     name="emailAddress"
-                    value={formData.emailAddress}
+                    value={TenantData.emailAddress}
                     onChange={handleInputChange}
                     className="mt-1 block w-[420px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="Enter Email Address"
@@ -542,7 +570,7 @@ const TenantPage = () => {
                   <input
                     type="text"
                     name="age"
-                    value={formData.age}
+                    value={TenantData.age}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="Enter Age"
@@ -554,14 +582,14 @@ const TenantPage = () => {
                   </label>
                   <select
                     name="gender"
-                    value={formData.gender}
+                    value={TenantData.gender}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   >
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                   </select>
                 </div>
 
@@ -572,7 +600,7 @@ const TenantPage = () => {
                   <input
                     type="text"
                     name="wing"
-                    value={formData.wing}
+                    value={TenantData.wing}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                     placeholder="Enter Wing"
@@ -586,7 +614,7 @@ const TenantPage = () => {
                   <input
                     type="text"
                     name="unit"
-                    value={formData.unit}
+                    value={TenantData.unit}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     placeholder="Enter Unit"
@@ -600,7 +628,7 @@ const TenantPage = () => {
                   <input
                     type="text"
                     name="relation"
-                    value={formData.relation}
+                    value={TenantData.relation}
                     onChange={handleInputChange}
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     placeholder="Enter Relation"
@@ -825,7 +853,7 @@ const TenantPage = () => {
                     <span>Select Member</span>
                     <select
                       name="memberCount"
-                      value={formData.memberCount}
+                      value={TenantData.memberCount}
                       onChange={handleMemberCountChange}
                       className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                     >
@@ -838,7 +866,7 @@ const TenantPage = () => {
                   </div>
                 </div>
 
-                {Array.from({ length: formData.memberCount }).map(
+                {Array.from({ length: TenantData.memberCount }).map(
                   (_, index) => (
                     <div key={index} className="flex gap-4">
                       <div className="flex-1 min-w-[200px]">
@@ -847,14 +875,14 @@ const TenantPage = () => {
                         </label>
                         <input
                           type="text"
-                          name="memberName"
+                          name="Full_name"
                           value={
-                            formData.memberDetails[index]?.memberName || ""
+                            TenantData.memberDetails[index]?.Full_name || ""
                           }
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "memberName",
+                              "Full_name",
                               e.target.value
                             )
                           }
@@ -869,12 +897,12 @@ const TenantPage = () => {
                         </label>
                         <input
                           type="tel"
-                          name="Number"
-                          value={formData.memberDetails[index]?.Number || ""}
+                          name="Phone_number"
+                          value={TenantData.memberDetails[index]?.Phone_number || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "Number",
+                              "Phone_number",
                               e.target.value
                             )
                           }
@@ -889,12 +917,12 @@ const TenantPage = () => {
                         </label>
                         <input
                           type="email"
-                          name="email"
-                          value={formData.memberDetails[index]?.email || ""}
+                          name="Email_address"
+                          value={TenantData.memberDetails[index]?.Email_address || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "email",
+                              "Email_address",
                               e.target.value
                             )
                           }
@@ -909,12 +937,12 @@ const TenantPage = () => {
                         </label>
                         <input
                           type="text"
-                          name="age"
-                          value={formData.memberDetails[index]?.age || ""}
+                          name="Age"
+                          value={TenantData.memberDetails[index]?.Age || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "age",
+                              "Age",
                               e.target.value
                             )
                           }
@@ -928,21 +956,21 @@ const TenantPage = () => {
                           Gender<span className="text-red-500">*</span>
                         </label>
                         <select
-                          name="gender"
-                          value={formData.memberDetails[index]?.gender || ""}
+                          name="Gender"
+                          value={TenantData.memberDetails[index]?.Gender || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "gender",
+                              "Gender",
                               e.target.value
                             )
                           }
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                         >
                           <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
                         </select>
                       </div>
 
@@ -953,12 +981,12 @@ const TenantPage = () => {
                         </label>
                         <input
                           type="text"
-                          name="relation"
-                          value={formData.memberDetails[index]?.relation || ""}
+                          name="Relation"
+                          value={TenantData.memberDetails[index]?.Relation || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "relation",
+                              "Relation",
                               e.target.value
                             )
                           }
@@ -982,7 +1010,7 @@ const TenantPage = () => {
                     <span>Select Vehicle</span>
                     <select
                       name="vehicleCount"
-                      value={formData.vehicleCount}
+                      value={TenantData.vehicleCount}
                       onChange={handleVehicleCountChange}
                       className="mt-1 w-10 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                     >
@@ -995,7 +1023,7 @@ const TenantPage = () => {
                   </div>
                 </div>
 
-                {Array.from({ length: formData.vehicleCount }).map(
+                {Array.from({ length: TenantData.vehicleCount }).map(
                   (_, index) => (
                     <div key={index} className="space-y-4 mt-4">
                       <div className="flex gap-4 items-center">
@@ -1005,20 +1033,20 @@ const TenantPage = () => {
                           </label>
                           <select
                             value={
-                              formData.vehicleDetails[index]?.vehicleType || ""
+                              TenantData.vehicleDetails[index]?.vehicle_type || ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
                                 index,
-                                "vehicleType",
+                                "vehicle_type",
                                 e.target.value
                               )
                             } // Removed extra space
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
                           >
                             <option value="">Select Vehicle Type</option>
-                            <option value="2-wheeler">2-Wheeler</option>
-                            <option value="4-wheeler">4-Wheeler</option>
+                            <option value="Two Wheeler">2-Wheeler</option>
+                            <option value="Four Wheeler">4-Wheeler</option>
                           </select>
                         </div>
 
@@ -1029,12 +1057,12 @@ const TenantPage = () => {
                           <input
                             type="text"
                             value={
-                              formData.vehicleDetails[index]?.vehicleName || ""
+                              TenantData.vehicleDetails[index]?.vehicle_name || ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
                                 index,
-                                "vehicleName",
+                                "vehicle_name",
                                 e.target.value
                               )
                             }
@@ -1051,13 +1079,13 @@ const TenantPage = () => {
                           <input
                             type="text"
                             value={
-                              formData.vehicleDetails[index]?.vehicleNumber ||
+                              TenantData.vehicleDetails[index]?.vehicle_number ||
                               ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
                                 index,
-                                "vehicleNumber",
+                                "vehicle_number",
                                 e.target.value
                               )
                             }
@@ -1076,7 +1104,7 @@ const TenantPage = () => {
               <button
                 type="button"
                 className="w-20 sm:w-[] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
-                onClick={() => navigate("/Resident-Management")}
+                onClick={() => navigate("/Resident-Manegement")}
               >
                 Cancel
               </button>

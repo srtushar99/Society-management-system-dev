@@ -48,11 +48,11 @@ const Resident = () => {
   
     if (item.Resident_status === "Owner") {
       navigate("/editowner", { 
-        state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } 
+        state: { existingData: item, memberCount: item.Member_Counting_Total, vehicleCount: item.Vehicle_Counting_Total } 
       });
     } else if (item.Resident_status === "Tenant") {
       navigate("/edittenant", { 
-        state: { existingData: item, memberCount: item.Member, vehicleCount: item.Vehicle } 
+        state: { existingData: item, memberCount: item.Member_Counting_Total, vehicleCount: item.Vehicle_Counting_Total } 
       });
     }
   };
@@ -243,7 +243,7 @@ const Resident = () => {
                     </td>
                     <td className="p-3 pt-2 ps-2 hidden md:table-cell">
                       <span className="bg-[#F6F8FB] p-2 text-[#4F4F4F] rounded-2xl w-[30px] h-[60px] ml-5">
-                        {!!item.Vehicle_Counting_Tota ? item.Vehicle_Counting_Tota : 0}
+                        {!!item.Vehicle_Counting_Total ? item.Vehicle_Counting_Total : 0}
                       </span>
                     </td>
                     <td className="p-3 pt-2">

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeaderBaner from "../Dashboard/Header/HeaderBaner"; // Ensure this path is correct
 import Sidebar from "../Sidebar/Sidebar"; // Ensure this path is correct
@@ -55,16 +55,16 @@ const OwnerPage = () => {
     // adharcard &&
     OwnerData.memberDetails.every(
       (member) =>
-        member.memberName &&
-        member.Number &&
-        member.email &&
-        member.age &&
-        member.gender &&
-        member.relation
+        member.Full_name &&
+        member.Phone_number &&
+        member.Email_address &&
+        member.Age &&
+        member.Gender &&
+        member.Relation
     ) &&
     OwnerData.vehicleDetails.every(
       (vehicle) =>
-        vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
+        vehicle.vehicle_type && vehicle.vehicle_name && vehicle.vehicle_number
     );
 
     const ClearAllData = () => {
@@ -135,12 +135,12 @@ const OwnerPage = () => {
 
     while (newMemberDetails.length < newMemberCount) {
       newMemberDetails.push({
-        memberName: "",
-        Number: "",
-        email: "",
-        age: "",
-        gender: "",
-        relation: "",
+        Full_name: "",
+        Phone_number: "",
+        Email_address: "",
+        Age: "",
+        Gender: "",
+        Relation: "",
       });
     }
 
@@ -156,9 +156,9 @@ const OwnerPage = () => {
     const updatedVehicleDetails = [...OwnerData.vehicleDetails].slice(0, count);
     while (updatedVehicleDetails.length < count) {
       updatedVehicleDetails.push({
-        vehicleType: "",
-        vehicleName: "",
-        vehicleNumber: "",
+        vehicle_type: "",
+        vehicle_name: "",
+        vehicle_number: "",
       });
     }
     setOwnerData((prevState) => ({
@@ -178,7 +178,7 @@ const OwnerPage = () => {
         formData.append("Full_name", OwnerData.fullName);
         formData.append("Phone_number", OwnerData.phoneNumber);
         formData.append("Email_address", OwnerData.emailAddress);
-        formData.append("Age", OwnerData.age);
+        formData.append("Age", Number(OwnerData.age));
         formData.append("Gender", OwnerData.gender);
         formData.append("Wing", OwnerData.wing);
         formData.append("Unit", OwnerData.unit);
@@ -201,13 +201,16 @@ const OwnerPage = () => {
         if (frontAadhar) {
           formData.append("Adhar_front", frontAadhar); 
         }
-        console.log(formData);
+       // Log the FormData to inspect its contents
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
         const response = await axiosInstance.post("/v2/resident/addowner", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           navigate("/Resident-Manegement");
         }
       } catch (error) {
@@ -221,12 +224,12 @@ const OwnerPage = () => {
 
   const handleVehicleDetailChange = (index, name, value) => {
     // Validation for vehicle details
-    if (name === "vehicleName") {
+    if (name === "vehicle_name") {
       const regex = /^[A-Za-z\s]*$/; // Allow letters and spaces, including empty
       if (!regex.test(value)) return;
     }
 
-    if (name === "vehicleNumber") {
+    if (name === "vehicle_number") {
       const regex = /^[A-Za-z0-9]+$/; // Alphanumeric for vehicle number
       if (!regex.test(value) && value !== "") return;
     }
@@ -241,22 +244,22 @@ const OwnerPage = () => {
 
   const handleMemberDetailChange = (index, name, value) => {
     // Validation for member details
-    if (name === "memberName" || name === "relation") {
+    if (name === "Full_name" || name === "Relation") {
       const regex = /^[A-Za-z\s]*$/; // Allow letters and spaces, including empty
       if (!regex.test(value)) return;
     }
 
-    if (name === "Number") {
+    if (name === "Phone_number") {
       const regex = /^[6-9]\d{0,9}$/; // Starts with 6,7,8,9 and allows up to 10 digits
       if (!regex.test(value) && value !== "") return; // Allow empty
     }
 
-    if (name === "Email") {
+    if (name === "email") {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
       if (value !== "" && !emailRegex.test(value)) return; // Allow empty
     }
 
-    if (name === "age") {
+    if (name === "Age") {
       const regex = /^(?:[1-9][0-9]?|1[01])$/; // Allows only numbers 1-99
       if (value !== "" && !regex.test(value)) return; // Allow empty
     }
@@ -483,9 +486,9 @@ const OwnerPage = () => {
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                 >
                   <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -766,12 +769,12 @@ const OwnerPage = () => {
                     </label>
                     <input
                       type="text"
-                      name="memberName"
-                      value={OwnerData.memberDetails[index]?.memberName || ""}
+                      name="Full_name"
+                      value={OwnerData.memberDetails[index]?.Full_name || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "memberName",
+                          "Full_name",
                           e.target.value
                         )
                       }
@@ -786,12 +789,12 @@ const OwnerPage = () => {
                     </label>
                     <input
                       type="tel"
-                      name="Number"
-                      value={OwnerData.memberDetails[index]?.Number || ""}
+                      name="Phone_number"
+                      value={OwnerData.memberDetails[index]?.Phone_number || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "Number",
+                          "Phone_number",
                           e.target.value
                         )
                       }
@@ -806,10 +809,10 @@ const OwnerPage = () => {
                     </label>
                     <input
                       type="email"
-                      name="email"
-                      value={OwnerData.memberDetails[index]?.email || ""}
+                      name="Email_address"
+                      value={OwnerData.memberDetails[index]?.Email_address || ""}
                       onChange={(e) =>
-                        handleMemberDetailChange(index, "email", e.target.value)
+                        handleMemberDetailChange(index, "Email_address", e.target.value)
                       }
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                       placeholder="Enter Email Address"
@@ -822,10 +825,10 @@ const OwnerPage = () => {
                     </label>
                     <input
                       type="text"
-                      name="age"
-                      value={OwnerData.memberDetails[index]?.age || ""}
+                      name="Age"
+                      value={OwnerData.memberDetails[index]?.Age || ""}
                       onChange={(e) =>
-                        handleMemberDetailChange(index, "age", e.target.value)
+                        handleMemberDetailChange(index, "Age", e.target.value)
                       }
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                       placeholder="Enter Age"
@@ -837,21 +840,21 @@ const OwnerPage = () => {
                       Gender<span className="text-red-500">*</span>
                     </label>
                     <select
-                      name="gender"
-                      value={OwnerData.memberDetails[index]?.gender || ""}
+                      name="Gender"
+                      value={OwnerData.memberDetails[index]?.Gender || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "gender",
+                          "Gender",
                           e.target.value
                         )
                       }
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     >
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
 
@@ -861,12 +864,12 @@ const OwnerPage = () => {
                     </label>
                     <input
                       type="text"
-                      name="relation"
-                      value={OwnerData.memberDetails[index]?.relation || ""}
+                      name="Relation"
+                      value={OwnerData.memberDetails[index]?.Relation || ""}
                       onChange={(e) =>
                         handleMemberDetailChange(
                           index,
-                          "relation",
+                          "Relation",
                           e.target.value
                         )
                       }
@@ -911,20 +914,20 @@ const OwnerPage = () => {
                       </label>
                       <select
                         value={
-                          OwnerData.vehicleDetails[index]?.vehicleType || ""
+                          OwnerData.vehicleDetails[index]?.vehicle_type || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
                             index,
-                            "vehicleType",
+                            "vehicle_type",
                             e.target.value
                           )
                         }
                         className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
                       >
                         <option value="">Select Vehicle Type</option>
-                        <option value="2-wheeler">2-Wheeler</option>
-                        <option value="4-wheeler">4-Wheeler</option>
+                        <option value="Two Wheeler">2-Wheeler</option>
+                        <option value="Four Wheeler">4-Wheeler</option>
                       </select>
                     </div>
 
@@ -935,12 +938,12 @@ const OwnerPage = () => {
                       <input
                         type="text"
                         value={
-                          OwnerData.vehicleDetails[index]?.vehicleName || ""
+                          OwnerData.vehicleDetails[index]?.vehicle_name || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
                             index,
-                            "vehicleName",
+                            "vehicle_name",
                             e.target.value
                           )
                         }
@@ -956,12 +959,12 @@ const OwnerPage = () => {
                       <input
                         type="text"
                         value={
-                          OwnerData.vehicleDetails[index]?.vehicleNumber || ""
+                          OwnerData.vehicleDetails[index]?.vehicle_number || ""
                         }
                         onChange={(e) =>
                           handleVehicleDetailChange(
                             index,
-                            "vehicleNumber",
+                            "vehicle_number",
                             e.target.value
                           )
                         }
@@ -979,7 +982,7 @@ const OwnerPage = () => {
             <button
               type="button"
               className="w-20 sm:w-[] px-3 py-2 border border-gray-300 rounded-lg text-[#202224] hover:bg-gray-50"
-              onClick={() => navigate("/Resident-Management")}
+              onClick={() => navigate("/Resident-Manegement")}
             >
               Cancel
             </button>
