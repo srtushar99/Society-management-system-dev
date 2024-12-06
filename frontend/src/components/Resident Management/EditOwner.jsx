@@ -44,6 +44,7 @@ const EditOwner = () => {
   } = location.state || {};
 
   const [OwnerData, setOwnerData] = useState({
+    OwnerId :existingData?._id || "",
     fullName: existingData?.Full_name || "",
     phoneNumber: existingData?.Phone_number || "",
     emailAddress: existingData?.Email_address || "",
@@ -57,6 +58,12 @@ const EditOwner = () => {
     memberDetails: existingData?.Member_Counting || [],
     // memberDetails: staticMembers.slice(0, memberCount),
     vehicleDetails: existingData?.Vehicle_Counting || [],
+    // vehicleDetails: staticVehicles.slice(0, vehicleCount),
+    profileImage: existingData?.profileImage || null,
+    adhar_front: existingData?.Adhar_front || null,
+    adhar_back: existingData?.Adhar_back || null,
+    address_proof: existingData?.Address_proof || null,
+    rent_Agreement: existingData?.Rent_Agreement || null,
   });
 
   const [photo, setPhoto] = useState(existingData?.profileImage || null);
@@ -339,22 +346,60 @@ const EditOwner = () => {
     if (isFormValid) {
       try {
         const formData = new FormData();
+        formData.append("Full_name", OwnerData.fullName);
+        formData.append("Phone_number", OwnerData.phoneNumber);
+        formData.append("Email_address", OwnerData.emailAddress);
+        formData.append("Age", Number(OwnerData.age));
+        formData.append("Gender", OwnerData.gender);
+        formData.append("Wing", OwnerData.wing);
+        formData.append("Unit", OwnerData.unit);
+        formData.append("Relation", OwnerData.relation);
+        formData.append("Member_Counting", JSON.stringify(OwnerData.memberDetails));
+        formData.append("Vehicle_Counting", JSON.stringify(OwnerData.vehicleDetails));
 
-        if (adharcard) {
-          formData.append("adhar_card", adharcard);
+        if (!isphoto) {
+          formData.append("profileImage", OwnerData.profileImage); 
+        }else{
+          formData.append("profileImage", photo); 
+        }
+        if (!backAadharView) {
+          formData.append("Adhar_back", OwnerData.adhar_back); 
+        }else{
+          formData.append("Adhar_back", backAadhar); 
+        }
+        if (!addressProofView) {
+          formData.append("Address_proof", OwnerData.address_proof); 
+        }else{
+          formData.append("Address_proof", addressProof); 
+        }
+        if (!rentAgreementView) {
+          formData.append("Rent_Agreement", OwnerData.rent_Agreement); 
+        }else{
+          formData.append("Rent_Agreement", rentAgreement); 
+        }
+        if (!frontAadharView) {
+          formData.append("Adhar_front", OwnerData.adhar_front); 
+        }else{
+          formData.append("Adhar_front", frontAadhar); 
         }
 
-        const response = await axiosInstance.post("/v2/security/addsecurity", formData, {
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
+
+        const response = await axiosInstance.put(`/v2/resident/owner/${OwnerData.OwnerId}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-
-        if (response.status === 200) {
+        if(!!response.data){
           navigate("/Resident-Manegement");
-          ClearAllData();
+        }else {
+          const errorData = await response.json();
+          console.error("Error saving:", errorData.message || "Something went wrong.");
         }
-      } catch (error) {
-        console.error("Error creating Guard:", error.response || error.message);
+      } catch (err) {
+        console.error(error);
       }
+
     } else {
       console.log("Form is invalid");
     }
@@ -589,9 +634,9 @@ const EditOwner = () => {
                   className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                 >
                   <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -943,9 +988,9 @@ const EditOwner = () => {
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                     >
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
 
@@ -1017,8 +1062,8 @@ const EditOwner = () => {
                         className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
                       >
                         <option value="">Select Vehicle Type</option>
-                        <option value="2-wheeler">2-Wheeler</option>
-                        <option value="4-wheeler">4-Wheeler</option>
+                        <option value="Two Wheeler">2-Wheeler</option>
+                        <option value="Four Wheeler">4-Wheeler</option>
                       </select>
                     </div>
 

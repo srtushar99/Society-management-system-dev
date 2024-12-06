@@ -124,6 +124,7 @@ const EditTenant = () => {
         memberDetails: initialMemberDetails,
         vehicleDetails: initialVehicleDetails,
       }));
+      setPhoto(existingData.profileImage || "");
     }
   }, [existingData, TenantData.memberCount, TenantData.vehicleCount]);
 
@@ -262,15 +263,15 @@ const EditTenant = () => {
     TenantData.memberDetails.every(
       (member) =>
         member.Full_name &&
-        member.Number &&
-        member.email &&
-        member.age &&
-        member.gender &&
-        member.relation
+        member.Phone_number &&
+        member.Email_address &&
+        member.Age &&
+        member.Gender &&
+        member.Relation
     ) &&
     TenantData.vehicleDetails.every(
       (vehicle) =>
-        vehicle.vehicleType && vehicle.vehicleName && vehicle.vehicleNumber
+        vehicle.vehicle_type && vehicle.vehicle_name && vehicle.vehicle_number
     );
 
  
@@ -319,8 +320,18 @@ const EditTenant = () => {
 
   const handleMemberCountChange = (e) => {
     const newMemberCount = parseInt(e.target.value, 10);
-    const newMemberDetails = staticMembers.slice(0, newMemberCount); // Get static members based on selected count
-
+    // const newMemberDetails = staticMembers.slice(0, newMemberCount); // Get static members based on selected count
+    const newMemberDetails = Array.from(
+      { length: newMemberCount },
+      (_, index) => ({
+        Full_name: TenantData.memberDetails[index]?.Full_name || "",
+        Phone_number: TenantData.memberDetails[index]?.Phone_number || "",
+        Email_address: TenantData.memberDetails[index]?.Email_address || "",
+        Age: TenantData.memberDetails[index]?.Age || "",
+        Gender: TenantData.memberDetails[index]?.Gender || "",
+        Relation: TenantData.memberDetails[index]?.Relation || "",
+      })
+    );
     setTenantData({
       ...TenantData,
       memberCount: newMemberCount,
@@ -330,7 +341,12 @@ const EditTenant = () => {
 
   const handleVehicleCountChange = (e) => {
     const count = parseInt(e.target.value, 10);
-    const updatedVehicleDetails = staticVehicles.slice(0, count); // Get static vehicles based on selected count
+    // const updatedVehicleDetails = staticVehicles.slice(0, count); // Get static vehicles based on selected count
+    const updatedVehicleDetails = Array.from({ length: count }, (_, index) => ({
+      vehicle_type: TenantData.vehicleDetails[index]?.vehicle_type || "",
+      vehicle_name: TenantData.vehicleDetails[index]?.vehicle_name || "",
+      vehicle_number: TenantData.vehicleDetails[index]?.vehicle_number || "",
+    }));
 
     setTenantData((prevState) => ({
       ...prevState,
@@ -339,12 +355,7 @@ const EditTenant = () => {
     }));
   };
 
-  const ClearAllData = () => {
 
-   
-    setadhar_card(null);
-
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
@@ -378,12 +389,12 @@ const EditTenant = () => {
 
   const handleVehicleDetailChange = (index, name, value) => {
     // Validation for vehicle details
-    if (name === "vehicleName") {
+    if (name === "vehicle_name") {
       const regex = /^[A-Za-z\s]+$/; // Only letters and spaces
       if (!regex.test(value)) return;
     }
 
-    if (name === "vehicleNumber") {
+    if (name === "vehicle_number") {
       const regex = /^[A-Za-z0-9]+$/; // Alphanumeric for vehicle number
       if (!regex.test(value)) return;
     }
@@ -398,22 +409,22 @@ const EditTenant = () => {
 
   const handleMemberDetailChange = (index, name, value) => {
     // Validation for member details
-    if (name === "Full_name" || name === "relation") {
+    if (name === "Full_name" || name === "Relation") {
       const regex = /^[A-Za-z\s]*$/; // Allow letters and spaces, including empty
       if (!regex.test(value)) return;
     }
 
-    if (name === "Number") {
+    if (name === "Phone_number") {
       const regex = /^[6-9]\d{0,9}$/; // Starts with 6,7,8,9 and allows up to 10 digits
       if (!regex.test(value) && value !== "") return; // Allow empty
     }
 
-    if (name === "Email") {
+    if (name === "Email_address") {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
       if (value !== "" && !emailRegex.test(value)) return; // Allow empty
     }
 
-    if (name === "age") {
+    if (name === "Age") {
       const regex = /^(?:[1-9][0-9]?|1[01])$/; // Allows only numbers 1-99
       if (value !== "" && !regex.test(value)) return; // Allow empty
     }
@@ -423,28 +434,71 @@ const EditTenant = () => {
     setTenantData({ ...TenantData, memberDetails: updatedMemberDetails });
   };
 
-  // Handle file upload for photo (image)
-  // const handleFileUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const validTypes = ["image/png", "image/jpg", "image/jpeg", "image/gif"];
-  //     const maxSize = 10 * 1024 * 1024; // 10MB
+ 
+  const handleFrontAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setFrontAadharView(true);
+        setFrontAadhar({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
 
-  //     if (!validTypes.includes(file.type)) {
-  //       alert("Invalid file type. Please upload PNG, JPG, or GIF.");
-  //       return;
-  //     }
+  const handleBackAadharChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setBackAadharView(true);
+        setBackAadhar({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
 
-  //     if (file.size > maxSize) {
-  //       alert("File size is too large. Maximum allowed size is 10MB.");
-  //       return;
-  //     }
+  const handleAddressProofChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setAddressProofView(true);
+        setAddressProof({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
 
-  //     console.log(`File uploaded for ${e.target.name}`);
-  //   }
-  // };
+  const handleRentAgreementChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setRentAgreementView(true);
+        setRentAgreement({
+          file,
+          name: file.name,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+      } else {
+        alert("File size should be less than 10MB");
+      }
+    }
+  };
 
-  // Handle photo change (show image preview)
 
   return (
     <div className="flex bg-gray-100 w-full h-screen">
@@ -573,14 +627,14 @@ const EditTenant = () => {
               <div className="flex flex-col items-center">
                 <div className="border bg-white rounded-full w-[50px] h-[50px] flex justify-center items-center">
                   {photo ? (
-                    <img
-                      src={Avatar}
-                      alt="Owner"
-                      className="w-[50px] h-[50px] object-cover rounded-full"
-                    />
-                  ) : (
-                    <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
-                  )}
+                  <img
+                    src={photo || Avatar}
+                    alt="Owner"
+                    className="w-[50px] h-[50px] object-cover rounded-full"
+                  />
+                ) : (
+                  <i className="fa-solid fa-camera text-[#FFFFFF]"></i>
+                )}
                 </div>
                 <button
                   type="button"
@@ -667,9 +721,9 @@ const EditTenant = () => {
                     className="mt-1 block w-[250px] px-3 py-2 border border-gray-300 rounded-lg bg-white text-[#202224] pr-10"
                   >
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
@@ -727,7 +781,8 @@ const EditTenant = () => {
                 <input
                   ref={frontInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  // onChange={(e) => handleFileChange(e, setFrontAadhar)}
+                  onChange={handleFrontAadharChange}
                   className="hidden"
                  
                   accept=".jpg,.jpeg,.png,.pdf"
@@ -737,7 +792,13 @@ const EditTenant = () => {
                     <span className="text-sm text-success ">{frontAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      // onClick={() => handleClearFile(setFrontAadhar, frontInputRef)}
+                      onClick={() => {
+                        setFrontAadhar(null);
+                        if (frontInputRef.current) {
+                          frontInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -771,7 +832,7 @@ const EditTenant = () => {
                 <input
                   ref={backInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setBackAadhar)}
+                  onChange={handleBackAadharChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -780,7 +841,12 @@ const EditTenant = () => {
                     <span className="text-sm text-success">{backAadhar.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setBackAadhar, backInputRef)}
+                      onClick={() => {
+                        setBackAadhar(null);
+                        if (backInputRef.current) {
+                          backInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -807,13 +873,13 @@ const EditTenant = () => {
 
             <div className="col-3 mx-1">
               <label className="block font-medium text-gray-700 mb-1">
-                Address Proof (Vera Bill or Light Bill) <span className="text-red-500">*</span>
+                Address Proof <span className="text-red-500">*</span>
               </label>
               <div className="border-2 border-dashed rounded-lg p-4 text-center">
                 <input
                   ref={addressInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setAddressProof)}
+                  onChange={handleAddressProofChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -822,7 +888,12 @@ const EditTenant = () => {
                     <span className="text-sm text-success">{addressProof.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setAddressProof, addressInputRef)}
+                      onClick={() => {
+                        setAddressProof(null);
+                        if (addressInputRef.current) {
+                          addressInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                     <X className="h-4 w-4" />
@@ -855,7 +926,7 @@ const EditTenant = () => {
                 <input
                   ref={rentInputRef}
                   type="file"
-                  onChange={(e) => handleFileChange(e, setRentAgreement)}
+                  onChange={handleRentAgreementChange}
                   className="hidden"
                   accept=".jpg,.jpeg,.png,.pdf"
                 />
@@ -864,7 +935,12 @@ const EditTenant = () => {
                     <span className="text-sm text-success">{rentAgreement.name}</span>
                     <button
                       type="button"
-                      onClick={() => handleClearFile(setRentAgreement, rentInputRef)}
+                      onClick={() => {
+                        setRentAgreement(null);
+                        if (rentInputRef.current) {
+                          rentInputRef.current.value = '';
+                        }
+                      }}
                       className="text-red-500"
                     >
                      <X className="h-4 w-4" />
@@ -946,12 +1022,12 @@ const EditTenant = () => {
                         </label>
                         <input
                           type="tel"
-                          name="Number"
-                          value={TenantData.memberDetails[index]?.Number || ""}
+                          name="Phone_number"
+                          value={TenantData.memberDetails[index]?.Phone_number || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "Number",
+                              "Phone_number",
                               e.target.value
                             )
                           }
@@ -966,12 +1042,12 @@ const EditTenant = () => {
                         </label>
                         <input
                           type="email"
-                          name="email"
-                          value={TenantData.memberDetails[index]?.email || ""}
+                          name="Email_address"
+                          value={TenantData.memberDetails[index]?.Email_address || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "email",
+                              "Email_address",
                               e.target.value
                             )
                           }
@@ -986,12 +1062,12 @@ const EditTenant = () => {
                         </label>
                         <input
                           type="text"
-                          name="age"
-                          value={TenantData.memberDetails[index]?.age || ""}
+                          name="Age"
+                          value={TenantData.memberDetails[index]?.Age || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "age",
+                              "Age",
                               e.target.value
                             )
                           }
@@ -1005,21 +1081,21 @@ const EditTenant = () => {
                           Gender<span className="text-red-500">*</span>
                         </label>
                         <select
-                          name="gender"
-                          value={TenantData.memberDetails[index]?.gender || ""}
+                          name="Gender"
+                          value={TenantData.memberDetails[index]?.Gender || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "gender",
+                              "Gender",
                               e.target.value
                             )
                           }
                           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224] pr-10"
                         >
                           <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
                         </select>
                       </div>
 
@@ -1029,12 +1105,12 @@ const EditTenant = () => {
                         </label>
                         <input
                           type="text"
-                          name="relation"
-                          value={TenantData.memberDetails[index]?.relation || ""}
+                          name="Relation"
+                          value={TenantData.memberDetails[index]?.Relation || ""}
                           onChange={(e) =>
                             handleMemberDetailChange(
                               index,
-                              "relation",
+                              "Relation",
                               e.target.value
                             )
                           }
@@ -1081,20 +1157,20 @@ const EditTenant = () => {
                           </label>
                           <select
                             value={
-                              TenantData.vehicleDetails[index]?.vehicleType || ""
+                              TenantData.vehicleDetails[index]?.vehicle_type || ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
                                 index,
-                                "vehicleType",
+                                "vehicle_type",
                                 e.target.value
                               )
                             } // Removed extra space
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
                           >
                             <option value="">Select Vehicle Type</option>
-                            <option value="2-wheeler">2-Wheeler</option>
-                            <option value="4-wheeler">4-Wheeler</option>
+                            <option value="Two Wheeler">2-Wheeler</option>
+                            <option value="Four Wheeler">4-Wheeler</option>
                           </select>
                         </div>
 
@@ -1105,12 +1181,12 @@ const EditTenant = () => {
                           <input
                             type="text"
                             value={
-                              TenantData.vehicleDetails[index]?.vehicleName || ""
+                              TenantData.vehicleDetails[index]?.vehicle_name || ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
                                 index,
-                                "vehicleName",
+                                "vehicle_name",
                                 e.target.value
                               )
                             }
@@ -1127,13 +1203,13 @@ const EditTenant = () => {
                           <input
                             type="text"
                             value={
-                              TenantData.vehicleDetails[index]?.vehicleNumber ||
+                              TenantData.vehicleDetails[index]?.vehicle_number ||
                               ""
                             }
                             onChange={(e) =>
                               handleVehicleDetailChange(
                                 index,
-                                "vehicleNumber",
+                                "vehicle_number",
                                 e.target.value
                               )
                             }
