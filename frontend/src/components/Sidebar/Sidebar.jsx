@@ -245,7 +245,8 @@ const Sidebar = () => {
             </Link>
           </div>
 
-          <div style={{ position: "relative", zIndex: "9898988" }}>
+          <div   style={{position: "relative",marginBottom: showFinancialDropdown ? "150px" : "0", 
+            }}>
             <div style={getIndicatorStyle("Financial-Manegement")}></div>
             <Dropdown
               show={showFinancialDropdown}
@@ -256,6 +257,7 @@ const Sidebar = () => {
                 style={{
                   ...getLinkStyle("Financial-Manegement"),
                   fontSize: "14px",
+            
                 }}
                 onClick={() => handleFinancialClick("income", "/income")}
               >
@@ -265,8 +267,9 @@ const Sidebar = () => {
                   alt="Financial Management"
                 />
                 Financial Management
+                
               </Dropdown.Toggle>
-              <Dropdown.Menu className="w-[225px] border-0 bg-white shadow-lg rounded-md mt-2">
+              <Dropdown.Menu className="w-[225px] border-0 bg-white shadow-lg rounded-md mt-2  ">
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("income", financialActive)}
@@ -325,6 +328,8 @@ const Sidebar = () => {
             </Dropdown>
           </div>
 
+     
+
           <div style={{ position: "relative" }}>
             <div style={getIndicatorStyle("Facility-Management")}></div>
             <Link
@@ -343,7 +348,12 @@ const Sidebar = () => {
             </Link>
           </div>
 
-          <div style={{ position: "relative" }}>
+          <div
+            style={{
+              position: "relative",
+              marginBottom: showComplaintsDropdown ? "100px" : "0",
+            }}
+          >
             <div style={getIndicatorStyle("Complaint-Tracking")}></div>
             <Dropdown
               show={showComplaintsDropdown}
@@ -411,10 +421,16 @@ const Sidebar = () => {
             </Dropdown>
           </div>
 
-          <div style={{ position: "relative" }}>
+          <div
+            style={{
+              position: "relative",
+              marginBottom: showSecurityDropdown ? "100px" : "0",  
+            }}
+          >
             <div style={getIndicatorStyle("security-Management")}></div>
             <Dropdown
               show={showSecurityDropdown}
+       
               onToggle={(isOpen) => setShowSecurityDropdown(isOpen)}
             >
               <Dropdown.Toggle
@@ -429,7 +445,6 @@ const Sidebar = () => {
               >
                 <img
                   src={SecurityIcon}
-                  
                   style={getIconStyle("security-Management")}
                   alt="Security Management"
                 />
