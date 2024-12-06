@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
-import Header from "../../../Dashboard/Header/HeaderBaner";
+import HeaderBaner from "../../../Dashboard/Header/HeaderBaner";
 import { Modal, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import "./otherincome.css";
@@ -15,6 +15,12 @@ const OtherIncomeInvoice = () => {
   const [isPayNowOpen, setIsPayNowOpen] = useState(false); 
   const [OtherIncome, setOtherIncome] = useState([]);
   const navigate = useNavigate();
+
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+
 
   const handleViewInvoiceClick = () => {
 
@@ -67,36 +73,59 @@ const OtherIncomeInvoice = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
+      <ResidentSidebar />
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-        {/* Breadcrumb Navigation */}
-        <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
-          <Link
-            to="/ResidentDashboard"
-            className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
-          >
-            Home
-          </Link>
-          <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
-          <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-            Maintenance Invoices
-          </span>
-        </div>
-        <Header />
-      </header>
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
+            <Link
+              to="/residentDashboard"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
+            >
+              Home
+            </Link>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+         Maintenance Invoice 
+            </span>
+          </div>
 
-      <div className="d-flex">
-        {/* Sidebar */}
-        <div className="col-2">
-          <ResidentSidebar />
-        </div>
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
+        </header>
+
+    
         {/* Main Content */}
-        <main className="lg:w-3/4 py-2">
+        <main className=" p-2  2xl:ml-[310px] py-2 2xl:w-[1590px]">
           {/* Pending Maintenance Section */}
-          <section className="mb-8 bg-white p-3" style={{ borderRadius: "15px" }}>
-            <div className="d-flex justify-content-between align-items-center mb-6">
-              <h3 className="text-2xl font-semibold text-gray-800">
+          <section className="mb-8 bg-white p-2 " style={{ borderRadius: "15px" }}>
+            <div className="d-flex justify-content-between align-items-center 2xl:p-2 mb-6">
+              <span className="2xl:text-2xl font-semibold text-gray-800">
                 Due Event Payment
-              </h3>
+              </span>
               {/* View Invoice Button */}
               <button
                 onClick={handleViewInvoiceClick}
@@ -105,12 +134,12 @@ const OtherIncomeInvoice = () => {
                 View Invoice
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 2xl:w-[1590px] gap-4">
               {OtherIncome.map((card, index) => (
               <div  key={card._id} className="bg-white shadow-lg rounded-lg p-4">
                 <div className="d-flex justify-content-between items-center mb-4">
                   <span className="font-semibold text-blue-600">Due Event Payment</span>
-                  <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs">
+                  <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs"> 
                     Pending
                   </span>
                 </div>
@@ -139,7 +168,7 @@ const OtherIncomeInvoice = () => {
             </div>
           </section>
         </main>
-      </div>
+
 
       {/* Modals */}
       <InvoiceModal show={showInvoiceModal} handleClose={handleCloseInvoiceModal} />

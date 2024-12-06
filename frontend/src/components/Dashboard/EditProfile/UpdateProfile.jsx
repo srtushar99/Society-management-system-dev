@@ -1,14 +1,15 @@
 import React, { useRef, useState } from "react"; // Import useState hook
 import "tailwindcss/tailwind.css"; // Import Tailwind CSS
 import Sidebar from "../../Sidebar/Sidebar";
-import NotificationIcon from "../../assets/notification-bing.png";
-import AvatarImage from "../../assets/Avatar.png";
+// import NotificationIcon from "../../assets/notification-bing.png";
+// import AvatarImage from "../../assets/Avatar.png";
 import pngwingImage from "../../assets/Frame 1000006013.png";
 import ProfileImage from "../../assets/Ellipse 1101.png";
 import editIcon from "../../assets/editIcon.png";
-
 import { Link } from "react-router-dom";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
+import { Dropdown } from "react-bootstrap";
+
 
 const UpdateProfile = () => {
   const [firstName, setFirstName] = useState("Arlene");
@@ -24,6 +25,14 @@ const UpdateProfile = () => {
   const handleEditClick = () => {
     fileInputRef.current.click();
   };
+
+  const [societies, setSocieties] = useState([
+    { _id: "1", Society_name: "Shantigram Residency" },
+    { _id: "2", Society_name: "Greenfield Apartments" },
+    { _id: "3", Society_name: "Blue Haven Villas" },
+  ]); 
+
+  const [selectedSociety, setSelectedSociety] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -46,6 +55,7 @@ const UpdateProfile = () => {
       phoneNumber,
       email,
       society,
+      selectedSociety: selectedSociety.Society_name,
       country,
       state,
       city,
@@ -67,7 +77,7 @@ const UpdateProfile = () => {
   };
 
   const preventNumericInput = (e) => {
-    // Only allow alphabetic characters and spaces
+
     const regex = /^[A-Za-z\s]*$/;
     if (!regex.test(e.key)) {
       e.preventDefault();
@@ -77,14 +87,11 @@ const UpdateProfile = () => {
   return (
     <div className="container-fluid bg-light min-h-screen">
       <Sidebar />
-
-      {/* Background image div with inline styles */}
       <div style={backgroundStyle}></div>
 
       <header className="flex justify-between items-center px-6 bg-white ml-[290px] h-[60px] shadow-md">
-        {/* Breadcrumb Navigation */}
         <div className="flex items-center space-x-2 text-gray-600">
-          {/* Home Link */}
+ 
           <Link
             to="/dashboard"
             className="text-[#A7A7A7] no-underline font-semibold"
@@ -94,8 +101,6 @@ const UpdateProfile = () => {
           <span className="text-gray-400"> &gt; </span>
           <span className="font-semibold  text-[#5678E9]">Edit Profile</span>
         </div>
-
-        {/* Notifications and Profile Section */}
         <HeaderBaner />
       </header>
       {/* Right side form heading and button */}
@@ -112,20 +117,24 @@ const UpdateProfile = () => {
                 src={profileImage}
                 alt="Profile"
                 className="rounded-full h-[120px] w-[120px] object-cover border-4 border-gray-200 shadow-md "
-              />     
+              />
               <button
                 className="absolute bottom-0 right-0 mb-80 w-5 bg-white rounded-full shadow-md"
                 style={{ transform: "translate(-240%, 140%)" }}
-                onClick={handleEditClick} 
+                onClick={handleEditClick}
               >
-              <img src={editIcon} alt="edit" className="h-5 w-5 bg-white rounded-full p-1" />
+                <img
+                  src={editIcon}
+                  alt="edit"
+                  className="h-5 w-5 bg-white rounded-full p-1"
+                />
               </button>
               <input
                 type="file"
                 ref={fileInputRef}
-                accept="image/*" 
-                style={{ display: "none" }} 
-                onChange={handleFileChange} 
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
               />
 
               <div className="absolute bottom-[230px] left-1/2 transform -translate-x-1/2 text-center flex space-x-2">
@@ -217,22 +226,36 @@ const UpdateProfile = () => {
                   />
                 </div>
 
-                <div>
+                <div className="w-full">
                   <label
                     htmlFor="society"
-                    className="block text-sm font-medium mb-2"
+                    className="block text-left text-sm font-medium mb-2"
                   >
                     Society <span style={{ color: "#FE512E" }}>*</span>
                   </label>
-                  <input
-                    type="text"
-                    id="society"
-                    className="w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter society name"
-                    value={society}
-                    onChange={(e) => setSociety(e.target.value)}
-                    required
-                  />
+
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="white"
+                      className="w-full border text-left"
+                    >
+                      {selectedSociety
+                        ? selectedSociety.name
+                        : "Select Society"}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu className="w-full">
+                      {societies.map((society) => (
+                        <Dropdown.Item
+                          key={society._id}
+                          eventKey={society._id}
+                          onClick={() => handleSelect(society)}
+                        >
+                          {society.Society_name}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </div>
 
                 <div>

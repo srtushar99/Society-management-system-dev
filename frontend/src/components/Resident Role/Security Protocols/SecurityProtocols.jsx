@@ -7,7 +7,7 @@ import axiosInstance from "../../Common/axiosInstance";
 
 const SecurityProtocols = () => {
   const [SecurityProtocols, setSecurityProtocols] = useState([]);
-
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const notifications = [
     {
       title: "Evelyn Harper (A- 101)",
@@ -49,6 +49,10 @@ const SecurityProtocols = () => {
       timeAgo: "32 Minutes ago",
     },
   ];
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+  
 
   // Fetch Security Protocols from the API
   const fetchSecurityProtocols = async () => {
@@ -71,8 +75,9 @@ const SecurityProtocols = () => {
     <div className="flex bg-gray-100 w-full h-full">
       <ResidentSidebar />
       <div className="flex-1 flex flex-col">
-        <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-          <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
+      <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
             <Link
               to="/residentDashboard"
               className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
@@ -81,11 +86,38 @@ const SecurityProtocols = () => {
             </Link>
             <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-              Security Protocols
+              Personal Detail
             </span>
           </div>
+
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
           <HeaderBaner />
         </header>
+
 
         <div className=" mt-5 w-full">
           <div className="rounded-lg 2xl:ml-[310px] shadow-md lg:w-[1590px] bg-[#FFFFFF]">
