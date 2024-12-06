@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 import { Dropdown } from "react-bootstrap";
 
-
 const UpdateProfile = () => {
   const [firstName, setFirstName] = useState("Arlene");
   const [lastName, setLastName] = useState("McCoy");
@@ -26,13 +25,17 @@ const UpdateProfile = () => {
     fileInputRef.current.click();
   };
 
+  const [selectedSociety, setSelectedSociety] = useState(null);
   const [societies, setSocieties] = useState([
     { _id: "1", Society_name: "Shantigram Residency" },
     { _id: "2", Society_name: "Greenfield Apartments" },
     { _id: "3", Society_name: "Blue Haven Villas" },
-  ]); 
+  ]);
 
-  const [selectedSociety, setSelectedSociety] = useState(null);
+  // Handle selection of society
+  const handleSelect = (society) => {
+    setSelectedSociety(society); // Update the selected society
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -77,7 +80,6 @@ const UpdateProfile = () => {
   };
 
   const preventNumericInput = (e) => {
-
     const regex = /^[A-Za-z\s]*$/;
     if (!regex.test(e.key)) {
       e.preventDefault();
@@ -91,7 +93,6 @@ const UpdateProfile = () => {
 
       <header className="flex justify-between items-center px-6 bg-white ml-[290px] h-[60px] shadow-md">
         <div className="flex items-center space-x-2 text-gray-600">
- 
           <Link
             to="/dashboard"
             className="text-[#A7A7A7] no-underline font-semibold"
@@ -240,7 +241,7 @@ const UpdateProfile = () => {
                       className="w-full border text-left"
                     >
                       {selectedSociety
-                        ? selectedSociety.name
+                        ? selectedSociety.Society_name
                         : "Select Society"}
                     </Dropdown.Toggle>
 
@@ -249,7 +250,7 @@ const UpdateProfile = () => {
                         <Dropdown.Item
                           key={society._id}
                           eventKey={society._id}
-                          onClick={() => handleSelect(society)}
+                          onClick={() => handleSelect(society)} // Ensure handleSelect is called
                         >
                           {society.Society_name}
                         </Dropdown.Item>
