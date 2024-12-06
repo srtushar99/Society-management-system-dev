@@ -188,12 +188,12 @@ const CreateComplaint = () => {
 
   const Badge = ({ children, className }) => (
     <span
-      className={`px-4 py-2 text-xs font-semibold ${className}`} // Added px-4 to give consistent padding
+      className={`px-4 py-2 text-xs font-semibold ${className}`} 
       style={{
         borderRadius: "15px",
-        display: "inline-block", // Ensure it's displayed as an inline-block
-        minWidth: "80px", // Set a minimum width to ensure consistency
-        textAlign: "center", // Center text within the badge
+        display: "inline-block", 
+        minWidth: "80px", 
+        textAlign: "center", 
       }}
     >
       {children}
@@ -279,9 +279,9 @@ const CreateComplaint = () => {
               Create Create
             </button>
           </div>
-          <div className="overflow-x-auto 2xl:overflow-y-hidden rounded-2xl h-[700px] 2xl:ml-5 ml-2 mr-2 scrollbar-thin  scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="overflow-x-auto  rounded-2xl h-[700px] 2xl:ml-5 ml-2 mr-2 scrollbar-thin  scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className="Content">
-              <table className="bg-white   2xl:w-[1560px]">
+              <table className="bg-white   2xl:w-[1530px]">
                 <thead
                   className="w-full "
                   style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}

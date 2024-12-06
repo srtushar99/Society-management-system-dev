@@ -11,13 +11,13 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
     { id: 1, text: "" },
     { id: 2, text: "" },
   ]);
-  const [pollType, setPollType] = useState("single");
-  const [pollCategory] = useState("rating");
+  // const [pollType, setPollType] = useState("single");
+  // const [pollCategory] = useState("rating");
 
   const modalRef = useRef(null);
   const navigate = useNavigate();
 
-  // Form validation
+
   const isFormValid = question && options.some((option) => option.ranked);
 
   const handleClose = () => {
@@ -25,21 +25,8 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
     navigate("/Polls");
   };
 
-  //   const handleAlphaInput = (index) => (e) => {
-  //     const value = e.target.value;
-  //     const regex = /^[A-Za-z ]*$/;
-
-  //     // Update option text if input matches regex
-  //     if (regex.test(value)) {
-  //       const newOptions = [...options];
-  //       newOptions[index].text = value;
-  //       setOptions(newOptions);
-  //     }
-  //   };
-
   const handleQuestionChange = (e) => {
     const value = e.target.value;
-    // Regex to allow only alphabets (A-Z, a-z) and spaces
     if (/^[A-Za-z\s]*$/.test(value)) {
       setQuestion(value);
     }
@@ -53,12 +40,18 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
       ]);
     }
   };
-
   const handleDeleteOption = (index) => {
+    if (index < 2 && options.length <= 2) {
+      return;
+    }
     const newOptions = options.filter((_, i) => i !== index);
-    setOptions(newOptions);
-  };
+    const updatedOptions = newOptions.map((option, i) => ({
+      ...option,
+      id: i + 1,
+    }));
 
+    setOptions(updatedOptions);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -92,7 +85,7 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
   return (
     <div
       ref={modalRef}
-      className="fixed inset-0 flex justify-center items-center  bg-opacity-50 z-50 p-4"
+      className="fixed inset-0 flex justify-center  items-center  bg-opacity-50 z-50 p-4"
     >
       <div className="bg-white w-[400px] max-w-lg mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
@@ -106,7 +99,6 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Poll Category Display */}
           <div className="w-full px-3 py-2 border border-[#202224] rounded-lg text-[#202224] flex items-center">
             <img
               src={rating}
@@ -117,7 +109,6 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
             <i className="fa-solid fa-chevron-down text-[#202224] ml-auto"></i>
           </div>
 
-          {/* Poll Question */}
           <div className="mt-4">
             <label className="block text-left font-medium text-[#202224] mb-1">
               Question<span className="text-red-500">*</span>
@@ -132,7 +123,6 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
             />
           </div>
 
-          {/* Options (Dynamic Fields) */}
           {options.map((option, index) => (
             <div
               key={option.id}
@@ -151,7 +141,7 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
                     type="radio"
                     name="ranking"
                     id={`option-${option.id}-rank-1`}
-                    value={1} // Always use rank 1
+                    value={1}
                     className="mr-2"
                     onChange={() => {
                       const newOptions = [...options];
@@ -165,7 +155,6 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
                 </div>
               </div>
 
-              {/* Delete Option Button */}
               <button
                 type="button"
                 className="text-red-600 bg-blue-50 rounded-2 p-2 mt-auto"
@@ -176,23 +165,23 @@ const Rating = ({ isOpen, onClose, fetchPolls }) => {
             </div>
           ))}
 
-          {/* Button to add more options */}
-          <button
-            type="button"
-            onClick={handleAddOption}
-            className="text-[#FE512E] mt-4"
-          >
-            <div className="flex items-center">
-              <img
-                src={add}
-                alt=""
-                className="bg-gradient-to-r from-[#FE512E] to-[#F09619] w-6 h-6 p-1 rounded-lg"
-              />
-              <span className="ml-2">Add an Option</span>
-            </div>
-          </button>
+          {options.length < 5 && (
+            <button
+              type="button"
+              onClick={handleAddOption}
+              className="text-[#FE512E] mt-4"
+            >
+              <div className="flex items-center">
+                <img
+                  src={add}
+                  alt=""
+                  className="bg-gradient-to-r from-[#FE512E] to-[#F09619] w-6 h-6 p-1 rounded-lg"
+                />
+                <span className="ml-2">Add an Option</span>
+              </div>
+            </button>
+          )}
 
-          {/* Buttons */}
           <div className="flex sm:flex-row gap-4 pt-2">
             <button
               type="button"

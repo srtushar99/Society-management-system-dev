@@ -6,13 +6,12 @@ import text from "../images/Text polls.png";
 
 const TextPolls = ({ isOpen, onClose, fetchPolls }) => {
   const [answer, setAnswer] = useState("");
-  const [pollType, setPollType] = useState("single");
-  const [pollCategory] = useState("numeric");
+  // const [pollType, setPollType] = useState("single");
+  // const [pollCategory] = useState("numeric");
 
   const modalRef = useRef(null);
   const navigate = useNavigate();
 
-  // Form validation: Ensure only alphabetic characters and spaces in the answer
   const isFormValid = /^[A-Za-z\s]+$/.test(answer) && answer.trim() !== "";
 
   const handleClose = () => {
@@ -20,12 +19,19 @@ const TextPolls = ({ isOpen, onClose, fetchPolls }) => {
     navigate("/Polls");
   };
 
+  const handleAnswerChange = (e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z\s]*$/.test(value)) {
+      setAnswer(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
       try {
         const pollData = {
-          answer, // Use answer instead of question
+          answer,
           pollType,
         };
 
@@ -65,7 +71,6 @@ const TextPolls = ({ isOpen, onClose, fetchPolls }) => {
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Poll Category Display */}
           <div className="w-full px-3 py-2 border border-[#202224] rounded-lg text-[#202224] flex items-center">
             <img
               src={text}
@@ -76,7 +81,6 @@ const TextPolls = ({ isOpen, onClose, fetchPolls }) => {
             <i className="fa-solid fa-chevron-down text-[#202224] ml-auto"></i>
           </div>
 
-          {/* Answer Field */}
           <div className="mt-4">
             <label className="block text-left font-medium text-[#202224] mb-1">
               Answer<span className="text-red-500">*</span>
@@ -84,14 +88,12 @@ const TextPolls = ({ isOpen, onClose, fetchPolls }) => {
             <textarea
               placeholder="Enter your answer"
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              onChange={handleAnswerChange}
               className="w-full px-3 py-2 h-20 border border-gray-300 rounded-lg text-[#202224] resize-none"
-              pattern="^[A-Za-z\s]+$"
               required
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex sm:flex-row gap-4 pt-2">
             <button
               type="button"
