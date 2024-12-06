@@ -19,6 +19,7 @@
     const [uploadedFile, setUploadedFile] = useState(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
+    const [selectedMessageId, setSelectedMessageId] = useState(null);
 
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
@@ -41,6 +42,13 @@
 
     const handleContactClick = (contact) => {
       setSelectedContact(contact);
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSendMessage();
+      }
     };
 
     const handleSendMessage = () => {
@@ -99,6 +107,19 @@
         setIsRecording(false);
         setRecordingStartTime(null);
       }
+    };
+
+    const handleCopyMessage = () => {
+      const selectedMessage = messages[selectedContact.id]?.find(
+        (msg) => msg.id === selectedMessageId
+      );
+      if (selectedMessage?.content) {
+        navigator.clipboard.writeText(selectedMessage.content);
+        alert("Message copied!");
+      }
+    };
+    const handleSelectMessage = (messageId) => {
+      setSelectedMessageId(messageId);
     };
 
     const updateRecordingDuration = () => {
@@ -178,7 +199,7 @@
     }, [isCameraOpen]);
 
     return (
-      <Container fluid className="bg-light h-100 p-0">
+      <Container fluid className="bg-light  p-0"  style={{height:"90vh"}}>
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           <div className="d-flex align-items-center">
             <Link to="/ResidentDashboard" className="text-muted text-decoration-none">
@@ -196,7 +217,7 @@
           </Col>
 
           <Col md={10} className="py-2">
-            <Row className="h-100 py-2">
+            <Row className=" py-2" style={{height:"90vh"}}>
               <Col md={3} className="border-end bg-light">
                 <h5>Chat</h5>
                 <Form.Control type="text" placeholder="Search Here" className="mb-3" />
@@ -207,7 +228,7 @@
                       active={selectedContact?.id === contact.id}
                       className="d-flex align-items-center gap-3"
                       onClick={() => handleContactClick(contact)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer',backgroundColor: selectedContact?.id === contact.id ? "rgb(86, 120, 233, 0.1)" : "transparent",color:"black" ,border:"none"}}
                     >
                       <Image roundedCircle src={AvatarImage} alt={contact.name} />
                       <div>
@@ -240,17 +261,17 @@
                             <FaEllipsisV />
                           </Dropdown.Toggle>
                           <Dropdown.Menu align="end">
-                            <Dropdown.Item>Copy</Dropdown.Item>
-                            <Dropdown.Item>Forward</Dropdown.Item>
+                            <Dropdown.Item onClick={handleCopyMessage}>Copy</Dropdown.Item>
+                            <Dropdown.Item onClick={handleCopyMessage}>Forward</Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                       </div>
                     </div>
 
-                    <div className="flex-grow-1 overflow-auto mb-3 px-3 chat-messages">
+                    <div className="flex-grow-1 overflow-auto mb-5 px-3 chat-messages" >
                       {messages[selectedContact.id]?.map((msg) => (
                         <div key={msg.id} className={`d-flex ${msg.sender === 'User' ? 'justify-content-end' : ''} mb-2`}>
-                          <div className={`p-2 rounded ${msg.sender === 'User' ? 'text-white bg-primary' : 'bg-light'}`}>
+                          <div className={`p-2 rounded ${msg.sender === 'User' ? 'text-black bg-pri' : 'bg-light'}`}  onClick={() => handleSelectMessage(msg.id)}>
                             {msg.content && <div>{msg.content}</div>}
                             {msg.image && (
                               <div>
@@ -278,7 +299,7 @@
                   </>
                 )}
 
-                <Form className="d-flex align-items-center gap-2 border-top p-3">
+                <Form className="d-flex align-items-center gap-2 border-top pt-5">
                   <Button variant="link" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
                     <FaSmile />
                   </Button>
@@ -288,6 +309,7 @@
                     placeholder="Type a message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
                   />
                   <Button variant="link" onClick={() => fileInputRef.current.click()}>
                     <FaPaperclip />
@@ -334,3 +356,4 @@
     );
   }
 
+ 

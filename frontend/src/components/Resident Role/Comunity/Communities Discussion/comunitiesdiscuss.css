@@ -28,7 +28,9 @@
   .chat-messages::-webkit-scrollbar-thumb:hover, .contacts-sidebar::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
-  
+  .bg-pri{
+    background-color: rgb(86, 120, 233,0.2) !important;
+  }
   /* Responsive styles */
   @media (max-width: 768px) {
     .d-none.d-sm-flex {

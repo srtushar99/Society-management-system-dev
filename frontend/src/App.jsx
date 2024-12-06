@@ -53,6 +53,7 @@ import Viewmaintenence from './components/Resident Role/Payment Portal/Maintenan
 import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
 import PersonalTenant from './components/Resident Role/Personal Detail/PersonalTenant';
 import OtherIncomeTable from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeTable';
+import PostAnswer from './components/Resident Role/Comunity/Communities Discussion/PostAnswer';
 // import UpdateMaintenance from './components/Resident Role/Dashboard/Notification Panel/UpdateMaintenance';
 
 
@@ -106,6 +107,7 @@ function App() {
             <Route path="PersonalDetail" element={<PersonalDetail/>} />
             <Route path="TenantDetail" element={<PersonalTenant/>} />
             <Route path="AccessForums" element={<AccessForums/>} />
+            <Route path="PostAnswer" element={<PostAnswer/>} />
             <Route path="Polls" element={<Polls/>} />
             <Route path="CommunitiesDiscussion" element={<CommunitiesDiscussion/>} />
             <Route path="/complain" element={<ComplainSubmission/>} />
