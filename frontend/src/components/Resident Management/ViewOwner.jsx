@@ -115,7 +115,7 @@ const ViewOwner = ({ isOpen, onClose, owner }) => {
           <h1 className="text-lg font-semibold">View Owner Details</h1>
         </div>
         {/* </div> */}
-
+        <div className="overflow-y-auto h-screen scrollbar-thin   scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <div className="  items-center gap-4 mb-8">
           <img
             // src={AvatarImage || "/fallback-avatar.png"}
@@ -161,7 +161,7 @@ const ViewOwner = ({ isOpen, onClose, owner }) => {
             </div>
           </div>
         </div>
-        <div className="overflow-y-auto h-screen scrollbar-thin   scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+  
         <div className="mx-2 mt-3">
           <h3 className="mb-2 text-lg font-semibold">Document</h3>
           <div className="">
