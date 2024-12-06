@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, Image, ListGroup } from "react-boots
 import { FaEllipsisV } from "react-icons/fa";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../../../Dashboard/Header/HeaderBaner";
+import HeaderBaner from "../../../Dashboard/Header/HeaderBaner";
 import AvatarImage from "../../../assets/Avatar.png";
 import "./comunitiesdiscuss.css"; // Custom styles
 
@@ -11,7 +11,10 @@ export default function CommunitiesDiscussion() {
   const Navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState(null);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
-
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
   const contacts = [
     { id: 1, name: "Michael John", lastMessage: "Hi, John! how are you?", time: "10:27", online: true },
     { id: 2, name: "Elizabeth Sarah", lastMessage: "Thank you for your order!", time: "9:20" },
@@ -52,15 +55,47 @@ export default function CommunitiesDiscussion() {
     <Container fluid className="bg-light h-100 p-0">
       {/* Header */}
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-        <div className="d-flex align-items-center text-muted">
-          <Link to="/ResidentDashboard" className="text-muted text-decoration-none">
-            Home
-          </Link>
-          <span className="mx-2">&gt;</span>
-          <span className="text-primary">Communities Discussion</span>
-        </div>
-        <Header />
-      </header>
+          {/* Breadcrumb Navigation */}
+          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
+            <Link
+              to="/residentDashboard"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
+            >
+              Home
+            </Link>
+            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
+         Communities Discuss
+            </span>
+          </div>
+
+          {/* Search Icon (Visible only on small screens) */}
+          <div
+            className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
+              isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
+            }`}
+          >
+            {!isSearchVisible && (
+              <button
+                onClick={toggleSearchVisibility}
+                className="text-muted bg-transparent border-0"
+              >
+                <i className="fas fa-search"></i> {/* Search Icon */}
+              </button>
+            )}
+            {isSearchVisible && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-1 py-1 w-[100px] rounded-md border mt-2"
+                />
+              </div>
+            )}
+          </div>
+
+          <HeaderBaner />
+        </header>
 
       <Row className="bg-gray" style={{ height: "90vh" }}>
         <Col md={2} className="border-end bg-white">
