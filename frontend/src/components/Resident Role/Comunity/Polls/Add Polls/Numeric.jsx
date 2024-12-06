@@ -9,8 +9,8 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
   const [options, setOptions] = useState([
     { id: 1, text: "", minValue: "", maxValue: "", decimalPlaces: "" },
   ]);
-  const [pollType, setPollType] = useState("single");
-  const [pollCategory] = useState("numeric");
+  // const [pollType, setPollType] = useState("single");
+  // const [pollCategory] = useState("numeric");
 
   const modalRef = useRef(null);
   const navigate = useNavigate();
@@ -30,17 +30,22 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
     if (onClose) onClose();
     navigate("/Polls");
   };
-
   const handleOptionChange = (index, field) => (e) => {
     const value = e.target.value;
-    const newOptions = [...options];
-    newOptions[index][field] = value;
-    setOptions(newOptions);
+    if (field === "minValue" || field === "maxValue" || field === "decimalPlaces") {
+      const numericValue = value.replace(/[^0-9]/g, ""); 
+      if (numericValue.length <= 5) {
+        const updatedOptions = [...options];
+        updatedOptions[index][field] = numericValue;
+        setOptions(updatedOptions);
+      } else {
+        console.log("Input must be a 5-digit number.");
+      }
+    }
   };
-
   const handleQuestionChange = (e) => {
     const value = e.target.value;
-    // Regex to allow only alphabets (A-Z, a-z) and spaces
+
     if (/^[A-Za-z\s]*$/.test(value)) {
       setQuestion(value);
     }
@@ -96,7 +101,7 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Poll Category Display */}
+
           <div className="w-full px-3 py-2 border border-[#202224] rounded-lg text-[#202224] flex items-center">
             <img
               src={numeric}
@@ -107,12 +112,12 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
             <i className="fa-solid fa-chevron-down text-[#202224] ml-auto"></i>
           </div>
 
-          {/* Poll Question */}
+   
           <div className="mt-4">
             <label className="block text-left font-medium text-[#202224] mb-1">
               Question<span className="text-red-500">*</span>
             </label>
-           <input
+            <input
               type="text"
               placeholder="Enter your question"
               value={question}
@@ -122,7 +127,7 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
             />
           </div>
 
-          {/* Options (Dynamic Fields) */}
+ 
           {options.map((option, index) => (
             <div key={option.id} className="space-y-4">
               <div className="flex space-x-2">
@@ -131,11 +136,11 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
                     Min Value<span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     value={option.minValue}
                     onChange={handleOptionChange(index, "minValue")}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-                    min="0"
+                    placeholder="Enter a Digit"
                     required
                   />
                 </div>
@@ -143,11 +148,13 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
                   <label className="block text-left font-medium text-[#202224] mb-1">
                     Max Value<span className="text-red-500">*</span>
                   </label>
+
                   <input
-                    type="number"
+                    type="text"
                     value={option.maxValue}
                     onChange={handleOptionChange(index, "maxValue")}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
+                    placeholder="Enter a Digit"
                     required
                   />
                 </div>
@@ -173,7 +180,6 @@ const Numeric = ({ isOpen, onClose, fetchPolls }) => {
             </div>
           ))}
 
-          {/* Buttons */}
           <div className="flex sm:flex-row gap-4 pt-2">
             <button
               type="button"

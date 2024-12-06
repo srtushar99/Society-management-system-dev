@@ -42,8 +42,8 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
     question ||
     pollCategory === "multichoice" ||
     pollCategory === "ranking" ||
-    pollCategory === "numeric" ||
     pollCategory === "rating" ||
+    pollCategory === "numeric" ||
     pollCategory === "text";
 
   const handleClose = () => {
@@ -55,12 +55,11 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
     setPollCategory(value);
     setIsDropdownOpen(false);
 
-    if (value === "multichoice") {
-      setQuestion("");
-    }
+    // if (value === "multichoice") {
+    //   setQuestion("");
+    // }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -168,7 +167,7 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
                       <img
                         src={select}
                         alt="Select Poll"
-                        className="w-4 h-4 mr-3"
+                        className="w-4 h-4 mr-3"    
                       />
                       <span className="text-[#A7A7A7]">Select Poll</span>
                     </div>
@@ -182,24 +181,14 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
                 {isDropdownOpen && (
                   <ul className="z-10 p-3 bg-white  border-gray-300 rounded-lg w-full shadow-lg">
                     {options.map((option) => (
-                      <li
-                        key={option.value}
-                        className="flex items-center cursor-pointer"
-                        onClick={() => handleSelect(option.value)} // Close dropdown on select
-                      >
-                        <input
-                          type="radio"
-                          checked={pollCategory === option.value}
-                          onChange={() => handleSelect(option.value)} // Close dropdown on select
-                          className="mr-2 border border-[#A7A7A7]"
-                        />
+                      <li key={option.value} className="flex items-center cursor-pointer" onClick={() => handleSelect(option.value)}>
+                        <input type="radio" checked={pollCategory === option.value} onChange={() => handleSelect(option.value)} className="mr-2 border border-[#A7A7A7]" />
                         <img
                           src={option.icon}
                           alt={option.label}
                           className="w-5 h-5 mr-3 ml-3"
                         />
-                        <span className="text-[#A7A7A7] mb-1">
-                          {option.label}
+                        <span className={`text-[#A7A7A7] mb-1 ${pollCategory === option.value ? "text-[#202224]": "" }`} >{option.label}
                         </span>
                       </li>
                     ))}
@@ -209,7 +198,7 @@ const AddPolls = ({ isOpen, onClose, fetchPolls }) => {
             </div>
           </div>
 
-          {/* Buttons */}
+
           <div className="flex sm:flex-row gap-4">
             <button
               type="button"
