@@ -286,7 +286,7 @@ const Annoucements = (card) => {
               </h1>
               {/* Create Announcement Button */}
               <button
-                onClick={handleCreateNoteClick} // Trigger modal opening
+                onClick={handleCreateNoteClick} 
                 className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
               >
                 Create Announcement
