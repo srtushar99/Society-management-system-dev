@@ -44,7 +44,7 @@ const EditOwner = () => {
   } = location.state || {};
 
   const [OwnerData, setOwnerData] = useState({
-    OwnerId :existingData?._id || "",
+    OwnerId: existingData?._id || "",
     fullName: existingData?.Full_name || "",
     phoneNumber: existingData?.Phone_number || "",
     emailAddress: existingData?.Email_address || "",
@@ -56,9 +56,7 @@ const EditOwner = () => {
     memberCount: existingData?.Member_Counting_Total,
     vehicleCount: existingData?.Vehicle_Counting_Total,
     memberDetails: existingData?.Member_Counting || [],
-    // memberDetails: staticMembers.slice(0, memberCount),
     vehicleDetails: existingData?.Vehicle_Counting || [],
-    // vehicleDetails: staticVehicles.slice(0, vehicleCount),
     profileImage: existingData?.profileImage || null,
     adhar_front: existingData?.Adhar_front || null,
     adhar_back: existingData?.Adhar_back || null,
@@ -359,27 +357,27 @@ const EditOwner = () => {
 
         if (!isphoto) {
           formData.append("profileImage", OwnerData.profileImage); 
-        }else{
+        } else {
           formData.append("profileImage", photo); 
         }
         if (!backAadharView) {
           formData.append("Adhar_back", OwnerData.adhar_back); 
-        }else{
+        } else {
           formData.append("Adhar_back", backAadhar); 
         }
         if (!addressProofView) {
           formData.append("Address_proof", OwnerData.address_proof); 
-        }else{
+        } else {
           formData.append("Address_proof", addressProof); 
         }
         if (!rentAgreementView) {
           formData.append("Rent_Agreement", OwnerData.rent_Agreement); 
-        }else{
+        } else {
           formData.append("Rent_Agreement", rentAgreement); 
         }
         if (!frontAadharView) {
           formData.append("Adhar_front", OwnerData.adhar_front); 
-        }else{
+        } else {
           formData.append("Adhar_front", frontAadhar); 
         }
 
@@ -390,16 +388,15 @@ const EditOwner = () => {
         const response = await axiosInstance.put(`/v2/resident/owner/${OwnerData.OwnerId}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        if(!!response.data){
+        if (response.data) {
           navigate("/Resident-Manegement");
-        }else {
+        } else {
           const errorData = await response.json();
           console.error("Error saving:", errorData.message || "Something went wrong.");
         }
-      } catch (err) {
-        console.error(error);
+      } catch (error) {
+        console.error("Error updating owner:", error.response || error.message);
       }
-
     } else {
       console.log("Form is invalid");
     }
