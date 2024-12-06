@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Nav, Dropdown } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import DashboardIcon from "./icons/Widget 5.png";
+import DashboardIcon from "./Image/dashboard.png";
 import FinancialIcon from "./icons/dollar-square.png";
 import FacilitiesIcon from "./icons/domain.svg";
 import ComplaintsTrackingIcon from "./icons/sms-tracking.png";
@@ -13,7 +13,7 @@ import "../../Sidebar/sidebar.css";
 const ResidentSidebar = () => {
   const [activeLink, setActiveLink] = useState("ResidentDashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [communityActive, setCommunityActive] = useState("");
+  const [communityActive, setCommunityActive] = useState(""); 
   const [paymentActive, setPaymentActive] = useState("");
   const [showCommunityDropdown, setShowCommunityDropdown] = useState(false);
   const [showPaymentDropdown, setShowPaymentDropdown] = useState(false);
@@ -40,9 +40,6 @@ const ResidentSidebar = () => {
       setActiveLink('ServiceAndComplaint');
     }
    
-    else if (path === 'TenantDetail') {
-      setActiveLink('PersonalDetail');
-    }
     else if (path === 'MaintenanceTable') {
       setActiveLink('PaymentPortal');
     }
