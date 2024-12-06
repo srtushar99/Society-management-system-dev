@@ -12,7 +12,7 @@ import Activity from './Activity/Activity';
 
 const Dashboard = () => {
   return (
-    <div className="d-flex flex-column flex-md-row h-100 bg-light">
+    <div className="flex flex-column flex-md-row h-100 bg-light">
       {/* Sidebar */}
       <Sidebar />
 
@@ -22,7 +22,7 @@ const Dashboard = () => {
         <Cards />
 
         {/* Content Grid: Chart, ContactsPage, and Pending Maintenance */}
-        <div className="d-flex flex-column flex-md-row  px-2">
+        <div className="flex flex-column flex-md-row  px-2">
           <div className=" mb-3 mb-md-0">
             <Chart />
           </div>
@@ -35,12 +35,12 @@ const Dashboard = () => {
         </div>
 
         {/* Content Grid: Complain List and Activity */}
-        <div className="d-flex flex-column flex-md-row flex-1 p-2">
+        <div className="flex flex-column flex-md-row flex-1 p-2">
           <div className=" mb-3 mb-md-0">
             <Complain />
           </div>
           <div className="">
-            <Activity />
+            <Activity /> 
           </div>
         </div>
       </div>

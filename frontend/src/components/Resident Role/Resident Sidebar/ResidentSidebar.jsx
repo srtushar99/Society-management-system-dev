@@ -3,17 +3,18 @@ import { Nav, Dropdown } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import DashboardIcon from "./Image/dashboard.png";
-import FinancialIcon from "./icons/dollar-square.png";
-import FacilitiesIcon from "./icons/domain.svg";
-import ComplaintsTrackingIcon from "./icons/sms-tracking.png";
-import SecurityGuardIcon from "./icons/security-user.png";
-import AnnouncementIcon from "./icons/Announcement.png";
+import FinancialIcon from "./Image/community.png";
+import FacilitiesIcon from "./Image/service.png";
+import ComplaintsTrackingIcon from "./Image/wallet.png";
+import SecurityGuardIcon from "./Image/security.png";
+import AnnouncementIcon from "./Image/event.png";
+import personalIcon from "./Image/personalcard.png";
 import "../../Sidebar/sidebar.css";
 
 const ResidentSidebar = () => {
   const [activeLink, setActiveLink] = useState("ResidentDashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [communityActive, setCommunityActive] = useState(""); 
+  const [communityActive, setCommunityActive] = useState("");
   const [paymentActive, setPaymentActive] = useState("");
   const [showCommunityDropdown, setShowCommunityDropdown] = useState(false);
   const [showPaymentDropdown, setShowPaymentDropdown] = useState(false);
@@ -22,40 +23,35 @@ const ResidentSidebar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    
-    const path = location.pathname.split('/')[1];
-    setActiveLink(path || 'ResidentDashboard');
-     if (location.pathname === '/residentsidebar') {
-      navigate('/ResidentDashboard');
+    const path = location.pathname.split("/")[1];
+    setActiveLink(path || "ResidentDashboard");
+    if (location.pathname === "/residentsidebar") {
+      navigate("/ResidentDashboard");
       return;
-    }
-    else if (path === 'EventsParticipation') {
-      setActiveLink('EventsParticipation');
-    }
-    else if (path === 'activity') {
-      setActiveLink('EventsParticipation');
-    }
-
-    else if (path === 'Request') {
-      setActiveLink('ServiceAndComplaint');
-    }
-   
-    else if (path === 'MaintenanceTable') {
-      setActiveLink('PaymentPortal');
-    }
-    else if (path === 'PostAnswer') {
-      setActiveLink('Community');
-    }
-    else if (['AccessForums', 'Polls', 'CommunitiesDiscussion'].includes(path)) {
-      setActiveLink('Community');
+    } else if (path === "EventsParticipation") {
+      setActiveLink("EventsParticipation");
+    } else if (path === "activity") {
+      setActiveLink("EventsParticipation");
+    } else if (path === "TenantDetail") {
+      setActiveLink("PersonalDetail");
+    } else if (path === "Request") {
+      setActiveLink("ServiceAndComplaint");
+    } else if (path === "MaintenanceTable") {
+      setActiveLink("PaymentPortal");
+    } else if (path === "PostAnswer") {
+      setActiveLink("Community");
+    } else if (
+      ["AccessForums", "Polls", "CommunitiesDiscussion"].includes(path)
+    ) {
+      setActiveLink("Community");
       setCommunityActive(path);
       setShowCommunityDropdown(true);
-    } else if (['MaintenanceInvoices', 'OtherIncomeInvoice',].includes(path)) {
-      setActiveLink('PaymentPortal');
+    } else if (["MaintenanceInvoices", "OtherIncomeInvoice"].includes(path)) {
+      setActiveLink("PaymentPortal");
       setPaymentActive(path);
       setShowPaymentDropdown(true);
     }
-  }, [location,navigate]);
+  }, [location, navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -118,9 +114,10 @@ const ResidentSidebar = () => {
 
   const getLinkStyle = (link) => ({
     ...navLinkStyle,
-    background: activeLink === link
-      ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
-      : "transparent",
+    background:
+      activeLink === link
+        ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
+        : "transparent",
     color: activeLink === link ? "#FFFFFF" : "#4F4F4F",
   });
 
@@ -130,21 +127,23 @@ const ResidentSidebar = () => {
     width: "7px",
     height: "52px",
     borderRadius: "0 5px 5px 0",
-    background: activeLink === link
-      ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
-      : "transparent",
+    background:
+      activeLink === link
+        ? "linear-gradient(90deg, #FE512E 0%, #F09619 100%)"
+        : "transparent",
   });
 
   const getIconStyle = (link) => ({
     marginRight: "10px",
-    width: "20px",
+    width: "17px",
     height: "20px",
     filter: activeLink === link ? "brightness(0) invert(1)" : "none",
   });
 
   const dropdownItemStyle = (item, activeItem) => ({
     color: activeItem === item ? "#FE512E" : "#4F4F4F",
-    backgroundColor: activeItem === item ? "rgba(254, 81, 46, 0.1)" : "transparent",
+    backgroundColor:
+      activeItem === item ? "rgba(254, 81, 46, 0.1)" : "transparent",
     display: "flex",
     alignItems: "center",
     padding: "10px 15px",
@@ -204,7 +203,9 @@ const ResidentSidebar = () => {
             <Link
               to="/ResidentDashboard"
               style={getLinkStyle("ResidentDashboard")}
-              onClick={() => handleLinkClick("ResidentDashboard", "/ResidentDashboard")}
+              onClick={() =>
+                handleLinkClick("ResidentDashboard", "/ResidentDashboard")
+              }
             >
               <img
                 src={DashboardIcon}
@@ -220,19 +221,16 @@ const ResidentSidebar = () => {
             <Link
               to="/PersonalDetail"
               style={getLinkStyle("PersonalDetail")}
-              onClick={() => handleLinkClick("PersonalDetail", "/PersonalDetail")}
+              onClick={() =>
+                handleLinkClick("PersonalDetail", "/PersonalDetail")
+              }
             >
-              <i
-                className="fa-solid fa-user"
-                style={{
-                  marginRight: "10px",
-                  color:
-                    activeLink === "PersonalDetail"
-                      ? "#FFFFFF"
-                      : "#4F4F4F",
-                }}
-              ></i>
-             Personal Detail
+              <img
+                src={personalIcon}
+                style={getIconStyle("PersonalDetail")}
+                alt=""
+              />
+              Personal Detail
             </Link>
           </div>
 
@@ -248,26 +246,31 @@ const ResidentSidebar = () => {
                 style={getIconStyle("complain")}
                 alt="complain"
               />
-             Service And Complaint
+              Service And Complaint
             </Link>
           </div>
 
           <div style={{ position: "relative" }}>
-            <div style={getIndicatorStyle("EventsParticipation",)}></div>
+            <div style={getIndicatorStyle("EventsParticipation")}></div>
             <Link
               to="/EventsParticipation"
               style={getLinkStyle("EventsParticipation")}
-              onClick={() => handleLinkClick("EventsParticipation", "/EventsParticipation")}
+              onClick={() =>
+                handleLinkClick("EventsParticipation", "/EventsParticipation")
+              }
             >
               <img
                 src={AnnouncementIcon}
                 style={getIconStyle("EventsParticipation")}
                 alt="EventsParticipation"
               />
-             Events Participation
+              Events Participation
             </Link>
           </div>
-          <div style={{ position: "relative", zIndex: "9898988" }}>
+        
+        
+          <div  style={{position: "relative",marginBottom: showCommunityDropdown ? "150px" : "0", 
+            }}>
             <div style={getIndicatorStyle("Community")}></div>
             <Dropdown
               show={showCommunityDropdown}
@@ -279,7 +282,9 @@ const ResidentSidebar = () => {
                   ...getLinkStyle("Community"),
                   fontSize: "14px",
                 }}
-                onClick={() => handleCommunityClick("AccessForums", "/AccessForums")}
+                onClick={() =>
+                  handleCommunityClick("AccessForums", "/AccessForums")
+                }
               >
                 <img
                   src={FinancialIcon}
@@ -292,7 +297,9 @@ const ResidentSidebar = () => {
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("AccessForums", communityActive)}
-                  onClick={() => handleCommunityClick("AccessForums", "/AccessForums")}
+                  onClick={() =>
+                    handleCommunityClick("AccessForums", "/AccessForums")
+                  }
                 >
                   {communityActive === "AccessForums" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -327,8 +334,16 @@ const ResidentSidebar = () => {
                 </Dropdown.Item>
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("CommunitiesDiscussion", communityActive)}
-                  onClick={() => handleCommunityClick("CommunitiesDiscussion", "/CommunitiesDiscussion")}
+                  style={dropdownItemStyle(
+                    "CommunitiesDiscussion",
+                    communityActive
+                  )}
+                  onClick={() =>
+                    handleCommunityClick(
+                      "CommunitiesDiscussion",
+                      "/CommunitiesDiscussion"
+                    )
+                  }
                 >
                   {communityActive === "CommunitiesDiscussion" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -347,9 +362,8 @@ const ResidentSidebar = () => {
             </Dropdown>
           </div>
 
-        
-
-          <div style={{ position: "relative" }}>
+          <div style={{position: "relative",marginBottom: showPaymentDropdown ? "110px" : "0", 
+            }}>
             <div style={getIndicatorStyle("PaymentPortal")}></div>
             <Dropdown
               show={showPaymentDropdown}
@@ -361,20 +375,33 @@ const ResidentSidebar = () => {
                   ...getLinkStyle("PaymentPortal"),
                   fontSize: "14px",
                 }}
-                onClick={() => handlePaymentClick("MaintenanceInvoices", "/MaintenanceInvoices")}
+                onClick={() =>
+                  handlePaymentClick(
+                    "MaintenanceInvoices",
+                    "/MaintenanceInvoices"
+                  )
+                }
               >
                 <img
                   src={ComplaintsTrackingIcon}
                   style={getIconStyle("PaymentPortal")}
                   alt="PaymentPortal"
                 />
-               Payment Portal
+                Payment Portal
               </Dropdown.Toggle>
               <Dropdown.Menu className="w-[225px] border-0 bg-white shadow-lg rounded-md mt-2">
                 <Dropdown.Item
                   href="#"
-                  style={dropdownItemStyle("MaintenanceInvoices", paymentActive)}
-                  onClick={() => handlePaymentClick("MaintenanceInvoices", "/MaintenanceInvoices")}
+                  style={dropdownItemStyle(
+                    "MaintenanceInvoices",
+                    paymentActive
+                  )}
+                  onClick={() =>
+                    handlePaymentClick(
+                      "MaintenanceInvoices",
+                      "/MaintenanceInvoices"
+                    )
+                  }
                 >
                   {paymentActive === "MaintenanceInvoices" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -386,13 +413,18 @@ const ResidentSidebar = () => {
                       alignItems: "center",
                     }}
                   >
-                  Maintenance Invoices
+                    Maintenance Invoices
                   </div>
                 </Dropdown.Item>
                 <Dropdown.Item
                   href="#"
                   style={dropdownItemStyle("OtherIncomeInvoice", paymentActive)}
-                  onClick={() => handlePaymentClick("OtherIncomeInvoice", "/OtherIncomeInvoice")}
+                  onClick={() =>
+                    handlePaymentClick(
+                      "OtherIncomeInvoice",
+                      "/OtherIncomeInvoice"
+                    )
+                  }
                 >
                   {paymentActive === "OtherIncomeInvoice" && (
                     <div style={dropdownIndicatorStyle}></div>
@@ -404,7 +436,7 @@ const ResidentSidebar = () => {
                       alignItems: "center",
                     }}
                   >
-                   Other Income Invoice
+                    Other Income Invoice
                   </div>
                 </Dropdown.Item>
               </Dropdown.Menu>
@@ -416,7 +448,9 @@ const ResidentSidebar = () => {
             <Link
               to="/SecurityProtocols"
               style={getLinkStyle("SecurityProtocols")}
-              onClick={() => handleLinkClick("SecurityProtocols", "/SecurityProtocols")}
+              onClick={() =>
+                handleLinkClick("SecurityProtocols", "/SecurityProtocols")
+              }
             >
               <img
                 src={SecurityGuardIcon}
@@ -426,8 +460,6 @@ const ResidentSidebar = () => {
               Security Protocols
             </Link>
           </div>
-
-        
         </Nav>
 
         <div style={{ marginTop: "auto" }}>
