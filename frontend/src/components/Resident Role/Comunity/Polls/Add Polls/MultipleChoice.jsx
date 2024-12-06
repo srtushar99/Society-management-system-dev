@@ -11,7 +11,8 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
     { id: 1, text: "" },
     { id: 2, text: "" },
   ]);
-  
+  const [errorMessage, setErrorMessage] = useState("");
+
   const modalRef = useRef(null);
   const navigate = useNavigate();
 
@@ -24,52 +25,66 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
     navigate("/Polls");
   };
 
-  const [errorMessage, setErrorMessage] = useState("");
-
   const handleAlphaInput = (index) => (e) => {
     const value = e.target.value;
     const regex = /^[A-Za-z ]*$/;
+
     if (value === "") {
-      setErrorMessage(""); 
+      setErrorMessage("");
       const newOptions = [...options];
       newOptions[index].text = "";
       setOptions(newOptions);
-      return; 
+      return;
     }
+
     if (regex.test(value)) {
-      const isDuplicate = options.some(
-        (option, i) => i !== index && option.text.toLowerCase() === value.toLowerCase()
-      );
-  
-      if (isDuplicate) {
-        setErrorMessage("This option is already used.");
-        return; 
-      } else {
-        setErrorMessage(""); 
-      }
-  
       const newOptions = [...options];
       newOptions[index].text = value;
+
+      const hasDuplicates = newOptions.some((option, i) =>
+        newOptions.some(
+          (otherOption, otherIndex) =>
+            i !== otherIndex &&
+            option.text.toLowerCase() === otherOption.text.toLowerCase()
+        )
+      );
+
+      if (hasDuplicates) {
+        setErrorMessage("This option is already used.");
+      } else {
+        setErrorMessage("");
+      }
+
       setOptions(newOptions);
     }
   };
 
-  
   const handleAddOption = () => {
     if (options.length < 5) {
       setOptions([...options, { id: options.length + 1, text: "" }]);
     }
   };
- 
+
   const handleDeleteOption = (index) => {
     if (options.length > 2) {
       const newOptions = options.filter((_, i) => i !== index);
       setOptions(newOptions);
-    } else {
-      console.log("At least two options are required.");
-    }
-  };
 
+      const hasDuplicates = newOptions.some((option, i) =>
+        newOptions.some(
+          (otherOption, otherIndex) =>
+            i !== otherIndex &&
+            option.text.toLowerCase() === otherOption.text.toLowerCase()
+        )
+      );
+
+      if (hasDuplicates) {
+        setErrorMessage("This option is already used.");
+      } else {
+        setErrorMessage("");
+      }
+    } 
+  };
 
   const handleQuestionChange = (e) => {
     const value = e.target.value;
@@ -77,8 +92,6 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
       setQuestion(value);
     }
   };
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,7 +109,7 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
 
         if (response.status === 201) {
           console.log("Poll created successfully:", response.data);
-          fetchPolls(); 
+          fetchPolls();
           onClose();
         }
       } catch (error) {
@@ -126,7 +139,6 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-
           <div className="w-full px-3 py-2 border border-[#202224] rounded-lg text-[#202224] flex items-center">
             <img
               src={multiple}
@@ -137,7 +149,6 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
             <i className="fa-solid fa-chevron-down text-[#202224] ml-auto"></i>
           </div>
 
-      
           <div className="mt-4">
             <label className="block text-left font-medium text-[#202224] mb-1">
               Question<span className="text-red-500">*</span>
@@ -152,7 +163,6 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
             />
           </div>
 
-      
           {options.map((option, index) => (
             <div key={option.id} className="flex items-center space-x-2">
               <div className="flex-grow">
@@ -160,24 +170,26 @@ const MultipleChoice = ({ isOpen, onClose, fetchPolls }) => {
                   Option {index + 1}
                   <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="Add option"
-                  value={option.text}
-                  onChange={handleAlphaInput(index)}
-                  className="w-[300px] px-3 py-2 border border-gray-300 rounded-lg text-[#202224]"
-                />
-                 {/* {errorMessage && <p className="text-red-500 text-sm mt-1">{errorMessage}</p>} */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    placeholder="Add option"
+                    value={option.text}
+                    onChange={handleAlphaInput(index)}
+                    className="w-full px-3 py-2  border border-gray-300 rounded-lg text-[#202224]"
+                  />
+                  <button
+                    type="button"
+                    className="text-red-600 bg-blue-50 rounded-2 p-2"
+                    onClick={() => handleDeleteOption(index)}
+                  >
+                    <i className="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+                {errorMessage && (
+                  <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                )}
               </div>
-
-          
-              <button
-                type="button"
-                className="text-red-600 bg-blue-50  rounded-2 p-2 mt-auto"
-                onClick={() => handleDeleteOption(index)}
-              >
-                <i className="fa-solid fa-trash"></i>
-              </button>
             </div>
           ))}
 
