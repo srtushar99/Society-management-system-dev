@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Image, ListGroup } from "react-bootstrap";
 import { FaEllipsisV } from "react-icons/fa";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../../Dashboard/Header/HeaderBaner";
 import AvatarImage from "../../../assets/Avatar.png";
-import { MessageCircle } from "lucide-react";
 import "./comunitiesdiscuss.css"; // Custom styles
 
 export default function CommunitiesDiscussion() {
-  const [message, setMessage] = useState("");
+  const Navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState(null);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
 
@@ -23,26 +22,36 @@ export default function CommunitiesDiscussion() {
   ];
 
   const discussions = [
-    { id: 1, user: "Michael John", question: "What is the capital of France?", replies: 20, votes: 30 },
-    { id: 2, user: "Jenny Wilson", question: "What is the capital of Italy?", replies: 15, votes: 25 },
-    { id: 3, user: "Esther Howard", question: "What is the capital of Spain?", replies: 12, votes: 20 },
-    { id: 4, user: "Cody Fisher", question: "What is the capital of Germany?", replies: 8, votes: 15 },
+    { id: 1, user: "Michael John", question: "What is the capital of France?", answer: "Paris", replies: 20, votes: 30 },
+    { id: 2, user: "Jenny Wilson", question: "What is the capital of Italy?", answer: "Rome", replies: 15, votes: 25 },
+    { id: 3, user: "Esther Howard", question: "What is the capital of Spain?", answer: "Madrid", replies: 12, votes: 20 },
+    { id: 4, user: "Cody Fisher", question: "What is the capital of Germany?", answer: "Berlin", replies: 8, votes: 15 },
   ];
+
+  useEffect(() => {
+    const defaultContact = contacts.find((contact) => contact.name === "Community");
+    if (defaultContact) {
+      setSelectedContact(defaultContact);
+    }
+  }, []);
+
+  const handleNextClick = () => {
+    Navigate("/PostAnswer");
+  };
 
   const handleContactClick = (contact) => {
     setSelectedContact(contact);
-    setShowQuestionForm(false); // Close form when switching contacts
+    setShowQuestionForm(false);
   };
 
   const handleAskQuestionClick = () => {
-    setShowQuestionForm(true); // Show the "Ask a Question" form
+    setShowQuestionForm(true);
   };
 
   return (
     <Container fluid className="bg-light h-100 p-0">
       {/* Header */}
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-        {/* Breadcrumb Navigation */}
         <div className="d-flex align-items-center text-muted">
           <Link to="/ResidentDashboard" className="text-muted text-decoration-none">
             Home
@@ -53,13 +62,11 @@ export default function CommunitiesDiscussion() {
         <Header />
       </header>
 
-      <Row className="h-100">
-        {/* Sidebar */}
+      <Row className="bg-gray" style={{ height: "90vh" }}>
         <Col md={2} className="border-end bg-white">
           <ResidentSidebar />
         </Col>
 
-        {/* Main Chat Interface */}
         <Col md={10} className="py-4 px-3">
           <Row className="h-100">
             {/* Contacts Sidebar */}
@@ -70,10 +77,12 @@ export default function CommunitiesDiscussion() {
                 {contacts.map((contact) => (
                   <ListGroup.Item
                     key={contact.id}
-                    active={selectedContact?.id === contact.id}
-                    className="d-flex align-items-center gap-3"
                     onClick={() => handleContactClick(contact)}
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      backgroundColor: selectedContact?.id === contact.id ? "rgb(86, 120, 233, 0.1)" : "transparent",
+                    }}
+                    className="d-flex align-items-center gap-3"
                   >
                     <Image src={AvatarImage} roundedCircle alt={contact.name} />
                     <div>
@@ -88,7 +97,6 @@ export default function CommunitiesDiscussion() {
 
             {/* Chat Area */}
             <Col md={9} className="d-flex flex-column bg-white p-4">
-              {/* Chat Header */}
               {selectedContact && !showQuestionForm && (
                 <>
                   <div className="d-flex justify-content-between align-items-center mb-4">
@@ -109,11 +117,11 @@ export default function CommunitiesDiscussion() {
                     </div>
                   </div>
 
-                  {/* Discussions */}
                   <div className="discussion-list">
                     {discussions.map((discussion) => (
-                      <div key={discussion.id} className="mb-3 border-bottom pb-3">
-                        <p className="mb-1">{discussion.question}</p>
+                      <div key={discussion.id} className="mb-3 p-3 border rounded" style={{ backgroundColor: "rgb(86, 120, 233, 0.1)" }}>
+                        <p className="mb-1 font-bold">{discussion.question}</p>
+                        <p className="mb-1 text-muted">{discussion.answer}</p>
                         <small className="text-muted">
                           {discussion.replies} replies • {discussion.votes} votes
                         </small>
@@ -123,32 +131,33 @@ export default function CommunitiesDiscussion() {
                 </>
               )}
 
-              {/* Ask a Question Form */}
               {showQuestionForm && (
-                <div className="bg-light p-4 border rounded">
-                  <h6>Writing a good question</h6>
-                  <p className="text-muted">
-                    You're ready to ask a programming-related question, and this form will help guide you through the
-                    process.
-                  </p>
-                  <ul className="text-muted">
-                    <li>Summarize your problem in a one-line title.</li>
-                    <li>Describe your problem in more detail.</li>
-                    <li>Describe what you tried and what you expected to happen.</li>
-                    <li>
-                      Add "tags" which help surface your question to members of the community.
-                    </li>
-                  </ul>
-                  <Form>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Title</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="e.g., How to find the index of an element in a vector?"
-                      />
-                    </Form.Group>
-                    <Button variant="primary">Next</Button>
-                  </Form>
+                <div className="p-4 rounded">
+                  <div className="p-4 border rounded" style={{ backgroundColor: "rgb(86, 120, 233, 0.2)" }}>
+                    <h5 style={{ fontWeight: "600" }}>Writing a good question</h5>
+                    <p className="text-muted">
+                      You are ready to ask a programming-related question, and this form will help guide you through the process.
+                    </p>
+                    <h6 style={{ fontWeight: "600" }}>Steps</h6>
+                    <ul className="text-muted" style={{ listStyleType: "circle" }}>
+                      <li>Summarize your problem in a one-line title.</li>
+                      <li>Describe your problem in more detail.</li>
+                      <li>Describe what you tried and what you expected to happen.</li>
+                      <li>Add tags to help surface your question to the community.</li>
+                    </ul>
+                  </div>
+                  <div className="my-3 bg-light p-4 border rounded">
+                    <Form>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Title</Form.Label>
+                        <p>Be specific and imagine you're asking a question to another person.</p>
+                        <Form.Control type="text" placeholder="e.g., How to find the index of an element in a vector?" />
+                      </Form.Group>
+                      <Button variant="primary" onClick={handleNextClick}>
+                        Next
+                      </Button>
+                    </Form>
+                  </div>
                 </div>
               )}
             </Col>
