@@ -1,17 +1,64 @@
 const Poll = require('../models/pollModel');
 
 // Create a new poll
+// exports.createPoll = async (req, res) => {
+//   try {
+//     const { author, title, type, options } = req.body;
+
+//     if (!author || !title || !type || !options || options.length < 2) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields are required, and a poll must have at least two options.",
+//       });
+//     }
+
+//     const userType = req.user?.Resident_status;
+
+//     if (userType !== 'Owner' && userType !== 'Tenant') {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Unauthorized user type for creating a poll.',
+//       });
+//     }
+
+//     const newPoll = new Poll({
+//       author,
+//       title,
+//       type,
+//       options,
+//       createdBy: req.user._id,
+//       createdByType: userType,
+//     });
+
+//     const savedPoll = await newPoll.save();
+
+//     return res.status(201).json({
+//       success: true,
+//       message: 'Poll created successfully.',
+//       data: savedPoll,
+//     });
+//   } catch (err) {
+//     console.error('Error creating poll:', err);
+//     return res.status(500).json({
+//       success: false,
+//       message: 'An unexpected error occurred while creating the poll.',
+//     });
+//   }
+// };
 exports.createPoll = async (req, res) => {
   try {
-    const { author, title, type, options } = req.body;
+    const {
+     
+      type,
+      title,
+      options,
+      min_values,
+      max_values,
+      decimal_places,
+      answar
+    } = req.body;
 
-    if (!author || !title || !type || !options || options.length < 2) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required, and a poll must have at least two options.",
-      });
-    }
-
+    // Validate user type
     const userType = req.user?.Resident_status;
 
     if (userType !== 'Owner' && userType !== 'Tenant') {
@@ -21,15 +68,20 @@ exports.createPoll = async (req, res) => {
       });
     }
 
+    // Create a new poll instance
     const newPoll = new Poll({
-      author,
       title,
       type,
       options,
+      min_values,
+      max_values,
+      decimal_places,
+      answar,
       createdBy: req.user._id,
       createdByType: userType,
     });
 
+    // Save the poll to the database
     const savedPoll = await newPoll.save();
 
     return res.status(201).json({
@@ -45,6 +97,8 @@ exports.createPoll = async (req, res) => {
     });
   }
 };
+
+
 
 // Get all polls
 exports.getPolls = async (req, res) => {

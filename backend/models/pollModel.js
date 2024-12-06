@@ -1,23 +1,27 @@
 const mongoose = require('mongoose'); // Import mongoose
 
 const pollSchema = new mongoose.Schema({
-  author: {
+
+
+  type: {
     type: String,
-    required: true
+    enum: [
+      "Multichoice polls",
+      "Numeric Polls",
+      "Ranking polls",
+      "Rating Polls",
+      "Text poll",
+    ],
+   
   },
   title: {
     type: String,
-    required: true
-  },
-  type: {
-    type: String,
-    enum: ['multichoice', 'ranking', 'rating', 'numeric', 'text'], 
-    required: true
+   
   },
   options: [{
     text: {
       type: String,
-      required: true
+      
     },
     votes: {
       type: Number,
@@ -28,6 +32,19 @@ const pollSchema = new mongoose.Schema({
       refPath: 'createdByType',
     }]
   }],
+  min_values:{
+    type: String,
+  },
+  max_values:{
+    type: String,
+  },
+  desimal_places:{
+    type:String,
+    default:0
+  },
+  answar:{
+    type:String
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     refPath: 'createdByType',
