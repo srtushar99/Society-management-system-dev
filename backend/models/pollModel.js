@@ -25,7 +25,6 @@ const pollSchema = new mongoose.Schema({
     },
     votes: {
       type: Number,
-      default: 0
     },
     voters: [{ // Track which users voted for this option
       type: mongoose.Schema.Types.ObjectId,
@@ -40,7 +39,6 @@ const pollSchema = new mongoose.Schema({
   },
   desimal_places:{
     type:String,
-    default:0
   },
   answar:{
     type:String

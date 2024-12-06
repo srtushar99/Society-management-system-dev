@@ -243,43 +243,61 @@ exports.resetPassword = async (req, res) => {
 exports.findUserById = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId);
+
+    // Find the user and populate the 'select_society' field
+    const user = await User.findById(userId).populate('select_society', 'Society_name');
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    res.status(200).json({ message: 'User found', data: user });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
-// find by id 
-exports.FindByIdProfile = async (req, res) => {
-  try {
-    const find = await User.findById(req.params.id, {
-      otp: 0,
-      otpExpiration: 0,
-    });
-    if (!find) {
-      return res.status(400).json({
-        success: false,
-        message: "No Data Found",
-      });
-    }
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      Profile: find,
+      message: 'User found',
+      data: {
+        id: user._id,
+        First_Name: user.First_Name,
+        Last_Name: user.Last_Name,
+        Email_Address: user.Email_Address,
+        Phone_Number: user.Phone_Number,
+        Country: user.Country,
+        State: user.State,
+        City: user.City,
+        Society: user.select_society ? user.select_society.Society_name : null,
+      },
     });
-  } catch (error) {
-    console.log("Error in logout controller", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+  } catch (err) {
+    console.error("Error finding user:", err.message);
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
 };
+
+
+// // find by id 
+// exports.FindByIdProfile = async (req, res) => {
+//   try {
+//     const find = await User.findById(req.params.id, {
+//       otp: 0,
+//       otpExpiration: 0,
+//     });
+//     if (!find) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "No Data Found",
+//       });
+//     }
+//     return res.status(200).json({
+//       success: true,
+//       Profile: find,
+//     });
+//   } catch (error) {
+//     console.log("Error in logout controller", error.message);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
 
 // Send Otp 
 
@@ -476,7 +494,6 @@ exports.editProfile = async (req, res) => {
         State,
         City,
         select_society,
-
         profileImage: imageUrl,
       },
       { new: true }

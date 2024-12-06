@@ -4,6 +4,108 @@ const User = require("../models/userModel");
 const Owner = require("../models/ownerModel");
 const Tenant = require("../models/tenantModel");
 const Notification = require('../models/notificationModel'); 
+const crypto = require("crypto");
+const Razorpay = require("razorpay");
+const dotenv = require('dotenv');
+dotenv.config();
+
+const razorpay = new Razorpay({
+  key_id: process.env.key_id,
+  key_secret: process.env.key_secret,
+});
+
+exports.updatePaymentMode = async (req, res) => {
+  const { maintenanceId } = req.params;
+  const { paymentMode, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+  const residentId = req.user.id;
+  console.log(residentId);
+  
+
+  try {
+    // Fetch maintenance record
+    const maintenanceRecord = await Maintenance.findById(maintenanceId);
+    if (!maintenanceRecord) {
+      return res.status(404).json({
+        success: false,
+        message: "Maintenance record not found",
+      });
+    }
+
+    const Maintenance_Amount = maintenanceRecord.Maintenance_Amount;
+
+    // Step 1: Create Razorpay Order if order ID is not provided
+    if (!razorpayOrderId) {
+      const razorpayOrder = await razorpay.orders.create({
+        amount: Maintenance_Amount * 100, // Convert to paisa
+        currency: "INR",
+        receipt: `receipt_${maintenanceId}_${residentId}`,
+      });
+
+      return res.status(200).json({
+        success: true,
+        razorpayOrderId: razorpayOrder.id,
+        amount: Maintenance_Amount,
+        message: "Razorpay order created successfully",
+      });
+    }
+
+    // Step 2: Validate Razorpay Payment
+    if (razorpayPaymentId && razorpaySignature) {
+      const generatedSignature = crypto
+        .createHmac("sha256", process.env.key_secret)
+        .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+        .digest("hex");
+        console.log(generatedSignature);
+
+      // Check if generated signature matches the provided signature
+      if (generatedSignature !== razorpaySignature) {
+        return res.status(400).json({
+          success: false,
+          message: "Payment verification failed. Invalid signature.",
+        });
+      }
+        
+      
+      // Step 3: Update Payment Status in Maintenance Record
+      const updatedMaintenance = await Maintenance.findOneAndUpdate(
+        { _id: maintenanceId, "ResidentList.resident": residentId },
+        {
+          $set: {
+            "ResidentList.$.paymentMode": paymentMode || "Razorpay",
+            "ResidentList.$.paymentStatus": "done",
+          },
+        },
+        { new: true }
+      ).populate("ResidentList.resident");
+
+      if (!updatedMaintenance) {
+        return res.status(404).json({
+          success: false,
+          message: "Maintenance record or resident not found.",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Payment successfully updated.",
+       
+      });
+    }
+
+    // Step 4: Incomplete Payment Details
+    return res.status(400).json({
+      success: false,
+      message: "Incomplete payment details provided.",
+    });
+  } catch (error) {
+    console.error("Error during Razorpay integration:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error updating payment mode.",
+    });
+  }
+};
+
 
 //check password correction in maintenance
 exports.CheckMaintenancePassword = async (req, res) => {
@@ -182,55 +284,55 @@ exports.GetMaintenance = async (req, res) => {
     }
   };
 
-////update and get payment
-exports.changePaymentDetails = async (req, res) => {
-    const { maintenanceId } = req.params; 
-    const { paymentMode } = req.body; 
-    const residentId = req.user.id; 
+// ////update and get payment
+// exports.changePaymentDetails = async (req, res) => {
+//     const { maintenanceId } = req.params; 
+//     const { paymentMode } = req.body; 
+//     const residentId = req.user.id; 
 
-    try {
-        // Validate input
-        if (!paymentMode) {
-            return res.status(400).json({
-                success: false,
-                message: "Payment mode is required",
-            });
-        }
+//     try {
+//         // Validate input
+//         if (!paymentMode) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Payment mode is required",
+//             });
+//         }
 
-        const updatedMaintenance = await Maintenance.findOneAndUpdate(
-            { 
-                _id: maintenanceId, 
-                "ResidentList.resident": residentId 
-            }, 
-            { 
-                $set: { 
-                    "ResidentList.$.paymentMode": paymentMode, 
-                    "ResidentList.$.paymentStatus": "done"   
-                } 
-            },
-            { new: true }
-        ).populate("ResidentList.resident"); 
+//         const updatedMaintenance = await Maintenance.findOneAndUpdate(
+//             { 
+//                 _id: maintenanceId, 
+//                 "ResidentList.resident": residentId 
+//             }, 
+//             { 
+//                 $set: { 
+//                     "ResidentList.$.paymentMode": paymentMode, 
+//                     "ResidentList.$.paymentStatus": "done"   
+//                 } 
+//             },
+//             { new: true }
+//         ).populate("ResidentList.resident"); 
 
-        if (!updatedMaintenance) {
-            return res.status(404).json({
-                success: false,
-                message: "Maintenance record or resident not found",
-            });
-        }
+//         if (!updatedMaintenance) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Maintenance record or resident not found",
+//             });
+//         }
 
-        return res.status(200).json({
-            success: true,
-            message: "Payment details updated successfully",
-            Maintenance: updatedMaintenance,
-        });
-    } catch (error) {
-        console.error("Error updating payment details:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error while updating payment details",
-        });
-    }
-};
+//         return res.status(200).json({
+//             success: true,
+//             message: "Payment details updated successfully",
+//             Maintenance: updatedMaintenance,
+//         });
+//     } catch (error) {
+//         console.error("Error updating payment details:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error while updating payment details",
+//         });
+//     }
+// };
 
 
   //fetchUserPendingMaintenance
