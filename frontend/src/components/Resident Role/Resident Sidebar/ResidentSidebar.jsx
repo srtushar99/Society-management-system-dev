@@ -40,6 +40,9 @@ const ResidentSidebar = () => {
       setActiveLink('ServiceAndComplaint');
     }
    
+    else if (path === 'TenantDetail') {
+      setActiveLink('PersonalDetail');
+    }
     else if (path === 'MaintenanceTable') {
       setActiveLink('PaymentPortal');
     }
