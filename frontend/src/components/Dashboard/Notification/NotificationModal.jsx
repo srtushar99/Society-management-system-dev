@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
-import NotificationImage from "../../assets/ellipse 1092.png";
+// import NotificationImage from "../../assets/ellipse 1092.png";
 import MoneysImage from "../../assets/moneys.png";
 import DoneImage from "../../assets/done.png";
 import NoNotification from "./NoNotification"; 
@@ -70,11 +70,11 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
               {/* Different notification images based on index */}
               {index === 0 && (
                 <div className="h-15 w-15 sm:h-8 sm:w-10 rounded-full flex items-center justify-center mr-3">
-                  <img
-                    src={NotificationImage}
+                  {/* <img
+                    // src={NotificationImage}
                     alt="Notification"
                     className="h-10 w-10 sm:h-8 sm:w-8"
-                  />
+                  /> */}
                 </div>
               )}
               {index === 2 && (
