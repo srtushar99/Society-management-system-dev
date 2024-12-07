@@ -10,7 +10,8 @@ import axiosInstance from "../../Common/axiosInstance";
 import axios from "axios";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import PayNow from "../Payment Portal/Maintenance Invoices/Paynow";
+// import PayNow from "../Payment Portal/Maintenance Invoices/Paynow";
+import PayNow from '../Payment Portal/Maintenance Invoices/PayNow';
 
 
 const PersonalOwner = ({ isOpen, onClose }) => {
