@@ -182,12 +182,12 @@ const OtherIncome = () => {
           <HeaderBaner />
         </header>
 
-        <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">
+        <main className="flex-1 rounded border  lg:ml-[290px] lg:w-700px bg-gray-100">
           <div className="lg:mt-[10px] ">
-            <div className="mt-10 lg:ml-[16px] px-4 sm:px-8 ">
+            <div className="mt-10 lg:ml-[16px] 2xl:px-4 px-8 ">
               <Link
                 to="/income"
-                className={` lg:h-[50px] 2xl:px-5 px-14 py-3 rounded-top no-underline ${
+                className={` lg:h-[50px] 2xl:px-2 px-3 py-3 rounded-top no-underline ${
                   activeButton === "maintenance"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -198,7 +198,7 @@ const OtherIncome = () => {
               </Link>
               <Link
                 to="/otherincome"
-                className={` lg:h-[50px] 2xl:px-5 px-10  py-3 rounded-top no-underline ${
+                className={` lg:h-[50px] 2xl:px-5 px-3  py-3 rounded-top no-underline ${
                   activeButton === "otherIncome"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"

@@ -145,14 +145,14 @@ const Income = ({ color }) => {
           <HeaderBaner />
         </header>
   
-        <div className="flex flex-col sm:flex-row justify-between items-center 2xl:ml-5 lg:mt-7 2xl:w-[1590px] p-3 bg-white rounded-md">
-          <div className="2xl:flex space-x-4">
+        <div className="flex flex-col sm:flex-row  justify-between items-center 2xl:ml-5 lg:mt-7 2xl:w-[1590px] p-3 bg-white rounded-md">
+          <div className="2xl:flex ">
             {/* First Card */}
             <div
-              className="bg-[#FFFFFF] mb-10 p-3"
+              className="bg-[#FFFFFF] mb-10 p-3 mr-5"
               style={{
                 maxHeight: "70px",
-                width: "300px",
+                width: "250px",
                 marginLeft: "15px",
                 borderRadius: "15px",
                 borderRight: "2px solid green",
@@ -181,7 +181,7 @@ const Income = ({ color }) => {
               className="bg-[#FFFFFF] p-3"
               style={{
                 maxHeight: "70px",
-                width: "300px",
+                width: "250px",
                 borderRadius: "15px",
                 borderRight: "2px solid red",
                 borderTop: "2px solid red",
@@ -214,10 +214,10 @@ const Income = ({ color }) => {
         </div>
   
         <div className="lg:mt-[10px]">
-          <div className="mt-4 px-4 sm:px-8">
+          <div className="mt-4 2xl:ps-0 ps-4 sm:px-8">
             <button
               onClick={() => handleButtonClick("maintenance")}
-              className={`lg:h-[50px] 2xl:px-5 px-14 py-3 rounded-top ${
+              className={`lg:h-[50px] 2xl:px-5 px-4 py-3 rounded-top ${
                 activeButton === "maintenance"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
@@ -227,7 +227,7 @@ const Income = ({ color }) => {
             </button>
             <Link
               to="/otherincome"
-              className={`lg:h-[50px] 2xl:px-5 px-10 py-3 rounded-top no-underline ${
+              className={`lg:h-[50px] 2xl:px-5 px-4 py-3 rounded-top no-underline ${
                 activeButton === "otherIncome"
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#FFFFFF] text-[#202224]"
