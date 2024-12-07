@@ -168,11 +168,11 @@ const RequestSubmission = () => {
         </header>
 
         <main className="flex-grow-1 rounded border bg-light">
-          <div className="lg:mt-[30px] mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[25px]">
+          <div className="lg:mt-[30px] mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[10x]">
             <div className="mt-4 lg:px-4  ">
               <Link
                 to="/complain"
-                className={`lg:h-[50px] lg:w-[180px] lg:px-4 py-3 p-3rounded-t-md no-underline transition-all ${
+                className={`lg:h-[50px] lg:w-[180px] lg:px-4 py-3 p-2 rounded-t-md no-underline transition-all ${
                   activeButton === "complain"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -192,7 +192,7 @@ const RequestSubmission = () => {
               </Link>
             </div>
           </div>
-          <div className="2xl:w-[1550px] 2xl:ml-[40px] bg-white p-4 rounded">
+          <div className="2xl:w-[1590px] 2xl:ml-[25px] bg-white p-4 rounded">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h6 className=" text-dark font-bold text-sm sm:text-lg">
                 Request
@@ -206,7 +206,7 @@ const RequestSubmission = () => {
               </button>
             </div>
 
-            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 ">
               {RequestTracking.map((card) => (
                 <div key={card._id} className="col mb-3">
                   <div className="card shadow-sm">

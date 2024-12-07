@@ -246,8 +246,8 @@ const EventsParticipation = () => {
           <HeaderBaner />
         </header>
 
-        <div className="ps-6 pe-6 w-full">
-          <div className="lg:mt-[30px] lg:ml-[280px]  xl:ml-[280px] 2xl:ml-[280px]">
+        <div className="ps-1 pe-1 w-full ">
+          <div className="lg:mt-[30px] lg:ml-[280px] ml-2  xl:ml-[280px] 2xl:ml-[290px]">
             <div className="mt-4 lg:px-5 ">
               <Link
                 to="/EventsParticipation"
@@ -264,7 +264,7 @@ const EventsParticipation = () => {
               <Link
                 to="/activity"
                 style={{ fontSize: "15px" }}
-                className={`lg:h-[50px] 2xl:h-[30px] sm:w-[60px]  py-3 p-3  rounded-t-md no-underline transition-all ${
+                className={`lg:h-[50px] 2xl:h-[30px] sm:w-[60px]  p-3  rounded-t-md no-underline transition-all ${
                   activeButton === "activity"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -274,7 +274,7 @@ const EventsParticipation = () => {
               </Link>
             </div>
           </div>
-          <div className="rounded-lg lg:ml-[300px] shadow-md 2xl:w-[1570px] bg-white">
+          <div className="rounded-lg lg:ml-[310px]   shadow-md 2xl:w-[1570px] bg-white">
             <h1 className="p-3  font-semibold text-gray-800 mt-2 fs-6">
               Events Participation
             </h1>

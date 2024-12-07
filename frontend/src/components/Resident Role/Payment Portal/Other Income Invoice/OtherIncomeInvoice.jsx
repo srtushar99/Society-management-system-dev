@@ -74,6 +74,7 @@ const OtherIncomeInvoice = () => {
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <ResidentSidebar />
+      <div className=" flex flex-col">
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
@@ -119,7 +120,7 @@ const OtherIncomeInvoice = () => {
 
     
         {/* Main Content */}
-        <main className=" p-2  2xl:ml-[310px] py-2 2xl:w-[1590px]">
+        <main className=" p-2 mt-3 2xl:ml-[310px] py-2 2xl:w-[1590px]">
           {/* Pending Maintenance Section */}
           <section className="mb-8 bg-white p-2 " style={{ borderRadius: "15px" }}>
             <div className="d-flex justify-content-between align-items-center 2xl:p-2 mb-6">
@@ -181,6 +182,7 @@ const OtherIncomeInvoice = () => {
           onPaymentSuccess={() => {}}
         />
       )}
+    </div>
     </div>
   );
 };

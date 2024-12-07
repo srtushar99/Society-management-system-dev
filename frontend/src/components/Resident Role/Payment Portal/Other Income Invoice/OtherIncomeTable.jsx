@@ -147,7 +147,7 @@ export default function otherIncomeTable() {
   return (
     <div className="flex bg-gray-100 w-full h-full">
       <ResidentSidebar />
-      <div className="flex-1 flex flex-col">
+      <div className=" flex flex-col">
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">

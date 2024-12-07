@@ -152,7 +152,7 @@ export function MaintenanceTable() {
       <div className="flex-1 flex flex-col">
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
-          <div className="d-flex align-items-center md:ml-[100px] 2xl:ml-[320px]  text-muted d-none d-sm-flex ">
+          <div className="d-flex align-items-center md:ml-[100px]  text-muted d-none d-sm-flex ">
             <Link
               to="/dashboard"
               className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"

@@ -173,7 +173,7 @@ const Sidebar = () => {
   return (
     <div>
       <div
-        className="sidebar-toggle-btn block 2xl:hidden  md:hidden lg:hidden xl:hidden "
+        className="sidebar-toggle-btn  2xl:hidden  md:hidden lg:hidden xl:hidden "
         style={{ zIndex: "9999" }}
         onClick={toggleSidebar}
       >
