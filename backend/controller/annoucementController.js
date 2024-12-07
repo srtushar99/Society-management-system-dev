@@ -6,30 +6,6 @@ const Guard = require('../models/securityGuardModel');
 
 
 // // Create a new announcement
-// exports.createAnnouncement = async (req, res) => {
-//     try {
-//         const { Announcement_Type, Title, Description, Announcement_Date, Announcement_Time, role } = req.body;
-
-//         if (!Announcement_Type || !Title || !Description || !Announcement_Date || !Announcement_Time) {
-//             return res.status(400).json({ message: 'All fields are required' });
-//         }
-
-//         const announcement = new Announcement({
-//             Announcement_Type,
-//             Title,
-//             Description,
-//             Announcement_Date,
-//             Announcement_Time,
-//             role,
-//         });
-
-//         await announcement.save();
-//         res.status(201).json({ message: 'Announcement created successfully' });
-//     } catch (error) {
-//         res.status(400).json({ message: 'Error creating announcement', error });
-//     }
-// };
-
 
 exports.createAnnouncement = async (req, res) => {
     try {

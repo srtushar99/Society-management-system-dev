@@ -57,39 +57,6 @@ exports.CreateAlert = async (req, res) => {
 };
 
 
-// exports.CreateAlert = async (req, res) => {
-//   try {
-//     const { alert_type, description } = req.body;
-
-//     if (!alert_type || !description) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Both 'alert_type' and 'description' are required.",
-//       });
-//     }
-
-//     const alert = new Alert({
-//       alert_type,
-//       description,
-//     });
-
-//     await alert.save();
-
-//     return res.status(201).json({
-//       success: true,
-//       message: "Alert has been successfully created.",
-//     });
-//   } catch (error) {
-//     console.error("Error occurred while creating the alert:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "An unexpected error occurred while creating the alert. Please try again later.",
-//     });
-//   }
-// };
-
-
-
 // Get alert
 
 exports.GetAlert = async (req, res) => {

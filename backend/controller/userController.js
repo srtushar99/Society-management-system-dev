@@ -274,31 +274,6 @@ exports.findUserById = async (req, res) => {
 };
 
 
-// // find by id 
-// exports.FindByIdProfile = async (req, res) => {
-//   try {
-//     const find = await User.findById(req.params.id, {
-//       otp: 0,
-//       otpExpiration: 0,
-//     });
-//     if (!find) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "No Data Found",
-//       });
-//     }
-//     return res.status(200).json({
-//       success: true,
-//       Profile: find,
-//     });
-//   } catch (error) {
-//     console.log("Error in logout controller", error.message);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// };
 
 // Send Otp 
 
