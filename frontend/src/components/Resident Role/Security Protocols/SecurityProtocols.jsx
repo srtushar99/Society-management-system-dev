@@ -77,7 +77,7 @@ const SecurityProtocols = () => {
       <div className="flex-1 flex flex-col">
       <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
-          <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
+          <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
               to="/residentDashboard"
               className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
@@ -86,7 +86,7 @@ const SecurityProtocols = () => {
             </Link>
             <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-              Personal Detail
+              Event Participation
             </span>
           </div>
 
@@ -114,12 +114,54 @@ const SecurityProtocols = () => {
               </div>
             )}
           </div>
+          {/*          
+          <div className="flex items-center justify-end me-5 space-x-4 sm:space-x-6">
+      
+        <button
+          className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
+          onClick={() => setIsModalOpen(true)} 
+        >
+          <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
+        </button>
 
+        <div className="flex items-center space-x-3 cursor-pointer" onClick={handleProfileClick}>
+         
+          <img
+            src={AvatarImage}
+            alt="Moni Roy"
+            width="40"
+            height="40"
+            className="rounded-full"
+          />
+          
+          
+          <div className="hidden sm:block flex-col items-start mt-2">
+            <span className="font-medium text-sm">Moni Roy</span>
+            <p className="text-xs text-gray-500">Admin</p>
+          </div>
+        </div>
+      </div>
+
+    
+      {isNoNotifications ? (
+        <NoNotification
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          notifications={notifications}
+          onClearAll={handleClearAll}
+        />
+      ) : (
+        <NotificationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          notifications={notifications}
+          onClearAll={handleClearAll} 
+        />
+      )} */}
           <HeaderBaner />
         </header>
 
-
-        <div className=" mt-5 w-full">
+        <div className=" mt-3 w-full">
           <div className="rounded-lg 2xl:ml-[310px] shadow-md lg:w-[1590px] bg-[#FFFFFF]">
             <h1 className="p-3 fs-6 font-semibold text-gray-800 mt-2">
               Security Protocols

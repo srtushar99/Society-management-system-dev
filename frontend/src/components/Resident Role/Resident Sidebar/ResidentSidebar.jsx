@@ -160,7 +160,7 @@ const ResidentSidebar = () => {
   return (
     <div>
       <div
-        className="sidebar-toggle-btn block lg:hidden"
+        className="sidebar-toggle-btn block "
         style={{ zIndex: "9999" }}
         onClick={toggleSidebar}
       >

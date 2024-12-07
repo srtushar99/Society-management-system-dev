@@ -239,8 +239,8 @@ const Activity = () => {
           <HeaderBaner />
         </header>
 
-        <div className="ps-6 pe-6 w-full">
-          <div className="lg:mt-[30px] lg:ml-[280px]  xl:ml-[280px] 2xl:ml-[280px]">
+        <div className="ps-1 pe-1 w-full">
+          <div className="lg:mt-[30px] lg:ml-[280px] ml-2 xl:ml-[280px] 2xl:ml-[290px]">
             <div className="mt-4 lg:px-5  ">
               <Link
                 to="/EventsParticipation"
@@ -267,7 +267,7 @@ const Activity = () => {
             </div>
           </div>
 
-          <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1570px] bg-white">
+          <div className="rounded-lg lg:ml-[310px]   shadow-md lg:w-[1550px] bg-white">
             <h1 className="p-3 fs-6 font-semibold text-gray-800 mt-2">
               Events Participation
             </h1>
