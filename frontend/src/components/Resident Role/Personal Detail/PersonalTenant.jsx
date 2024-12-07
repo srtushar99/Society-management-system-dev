@@ -10,8 +10,8 @@ import axios from "axios";
 import moment from "moment";
 import axiosInstance from "../../Common/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import PayNow from "../Payment Portal/Maintenance Invoices/Paynow";
-
+// import PayNow from "../Payment Portal/Maintenance Invoices/Paynow";
+import PayNow from '../Payment Portal/Maintenance Invoices/PayNow';
 const PersonalTenant = ({ isOpen, onClose }) => {
   const [activeButton, setActiveButton] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State for toggling the search input
