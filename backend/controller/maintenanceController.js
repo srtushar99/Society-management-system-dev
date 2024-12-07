@@ -14,98 +14,6 @@ const razorpay = new Razorpay({
   key_secret: process.env.key_secret,
 });
 
-exports.updatePaymentMode = async (req, res) => {
-  const { maintenanceId } = req.params;
-  const { paymentMode, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
-  const residentId = req.user.id;
-  console.log(residentId);
-  
-
-  try {
-    // Fetch maintenance record
-    const maintenanceRecord = await Maintenance.findById(maintenanceId);
-    if (!maintenanceRecord) {
-      return res.status(404).json({
-        success: false,
-        message: "Maintenance record not found",
-      });
-    }
-
-    const Maintenance_Amount = maintenanceRecord.Maintenance_Amount;
-
-    // Step 1: Create Razorpay Order if order ID is not provided
-    if (!razorpayOrderId) {
-      const razorpayOrder = await razorpay.orders.create({
-        amount: Maintenance_Amount * 100, // Convert to paisa
-        currency: "INR",
-        receipt: `receipt_${maintenanceId}_${residentId}`,
-      });
-
-      return res.status(200).json({
-        success: true,
-        razorpayOrderId: razorpayOrder.id,
-        amount: Maintenance_Amount,
-        message: "Razorpay order created successfully",
-      });
-    }
-
-    // Step 2: Validate Razorpay Payment
-    if (razorpayPaymentId && razorpaySignature) {
-      const generatedSignature = crypto
-        .createHmac("sha256", process.env.key_secret)
-        .update(`${razorpayOrderId}|${razorpayPaymentId}`)
-        .digest("hex");
-        console.log(generatedSignature);
-
-      // Check if generated signature matches the provided signature
-      if (generatedSignature !== razorpaySignature) {
-        return res.status(400).json({
-          success: false,
-          message: "Payment verification failed. Invalid signature.",
-        });
-      }
-        
-      
-      // Step 3: Update Payment Status in Maintenance Record
-      const updatedMaintenance = await Maintenance.findOneAndUpdate(
-        { _id: maintenanceId, "ResidentList.resident": residentId },
-        {
-          $set: {
-            "ResidentList.$.paymentMode": paymentMode || "Razorpay",
-            "ResidentList.$.paymentStatus": "done",
-          },
-        },
-        { new: true }
-      ).populate("ResidentList.resident");
-
-      if (!updatedMaintenance) {
-        return res.status(404).json({
-          success: false,
-          message: "Maintenance record or resident not found.",
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        message: "Payment successfully updated.",
-       
-      });
-    }
-
-    // Step 4: Incomplete Payment Details
-    return res.status(400).json({
-      success: false,
-      message: "Incomplete payment details provided.",
-    });
-  } catch (error) {
-    console.error("Error during Razorpay integration:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Error updating payment mode.",
-    });
-  }
-};
-
 
 //check password correction in maintenance
 exports.CheckMaintenancePassword = async (req, res) => {
@@ -146,57 +54,6 @@ exports.CheckMaintenancePassword = async (req, res) => {
 
 
 //add maintenance
-
-// exports.CreateMaintenance = async (req, res) => {
-//     try {
-//         const { Maintenance_Amount, Penalty_Amount, DueDate, PenaltyDay } = req.body;
-
-//         // Check if all required fields are present
-//         if (!Maintenance_Amount || !Penalty_Amount || !DueDate || !PenaltyDay) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "All fields are required",
-//             });
-//         }
-
-//         // Create and save the new maintenance entry
-//         const maintenance = new Maintenance({
-//             Maintenance_Amount,
-//             Penalty_Amount,
-//             DueDate,
-//             PenaltyDay,
-//         });
-
-//         // Fetch all owner and tenant data
-//         const ownerData = await Owner.find();
-//         const tenantData = await Tenant.find();
-
-//         // Merge and format resident data
-//         const ResidentList = [...ownerData, ...tenantData].map((resident) => ({
-//             resident: resident.id,
-//             paymentStatus: "pending",
-//             residentType: resident.Resident_status || "unknown", // Handle missing Resident_status gracefully
-//             paymentMode: "cash",
-//         }));
-
-//         // Attach the resident list to the maintenance entry
-//         maintenance.ResidentList = ResidentList;
-
-//         // Save maintenance with resident data
-//         await maintenance.save();
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "Maintenance successfully added",
-//         });
-//     } catch (error) {
-//         console.error("Error in CreateMaintenance:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Internal Server Error",
-//         });
-//     }
-// };
 
 
 exports.CreateMaintenance = async (req, res) => {
@@ -400,6 +257,99 @@ exports.fetchUserPendingMaintenance = async (req, res) => {
       });
     }
   };
+
+  exports.updatePaymentMode = async (req, res) => {
+    const { maintenanceId } = req.params;
+    const { paymentMode, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+    const residentId = req.user.id;
+    console.log(residentId);
+    
+  
+    try {
+      // Fetch maintenance record
+      const maintenanceRecord = await Maintenance.findById(maintenanceId);
+      if (!maintenanceRecord) {
+        return res.status(404).json({
+          success: false,
+          message: "Maintenance record not found",
+        });
+      }
+  
+      const Maintenance_Amount = maintenanceRecord.Maintenance_Amount;
+  
+      // Step 1: Create Razorpay Order if order ID is not provided
+      if (!razorpayOrderId) {
+        const razorpayOrder = await razorpay.orders.create({
+          amount: Maintenance_Amount * 100, // Convert to paisa
+          currency: "INR",
+          receipt: `receipt_${maintenanceId}_${residentId}`,
+        });
+  
+        return res.status(200).json({
+          success: true,
+          razorpayOrderId: razorpayOrder.id,
+          amount: Maintenance_Amount,
+          message: "Razorpay order created successfully",
+        });
+      }
+  
+      // Step 2: Validate Razorpay Payment
+      if (razorpayPaymentId && razorpaySignature) {
+        const generatedSignature = crypto
+          .createHmac("sha256", process.env.key_secret)
+          .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+          .digest("hex");
+          console.log(generatedSignature);
+  
+        // Check if generated signature matches the provided signature
+        if (generatedSignature !== razorpaySignature) {
+          return res.status(400).json({
+            success: false,
+            message: "Payment verification failed. Invalid signature.",
+          });
+        }
+          
+        
+        // Step 3: Update Payment Status in Maintenance Record
+        const updatedMaintenance = await Maintenance.findOneAndUpdate(
+          { _id: maintenanceId, "ResidentList.resident": residentId },
+          {
+            $set: {
+              "ResidentList.$.paymentMode": paymentMode || "Razorpay",
+              "ResidentList.$.paymentStatus": "done",
+            },
+          },
+          { new: true }
+        ).populate("ResidentList.resident");
+  
+        if (!updatedMaintenance) {
+          return res.status(404).json({
+            success: false,
+            message: "Maintenance record or resident not found.",
+          });
+        }
+  
+        return res.status(200).json({
+          success: true,
+          message: "Payment successfully updated.",
+         
+        });
+      }
+  
+      // Step 4: Incomplete Payment Details
+      return res.status(400).json({
+        success: false,
+        message: "Incomplete payment details provided.",
+      });
+    } catch (error) {
+      console.error("Error during Razorpay integration:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error updating payment mode.",
+      });
+    }
+  };
+  
   
 //get done maintannace 
 
