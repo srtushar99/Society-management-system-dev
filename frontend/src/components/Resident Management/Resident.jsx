@@ -231,8 +231,8 @@ const Resident = () => {
                         </span>
                         {!!item.Unit ? item.Unit : ""}
                       </td>
-
-                      <td className="p-3 pt-2 ps-5  sm:table-cell text-gray-600">
+                      
+                      <td className="p-3 pt-2 2xl:ps-5  sm:table-cell text-gray-600">
                         <Badge
                           className={
                             item.UnitStatus === "Occupied"
