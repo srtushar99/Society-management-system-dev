@@ -60,7 +60,7 @@ const Header = () => {
 
   // Function to handle profile click and navigate to the EditProfile page
   const handleProfileClick = () => {
-    // navigate('/edit-profile'); // This will navigate to the EditProfile page
+   usestate // This will navigate to the EditProfile page
   };
 
   return (

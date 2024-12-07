@@ -9,140 +9,65 @@ import NotificationIcon from '../assets/notification-bing.png';
 import moment from 'moment';
 import axiosInstance from '../Common/axiosInstance';
 
-const visitors = [
-  {
-    id: 1,
-    name: "Evelyn Harper",
-    phone: "97852 12369",
-    date: "10/01/2024",
-    unit: { code: "A", number: "1001" },
-    time: "3:45 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 2,
-    name: "Wade Warren",
-    phone: "97852 25893",
-    date: "10/01/2024",
-    unit: { code: "B", number: "1002" },
-    time: "2:45 AM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 3,
-    name: "Guy Hawkins",
-    phone: "975869 55563",
-    date: "10/01/2024",
-    unit: { code: "C", number: "1003" },
-    time: "3:00 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 4,
-    name: "Robert Fox",
-    phone: "97444 96323",
-    date: "10/01/2024",
-    unit: { code: "D", number: "1004" },
-    time: "5:30AM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 5,
-    name: "Jacob Jones",
-    phone: "97123 12583",
-    date: "10/01/2024",
-    unit: { code: "E", number: "2001" },
-    time: "12:45 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 6,
-    name: "Ronald Richards",
-    phone: "97259 12363",
-    date: "10/01/2024",
-    unit: { code: "F", number: "2002" },
-    time: "3:45 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 7,
-    name: "Annette Black",
-    phone: "97569 77763",
-    date: "10/01/2024",
-    unit: { code: "G", number: "2003" },
-    time: "6:00 AM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 8,
-    name: "Jerome Bell",
-    phone: "97123 25863",
-    date: "10/01/2024",
-    unit: { code: "H", number: "2004" },
-    time: "3:45 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 9,
-    name: "Theresa Webb",
-    phone: "97258 36973",
-    date: "10/01/2024",
-    unit: { code: "I", number: "3001" },
-    time: "7:00 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 10,
-    name: "Kathryn Murphy",
-    phone: "97577 66863",
-    date: "10/01/2024",
-    unit: { code: "A", number: "3002" },
-    time: "6:00 AM",
-    image: "/placeholder.svg?height=40&width=40"
-  },
-  {
-    id: 11,
-    name: "Eleanor Pena",
-    phone: "97259 69963",
-    date: "10/01/2024",
-    unit: { code: "B", number: "3003" },
-    time: "7:00 PM",
-    image: "/placeholder.svg?height=40&width=40"
-  }
-];
-
 const VisitorTracking = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [VisitorTrackings, setVisitorTrackings] = useState([]);
+  const [filteredVisitors, setFilteredVisitors] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("This Week");
   const navigate = useNavigate();
 
   const handleLogout = () => {
     navigate("/");
   };
 
-
-    // Fetch Visitor Tracking from the API
-    const fetchVisitorTracking = async () => {
-      try {
-        console.log('Token in localStorage:', localStorage.getItem('Society-Management'));
-          const response = await axiosInstance.get('/v2/Visitor/');
-          console.log(response.data);
-          if(response.status === 200){
-           setVisitorTrackings(response.data.data); 
-          }
-         
-      } catch (error) {
-        if (error.response) {
-          console.error('Error Response:', error.response.data);
-        } else if (error.request) {
-          console.error('No Response from Server:', error.request);
-        } else {
-          console.error('Unexpected Error:', error.message);
-        }
+  // Fetch Visitor Tracking from the API
+  const fetchVisitorTracking = async () => {
+    try {
+      console.log('Token in localStorage:', localStorage.getItem('Society-Management'));
+      const response = await axiosInstance.get('/v2/Visitor/');
+      console.log(response.data);
+      if (response.status === 200) {
+        setVisitorTrackings(response.data.data);
+        filterVisitors("This Week", response.data.data);
       }
+    } catch (error) {
+      if (error.response) {
+        console.error('Error Response:', error.response.data);
+      } else if (error.request) {
+        console.error('No Response from Server:', error.request);
+      } else {
+        console.error('Unexpected Error:', error.message);
+      }
+    }
   };
 
+  const filterVisitors = (filter, visitors) => {
+    const now = moment();
+    let filteredData = [];
+
+    if (filter === "This Week") {
+      filteredData = visitors.filter((visitor) => {
+        const visitorDate = moment(visitor.date, "YYYY-MM-DD");
+        return visitorDate.isSame(now, "week");
+      });
+    } else if (filter === "Last Week") {
+      filteredData = visitors.filter((visitor) => {
+        const visitorDate = moment(visitor.date, "YYYY-MM-DD");
+        return visitorDate.isSame(now.clone().subtract(1, "week"), "week");
+      });
+    } else if (filter === "Custom Range") {
+      // Custom logic for filtering can be added here
+      filteredData = visitors; // Default to all visitors for now
+    }
+
+    setFilteredVisitors(filteredData);
+  };
+
+  const handleDropdownSelect = (filter) => {
+    setSelectedFilter(filter);
+    filterVisitors(filter, VisitorTrackings);
+  };
 
   const handleVisitorAdded = () => {
     fetchVisitorTracking();
@@ -151,7 +76,6 @@ const VisitorTracking = () => {
   useEffect(() => {
     fetchVisitorTracking();
   }, []);
-
 
   return (
     <div className="d-flex min-vh-100">
@@ -217,7 +141,7 @@ const VisitorTracking = () => {
             variant="link"
             className="logout-button d-flex align-items-center gap-2 text-decoration-none"
             style={{ color: "#FE512E", padding: "0" }}
-            onClick={handleLogout} // Add onClick for logout
+            onClick={handleLogout}
           >
             <LogOut size={20} />
             <span>Logout</span>
@@ -234,7 +158,7 @@ const VisitorTracking = () => {
             <div className="d-flex align-items-center gap-3">
               <button
                 className="relative p-2 text-gray-600 hover:bg-gray-100 rounded border ml-3 border-gray-300"
-                onClick={() => setIsModalOpen(true)} // Open the modal
+                onClick={() => setIsModalOpen(true)}
               >
                 <img src={NotificationIcon} alt="Notifications" className="h-6 w-6" />
               </button>
@@ -262,12 +186,18 @@ const VisitorTracking = () => {
             <div className="d-flex justify-content-end p-3 mx-2">
               <Dropdown>
                 <Dropdown.Toggle variant="light" className="border mx-2">
-                  Week
+                  {selectedFilter}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item>This Week</Dropdown.Item>
-                  <Dropdown.Item>Last Week</Dropdown.Item>
-                  <Dropdown.Item>Custom Range</Dropdown.Item>
+                  <Dropdown.Item onClick={() => handleDropdownSelect("This Week")}>
+                    This Week
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => handleDropdownSelect("Last Week")}>
+                    Last Week
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => handleDropdownSelect("Custom Range")}>
+                    Custom Range
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
               <Button
@@ -296,29 +226,18 @@ const VisitorTracking = () => {
                 </tr>
               </thead>
               <tbody>
-                {VisitorTrackings.map((visitor) => (
+                {filteredVisitors.map((visitor) => (
                   <tr key={visitor._id}>
+                    <td>{visitor.visitor_Name || ""}</td>
+                    <td>{visitor.number || ""}</td>
+                    <td>{visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
                     <td>
-                      <div className="d-flex align-items-center">
-                        {/* <img
-                          src={AvatarImage}
-                          alt={visitor.name}
-                          className="rounded-circle me-2"
-                          width={40}
-                          height={40}
-                        /> */}
-                        {!!visitor.visitor_Name ? visitor.visitor_Name : ""}
-                      </div>
-                    </td>
-                    <td>{!!visitor.number ? visitor.number : ""}</td>
-                    <td>{!!visitor.date ? moment(visitor.date).format("DD/MM/YYYY") : ""}</td>
-                    <td>
-                      <span className={`unit-badge unit-${visitor.wing.toLowerCase()}`}>
-                        {!!visitor.wing ? visitor.wing : ""}
+                      <span className={`unit-badge unit-${visitor.wing?.toLowerCase()}`}>
+                        {visitor.wing || ""}
                       </span>
-                      {!!visitor.unit ? visitor.unit :""}
+                      {visitor.unit || ""}
                     </td>
-                    <td>{!!visitor.time ? visitor.time : ""}</td>
+                    <td>{visitor.time || ""}</td>
                   </tr>
                 ))}
               </tbody>

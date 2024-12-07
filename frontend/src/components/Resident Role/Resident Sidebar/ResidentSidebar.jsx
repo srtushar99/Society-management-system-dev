@@ -32,14 +32,10 @@ const ResidentSidebar = () => {
     else if (path === 'EventsParticipation') {
       setActiveLink('EventsParticipation');
     }
-    else if (path === 'activity') {
-      setActiveLink('EventsParticipation');
-    }
-
-    else if (path === 'Request') {
-      setActiveLink('ServiceAndComplaint');
-    }
-   
+    
+    // else if (path === 'Request') {
+    //   setActiveLink('PersonalDetail');
+    // }
     else if (path === 'TenantDetail') {
       setActiveLink('PersonalDetail');
     }
