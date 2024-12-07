@@ -149,7 +149,7 @@ const Income = ({ color }) => {
           <div className="2xl:flex ">
             {/* First Card */}
             <div
-              className="bg-[#FFFFFF] mb-10 p-3 mr-5"
+              className="bg-[#FFFFFF] mb-10 p-3 2xl:mr-5"
               style={{
                 maxHeight: "70px",
                 width: "250px",
@@ -291,7 +291,7 @@ const Income = ({ color }) => {
                           </td>
                           <td className="">
                             <span
-                              className={`ps-2 rounded-lg flex ${
+                              className={`ps-2 w-[80px] rounded-lg flex ${
                                 resident.residentType === "Tenant"
                                   ? "bg-pink-100 text-pink-600"
                                   : "bg-blue-100 text-blue-600"
