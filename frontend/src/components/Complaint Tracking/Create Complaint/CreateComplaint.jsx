@@ -269,12 +269,12 @@ const CreateComplaint = () => {
         {/* Content */}
         <div className="bg-[#FFFFFF] rounded-lg lg:ml-[320px] shadow-md lg:w-[1590px] mt-5">
           <div className="flex justify-between items-center mb-6 p-2 pt-4 ps-3">
-            <h1 className="text-xl font-semibold text-gray-800">
+            <span className="text-xl whitespace-nowrap font-semibold text-gray-800">
               Create Complaint
-            </h1>
+            </span>
             <button
               onClick={openCreateProtocolModal}
-              className="bg-orange-500 hover:bg-orange-600 whitespace-nowrap text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
+              className="bg-orange-500 hover:bg-orange-600 whitespace-nowrap text-[#FFFFFF] 2xl:px-4 px-2 py-2 rounded-lg flex items-center"
             >
               Create Create
             </button>

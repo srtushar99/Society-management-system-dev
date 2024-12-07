@@ -181,7 +181,7 @@ useEffect(() => {
           <HeaderBaner />
         </header>
 
-        <div className="ps-6 pe-6 w-full">
+        <div className="2xl:ps-3 w-full">
          
           <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1590px] bg-white">
             <h1 className="p-3 text-3xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>

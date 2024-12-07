@@ -278,16 +278,16 @@ const Annoucements = (card) => {
         
 
         {/* Announcement Section */}
-        <main className="flex-1 rounded border lg:ml-[290px] lg:w-700px bg-gray-100">
-          <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] px-7 py-10 p-4 mt-5 rounded bg-[#FFFFFF]">
+        <main className=" rounded border lg:ml-[290px]  lg:w-700px bg-gray-100">
+          <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] ml-2 px-7 py-10 p-4 mt-5 rounded bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="lg:text-3xl  font-semibold text-gray-800">
+              <span className="lg:text-3xl mr-3  font-semibold text-gray-800">
                 Announcement
-              </h1>
+              </span>
               {/* Create Announcement Button */}
               <button
                 onClick={handleCreateNoteClick} 
-                className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] px-4 py-2 rounded-lg flex items-center"
+                className="bg-orange-500 whitespace-nowrap hover:bg-orange-600 text-[#FFFFFF] 2xl:px-4 px-1 py-2 rounded-lg flex items-center"
               >
                 Create Announcement
               </button>
