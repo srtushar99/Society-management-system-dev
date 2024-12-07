@@ -4,7 +4,8 @@ import HeaderBaner from "../../../Dashboard/Header/HeaderBaner";
 import { Modal, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import "./otherincome.css";
-import PayNow from "../Maintenance Invoices/Paynow";
+// import PayNow from "../Maintenance Invoices/Paynow";
+import PayNow from '../Maintenance Invoices/PayNow';
 import moment from "moment";
 import axiosInstance from '../../../Common/axiosInstance';
 

@@ -4,9 +4,10 @@ import ResidentSidebar from '../../Resident Sidebar/ResidentSidebar';
 import HeaderBaner from '../../../Dashboard/Header/HeaderBaner';
 import { Link, useNavigate } from 'react-router-dom';
 import './maintenence.css';
-import PayNow from './Paynow';
+// import PayNow from './Paynow';
 import axiosInstance from '../../../Common/axiosInstance';
 import moment from "moment";
+import PayNow from './PayNow';
 
 
 const MaintenanceInvoices = () => {
