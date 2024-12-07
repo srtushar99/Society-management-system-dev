@@ -244,8 +244,8 @@ exports.findUserById = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Find the user and populate the 'select_society' field
-    const user = await User.findById(userId).populate('select_society', 'Society_name');
+    // Find the user and populate 'select_society' with both Society_name and _id
+    const user = await User.findById(userId).populate('select_society', '_id Society_name');
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -263,7 +263,12 @@ exports.findUserById = async (req, res) => {
         Country: user.Country,
         State: user.State,
         City: user.City,
-        Society: user.select_society ? user.select_society.Society_name : null,
+        Society: user.select_society
+          ? {
+              id: user.select_society._id,
+              name: user.select_society.Society_name,
+            }
+          : null,
       },
     });
   } catch (err) {
@@ -452,7 +457,7 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-
+// edit profile
 exports.editProfile = async (req, res) => {
   try {
     const {
