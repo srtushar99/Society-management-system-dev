@@ -65,8 +65,9 @@ const CreateAnnouncement = ({ isOpen, onClose, fetchAnnouncement }) => {
         .minute(parseInt(minute));
       const ChangeDateFormat = new Date(combinedDateTime);
       const Announcement_Date = moment(ChangeDateFormat).format("YYYY-MM-DD");
-
+      const Announcement_Type = selectedOption;
       const announcementData = {
+        Announcement_Type,
         Announcement_Title,
         Description,
         Announcement_Date,

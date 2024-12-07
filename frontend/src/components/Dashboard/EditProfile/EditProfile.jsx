@@ -13,14 +13,14 @@ import { jwtDecode } from "jwt-decode";
 import axiosInstance from '../../Common/axiosInstance';
 
 const EditProfile = () => {
-  const [firstName, setFirstName] = useState("Arlene");
-  const [lastName, setLastName] = useState("McCoy");
-  const [phoneNumber, setPhoneNumber] = useState("+91 99130 44537");
-  const [email, setEmail] = useState("ArleneMcCoy25@gmail.com");
-  const [society, setSociety] = useState("Shantigram residency");
-  const [country, setCountry] = useState("India");
-  const [state, setState] = useState("Gujarat");
-  const [city, setCity] = useState("Baroda");
+  // const [firstName, setFirstName] = useState("Arlene");
+  // const [lastName, setLastName] = useState("McCoy");
+  // const [phoneNumber, setPhoneNumber] = useState("+91 99130 44537");
+  // const [email, setEmail] = useState("ArleneMcCoy25@gmail.com");
+  // const [society, setSociety] = useState("Shantigram residency");
+  // const [country, setCountry] = useState("India");
+  // const [state, setState] = useState("Gujarat");
+  // const [city, setCity] = useState("Baroda");
   const [userById, setUserById] = useState([]);
 
   const navigate = useNavigate(); 
@@ -110,7 +110,8 @@ const EditProfile = () => {
         <button
           className="flex items-center text-white rounded-md px-2 ms-[600px] py-2 mb-2"
           style={{ background: "linear-gradient(90deg, #FE512E 0%, #F09619 100%)", zIndex: "1000",}}
-          onClick={() => navigate('/update-profile')}  // Handle navigation to the update profile page if needed
+          // onClick={() => navigate('/update-profile')} 
+          onClick={() => navigate('/update-profile', { state: { userById } })}
         >
           <img src={edit} alt="edit" className="mr-2 h-4 w-4" />
           Edit Profile
@@ -131,8 +132,8 @@ const EditProfile = () => {
               {/* <img src={editIcon} alt="edit" className="h-5 w-5 bg-white rounded-full p-1" /> */}
             </button>
             <div className="absolute bottom-[100px] sm:bottom-[130px] left-1/2 transform -translate-x-1/2 text-center flex space-x-2">
-              <p>{firstName}</p>
-              <p>{lastName}</p>
+              <p>{!!userById.First_Name ? userById.First_Name : ""}</p>
+              <p>{!!userById.Last_Name ? userById.Last_Name : ""}</p>
             </div>
           </div>
 
@@ -148,8 +149,8 @@ const EditProfile = () => {
                   id="firstName"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter first name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  value={!!userById.First_Name ? userById.First_Name : ""}
+                  // onChange={(e) => setFirstName(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -164,8 +165,8 @@ const EditProfile = () => {
                   id="lastName"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  value={!!userById.Last_Name ? userById.Last_Name : ""}
+                  // onChange={(e) => setLastName(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -180,8 +181,8 @@ const EditProfile = () => {
                   id="phoneNumber"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter phone number"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  value={!!userById.Phone_Number ? userById.Phone_Number : ""}
+                  // onChange={(e) => setPhoneNumber(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -196,8 +197,8 @@ const EditProfile = () => {
                   id="email"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={!!userById.Email_Address ? userById.Email_Address : ""}
+                  // onChange={(e) => setEmail(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -212,8 +213,8 @@ const EditProfile = () => {
                   id="society"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter society name"
-                  value={society}
-                  onChange={(e) => setSociety(e.target.value)}
+                  value={!!userById.Society ? userById.Society : ""}
+                  // onChange={(e) => setSociety(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -228,8 +229,8 @@ const EditProfile = () => {
                   id="country"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter country"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  value={!!userById.Country ? userById.Country : ""}
+                  // onChange={(e) => setCountry(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -244,8 +245,8 @@ const EditProfile = () => {
                   id="state"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter state"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
+                  value={!!userById.State ? userById.State : ""}
+                  // onChange={(e) => setState(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>
@@ -260,8 +261,8 @@ const EditProfile = () => {
                   id="city"
                   className="w-full max-w-[250px] p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  value={!!userById.City ? userById.City : ""}
+                  // onChange={(e) => setCity(e.target.value)}
                   disabled={isEditingDisabled}  // Disable input field
                 />
               </div>

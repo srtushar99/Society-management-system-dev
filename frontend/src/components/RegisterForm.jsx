@@ -158,11 +158,11 @@ const RegisterForm = () => {
     const fetchSocieties = async () => {
         try {
             const response = await axiosInstance.get('/societies/');
-            console.log('Societies:', response.data);
-            setSocieties(response.data.data); 
+            if(response.status === 200) {
+                setSocieties(response.data.data); 
+              }
         } catch (error) {
             console.error('Error fetching societies:', error);
-            alert('Failed to load societies');
         }
     };
     

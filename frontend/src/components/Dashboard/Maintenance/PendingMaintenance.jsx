@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import Ellipse1091 from '../../assets/Ellipse 1091.png';
 import Ellipse1093 from '../../assets/Ellipse 1093.png';
 import Ellipse1094 from '../../assets/Ellipse 1094.png';
 import Ellipse1095 from '../../assets/Ellipse 1095.png';
 import Ellipse1096 from '../../assets/Ellipse 1096.png';
 import '../../Sidebar/sidebar.css';
-
+import axiosInstance from '../../Common/axiosInstance';
 import './scrollbar.css'
 
 const Avatar = ({ children, className }) => (
@@ -84,6 +84,23 @@ const maintenanceItems = [
 ];
 
 const PendingMaintenance = () => {
+  const [Maintenance, setMaintenance] = useState([]);
+
+  const fetchMaintenance = async () => {
+    try {
+      const response = await axiosInstance.get('/v2/maintenance/');
+      if (response.status === 200) {
+        setMaintenance(response.data.Maintenance);
+      }
+    } catch (error) {
+      console.error('Error fetching Maintenance:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMaintenance();
+  }, []);
+
   return (
     <div className="sm:w-full bg-white rounded 2xl:h-[405px] md:h-[405px] xl:h-[405px] lg:h-[405px] 2xl:w-[380px] xl:w-[300px]  md:w-[250px] mx-2 sm:ml-2">
       <Card className="w-full h-full ">
@@ -97,22 +114,24 @@ const PendingMaintenance = () => {
           </button>
         </CardHeader>
         <CardContent className="h-[280px] overflow-y-auto scrollbar-thin px-3 scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-rounded-md" >
-          {maintenanceItems.map((item) => (
-            <div key={item.id} className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-30 w-10 lg:w-10">
-                  <AvatarImage className="sm:h-28" src={item.avatar} alt={item.name} />
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="font-medium text-sm sm:text-base">{item.name}</span>
-                  <span className="text-xs sm:text-sm text-gray-600">{item.pendingDuration}</span>
+          {Maintenance?.map((maintenance, index) =>
+            maintenance.ResidentList?.map((resident, idx) => (
+              <div key={`${index}-${idx}`} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-30 w-10 lg:w-10">
+                    <AvatarImage className="sm:h-28" src={resident.resident.profileImage || maintenanceItems[0].avatar} alt={resident.resident.Full_name} />
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-sm sm:text-base">{resident.resident.Full_name}</span>
+                    <span className="text-xs sm:text-sm text-gray-600">{maintenanceItems[0].pendingDuration}</span>
+                  </div>
                 </div>
+                <span className="font-medium text-red-500 text-sm sm:text-base">
+                  ₹ {maintenance.Maintenance_Amount + maintenance.Penalty_Amount}
+                </span>
               </div>
-              <span className="font-medium text-red-500 text-sm sm:text-base">
-                ₹ {item.amount.toLocaleString()}
-              </span>
-            </div>
-          ))}
+            ))
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import NotificationIcon from '../../assets/notification-bing.png';
 import AvatarImage from '../../assets/Avatar.png';
@@ -6,8 +6,11 @@ import NotificationModal from '../Notification/NotificationModal';
 import NoNotification from '../Notification/NoNotification'; // Import the NoNotification component
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Notification from '../../Facilities Management/Notification';
+import axiosInstance from '../../Common/axiosInstance';
+import { jwtDecode } from "jwt-decode";
 
 const Header = () => {
+  const [userById, setUserById] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate(); 
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -63,7 +66,34 @@ const Header = () => {
   // Function to handle profile click and navigate to the EditProfile page
   const handleProfileClick = () => {
     navigate('/edit-profile'); // This will navigate to the EditProfile page
+    // navigate('/profile');
   };
+
+  const fetchUserById = async (UserToken) => {
+    try {
+      const response = await axiosInstance.get(
+        `/v1/${UserToken.userId}`
+      );
+      if (response.status === 200) {
+        setUserById(response.data.data);
+          // navigate("/update-profile");
+      }
+    } catch (error) {
+      console.error("Error fetching UserById:", error);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("Society-Management");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        fetchUserById(decodedToken);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
 
   return (
     <header className="flex items-center  justify-between px-6 bg-white sm:ms-[50px] md:ms-[] h-[70px] flex-wrap md:flex-nowrap">
@@ -111,7 +141,7 @@ const Header = () => {
           
           {/* Profile Text visible only on larger screens */}
           <div className="hidden sm:block flex-col items-start mt-2">
-            <span className="font-medium text-sm">Moni Roy</span>
+            <span className="font-medium text-sm">{!!userById.First_Name ? userById.First_Name +" " + userById.Last_Name : ""}</span>
             <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>

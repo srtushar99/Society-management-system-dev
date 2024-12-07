@@ -1,24 +1,28 @@
-import React, { useRef, useState } from "react"; // Import useState hook
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react"; // Import useState hook
 import "tailwindcss/tailwind.css"; // Import Tailwind CSS
 import Sidebar from "../../Sidebar/Sidebar";
-// import NotificationIcon from "../../assets/notification-bing.png";
-// import AvatarImage from "../../assets/Avatar.png";
 import pngwingImage from "../../assets/Frame 1000006013.png";
 import ProfileImage from "../../assets/Ellipse 1101.png";
 import editIcon from "../../assets/editIcon.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import HeaderBaner from "../../Dashboard/Header/HeaderBaner";
 import { Dropdown } from "react-bootstrap";
+import axiosInstance from '../../Common/axiosInstance';
 
 const UpdateProfile = () => {
-  const [firstName, setFirstName] = useState("Arlene");
-  const [lastName, setLastName] = useState("McCoy");
-  const [phoneNumber, setPhoneNumber] = useState("+91 99130 44537");
-  const [email, setEmail] = useState("ArleneMcCoy25@gmail.com");
-  const [society, setSociety] = useState("Shantigram residency");
-  const [country, setCountry] = useState("India");
-  const [state, setState] = useState("Gujarat");
-  const [city, setCity] = useState("Baroda");
+  const location = useLocation();
+  const userById = location.state?.userById || {};
+  const navigate = useNavigate(); 
+
+  const [societies, setSocieties] = useState([]);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [society, setSociety] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
   const fileInputRef = useRef(null);
   const [profileImage, setProfileImage] = useState(ProfileImage);
   const handleEditClick = () => {
@@ -26,43 +30,74 @@ const UpdateProfile = () => {
   };
 
   const [selectedSociety, setSelectedSociety] = useState(null);
-  const [societies, setSocieties] = useState([
-    { _id: "1", Society_name: "Shantigram Residency" },
-    { _id: "2", Society_name: "Greenfield Apartments" },
-    { _id: "3", Society_name: "Blue Haven Villas" },
-  ]);
 
   // Handle selection of society
-  const handleSelect = (society) => {
-    setSelectedSociety(society); // Update the selected society
-  };
+  const handleSelect = useCallback((society) => {
+    const societyID = society._id;
+    const societyName = society.Society_name;
+    setSelectedSociety({ id: societyID, name: societyName });
+  }, []);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file && file.type.startsWith("image/")) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setProfileImage(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     alert("Please select a valid image file.");
+  //   }
+  // };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // setuploadprofileimage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
       };
       reader.readAsDataURL(file);
-    } else {
-      alert("Please select a valid image file.");
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Form submitted:", {
-      firstName,
-      lastName,
-      phoneNumber,
-      email,
-      society,
-      selectedSociety: selectedSociety.Society_name,
-      country,
-      state,
-      city,
-    });
+    try {
+      const formData = new FormData();
+      formData.append("First_Name", firstName);
+      formData.append("Last_Name", lastName);
+      formData.append("Email_Address", email);
+      formData.append("Phone_Number", phoneNumber);
+      formData.append("Country", country);
+      formData.append("State", state);
+      formData.append("City", city);
+
+      // if (!isphoto) {
+      //   formData.append("profileImage", guard.profileimage); 
+      // }else{
+      //   formData.append("profileImage", profileImage); 
+      // }
+      // if (profileImage) {
+      //     formData.append("profileImage", profileImage); 
+      //   }
+
+      const response = await axiosInstance.put(`/v1/edit/${userById.id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if(!!response.data){
+        navigate('/edit-profile');
+      }else {
+        const errorData = await response.json();
+        console.error("Error saving:", errorData.message || "Something went wrong.");
+        navigate('/edit-profile');
+      }
+    } catch (err) {
+      console.error(err);
+      navigate('/edit-profile');
+    }
   };
 
   const backgroundStyle = {
@@ -76,7 +111,6 @@ const UpdateProfile = () => {
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    // zIndex: 999,
   };
 
   const preventNumericInput = (e) => {
@@ -85,6 +119,44 @@ const UpdateProfile = () => {
       e.preventDefault();
     }
   };
+
+  // Fetch societies
+  const fetchSocieties = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get('/societies/');
+      if (response.status === 200) {
+        setSocieties(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching societies:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSocieties();
+  }, [fetchSocieties]);
+
+  useEffect(() => {
+    if(!!userById){
+        // Initialize state variables with userById data
+        setFirstName(userById.First_Name || "");
+        setLastName(userById.Last_Name || "");
+        setPhoneNumber(userById.Phone_Number || "");
+        setEmail(userById.Email_Address || "");
+        setSociety(userById.Society || "");
+        setCountry(userById.Country || "");
+        setState(userById.State || "");
+        setCity(userById.City || "");
+
+        // Set the selected society
+        const selectedSociety = societies.filter(s => s._id === userById.SocietyId);
+        if (selectedSociety && selectedSociety.length > 0) {
+          const filterSocieties = {id: selectedSociety[0]._id, name: selectedSociety[0].Society_name}
+          setSelectedSociety(filterSocieties || null);
+        }
+    }
+    
+  }, [userById, societies, handleSelect]);
 
   return (
     <div className="container-fluid bg-light min-h-screen">
@@ -135,7 +207,7 @@ const UpdateProfile = () => {
                 ref={fileInputRef}
                 accept="image/*"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={handlePhotoChange}
               />
 
               <div className="absolute bottom-[230px] left-1/2 transform -translate-x-1/2 text-center flex space-x-2">
@@ -241,7 +313,7 @@ const UpdateProfile = () => {
                       className="w-full border text-left"
                     >
                       {selectedSociety
-                        ? selectedSociety.Society_name
+                        ? selectedSociety.name
                         : "Select Society"}
                     </Dropdown.Toggle>
 

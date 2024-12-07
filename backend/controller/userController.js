@@ -264,6 +264,7 @@ exports.findUserById = async (req, res) => {
         State: user.State,
         City: user.City,
         Society: user.select_society ? user.select_society.Society_name : null,
+        SocietyId: user.select_society ? user.select_society._id : null,
       },
     });
   } catch (err) {

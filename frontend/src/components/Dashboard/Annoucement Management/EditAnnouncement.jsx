@@ -84,8 +84,9 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, fetchAnnouncement }) => {
         .minute(parseInt(minute));
       const ChangeDateFormat = new Date(combinedDateTime);
       const Announcement_Date = moment(ChangeDateFormat).format('YYYY-MM-DD');
-
+      const Announcement_Type = selectedOption;
       const announcementData = {
+        Announcement_Type,
         Announcement_Title,
         Description,
         Announcement_Date,
@@ -140,6 +141,7 @@ const EditAnnouncement = ({ isOpen, onClose, noteData, fetchAnnouncement }) => {
       setDescription(noteData.Description || "");
       setDate(noteData.Announcement_Date ? new Date(noteData.Announcement_Date) : null); 
       setAnnouncement_Time(noteData.Announcement_Time || "12:00"); 
+      setSelectedOption(noteData.Announcement_Type || "Event");
     }
   }, [isOpen, noteData]);
 
