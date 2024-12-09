@@ -1,3 +1,4 @@
+// const { CreateAlert, GetAlert } = require("../controller/securityAlertController");
 const { CreateAlert, GetAlert } = require("../controller/securityAlertController");
 const { authenticate, IsSecurity } = require("../middleware/authenticate ");
 const router= require("express").Router()
