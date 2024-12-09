@@ -124,9 +124,9 @@ const RequestSubmission = () => {
     <div className="d-flex w-100 h-100 bg-light">
       <ResidentSidebar />
       <div className="flex-grow-1 d-flex flex-column lg:ml-[290px]">
-        {/* Header */}
+       
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-          {/* Breadcrumb Navigation */}
+       
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
             <Link
               to="/dashboard"
@@ -140,7 +140,7 @@ const RequestSubmission = () => {
             </span>
           </div>
 
-          {/* Search Icon for small devices */}
+       
           <div
             className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
               isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
@@ -197,7 +197,7 @@ const RequestSubmission = () => {
               <h6 className=" text-dark font-bold text-sm sm:text-lg">
                 Request
               </h6>
-              {/* Create Facility Button */}
+              
               <button
                 onClick={handleCreateNoteClick}
                 className="bg-orange-500 text-[#FFFFFF] p-2 rounded-lg flex items-center"
@@ -283,7 +283,6 @@ const RequestSubmission = () => {
         </main>
       </div>
 
-      {/* Create Complaint Modal */}
       <CreateRequest
         isOpen={isCreateNoteOpen}
         onClose={closeCreateNoteModal}

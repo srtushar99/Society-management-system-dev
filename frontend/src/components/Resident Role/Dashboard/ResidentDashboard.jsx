@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// import '../Sidebar/sidebar.css';
+
 import Complain from "../../Dashboard/ComplainList/Complain";
 
 import Activity from "../../Dashboard/Activity/Activity";
@@ -14,16 +14,16 @@ import PendingMaintenance from "../../Dashboard/Maintenance/PendingMaintenance";
 
 const ResidentDashboard = () => {
   return (
-    <div className="d-flex flex-column flex-md-row h-100 bg-light">
-      {/* Sidebar */}
+    <div className="d-flex flex-column  flex-md-row h-100 bg-light">
+      
       <ResidentSidebar />
 
-      {/* Main Content */}
-      <div className=" d-flex flex-column">
+     
+      <div className=" d-flex flex-column ">
         <Header />
         <Cards />
 
-        {/* Content Grid: Chart, ContactsPage, and Pending Maintenance */}
+      
         <div className="d-flex flex-column flex-md-row  px-2">
           <div className="mb-3  mb-md-0">
             <Chart />
@@ -36,7 +36,7 @@ const ResidentDashboard = () => {
           </div>
         </div>
 
-        {/* Content Grid: Complain List and Activity */}
+    
         <div className="d-flex flex-column flex-md-row  p-2">
           <div className=" mb-3 mb-md-0">
             <Complain />

@@ -115,7 +115,7 @@ export default function CommunitiesDiscussion() {
                     onClick={() => handleContactClick(contact)}
                     style={{
                       cursor: "pointer",
-                      backgroundColor: selectedContact?.id === contact.id ? "rgb(86, 120, 233, 0.1)" : "transparent",
+                      backgroundColor: selectedContact?.id === contact.id ? "rgb(86, 120, 233, 0.1)" : "transparent",color:"black" 
                     }}
                     className="d-flex align-items-center gap-3"
                   >

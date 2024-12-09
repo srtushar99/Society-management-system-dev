@@ -37,9 +37,11 @@ const ResidentSidebar = () => {
     }
      else if (path === "request") {
       setActiveLink("ServiceAndComplaint");
+      getIndicatorStyle("ServiceAndComplaint");
       
      
     }
+   
     
     else if (path === "MaintenanceTable") {
       setActiveLink("PaymentPortal");
@@ -100,7 +102,7 @@ const ResidentSidebar = () => {
   };
 
   const handleLogout = () => {
-    // Add any logout logic here (e.g., clearing session, etc.)
+  
     navigate("/");
   };
 
@@ -245,11 +247,11 @@ const ResidentSidebar = () => {
             <Link
               to="/complain"
               style={getLinkStyle("complain")}
-              onClick={() => handleLinkClick("complain", "/complain" )}
+              onClick={() => handleLinkClick("complain", "/complain")}
             >
               <img
                 src={FacilitiesIcon}
-                style={getIconStyle("complain" ,"request")}
+                style={getIconStyle("complain")}
                 alt="complain"
               />
               Service And Complaint

@@ -270,7 +270,7 @@ const InvoiceModal = ({ show, handleClose }) => {
       backdrop="static" // Disable clicks outside
       centered
       className="custom-modal"
-      style={{ position: "fixed", top: "5%" }}
+      style={{ position: "fixed", top: "5%" ,margin:"0 50%"}}
     >
       <Modal.Header className="d-flex justify-content-between align-items-center ">
         <Modal.Title className="fw-bold text-gray-800">

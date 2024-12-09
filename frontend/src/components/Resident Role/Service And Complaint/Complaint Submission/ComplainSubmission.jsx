@@ -69,23 +69,21 @@ const ComplainSubmission = () => {
     setActiveButton(buttonType);
   };
 
-  // Handle delete modal
   const handleDeleteClick = (complaint) => {
     setSelectedComplaint(complaint); 
     setIsDeleteModalOpen(true); 
   };
 
-  // Close the delete modal
+  
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false); 
     setSelectedComplaint(null); 
   };
 
   const handleDelete = (id) => {
-    // Logic to delete the protocol from the data
-    // setData(data.filter((item) => item.id !== id)); 
+    
     setComplaint(complaint.filter((item) => item._id !== id)); 
-    // Close the delete modal after the protocol is deleted
+    
     closeDeleteModal();
   };
 
@@ -106,7 +104,7 @@ const ComplainSubmission = () => {
 
 
 
-  // Fetch fetchComplaint from the API
+  
   const fetchComplaint = async () => {
     try {
         const response = await axiosInstance.get('/v2/complaint/find/getusercomplaint');
@@ -130,9 +128,9 @@ const ComplainSubmission = () => {
     <div className="d-flex w-100 h-100 bg-light">
       <ResidentSidebar />
       <div className=" flex-grow-1 d-flex flex-column lg:ml-[290px]">
-        {/* Header */}
+     
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-          {/* Breadcrumb Navigation */}
+        
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
             <Link
               to="/dashboard"
@@ -146,7 +144,7 @@ const ComplainSubmission = () => {
             </span>
           </div>
 
-          {/* Search Icon (Visible only on small screens) */}
+          
           <div
             className={`d-block ml-auto d-sm-none p-2 rounded-lg ${
               isSearchVisible ? "border-none" : "border border-[#D3D3D3]"
@@ -171,11 +169,11 @@ const ComplainSubmission = () => {
             )}
           </div>
 
-          {/* Notifications and Profile Section */}
+       
           <HeaderBaner />
         </header>
 
-        {/* Facility Management Section */}
+       
         <main className=" rounded border bg-light">
           <div className="lg:mt-[30px]  mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[10px]">
             <div className="mt-4 lg:px-4 ">
@@ -206,7 +204,7 @@ const ComplainSubmission = () => {
           <div className=" 2xl:w-[1590px] 2xl:ml-[25px]  bg-white p-4 rounded">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h6 className=" text-dark font-bold">Complaint</h6>
-              {/* Create Facility Button */}
+             
               <button
                 onClick={handleCreateNoteClick}
                 className="bg-orange-500 text-[#FFFFFF]  ml-1 p-2 rounded-lg flex items-center"
@@ -215,7 +213,7 @@ const ComplainSubmission = () => {
               </button>
             </div>
 
-            {/* Responsive Grid for Complaints */}
+           
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {complaint.map((card) => (
                 <div key={card._id} className="col mb-3">
@@ -288,14 +286,14 @@ const ComplainSubmission = () => {
         </main>
       </div>
 
-      {/* Create Complaint Modal */}
+ 
       <CreateComplain
         isOpen={isCreateNoteOpen}
         onClose={closeCreateNoteModal}
         fetchComplaint={fetchComplaint}
       />
 
-      {/* Delete Complaint Modal */}
+      
       {isDeleteModalOpen && selectedComplaint && (
         <DeleteComplain
           isOpen={isDeleteModalOpen}
