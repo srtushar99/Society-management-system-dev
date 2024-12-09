@@ -4,6 +4,15 @@ const Owner = require("../models/ownerModel");
 const Tenant = require("../models/tenantModel");
 const User = require("../models/userModel");
 const Notification = require("../models/notificationModel");
+const crypto = require("crypto");
+const Razorpay = require("razorpay");
+const dotenv = require('dotenv');
+dotenv.config();
+
+const razorpay = new Razorpay({
+  key_id: process.env.key_id,
+  key_secret: process.env.key_secret,
+});
 
 // create income
 exports.CreateIncome = async (req, res) => {
@@ -207,59 +216,147 @@ exports.UpdateIncome = async (req, res) => {
 };
 
 //update and get payment
-exports.updateResidentIncomePaymentMode = async (req, res) => {
-    const { incomeId } = req.params; 
-    const { paymentMode } = req.body; 
-    const residentId = req.user.id; 
+// exports.updateResidentIncomePaymentMode = async (req, res) => {
+//     const { incomeId } = req.params; 
+//     const { paymentMode } = req.body; 
+//     const residentId = req.user.id; 
   
-    console.log("Resident ID from user:", residentId);
-    console.log("Request body:", req.body);
+//     try {
+//       const incomeRecord = await Income.findOne({
+//         _id: incomeId,
+//         "members.resident": residentId,
+//       });
   
-    try {
-      const incomeRecord = await Income.findOne({
-        _id: incomeId,
-        "members.resident": residentId,
+//       if (!incomeRecord) {
+//         return res.status(404).json({
+//           success: false,
+//           message: "Income record or resident not found",
+//         });
+//       }
+
+//       const memberToUpdate = incomeRecord.members.find(
+//         (member) => member.resident.toString() === residentId
+//       );
+  
+//       if (!memberToUpdate) {
+//         return res.status(404).json({
+//           success: false,
+//           message: "Resident not found in income members",
+//         });
+//       }
+
+//       memberToUpdate.paymentMode = paymentMode;
+//       memberToUpdate.paymentStatus = "done";   
+  
+//       await incomeRecord.save();
+
+//       const populatedIncomeRecord = await incomeRecord.populate("members.resident");
+  
+//       return res.status(200).json({
+//         success: true,
+//         message: "Payment mode and status have been successfully updated for the resident.",
+//         updatedIncome: populatedIncomeRecord,
+//       });
+      
+//     } catch (error) {
+//       console.error("Error updating payment mode:", error);
+//       return res.status(500).json({
+//         success: false,
+//         message: "Error updating payment mode",
+//       });
+//     }
+//   };
+exports.updateResidentIncomePaymentMode = async (req, res) => { 
+  const { incomeId } = req.params;
+  const { paymentMode, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+  const residentId = req.user.id;
+
+  try {
+    // Fetch income record
+    const incomeRecord = await Income.findOne({
+      _id: incomeId,
+      "members.resident": residentId,
+    });
+
+    if (!incomeRecord) {
+      return res.status(404).json({
+        success: false,
+        message: "Income record or resident not found",
       });
-  
-      if (!incomeRecord) {
-        return res.status(404).json({
+    }
+
+    const memberToUpdate = incomeRecord.members.find(
+      (member) => member.resident.toString() === residentId
+    );
+
+    if (!memberToUpdate) {
+      return res.status(404).json({
+        success: false,
+        message: "Resident not found in income members",
+      });
+    }
+
+    const Income_Amount = memberToUpdate.amount; // Assume 'amount' holds the payment amount for the resident.
+
+    // Step 1: Create Razorpay Order if order ID is not provided
+    if (!razorpayOrderId) {
+      const razorpayOrder = await razorpay.orders.create({
+        amount: Income_Amount * 100, // Convert to paisa
+        currency: "INR",
+        receipt: `receipt_income_${incomeId}_${residentId}`,
+      });
+
+      return res.status(200).json({
+        success: true,
+        razorpayOrderId: razorpayOrder.id,
+        amount: Income_Amount,
+        message: "Razorpay order created successfully",
+      });
+    }
+
+    // Step 2: Validate Razorpay Payment
+    if (razorpayPaymentId && razorpaySignature) {
+      const generatedSignature = crypto
+        .createHmac("sha256", process.env.key_secret)
+        .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+        .digest("hex");
+
+      // Check if generated signature matches the provided signature
+      if (generatedSignature !== razorpaySignature) {
+        return res.status(400).json({
           success: false,
-          message: "Income record or resident not found",
+          message: "Payment verification failed. Invalid signature.",
         });
       }
 
-      const memberToUpdate = incomeRecord.members.find(
-        (member) => member.resident.toString() === residentId
-      );
-  
-      if (!memberToUpdate) {
-        return res.status(404).json({
-          success: false,
-          message: "Resident not found in income members",
-        });
-      }
+      // Step 3: Update Payment Status in Income Record
+      memberToUpdate.paymentMode = paymentMode || "Razorpay";
+      memberToUpdate.paymentStatus = "done";
 
-      memberToUpdate.paymentMode = paymentMode;
-      memberToUpdate.paymentStatus = "done";   
-  
       await incomeRecord.save();
 
       const populatedIncomeRecord = await incomeRecord.populate("members.resident");
-  
+
       return res.status(200).json({
         success: true,
         message: "Payment mode and status have been successfully updated for the resident.",
         updatedIncome: populatedIncomeRecord,
       });
-      
-    } catch (error) {
-      console.error("Error updating payment mode:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Error updating payment mode",
-      });
     }
-  };
+
+    // Step 4: Incomplete Payment Details
+    return res.status(400).json({
+      success: false,
+      message: "Incomplete payment details provided.",
+    });
+  } catch (error) {
+    console.error("Error updating payment mode:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error updating payment mode",
+    });
+  }
+};
 
 // get incomr done
 exports.getCompletedIncomeRecords = async (req, res) => {
@@ -298,9 +395,6 @@ exports.fetchUserPendingIncome = async (req, res) => {
               message: "User authentication is required to fetch pending income records.",
           });
       }
-
-      console.log("Fetching pending incomes for User ID:", loggedInUserId);
-
       const incomeRecords = await Income.find({
           "members.resident": loggedInUserId,
       }).populate({

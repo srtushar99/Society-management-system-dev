@@ -56,7 +56,7 @@ exports.CreateSecurityGuard = async (req, res) => {
         }
 
         const Password = generatePassword();
-        console.log(Password);
+
 
         const hashpassword = await hash(Password);
 
@@ -67,7 +67,6 @@ exports.CreateSecurityGuard = async (req, res) => {
                     const result = await cloudinary.uploader.upload(filePath);
                     fs.unlink(filePath, (err) => {
                         if (err) console.error("Error deleting file from server:", err);
-                        else console.log("File deleted from server:", filePath);
                     });
                     return result.secure_url;
                 } catch (error) {

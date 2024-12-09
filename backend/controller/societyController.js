@@ -33,7 +33,6 @@ exports.CreateSociety = async (req, res) => {
             message: "Society created successfully",
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",
@@ -57,7 +56,6 @@ exports.GetAllSocieties = async (req, res) => {
             data: societies,
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",

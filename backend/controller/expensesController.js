@@ -25,7 +25,7 @@ exports.createExpense = async (req, res) => {
                     
                         fs.unlink(filePath, (err) => {
                             if (err) console.error("Error deleting file from server:", err);
-                            else console.log("File deleted from server:", filePath);
+ 
                         });
                         return result.secure_url;
                     } catch (error) {
@@ -127,7 +127,6 @@ const uploadAndDeleteLocal = async (fileArray) => {
 
             fs.unlink(filePath, (err) => {
                 if (err) console.error("Error deleting file from server:", err);
-                else console.log("File deleted from server:", filePath);
             });
             return result.secure_url;
         } catch (error) {

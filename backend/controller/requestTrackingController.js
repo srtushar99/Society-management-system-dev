@@ -125,7 +125,6 @@ exports.getUserRequest = async (req, res) => {
         select: "name profileImage", 
       })
      
-      console.log("User's income:", income);
   
       return res.status(200).json({
         success: true,

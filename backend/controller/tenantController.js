@@ -54,8 +54,7 @@ exports.addTenant = async (req, res) => {
       } = req.body;
 
       const Password = generatePassword();
-      console.log("Generated Password:", Password);
-
+  
       const hashpassword = await hash(Password);
 
       const uploadAndDeleteLocal = async (fileArray) => {
@@ -67,7 +66,6 @@ exports.addTenant = async (req, res) => {
                   // Delete from local server
                   fs.unlink(filePath, (err) => {
                       if (err) console.error("Error deleting file from server:", err);
-                      else console.log("File deleted from server:", filePath);
                   });
                   return result.secure_url;
               } catch (error) {
@@ -244,7 +242,7 @@ exports.updateTenantData = async (req, res) => {
             const result = await cloudinary.uploader.upload(filePath);
             fs.unlink(filePath, (err) => {
               if (err) console.error("Error deleting file from server:", err);
-              else console.log("File deleted from server:", filePath);
+             
             });
             return result.secure_url;
           } catch (error) {
