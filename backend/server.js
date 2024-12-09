@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 // app.use(cors());
 const corsOptions = {
-  origin: "https://society-management-system-dev-16.onrender.com",
+  origin: "https://society-management-system-dev.vercel.app",
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
