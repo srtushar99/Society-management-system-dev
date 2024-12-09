@@ -141,63 +141,10 @@ exports.GetMaintenance = async (req, res) => {
     }
   };
 
-// ////update and get payment
-// exports.changePaymentDetails = async (req, res) => {
-//     const { maintenanceId } = req.params; 
-//     const { paymentMode } = req.body; 
-//     const residentId = req.user.id; 
-
-//     try {
-//         // Validate input
-//         if (!paymentMode) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Payment mode is required",
-//             });
-//         }
-
-//         const updatedMaintenance = await Maintenance.findOneAndUpdate(
-//             { 
-//                 _id: maintenanceId, 
-//                 "ResidentList.resident": residentId 
-//             }, 
-//             { 
-//                 $set: { 
-//                     "ResidentList.$.paymentMode": paymentMode, 
-//                     "ResidentList.$.paymentStatus": "done"   
-//                 } 
-//             },
-//             { new: true }
-//         ).populate("ResidentList.resident"); 
-
-//         if (!updatedMaintenance) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Maintenance record or resident not found",
-//             });
-//         }
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "Payment details updated successfully",
-//             Maintenance: updatedMaintenance,
-//         });
-//     } catch (error) {
-//         console.error("Error updating payment details:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Internal server error while updating payment details",
-//         });
-//     }
-// };
-
-
-  //fetchUserPendingMaintenance
-
+// featch user pending maintenance 
 exports.fetchUserPendingMaintenance = async (req, res) => {
     try {
       const userId = req.user.id; 
-      console.log("Logged-in User ID:", userId);
 
       const userMaintenanceRecords = await Maintenance.find({
         "ResidentList.resident": userId,
@@ -207,7 +154,6 @@ exports.fetchUserPendingMaintenance = async (req, res) => {
         select: "name email role", 
       });
   
-      console.log("Raw User Maintenance Records:", JSON.stringify(userMaintenanceRecords, null, 2));
 
       if (!userMaintenanceRecords || userMaintenanceRecords.length === 0) {
         return res.status(404).json({
@@ -225,18 +171,11 @@ exports.fetchUserPendingMaintenance = async (req, res) => {
               residentEntry.paymentStatus === "pending" 
           );
   
-          console.log(
-            `Pending Residents for Maintenance ID ${record._id}:`,
-            pendingResidents
-          );
-  
           return pendingResidents.length > 0
             ? { ...record._doc, ResidentList: pendingResidents } 
             : null; 
         })
         .filter((record) => record !== null); 
-  
-      console.log("Filtered Pending Maintenance Records:", JSON.stringify(pendingMaintenanceRecords, null, 2));
 
       if (pendingMaintenanceRecords.length === 0) {
         return res.status(404).json({
@@ -258,12 +197,11 @@ exports.fetchUserPendingMaintenance = async (req, res) => {
     }
   };
 
+  // upade payment 
   exports.updatePaymentMode = async (req, res) => {
     const { maintenanceId } = req.params;
     const { paymentMode, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
     const residentId = req.user.id;
-    console.log(residentId);
-    
   
     try {
       // Fetch maintenance record

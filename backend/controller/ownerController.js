@@ -63,7 +63,7 @@ exports.addOwnerData = async (req, res) => {
              
                   fs.unlink(filePath, (err) => {
                       if (err) console.error("Error deleting file from server:", err);
-                      else console.log("File deleted from server:", filePath);
+                   
                   });
                   return result.secure_url;
               } catch (error) {
@@ -319,51 +319,7 @@ exports.DeleteByIdResident = async (req, res) => {
 };
 
 // get all residenet=
-// exports.GetAllResidents = async (req, res) => {
-//     try {
 
-//       const [tenants, owners] = await Promise.all([
-//         Tenant.find(),
-//         Owner.find()
-//       ]);
-  
-//       if (!tenants.length && !owners.length) {
-//         return res.status(400).json({
-//           success: false,
-//           message: "No residents found.",
-//         });
-//       }
-  
-//       const formatResidentData = (resident) => ({
-//         ...resident._doc,
-//         Member_Counting_Total: resident.Member_Counting?.length || 0,
-//         Vehicle_Counting_Total: resident.Vehicle_Counting?.length || 0,
-//       });
-  
-//       const allResidents = [
-//         ...tenants.map(formatResidentData),
-//         ...owners.map(formatResidentData),
-//       ];
-  
-//       allResidents.sort((a, b) => {
-//         if (a.Wing === b.Wing) {
-//           return a.Unit - b.Unit;
-//         }
-//         return a.Wing.localeCompare(b.Wing)
-//       });
-  
-//       return res.json({
-//         success: true,
-//         Residents: allResidents,
-//       });
-//     } catch (error) {
-//       console.error("Error fetching residents:", error.message);
-//       return res.status(500).json({
-//         success: false,
-//         message: "An error occurred while retrieving residents data.",
-//       });
-//     }
-//   };
 exports.GetAllResidents = async (req, res) => {
   try {
       // Fetch tenants and owners in parallel
@@ -448,7 +404,7 @@ exports.updateOwnerData = async (req, res) => {
             const result = await cloudinary.uploader.upload(filePath);
             fs.unlink(filePath, (err) => {
               if (err) console.error("Error deleting file from server:", err);
-              else console.log("File deleted from server:", filePath);
+            
             });
             return result.secure_url;
           } catch (error) {

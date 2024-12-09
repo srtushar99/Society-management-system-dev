@@ -78,7 +78,6 @@ exports.Registration = async (req, res) => {
     });
 
   } catch (error) {
-    console.log("Error in registration controller:", error.message);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -184,7 +183,6 @@ exports.logout = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    console.log("Error in logout controller", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -380,7 +378,6 @@ exports.SendOtp = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
   try {
     const { EmailOrPhone, otp } = req.body;
-    console.log("Provided OTP:", otp);
 
     if (!EmailOrPhone || !otp) {
       return res.status(400).json({
@@ -405,14 +402,11 @@ exports.verifyOtp = async (req, res) => {
     }
 
     if (!account) {
-      console.log("No account found for:", EmailOrPhone);
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
-
-    console.log("Fetched account:", account);
 
     // Check if OTP exists in the fetched account
     if (!account.otp) {

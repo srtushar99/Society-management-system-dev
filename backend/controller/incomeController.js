@@ -212,9 +212,6 @@ exports.updateResidentIncomePaymentMode = async (req, res) => {
     const { paymentMode } = req.body; 
     const residentId = req.user.id; 
   
-    console.log("Resident ID from user:", residentId);
-    console.log("Request body:", req.body);
-  
     try {
       const incomeRecord = await Income.findOne({
         _id: incomeId,
@@ -298,9 +295,6 @@ exports.fetchUserPendingIncome = async (req, res) => {
               message: "User authentication is required to fetch pending income records.",
           });
       }
-
-      console.log("Fetching pending incomes for User ID:", loggedInUserId);
-
       const incomeRecords = await Income.find({
           "members.resident": loggedInUserId,
       }).populate({

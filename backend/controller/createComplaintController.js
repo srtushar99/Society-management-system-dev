@@ -130,9 +130,6 @@ exports.getUserComplaints = async (req, res) => {
         path: "createdBy",
         select: "name profileImage", 
       })
-      
-  
-      console.log("User's Complaints:", complaints);
   
       return res.status(200).json({
         success: true,
