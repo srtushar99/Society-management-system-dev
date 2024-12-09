@@ -159,18 +159,20 @@ const EventsParticipation = () => {
       <ResidentSidebar />
       <div className="flex-1 flex flex-col">
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
-
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
               to="/residentDashboard"
-              className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] mx-2 fs-5 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-              Event Participation
+              Events Participation
             </span>
           </div>
 
@@ -258,7 +260,7 @@ const EventsParticipation = () => {
                     : "bg-[#FFFFFF] text-[#202224]"
                 } `}
               >
-                Event Participate
+                Events Participation
               </Link>
 
               <Link
@@ -274,28 +276,32 @@ const EventsParticipation = () => {
               </Link>
             </div>
           </div>
-          <div className="rounded-lg lg:ml-[310px]   shadow-md 2xl:w-[1570px] bg-white">
+          <div className="rounded-lg lg:ml-[310px]   shadow-md 2xl:w-[1590px] bg-white">
             <h1 className="p-3  font-semibold text-gray-800 mt-2 fs-6">
               Events Participation
             </h1>
             <div />
-            <div className="overflow-x-auto  h-[700px] rounded-2xl  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="overflow-x-auto  h-[700px] rounded-2xl 2xl:ml-5 mr-1  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <div className="Content ">
                 <table className="2xl:w-[1560px] border border-gray-200  rounded-table">
                   <thead
-                    className="relative"
+                    className="relative "
                     style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                   >
                     <tr className="text-left text-sm font-semibold">
-                      <th className="2xl:p-3 p-2  text-[#202224]">
-                        Participator Name
-                      </th>
-                      <th className="2xl:p-3 p-2  text-[#202224]">
+                      <th className="ps-4 text-[#202224]">Participator Name</th>
+                      <th className="text-start p-3  text-[#202224]">
                         Description
                       </th>
-                      <th className="2xl:p-1 p-2 ps-5 whitespace-nowrap">Event Time</th>
-                      <th className="2xl:p-3 p-2 ps-5 whitespace-nowrap ">Event Date</th>
-                      <th className="2xl:p-2 p-2  ps-5 whitespace-nowrap">Event Name</th>
+                      <th className=" text-center whitespace-nowrap">
+                        Event Time
+                      </th>
+                      <th className=" text-center whitespace-nowrap ">
+                        Event Date
+                      </th>
+                      <th className=" text-center  whitespace-nowrap">
+                        Event Name
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="sm:overflow-y-auto sm:h-[300px] ">
@@ -311,10 +317,10 @@ const EventsParticipation = () => {
                             {event.name}
                           </span>
                         </td>
-                        <td className="text-[#4F4F4F] text-left whitespace-nowrap">
-                        <div className="break-words text-[#4F4F4F] w-[500px] whitespace-normal">
+                        <td className="text-[#4F4F4F] text-start whitespace-nowrap">
+                          <div className="break-words  text-[#4F4F4F] w-[500px] whitespace-normal">
                             {event.description}
-                        </div>
+                          </div>
                         </td>
                         <td className="text-[#4F4F4F] text-center ">
                           <span className="text-[#4F4F4F]  text-sm sm:text-base">
@@ -323,9 +329,7 @@ const EventsParticipation = () => {
                           </span>
                         </td>
                         <td className="pt-3 mr-10 text-center text-[#4F4F4F]">
-                          <span className="text-[#4F4F4F] ">
-                            {event.date}
-                          </span>
+                          <span className="text-[#4F4F4F] ">{event.date}</span>
                         </td>
                         <td className="pt-3 sm:table-cell text-center whitespace-nowrap text-gray-600">
                           <span className="text-[#4F4F4F] ">

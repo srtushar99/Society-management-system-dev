@@ -87,7 +87,7 @@ const OtherIncomeInvoice = () => {
             </Link>
             <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-         Maintenance Invoice 
+            Other Invoices
             </span>
           </div>
 
@@ -136,9 +136,9 @@ const OtherIncomeInvoice = () => {
                 View Invoice
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 2xl:w-[1590px] gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 2xl:w-[1590px] 2xl:ms-3 2xl:mb-3  gap-4">
               {OtherIncome.map((card, index) => (
-              <div  key={card._id} className="bg-white shadow-lg rounded-lg p-4">
+              <div  key={card._id} className="bg-white shadow-lg rounded-lg p-4 ">
                 <div className="d-flex justify-content-between items-center mb-4">
                   <span className="font-semibold text-blue-600">Due Event Payment</span>
                   <span className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs"> 

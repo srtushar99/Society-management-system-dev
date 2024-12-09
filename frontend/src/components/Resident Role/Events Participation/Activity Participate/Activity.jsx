@@ -158,13 +158,16 @@ const Activity = () => {
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
               to="/residentDashboard"
-              className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224]  fs-5 mx-2 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-              Event Participation
+              Events Participation
             </span>
           </div>
 
@@ -251,7 +254,7 @@ const Activity = () => {
                     : "bg-[#FFFFFF] text-[#202224]"
                 } text-sm sm:text-base`}
               >
-                Event Participate
+                Events Participation
               </Link>
               <Link
                 to="/activity"
@@ -267,29 +270,35 @@ const Activity = () => {
             </div>
           </div>
 
-          <div className="rounded-lg lg:ml-[310px]   shadow-md lg:w-[1550px] bg-white">
+          <div className="rounded-lg lg:ml-[310px]   shadow-md lg:w-[1590px]  bg-white">
             <h1 className="p-3 fs-6 font-semibold text-gray-800 mt-2">
               Events Participation
             </h1>
             <div />
-            <div className="overflow-x-auto sm:overflow-y-auto h-[700px] rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="overflow-x-auto sm:overflow-y-auto h-[700px] 2xl:ml-5 mr-1 rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               <div className="Content">
                 <table className="2xl:w-[1560px]  border border-gray-200  rounded-table ">
                   <thead
                     className=" relative lg:w-[1560px]"
                     style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                   >
-                    <tr className="text-left text-sm  font-semibold ">
-                      <th className="2xl:p-3 p-2  text-[#202224]">
+                    <tr className=" text-sm  font-semibold ">
+                      <th className="2xl:p-4 p-3 text-left   text-[#202224]">
                         {" "}
                         Participator Name
                       </th>
-                      <th className="2xl:p-3 p-2  text-[#202224]">
+                      <th className="p-3 text-left  text-[#202224]">
                         Description
                       </th>
-                      <th className="2xl:p-1 p-2  ps-5  whitespace-nowrap ">Event Time</th>
-                      <th className="2xl:p-3 p-2 ps-3  whitespace-nowrap">Event Date</th>
-                      <th className="2xl:p-3 p-2  ps-5  whitespace-nowrap">Event Name</th>
+                      <th className="   text-center whitespace-nowrap ">
+                        Event Time
+                      </th>
+                      <th className="  text-cent whitespace-nowrap">
+                        Event Date
+                      </th>
+                      <th className="   text-cent whitespace-nowrap">
+                        Event Name
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -306,11 +315,9 @@ const Activity = () => {
                           </span>
                         </td>
                         <td className="text-[#4F4F4F] text-left whitespace-nowrap">
-                        
                           <div className="break-words text-[#4F4F4F] w-[500px] whitespace-normal">
                             {activity.description}
-                            </div>
-                    
+                          </div>
                         </td>
 
                         <td className="  text-[#4F4F4F]  text-center">

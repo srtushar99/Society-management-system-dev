@@ -185,7 +185,7 @@ const Annoucements = (card) => {
   }, []);
 
   return (
-    <div className="flex h-w-full h-full bg-gray-100">
+    <div className="flex w-full h-screen bg-gray-100">
       <Sidebar />
 
       <div className="flex-1 flex flex-col  ">
@@ -278,7 +278,7 @@ const Annoucements = (card) => {
         
 
         {/* Announcement Section */}
-        <main className=" rounded border lg:ml-[290px]  lg:w-700px bg-gray-100">
+        <main className="flex-1 rounded border lg:ml-[290px]  bg-gray-100">
           <div className="w-[95%] sm:ml-[20px] lg:ml-[40px] ml-2 px-7 py-10 p-4 mt-5 rounded bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
               <span className="lg:text-3xl mr-3  font-semibold text-gray-800">
@@ -299,7 +299,7 @@ const Annoucements = (card) => {
                   key={card._id}
                   className="bg-white rounded-lg shadow-md overflow-hidden relative "
                 >
-                  <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
+                  <div className="bg-[#5678E9] text-white p-2 pb-2 flex justify-between items-center">
                     <span className="font-semibold">
                       {!!card.Announcement_Title
                         ? card.Announcement_Title

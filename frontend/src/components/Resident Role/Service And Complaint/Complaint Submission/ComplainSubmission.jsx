@@ -9,7 +9,7 @@ import DeleteComplain from "./DeleteComplain";
 import "../../../Sidebar/sidebar.css";
 import ResidentSidebar from "../../Resident Sidebar/ResidentSidebar";
 import moment from "moment";
-import axiosInstance from '../../../Common/axiosInstance';
+import axiosInstance from "../../../Common/axiosInstance";
 
 const ComplainSubmission = () => {
   const [activeButton, setActiveButton] = useState("complain");
@@ -71,76 +71,73 @@ const ComplainSubmission = () => {
 
   // Handle delete modal
   const handleDeleteClick = (complaint) => {
-    setSelectedComplaint(complaint); 
-    setIsDeleteModalOpen(true); 
+    setSelectedComplaint(complaint);
+    setIsDeleteModalOpen(true);
   };
 
   // Close the delete modal
   const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false); 
-    setSelectedComplaint(null); 
+    setIsDeleteModalOpen(false);
+    setSelectedComplaint(null);
   };
 
   const handleDelete = (id) => {
     // Logic to delete the protocol from the data
-    // setData(data.filter((item) => item.id !== id)); 
-    setComplaint(complaint.filter((item) => item._id !== id)); 
+    // setData(data.filter((item) => item.id !== id));
+    setComplaint(complaint.filter((item) => item._id !== id));
     // Close the delete modal after the protocol is deleted
     closeDeleteModal();
   };
 
-
   const handleCreateNoteClick = () => {
-    setIsCreateNoteOpen(true); 
+    setIsCreateNoteOpen(true);
   };
-
 
   const closeCreateNoteModal = () => {
     setIsCreateNoteOpen(false);
   };
 
-
   const toggleSearchVisibility = () => {
     setIsSearchVisible(!isSearchVisible);
   };
 
-
-
   // Fetch fetchComplaint from the API
   const fetchComplaint = async () => {
     try {
-        const response = await axiosInstance.get('/v2/complaint/find/getusercomplaint');
-        console.log(response.data);
-        if(response.status === 200){
-          setComplaint(response.data.data); 
-        }
-       
+      const response = await axiosInstance.get(
+        "/v2/complaint/find/getusercomplaint"
+      );
+      console.log(response.data);
+      if (response.status === 200) {
+        setComplaint(response.data.data);
+      }
     } catch (error) {
-        console.error('Error fetching Important Numbers:', error);
+      console.error("Error fetching Important Numbers:", error);
     }
-};
+  };
 
-
-    useEffect(() => {
-      fetchComplaint();
-    }, []);
-
+  useEffect(() => {
+    fetchComplaint();
+  }, []);
 
   return (
-    <div className="d-flex w-100 h-100 bg-light">
+    <div className="flex w-full h-screen bg-gray-100">
       <ResidentSidebar />
-      <div className=" d-flex flex-column lg:ml-[290px]">
+      <div className=" flex-1 flex flex-col 2xl:ml-[290px]">
         {/* Header */}
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
             <Link
               to="/dashboard"
-              className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] mx-2 fs-5 text-sm sm:text-base">
+              {" "}
+              &gt;{" "}
+            </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
               Service And Complaint
             </span>
@@ -176,7 +173,7 @@ const ComplainSubmission = () => {
         </header>
 
         {/* Facility Management Section */}
-        <main className=" rounded border bg-light">
+        <main className="flex-1 rounded border bg-light">
           <div className="lg:mt-[30px]  mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[10px]">
             <div className="mt-4 lg:px-4 ">
               <Link
@@ -203,7 +200,7 @@ const ComplainSubmission = () => {
             </div>
           </div>
 
-          <div className=" 2xl:w-[1590px] 2xl:ml-[25px]  bg-white p-4 rounded">
+          <div className=" 2xl:w-[1590px] 2xl:ml-[25px]   bg-white p-4 rounded">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h6 className=" text-dark font-bold">Complaint</h6>
               {/* Create Facility Button */}
@@ -254,7 +251,11 @@ const ComplainSubmission = () => {
                     <div className="card-body">
                       <div className="d-flex justify-content-between mb-2">
                         <p className="text-[#4F4F4F]">Request Date</p>
-                        <span className="text-[#202224]">{!!card.createdAt ? moment(card.createdAt).format("DD/MM/YYYY") : " "}</span>
+                        <span className="text-[#202224]">
+                          {!!card.createdAt
+                            ? moment(card.createdAt).format("DD/MM/YYYY")
+                            : " "}
+                        </span>
                       </div>
 
                       <div className="d-flex justify-content-between mb-2">
@@ -268,17 +269,17 @@ const ComplainSubmission = () => {
                       </div>
 
                       <div className="h-[100px]">
-                    <h3 className="text-sm text-[#4F4F4F] mb-2">
-                      Description:
-                    </h3>
-                    <div className="max-h-[80px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                      <span className="text-md text-[#202224] break-words leading-6">
-                        {!!card.Description
-                          ? card.Description
-                          : "No description available"}
-                      </span>
-                    </div>
-                  </div>
+                        <h3 className="text-sm text-[#4F4F4F] mb-2">
+                          Description:
+                        </h3>
+                        <div className="max-h-[80px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                          <span className="text-md text-[#202224] break-words leading-6">
+                            {!!card.Description
+                              ? card.Description
+                              : "No description available"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -286,25 +287,25 @@ const ComplainSubmission = () => {
             </div>
           </div>
         </main>
-      </div>
 
-      {/* Create Complaint Modal */}
-      <CreateComplain
-        isOpen={isCreateNoteOpen}
-        onClose={closeCreateNoteModal}
-        fetchComplaint={fetchComplaint}
-      />
-
-      {/* Delete Complaint Modal */}
-      {isDeleteModalOpen && selectedComplaint && (
-        <DeleteComplain
-          isOpen={isDeleteModalOpen}
-          onCancel={closeDeleteModal}
-          complain={selectedComplaint}
-          onDelete={() => handleDelete(selectedComplaint.id)} // Pass the ID of the protocol to delete
+        {/* Create Complaint Modal */}
+        <CreateComplain
+          isOpen={isCreateNoteOpen}
+          onClose={closeCreateNoteModal}
           fetchComplaint={fetchComplaint}
         />
-      )}
+
+        {/* Delete Complaint Modal */}
+        {isDeleteModalOpen && selectedComplaint && (
+          <DeleteComplain
+            isOpen={isDeleteModalOpen}
+            onCancel={closeDeleteModal}
+            complain={selectedComplaint}
+            onDelete={() => handleDelete(selectedComplaint.id)} // Pass the ID of the protocol to delete
+            fetchComplaint={fetchComplaint}
+          />
+        )}
+      </div>
     </div>
   );
 };

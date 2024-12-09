@@ -121,20 +121,20 @@ const RequestSubmission = () => {
   }, []);
 
   return (
-    <div className="d-flex w-100 h-100 bg-light">
+    <div className="flex w-100 h-screen bg-light">
       <ResidentSidebar />
-      <div className="flex-grow-1 d-flex flex-column lg:ml-[290px]">
+      <div className="flex-1 flex flex-col lg:ml-[290px]">
         {/* Header */}
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
             <Link
               to="/dashboard"
-              className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] mx-2 fs-5 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
               Service And Complaint
             </span>
@@ -167,7 +167,7 @@ const RequestSubmission = () => {
           <HeaderBaner />
         </header>
 
-        <main className="flex-grow-1 rounded border bg-light">
+        <main className="flex-1 rounded border bg-light">
           <div className="lg:mt-[30px] mb-2 md:ml-[25px]  xl:ml-[10px] 2xl:ml-[10x]">
             <div className="mt-4 lg:px-4  ">
               <Link

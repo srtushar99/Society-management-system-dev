@@ -96,9 +96,9 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="flex items-center  justify-between px-6 bg-white sm:ms-[50px] md:ms-[] h-[70px] flex-wrap md:flex-nowrap">
+    <header className="flex items-center  w-full justify-between  bg-white sm:ms-[0px]  md:ms-[] h-[70px] flex-wrap md:flex-nowrap">
       {/* Search Bar Section */}
-      <div className="relative flex-1  2xl:ml-[290px] md:ml-[290px] md:mr-4">
+      <div className="relative flex-1  2xl:ml-[330px] md:ml-[330px] md:mr-4">
         {/* Search input visible on larger screens */}
         <div className="hidden md:block">
           <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 h-5 w-5 " />

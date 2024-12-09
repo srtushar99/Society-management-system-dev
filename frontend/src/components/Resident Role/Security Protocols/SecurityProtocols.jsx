@@ -80,13 +80,13 @@ const SecurityProtocols = () => {
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-80">
             <Link
               to="/residentDashboard"
-              className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202422] fs-5 mx-2 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
-              Event Participation
+            Security Protocols
             </span>
           </div>
 
@@ -175,7 +175,7 @@ const SecurityProtocols = () => {
                     style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                   >
                     <tr className="text-left text-sm font-semibold ">
-                      <th className="ps-4 text-[#202224] ">Title</th>
+                      <th className="ps-4 p-3 text-[#202224] ">Title</th>
                       <th className="ps-3 text-[#202224] ">Description</th>
                       <th className=" text-left p-2 ">Date</th>
                       <th className=" text-center ">Time</th>

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import NotificationIcon from '../../assets/notification-bing.png';
-import AvatarImage from '../../assets/Avatar.png';
-import NotificationModal from '../Notification/NotificationModal';
-import NoNotification from '../Notification/NoNotification'; // Import the NoNotification component
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import NotificationIcon from "../../assets/notification-bing.png";
+import AvatarImage from "../../assets/Avatar.png";
+import NotificationModal from "../Notification/NotificationModal";
+import NoNotification from "../Notification/NoNotification"; // Import the NoNotification component
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 // import Notification from '../../Facilities Management/Notification';
 import { jwtDecode } from "jwt-decode";
-import axiosInstance from '../../Common/axiosInstance';
+import axiosInstance from "../../Common/axiosInstance";
 
 const Header = () => {
   const [userById, setUserById] = useState([]);
@@ -16,11 +16,12 @@ const Header = () => {
 
   const notifications = [
     {
-      title: "Evelyn Harper (A- 101)",
+      title: "Evelyn Harper (A - 101)",
       timing: "Monday 11:41 AM",
       message: (
         <>
-          Evelyn Harper gave a fund of <span style={{ color: '#5678E9' }}>1000 for Navratri</span>.
+          Evelyn Harper gave a fund of{" "}
+          <span style={{ color: "#5678E9" }}>1000 for Navratri</span>.
         </>
       ),
       timeAgo: "32 Minutes ago",
@@ -36,12 +37,13 @@ const Header = () => {
     //   timeAgo: "2 days ago",
     // },
     {
-      title: "Ganesh Chaturthi (A- 101)",
+      title: "Ganesh Chaturthi (A - 101)",
       timing: "Saturday 11:41 AM",
       message: (
         <>
-          Per Person Amount: <span style={{ color: '#5678E9' }}>₹ 1500</span>. 
-          The celebration of Ganesh Chaturthi involves the installation of clay idols of Lord Ganesa in our residence.
+          Per Person Amount: <span style={{ color: "#5678E9" }}>₹ 1500</span>.
+          The celebration of Ganesh Chaturthi involves the installation of clay
+          idols of Lord Ganesa in our residence.
         </>
       ),
       timeAgo: "2 days ago",
@@ -54,24 +56,22 @@ const Header = () => {
   ];
 
   const handleClearAll = () => {
-    navigate('/no-notifications'); 
+    navigate("/no-notifications");
   };
 
   const isNoNotifications = notifications.length === 0;
 
   // Function to handle profile click and navigate to the EditProfile page
   const handleProfileClick = () => {
-    navigate('/edit-profile'); // This will navigate to the EditProfile page
+    navigate("/edit-profile"); // This will navigate to the EditProfile page
   };
 
   const fetchUserById = async (UserToken) => {
     try {
-      const response = await axiosInstance.get(
-        `/v1/${UserToken.userId}`
-      );
+      const response = await axiosInstance.get(`/v1/${UserToken.userId}`);
       if (response.status === 200) {
         setUserById(response.data.data);
-          // navigate("/update-profile");
+        // navigate("/update-profile");
       }
     } catch (error) {
       console.error("Error fetching UserById:", error);
@@ -93,7 +93,6 @@ const Header = () => {
   return (
     <header className="flex items-center v-screen justify-between px-2 bg-white sm:ms-[50px] h-[60px] flex-wrap md:flex-nowrap">
       {/* Search Bar Section */}
-    
 
       {/* Right Section with Notification and Avatar */}
       <div className="flex items-center space-x-4 sm:space-x-6">
@@ -106,7 +105,10 @@ const Header = () => {
         </button>
 
         {/* Profile Section */}
-        <div className="flex items-center space-x-3 cursor-pointer" onClick={handleProfileClick}>
+        <div
+          className="flex items-center space-x-3 cursor-pointer"
+          onClick={handleProfileClick}
+        >
           {/* Avatar Image */}
           <img
             src={AvatarImage}
@@ -115,10 +117,14 @@ const Header = () => {
             height="40"
             className="rounded-full"
           />
-          
+
           {/* Profile Text visible only on larger screens */}
           <div className="hidden sm:block flex-col items-start mt-2">
-            <span className="font-medium text-sm">{!!userById.First_Name ? userById.First_Name +" " + userById.Last_Name : ""}</span>
+            <span className="font-medium text-sm">
+              {!!userById.First_Name
+                ? userById.First_Name + " " + userById.Last_Name
+                : ""}
+            </span>
             <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>
@@ -140,8 +146,6 @@ const Header = () => {
           onClearAll={handleClearAll} // Pass the clear function
         />
       )}
-    
-
     </header>
   );
 };

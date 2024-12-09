@@ -179,14 +179,14 @@ const Complain = () => {
 
       <div className="h-[200px] overflow-y-auto ml-4 mr-3 rounded-2xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <table className="   w-[1140px]">
-          <thead style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}>
-            <tr className=" text-left text-xs font-semibold text-gray-600 uppercase">
-              <th className="whitespace-nowrap ps-4">Complainer Name</th>
-              <th className="whitespace-nowrap ps-4">Complaint Name</th>
-              <th className="whitespace-nowrap text-center">Date</th>
-              <th className="whitespace-nowrap text-center">Priority</th>
-              <th className="whitespace-nowrap text-center p-3">Status</th>
-              <th className="whitespace-nowrap text-center">Action</th>
+          <thead style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }} className="">
+            <tr className=" text-left text-xs font-semibold text-gray-600 ">
+              <th className="whitespace-nowrap ps-4 text-[#202224]">Complainer Name</th>
+              <th className="whitespace-nowrap ps-4 text-[#202224]">Complaint Name</th>
+              <th className="whitespace-nowrap text-center text-[#202224]">Date</th>
+              <th className="whitespace-nowrap text-center text-[#202224]">Priority</th>
+              <th className="whitespace-nowrap text-center p-3 text-[#202224]">Status</th>
+              <th className="whitespace-nowrap text-center text-[#202224]">Action</th>
             </tr>
           </thead>
           <tbody className="text-sm ">
@@ -221,11 +221,11 @@ const Complain = () => {
                     className={`
                    inline-block w-24 px-4 py-1 rounded-md text-center 
                    ${
-                   complaints.Priority === "High"
-                   ? "bg-[#E74C3C] text-[#FFFFFF]"
-                   : complaints.Priority === "Medium"
-                   ? "bg-[#5678E9] text-[#FFFFFF]"
-                   : "bg-[#39973D] text-[#FFFFFF]"
+                     complaints.Priority === "High"
+                       ? "bg-[#E74C3C] text-[#FFFFFF]"
+                       : complaints.Priority === "Medium"
+                       ? "bg-[#5678E9] text-[#FFFFFF]"
+                       : "bg-[#39973D] text-[#FFFFFF]"
                    }
                   `}
                   >
@@ -239,12 +239,12 @@ const Complain = () => {
                    inline-block w-24 px-4 py-1 rounded-md text-center
                    ${
                      complaints.Status === "Open"
-                   ? "bg-[#5678E91A] text-[#5678E9]"
-                   : complaints.Status === "Pending"
-                   ? "bg-[#FFC3131A] text-[#FFC313]"
-                   : "bg-[#39973D1A] text-[#39973D]"
+                       ? "bg-[#5678E91A] text-[#5678E9]"
+                       : complaints.Status === "Pending"
+                       ? "bg-[#FFC3131A] text-[#FFC313]"
+                       : "bg-[#39973D1A] text-[#39973D]"
                    }`}
-                   >
+                  >
                     {complaints.Status}
                   </Badge>
                 </td>
