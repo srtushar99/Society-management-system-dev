@@ -240,7 +240,39 @@ exports.resetPassword = async (req, res) => {
 
 // Find user by ID 
 
-exports.findUserById = async (req, res) => {
+// exports.findUserById = async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+
+//     // Find the user and populate the 'select_society' field
+//     const user = await User.findById(userId).populate('select_society', 'Society_name');
+
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: 'User not found' });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'User found',
+//       data: {
+//         id: user._id,
+//         First_Name: user.First_Name,
+//         Last_Name: user.Last_Name,
+//         Email_Address: user.Email_Address,
+//         Phone_Number: user.Phone_Number,
+//         Country: user.Country,
+//         State: user.State,
+//         City: user.City,
+//         Society: user.select_society ? user.select_society.Society_name : null,
+//         SocietyId: user.select_society ? user.select_society._id : null,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Error finding user:", err.message);
+//     res.status(500).json({ success: false, message: 'Server error', error: err.message });
+//   }
+// };
+exports.findUserById = async (req, res) => { 
   try {
     const userId = req.params.id;
 
@@ -265,6 +297,7 @@ exports.findUserById = async (req, res) => {
         City: user.City,
         Society: user.select_society ? user.select_society.Society_name : null,
         SocietyId: user.select_society ? user.select_society._id : null,
+        profileImage: user.profileImage || null, // Include the profile image
       },
     });
   } catch (err) {
@@ -428,6 +461,7 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
+// eedit profile
 
 exports.editProfile = async (req, res) => {
   try {
