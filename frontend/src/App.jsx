@@ -148,33 +148,38 @@ function App() {
             <Route path="/addvisitor" element={<AddVisitorModal/>} />
             <Route path="/emergency" element={<EmergencyManagement/>} />
             
-
-            <Route path="/residentsidebar" element={<ResidentSidebar/>} />
-            <Route path="/residentheader" element={<ResidentHeader/>} />
-            <Route path="ResidentDashboard" element={<ResidentDashboard/>} />
-            <Route path="PersonalDetail" element={<PersonalDetail/>} />
-            <Route path="TenantDetail" element={<PersonalTenant/>} />
-            <Route path="AccessForums" element={<AccessForums/>} />
-            <Route path="PostAnswer" element={<PostAnswer/>} />
-            <Route path="Polls" element={<Polls/>} />
-            <Route path="CommunitiesDiscussion" element={<CommunitiesDiscussion/>} />
-            <Route path="/complain" element={<ComplainSubmission/>} />
             
-            <Route path="/Request" element={<RequestSubmission/>} />
-    
+                <Route path="/visitorTracking" element={<VisitorTracking/>} />
+                <Route path="/addvisitor" element={<AddVisitorModal/>} />
+                <Route path="/emergency" element={<EmergencyManagement/>} />
+                
 
-            <Route path="MaintenanceInvoices" element={<MaintenanceInvoices/>} />
-            <Route path="OtherIncomeInvoice" element={<OtherIncomeInvoice/>} />
-            <Route path="SecurityProtocols" element={<SecurityProtocols/>} />
-            <Route path="/EventsParticipation" element={<EventsParticipation/>} />
-            <Route path="/activity" element={<Activity/>} />
-            <Route path="/MaintenanceTable" element={<MaintenanceTable/>} />
-            <Route path="/otherincomeTable" element={<OtherIncomeTable/>} />
-            
-        </Routes>
-    );
-}
+                <Route path="/residentsidebar" element={<ResidentSidebar/>} />
+                <Route path="/residentheader" element={<ResidentHeader/>} />
+                <Route path="ResidentDashboard" element={<ResidentDashboard/>} />
+                <Route path="PersonalDetail" element={<PersonalDetail/>} />
+                <Route path="TenantDetail" element={<PersonalTenant/>} />
+                <Route path="AccessForums" element={<AccessForums/>} />
+                <Route path="PostAnswer" element={<PostAnswer/>} />
+                <Route path="Polls" element={<Polls/>} />
+                <Route path="CommunitiesDiscussion" element={<CommunitiesDiscussion/>} />
+                <Route path="/complain" element={<ComplainSubmission/>} />
+                
+                <Route path="/Request" element={<RequestSubmission/>} />
+        
 
-export default App;
+                <Route path="MaintenanceInvoices" element={<MaintenanceInvoices/>} />
+                <Route path="OtherIncomeInvoice" element={<OtherIncomeInvoice/>} />
+                <Route path="SecurityProtocols" element={<SecurityProtocols/>} />
+                <Route path="/EventsParticipation" element={<EventsParticipation/>} />
+                <Route path="/activity" element={<Activity/>} />
+                <Route path="/MaintenanceTable" element={<MaintenanceTable/>} />
+                <Route path="/otherincomeTable" element={<OtherIncomeTable/>} />
+                
+            </Routes>
+        );
+    }
+
+    export default App;
 
 
