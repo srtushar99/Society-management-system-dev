@@ -104,7 +104,7 @@ import RequestSubmission from './components/Resident Role/Service And Complaint/
 import MaintenanceInvoices from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceInvoices';
 import OtherIncomeInvoice from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeInvoice';
 import EventsParticipation from './components/Resident Role/Events Participation/Event Participate/EventsParticipation';
-import Activity from './components/Dashboard/Activity/Activity';
+import Activity from './components/Resident Role/Events Participation/Activity Participate/Activity';
 import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
 import OtherIncomeTable from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeTable';
 import SecurityProtocol from './components/Security Management/SecurityProtocol';
