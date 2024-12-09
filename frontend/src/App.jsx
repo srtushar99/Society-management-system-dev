@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 // import React from 'react';
 // import LoginPage from './components/LoginPage/LoginPage'; 
 // import ForgetPasswordPage from './components/Forget Password/ForgotPasswordPage'; 
-
 // import GetOtp from './components/GetOtp/GetOtp';
 // import ResetPassword from './components/Reset Password/ResetPassword';
 // import './App.css';
@@ -18,7 +17,6 @@ import { Route, Routes } from 'react-router-dom';
 // import Income from './components/Finacial Management/Income/Income';
 // import OtherIncome from './components/Finacial Management/Income/OtherIncome';
 // import Expance from './components/Finacial Management/Expanse/Expanse';
-
 // import MemberList from './components/Finacial Management/Income/MemberList';
 // import Password from 'antd/es/input/Password';
 // import Facilities from './components/Facilities Management/Facilities';
@@ -26,7 +24,6 @@ import { Route, Routes } from 'react-router-dom';
 // import CreateComplaint from './components/Complaint Tracking/Create Complaint/CreateComplaint';
 // import RequestTracking from './components/Complaint Tracking/Request Tracking/RequestTracking';
 // import SecurityGuard from './components/Security Guard/SecurityGuard';
-
 // import Resident from './components/Resident Management/Resident';
 // import OwnerPage from './components/Resident Management/OwnerPage';
 // import TenantPage from './components/Resident Management/TenantPage';
@@ -38,13 +35,10 @@ import { Route, Routes } from 'react-router-dom';
 // import EmergencyManagement from './components/Dashboard/Emergency/EmergencyManagement';
 // import ResidentSidebar from './components/Resident Role/Resident Sidebar/ResidentSidebar';
 // import ResidentHeader from './components/Resident Role/Resident Header/ResidentHeader';
-
 // import ResidentDashboard from './components/Resident Role/Dashboard/residentDashboard';
 // import PersonalDetail from './components/Resident Role/Personal Detail/PersonalOwner';
-
 // import AccessForums from './components/Resident Role/Comunity/Access Forums/AccessForums';
 // import Polls from './components/Resident Role/Comunity/Polls/Polls';
-
 // import CommunitiesDiscussion from './components/Resident Role/Comunity/Communities Discussion/CommunitiesDiscussion';
 // // import ServiceAndComplaint from './components/Resident Role/Service And Complaint/ServiceAndComplaint';
 // import MaintenanceInvoices from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceInvoices';
@@ -59,13 +53,8 @@ import { Route, Routes } from 'react-router-dom';
 // import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
 // import PersonalTenant from './components/Resident Role/Personal Detail/PersonalTenant';
 // import OtherIncomeTable from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeTable';
-
 // import PostAnswer from './components/Resident Role/Comunity/Communities Discussion/PostAnswer';
 // // import UpdateMaintenance from './components/Resident Role/Dashboard/Notification Panel/UpdateMaintenance';
-
-
-
-
 // // import SecurityGuardTable from './components/SecurityGaurd/SecurityGuardTable';
 
 import './App.css';
@@ -118,6 +107,7 @@ import EventsParticipation from './components/Resident Role/Events Participation
 import Activity from './components/Dashboard/Activity/Activity';
 import { MaintenanceTable } from './components/Resident Role/Payment Portal/Maintenance Invoices/MaintenanceTable';
 import OtherIncomeTable from './components/Resident Role/Payment Portal/Other Income Invoice/OtherIncomeTable';
+import SecurityProtocol from './components/Security Management/SecurityProtocol';
 
 function App() {
     return (
@@ -142,14 +132,14 @@ function App() {
             <Route path="/createcomplaint" element={<CreateComplaint />} />
             <Route path="/requesttracking" element={<RequestTracking />} />
             <Route path="/notifications" element={<NotificationModal />} />
-            <Route path="/securityprotocol" element={<SecurityProtocols />} />
+            <Route path="/securityprotocol" element={<SecurityProtocol />} />
             <Route path="/security-guard" element={<SecurityGuard/>} />
             <Route path="/Resident-Manegement" element={<Resident/>} />
             <Route path="/ownerpage" element={<OwnerPage/>} />
             <Route path="/vacate" element={<VacatePage />} />
             <Route path="/tenantpage" element={<TenantPage/>} />
-           <Route path="/editowner" element={<EditOwner/>} /> 
-           <Route path="/edittenant" element={<EditTenant/>} /> 
+            <Route path="/editowner" element={<EditOwner/>} /> 
+            <Route path="/edittenant" element={<EditTenant/>} /> 
        
       
          
