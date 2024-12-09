@@ -89,7 +89,7 @@ export default function PostAnswer() {
                     active={selectedContact?.id === contact.id}
                     className="d-flex align-items-center gap-3"
                     onClick={() => handleContactClick(contact)}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer',backgroundColor: selectedContact?.id === contact.id ? "rgb(86, 120, 233, 0.1)" : "transparent",color:"black" ,border:"none"}}
                   >
                     <Image src={AvatarImage} roundedCircle alt={contact.name} />
                     <div>

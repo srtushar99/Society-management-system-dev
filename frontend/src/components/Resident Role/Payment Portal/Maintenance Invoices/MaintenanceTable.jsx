@@ -278,8 +278,8 @@ const InvoiceModal = ({ show, handleClose }) => {
       onHide={handleClose}
       backdrop="static" // Disable clicks outside
       centered
-      className="custom-modal"
-      style={{ position: "fixed", top: "5%" }}
+      className="custom-modal  "
+      style={{ position: "fixed", top: "5%" ,margin:"0 50%"}}
     >
       <Modal.Header className="d-flex justify-content-between align-items-center ">
         <Modal.Title className="fw-bold text-gray-800">
@@ -292,8 +292,8 @@ const InvoiceModal = ({ show, handleClose }) => {
           onClick={handleClose}
         ></button>
       </Modal.Header>
-      <Modal.Body>
-        <div className="  rounded-lg">
+      <Modal.Body >
+        <div className="  rounded-lg ">
           {/* Invoice Details */}
           <div className="d-flex bg-light px-2 justify-content-between ">
             <div>
