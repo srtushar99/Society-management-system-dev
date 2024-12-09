@@ -172,11 +172,11 @@ const PersonalTenant = ({ isOpen, onClose }) => {
           <div className="d-flex align-items-center md:ml-[100px] lg:ml-[340px] text-muted d-none d-sm-flex 2xl:ml-10">
             <Link
               to="/residentDashboard"
-              className="text-muted text-decoration-none font-weight-semibold text-sm sm:text-base"
+              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
             >
               Home
             </Link>
-            <span className="text-muted mx-2 text-sm sm:text-base"> &gt; </span>
+            <span className="text-[#202224] mx-2 fs-5 text-sm sm:text-base"> &gt; </span>
             <span className="font-weight-semibold text-[#5678E9] text-sm sm:text-base">
               Personal Detail
             </span>

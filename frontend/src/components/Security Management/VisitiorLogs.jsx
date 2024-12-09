@@ -184,7 +184,7 @@ useEffect(() => {
         <div className="2xl:ps-3 w-full">
          
           <div className="rounded-lg lg:ml-[300px] shadow-md lg:w-[1590px] bg-white">
-            <h1 className="p-3 text-3xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>
+            <h1 className="p-3 2xl:text-xl font-semibold text-gray-800 mt-10">Visitor Logs</h1>
             <div />
             <div className="overflow-x-auto h-[700px] rounded-2xl 2xl:ml-5 ml-2 mr-2  scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className='Content'>

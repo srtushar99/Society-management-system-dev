@@ -31,7 +31,7 @@ const CardHeader = ({ children }) => {
 };
 
 const CardTitle = ({ children }) => {
-  return <h2 className="text-xl font-medium">{children}</h2>;
+  return <h2 className="text-xl font-bold">{children}</h2>;
 };
 
 // Select components
@@ -40,7 +40,7 @@ const Select = ({ children, defaultValue, onChange }) => {
     <select
       defaultValue={defaultValue}
       onChange={onChange}
-      className="border rounded-md p-2"
+      className="border rounded-md p-2 text-[#202224] "
     >
       {children}
     </select>
@@ -51,7 +51,7 @@ const Select = ({ children, defaultValue, onChange }) => {
 const CustomOption = ({ value, gradient, label }) => (
   <option value={value} className="flex items-center">
     <span
-      className="inline-block w-4 mt-2  h-4 rounded-full mr-2 border border-white"
+      className="inline-block w-4 mt-2 text-[#202224]  h-4 rounded-full mr-2 border border-white"
       style={{ background: `linear-gradient(90deg, ${gradient})` }}
     ></span>
     {label}
@@ -85,10 +85,10 @@ const Chart = () => {
   };
 
   return (
-    <div className="h-[240px]   pe-1 2xl:mb-0 md:mb-2 mb-40 sm:w-[730px] lg:ml-[300px] 2xl:w-[780px] md:w-auto md:h-[240px] lg:w-[250px]  md:ms-[310px] sm:ml-[310px] xl:w-[360px] xl:ml-[300px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
+    <div className="h-[240px]    pe-1 2xl:mb-0 md:mb-2 mb-40 sm:w-[730px] lg:ml-[300px] 2xl:w-[780px] md:w-auto md:h-[240px] lg:w-[250px]  md:ms-[310px] sm:ml-[310px] xl:w-[360px] xl:ml-[300px] 2xl:ml-[320px]"style={{zIndex:"-99999"}}>
       <Card className="me-2">
         <CardHeader>
-          <CardTitle>Total Balance</CardTitle>
+          <CardTitle >Total Balance</CardTitle>
           <Select defaultValue="month" onChange={handleRangeChange}>
             <CustomOption value="last-week" gradient="#FF9F00, #FF3D00" label="Last Week" />
             <CustomOption value="last-month" gradient="#F09619, #FE512E" label="Last Month" />

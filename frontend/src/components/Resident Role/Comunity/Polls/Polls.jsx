@@ -76,7 +76,7 @@ const Polls = () => {
   };
 
   return (
-    <div className="d-flex w-100 h-100 bg-light">
+    <div className="d-flex w-100 h-screen bg-light">
       <ResidentSidebar />
       <div className="flex-grow-1 d-flex flex-column lg:ml-[290px]">
         {/* Header */}
@@ -119,8 +119,8 @@ const Polls = () => {
         </header>
 
         {/* Main Content */}
-        <main className="flex-grow-1 p-3 rounded-2xl bg-light">
-          <div className="2xl:mt-[10px] 2xl:ml-[30px]">
+        <main className="flex-1 p-3 rounded-2xl bg-light">
+          <div className="2xl:mt-[10px] 2xl:ml-[10px]">
             <div className="mt-5 2xl:px-3">
               {/* Navigation Buttons */}
               {["polls", "NewPoll", "PreviousPoll"].map((button) => (
@@ -141,7 +141,7 @@ const Polls = () => {
           </div>
 
           {/* Polls Section */}
-          <div className="bg-[#FFFFFF] 2xl:w-[1560px] 2xl:ml-10">
+          <div className="bg-[#FFFFFF] 2xl:w-[1560px] 2xl:ml-5">
             <div className="2xl:p-4 p-2 mt-[13px] md:p-8">
               <div className="max-w-8xl">
                 <div className="flex justify-between items-center mb-6">
@@ -162,13 +162,13 @@ const Polls = () => {
                 </div>
 
                 {/* Poll Data Display */}
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 m-3 lg:grid-cols-4 ">
                   {pollsData.map((poll, index) => {
                     const totalVotes = poll.votes.Yes + poll.votes.No;
                     return (
                       <div
                         key={index}
-                        className="bg-white rounded-lg shadow-md p-3"
+                        className="bg-white rounded-lg shadow-md p-3  "
                       >
                         <div className="border-b mb-3 text-[#F4F4F4]">
                           <div className="flex items-center justify-between mb-3">

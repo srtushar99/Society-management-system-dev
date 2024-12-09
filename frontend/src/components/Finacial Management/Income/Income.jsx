@@ -100,20 +100,11 @@ const Income = ({ color }) => {
             >
               Home
             </Link>
-            <span className="text-[#202224] fs-5 mx-2 text-sm sm:text-base">
-              {" "}
-              &gt;{" "}
-            </span>
-            <Link
-              to="/memberlist"
-              className="text-[#A7A7A7] text-decoration-none font-weight-semibold text-sm sm:text-base"
-            >
-              Maintenance
-            </Link>
+          
             <span className="text-[#202224] fs-5 mx-2"> &gt; </span>
   
             <span className="text-[#5678E9] font-weight-semibold text-sm sm:text-base">
-              Financial Management
+            Financial Maintenance
             </span>
           </div>
   
@@ -214,7 +205,7 @@ const Income = ({ color }) => {
         </div>
   
         <div className="lg:mt-[10px]">
-          <div className="mt-4 2xl:ps-0 ps-4 sm:px-8">
+          <div className="mt-4 2xl:ps-0 ps-3 sm:px-8">
             <button
               onClick={() => handleButtonClick("maintenance")}
               className={`lg:h-[50px] 2xl:px-5 px-4 py-3 rounded-top ${
@@ -250,8 +241,8 @@ const Income = ({ color }) => {
                     className=""
                     style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
                   >
-                    <tr className="text-gray-600 uppercase text-xs font-semibold">
-                      <th className="ps-5 whitespace-nowrap py-2">Name</th>
+                    <tr className="text-[#202422] text-xs font-semibold">
+                      <th className="ps-4 whitespace-nowrap py-2">Name</th>
                       <th className="tex whitespace-nowrap">Unit Number</th>
                       <th className="ps-5 p-3 whitespace-nowrap">Date</th>
                       <th className="2xl:ps-5 whitespace-nowrap">Role</th>
@@ -260,9 +251,9 @@ const Income = ({ color }) => {
                       </th>
                       <th className="text-center whitespace-nowrap">Amount</th>
                       <th className="text-center whitespace-nowrap">Penalty</th>
-                      <th className="text-center whitespace-nowrap">Status</th>
-                      <th className="text-center whitespace-nowrap">Payment</th>
-                      <th className="text-start whitespace-nowrap">Action</th>
+                      <th className="px-5 whitespace-nowrap">Status</th>
+                      <th className=" px-4 whitespace-nowrap">Payment</th>
+                      <th className="text-center whitespace-nowrap">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -317,7 +308,7 @@ const Income = ({ color }) => {
                           <td className="px-4 py-3 text-center text-red-600">
                             ₹ {maintenance.Penalty_Amount}
                           </td>
-                          <td className="ps-4 py-3">
+                          <td className="ps-3 py-3 text-center">
                             <span
                               className={`px-2 text-center p-1 rounded-full text-xs w-[40px] flex font-semibold ${
                                 resident.paymentStatus === "Pending"
@@ -340,7 +331,7 @@ const Income = ({ color }) => {
                               {resident.paymentStatus}
                             </span>
                           </td>
-                          <td className="ps-4 py-3">
+                          <td className="px-3 py-3 text-center">
                             <span
                               style={{ width: "80px" }}
                               className={`px-2 py-1 rounded-full text-xs flex font-semibold ${
@@ -363,7 +354,7 @@ const Income = ({ color }) => {
                               {resident.paymentMode}
                             </span>
                           </td>
-                          <td className="px-3 py-3">
+                          <td className="px-3 py-3 text-center">
                             <button
                               onClick={() => openViewMaintenanceModal(resident, maintenance)}
                               className="bg-blue-50 text-[#5678E9] rounded-2 sm:w-10 sm:h-10"

@@ -124,7 +124,7 @@ const Facilities = (card) => {
               {/* Create Facility Button */}
               <button
                 onClick={handleCreateNoteClick}
-                className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF] 2xl:px-4 px-1 py-2 rounded-lg flex items-center"
+                className="bg-orange-500 hover:bg-orange-600 text-[#FFFFFF]  px-3 py-2 rounded-lg flex items-center"
               >
                 Create facility
               </button>
@@ -136,7 +136,7 @@ const Facilities = (card) => {
                   key={!!card._id ? card._id : " "}
                   className="bg-white rounded-lg shadow-md overflow-hidden relative"
                 >
-                  <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
+                  <div className="bg-[#5678E9] text-white p-2 pb-2 flex justify-between items-center">
                     <span className="font-semibold">
                       {!!card.Facility_name ? card.Facility_name : ""}
                     </span>

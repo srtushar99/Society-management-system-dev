@@ -245,7 +245,7 @@ const Note = (card) => {
                   key={card.id}
                   className="bg-white rounded-lg shadow-md overflow-hidden relative"
                 >
-                  <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
+                  <div className="bg-[#5678E9] text-white p-2 pb-2 flex justify-between items-center">
                     <span className="font-semibold">
                       {!!card.Title ? card.Title : " "}
                     </span>

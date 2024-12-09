@@ -183,11 +183,11 @@ const OtherIncome = () => {
         </header>
 
         <main className="flex-1 rounded border  lg:ml-[290px] lg:w-700px bg-gray-100">
-          <div className="lg:mt-[10px] ">
-            <div className="mt-10 lg:ml-[16px] 2xl:px-4 px-8 ">
+          <div className="lg:mt-[10px] ml-[30px]">
+            <div className="mt-10 2xl:ps-3  sm:px-8 ">
               <Link
                 to="/income"
-                className={` lg:h-[50px] 2xl:px-2 px-3 py-3 rounded-top no-underline ${
+                className={` lg:h-[50px] 2xl:px-5 px-3 py-3 rounded-top no-underline ${
                   activeButton === "maintenance"
                     ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#202224]"
@@ -227,7 +227,7 @@ const OtherIncome = () => {
               {OtherIncome.map((card, index) => (
                 <div
                   key={card._id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden relative"
+                  className="bg-white rounded-lg 2xl:ms-3 mb-3 shadow-md overflow-hidden relative"
                 >
                   <div className="bg-[#5678E9] text-white p-3 pb-2 flex justify-between items-center">
                     <span className="font-semibold">
