@@ -24,7 +24,7 @@ const ForgotPasswordPage = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/v1/send-otp', {
+      const response = await fetch('https://society-management-system-dev-16.onrender.com/v1/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

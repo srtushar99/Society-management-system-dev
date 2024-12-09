@@ -35,7 +35,7 @@ const AddNumber = ({ isOpen, onClose, fetchImportantNumbers  }) => {
         work
       };
       try {
-        const response = await fetch("http://localhost:5000/api/v2/important-numbers/create", {
+        const response = await fetch("https://society-management-system-dev-16.onrender.com/v2/important-numbers/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
