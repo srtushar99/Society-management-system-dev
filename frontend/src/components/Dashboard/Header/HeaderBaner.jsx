@@ -25,16 +25,16 @@ const Header = () => {
       ),
       timeAgo: "32 Minutes ago",
     },
-    {
-      title: "Maintenance (A- 101)",
-      timing: "Tuesday 11:41 AM",
-      message: (
-        <>
-          Evelyn Harper gave a <span style={{ color: '#5678E9' }}>Maintenance of 1000</span>.<br />
-        </>
-      ),
-      timeAgo: "2 days ago",
-    },
+    // {
+    //   title: "Maintenance (A- 101)",
+    //   timing: "Tuesday 11:41 AM",
+    //   message: (
+    //     <>
+    //       Evelyn Harper gave a <span style={{ color: '#5678E9' }}>Maintenance of 1000</span>.<br />
+    //     </>
+    //   ),
+    //   timeAgo: "2 days ago",
+    // },
     {
       title: "Ganesh Chaturthi (A- 101)",
       timing: "Saturday 11:41 AM",
@@ -46,11 +46,11 @@ const Header = () => {
       ),
       timeAgo: "2 days ago",
     },
-    {
-      title: "Update Maintenance",
-      message: "Maintenance Amount: ₹ 1,500 Maintenance Penalty: ₹ 350.",
-      timeAgo: "32 Minutes ago",
-    },
+    // {
+    //   title: "Update Maintenance",
+    //   message: "Maintenance Amount: ₹ 1,500 Maintenance Penalty: ₹ 350.",
+    //   timeAgo: "32 Minutes ago",
+    // },
   ];
 
   const handleClearAll = () => {

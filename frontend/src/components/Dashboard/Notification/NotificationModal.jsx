@@ -20,7 +20,7 @@ const NotificationModal = ({ isOpen, onClose, notifications }) => {
     setNotificationStatus(newStatus);
 
     // If the notification is the one with index 3 and the status is "Accepted", open the UpdateMaintenance modal
-    if (index === 2 && status === "Accepted") {
+    if (index === 1 && status === "Accepted") {
       setIsUpdateMaintenanceOpen(true); // Open the modal
     }
   };

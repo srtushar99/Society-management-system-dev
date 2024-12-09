@@ -146,7 +146,7 @@ const Resident = () => {
           <HeaderBaner />
         </header>
 
-        <div className="bg-[#FFFFFF] rounded-lg lg:ml-[320px] shadow-md lg:w-[1560px] mt-5">
+        <div className="bg-[#FFFFFF] rounded-lg lg:ml-[320px] shadow-md lg:w-[1590px] mt-5">
           <div className="flex justify-between items-center mb-6 p-2 pt-4 ps-3">
             <span className="2xl:text-3xl font-semibold text-gray-800">
               Resident Tenant{" "}
@@ -164,9 +164,9 @@ const Resident = () => {
               Add New Resident Details
             </button>
           </div>
-          <div className="overflow-x-auto h-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="overflow-x-auto h-[700px] rounded-2xl ml-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div className="Content">
-              <table className="bg-white border border-gray-200 rounded-lg shadow-md lg:w-[1550px]">
+              <table className="bg-white 2xl:w-[1570px] border border-gray-200 rounded-lg shadow-md lg:w-[1550px]">
                 <thead
                   className="w-full"
                   style={{ backgroundColor: "rgba(86, 120, 233, 0.1)" }}
