@@ -1,5 +1,5 @@
 // const { CreateVisitor, GetAllVisitor, FilterVisitor } = require("../controller/SecurityvisitorController");
-const { CreateVisitor, GetAllVisitor, FilterVisitor } = require("../controller/securityvisitorController");
+const { CreateVisitor, GetAllVisitor, FilterVisitor } = require("../controller/securityVisitorController");
 const { authenticate, IsSecurity } = require("../middleware/authenticate ");
 const router=require("express").Router();
 
