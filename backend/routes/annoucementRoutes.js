@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAnnouncement, getAllAnnouncement, getAnnouncementById, updateAnnouncement, deleteAnnouncement, getActivityAnnouncement, GetActivityAnnouncement, GetEventAnnouncement, AcceptAnnouncement} = require('../controller/AnnoucementController');
+const { createAnnouncement, getAllAnnouncement, getAnnouncementById, updateAnnouncement, deleteAnnouncement, GetActivityAnnouncement, GetEventAnnouncement, AcceptAnnouncement} = require('../controller/annoucementController');
 const { authenticate, IsAdmin } = require('../middleware/authenticate ');
 
 const router = express.Router();
