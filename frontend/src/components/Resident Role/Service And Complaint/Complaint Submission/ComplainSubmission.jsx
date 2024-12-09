@@ -129,7 +129,7 @@ const ComplainSubmission = () => {
   return (
     <div className="d-flex w-100 h-100 bg-light">
       <ResidentSidebar />
-      <div className=" d-flex flex-column lg:ml-[290px]">
+      <div className=" flex-grow-1 d-flex flex-column lg:ml-[290px]">
         {/* Header */}
         <header className="d-flex justify-content-between align-items-center bg-white shadow-sm p-3">
           {/* Breadcrumb Navigation */}

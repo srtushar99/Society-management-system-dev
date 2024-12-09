@@ -34,11 +34,17 @@ const ResidentSidebar = () => {
       setActiveLink("EventsParticipation");
     } else if (path === "TenantDetail") {
       setActiveLink("PersonalDetail");
-    } else if (path === "Request") {
+    }
+     else if (path === "request") {
       setActiveLink("ServiceAndComplaint");
-    } else if (path === "MaintenanceTable") {
+      
+     
+    }
+    
+    else if (path === "MaintenanceTable") {
       setActiveLink("PaymentPortal");
-    } else if (path === "PostAnswer") {
+    }
+    else if (path === "PostAnswer") {
       setActiveLink("Community");
     } else if (
       ["AccessForums", "Polls", "CommunitiesDiscussion"].includes(path)
@@ -239,11 +245,11 @@ const ResidentSidebar = () => {
             <Link
               to="/complain"
               style={getLinkStyle("complain")}
-              onClick={() => handleLinkClick("complain", "/complain")}
+              onClick={() => handleLinkClick("complain", "/complain" )}
             >
               <img
                 src={FacilitiesIcon}
-                style={getIconStyle("complain")}
+                style={getIconStyle("complain" ,"request")}
                 alt="complain"
               />
               Service And Complaint
